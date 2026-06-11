@@ -1,0 +1,138 @@
+<!--
+  Pintel.Tokens.xaml
+  ─────────────────────────────────────────────────────────────
+  핀텔 디자인 시스템 토큰 (DevExpress WPF 공통 레이어 / Single Source 미러)
+  값은 Foundation 토큰과 동일: Color, Typography.Style(19), Spacing(4·8pt), Elevation, Motion.
+  App.xaml 의 MergedDictionaries 에 가장 먼저 병합해 모든 화면/컴포넌트에서 공통 참조.
+
+  주의:
+   - 폰트(Pretendard GOV)는 앱에 임베드 필요 (README 참고). 미임베드 시 폴백 사용.
+   - letter-spacing(em)은 WPF 기본 속성이 없어 토큰화 불가 → 필요 시 별도 첨부 속성으로 처리(README).
+   - .NET Core/5+ 에서 sys 네임스페이스 오류 시 assembly=System.Runtime 으로 교체.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ============================================================
+         COLOR  (Foundation > Color)
+         ============================================================ -->
+    <!-- Brand -->
+    <Color x:Key="Pintel.Color.Primary">#FF1751D9</Color>        <!-- Primary / Normal -->
+    <Color x:Key="Pintel.Color.PrimaryStrong">#FF3471FF</Color>  <!-- Primary / Strong (hover) -->
+    <Color x:Key="Pintel.Color.PrimaryHeavy">#FF004DFF</Color>   <!-- Primary / Heavy (pressed) -->
+    <!-- Status -->
+    <Color x:Key="Pintel.Color.Positive">#FF1ED45A</Color>
+    <Color x:Key="Pintel.Color.Cautionary">#FFFFA938</Color>
+    <Color x:Key="Pintel.Color.Native">#FFFF6363</Color>
+    <!-- Neutral (Button/Secondary 스펙 기반) -->
+    <Color x:Key="Pintel.Color.Neutral50">#FFF9FAFB</Color>
+    <Color x:Key="Pintel.Color.Neutral100">#FFF3F4F6</Color>
+    <Color x:Key="Pintel.Color.Neutral200">#FFE5E7EB</Color>
+    <Color x:Key="Pintel.Color.Neutral300">#FFD1D5DB</Color>
+    <Color x:Key="Pintel.Color.Neutral400">#FF9CA3AF</Color>
+    <Color x:Key="Pintel.Color.Neutral800">#FF1F2937</Color>
+    <Color x:Key="Pintel.Color.DisabledBg">#FFF0F0F0</Color>
+    <Color x:Key="Pintel.Color.DisabledFg">#FFB0B0B0</Color>
+    <!-- Dark surfaces (관제 다크 테마) -->
+    <Color x:Key="Pintel.Color.Bg">#FF121212</Color>
+    <Color x:Key="Pintel.Color.Surface">#FF1E1E1E</Color>
+    <Color x:Key="Pintel.Color.Border">#FF2E2E2E</Color>
+
+    <!-- Brushes (직접 바인딩용) -->
+    <SolidColorBrush x:Key="Pintel.Brush.Primary" Color="{StaticResource Pintel.Color.Primary}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.PrimaryStrong" Color="{StaticResource Pintel.Color.PrimaryStrong}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.PrimaryHeavy" Color="{StaticResource Pintel.Color.PrimaryHeavy}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.Positive" Color="{StaticResource Pintel.Color.Positive}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.Cautionary" Color="{StaticResource Pintel.Color.Cautionary}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.Native" Color="{StaticResource Pintel.Color.Native}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.Neutral50" Color="{StaticResource Pintel.Color.Neutral50}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.Neutral100" Color="{StaticResource Pintel.Color.Neutral100}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.Neutral200" Color="{StaticResource Pintel.Color.Neutral200}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.Neutral300" Color="{StaticResource Pintel.Color.Neutral300}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.Neutral400" Color="{StaticResource Pintel.Color.Neutral400}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.Neutral800" Color="{StaticResource Pintel.Color.Neutral800}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.DisabledBg" Color="{StaticResource Pintel.Color.DisabledBg}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.DisabledFg" Color="{StaticResource Pintel.Color.DisabledFg}"/>
+    <SolidColorBrush x:Key="Pintel.Brush.White" Color="White"/>
+
+    <!-- ============================================================
+         TYPOGRAPHY  (Foundation > Typography.Style)  — size = px(DIP)
+         ============================================================ -->
+    <FontFamily x:Key="Pintel.Font">Pretendard GOV, Segoe UI, Malgun Gothic</FontFamily>
+
+    <!-- Sizes -->
+    <sys:Double x:Key="Pintel.Size.Display1">56</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Display2">40</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Display3">36</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Title1">32</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Title2">28</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Title3">24</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Heading1">22</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Heading2">20</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Headline1">18</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Headline2">17</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Body1">16</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Body2">15</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Label1">14</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Label2">13</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Caption1">12</sys:Double>
+    <sys:Double x:Key="Pintel.Size.Caption2">11</sys:Double>
+
+    <!-- Line heights (TextBlock.LineHeight 용) -->
+    <sys:Double x:Key="Pintel.Line.Display1">72</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Display2">52</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Display3">48</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Title1">44</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Title2">38</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Title3">32</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Heading1">30</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Heading2">28</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Headline1">26</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Headline2">26</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Body1">24</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Body2">22</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Label1">20</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Label2">18</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Caption1">16</sys:Double>
+    <sys:Double x:Key="Pintel.Line.Caption2">14</sys:Double>
+
+    <!-- ============================================================
+         SPACING  (4 / 8 pt 시스템)
+         ============================================================ -->
+    <sys:Double x:Key="Pintel.Space.04">4</sys:Double>
+    <sys:Double x:Key="Pintel.Space.08">8</sys:Double>
+    <sys:Double x:Key="Pintel.Space.16">16</sys:Double>
+    <sys:Double x:Key="Pintel.Space.24">24</sys:Double>
+    <sys:Double x:Key="Pintel.Space.32">32</sys:Double>
+    <Thickness x:Key="Pintel.Pad.08">8</Thickness>
+    <Thickness x:Key="Pintel.Pad.16">16</Thickness>
+    <Thickness x:Key="Pintel.Pad.24">24</Thickness>
+
+    <!-- ============================================================
+         RADIUS
+         ============================================================ -->
+    <CornerRadius x:Key="Pintel.Radius.Sm">6</CornerRadius>
+    <CornerRadius x:Key="Pintel.Radius.Md">8</CornerRadius>
+    <CornerRadius x:Key="Pintel.Radius.Lg">16</CornerRadius>
+
+    <!-- ============================================================
+         ELEVATION  (Z-level 그림자)
+         ============================================================ -->
+    <DropShadowEffect x:Key="Pintel.Elevation.1" Color="Black" Opacity="0.08" BlurRadius="4"  ShadowDepth="2"  Direction="270"/>
+    <DropShadowEffect x:Key="Pintel.Elevation.2" Color="Black" Opacity="0.12" BlurRadius="8"  ShadowDepth="4"  Direction="270"/>
+    <DropShadowEffect x:Key="Pintel.Elevation.3" Color="Black" Opacity="0.16" BlurRadius="16" ShadowDepth="8"  Direction="270"/>
+    <DropShadowEffect x:Key="Pintel.Elevation.4" Color="Black" Opacity="0.20" BlurRadius="24" ShadowDepth="12" Direction="270"/>
+
+    <!-- ============================================================
+         MOTION  (Duration / Easing)
+         ============================================================ -->
+    <Duration x:Key="Pintel.Duration.Fast">0:0:0.15</Duration>
+    <Duration x:Key="Pintel.Duration.Normal">0:0:0.25</Duration>
+    <Duration x:Key="Pintel.Duration.Slow">0:0:0.35</Duration>
+    <!-- Easing.Standard = cubic-bezier(0.4,0,0.2,1) 근사 -->
+    <CubicBezierEase x:Key="Pintel.Ease.Standard" ControlPoint1="0.4,0" ControlPoint2="0.2,1"/>
+    <CubicBezierEase x:Key="Pintel.Ease.Decel" ControlPoint1="0,0" ControlPoint2="0.2,1"/>
+
+</ResourceDictionary>

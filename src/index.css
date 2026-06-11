@@ -1,0 +1,1385 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-gov.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Pretendard GOV', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #121212;
+  color: #eeeeee;
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== Layout ========== */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ========== Header ========== */
+.ds-header {
+  height: 72px;
+  background: #1e1e1e;
+  border-bottom: 1px solid #2e2e2e;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  gap: 64px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.ds-header-logo {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  font-family: 'Pretendard GOV', sans-serif;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ds-header-logo::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #1751D9 0%, #3471FF 100%);
+  border-radius: 6px;
+}
+
+.ds-header-nav {
+  display: flex;
+  gap: 4px;
+  height: 100%;
+  align-items: stretch;
+}
+
+.ds-header-tab {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #888888;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  position: relative;
+}
+.ds-header-tab:hover {
+  color: #ffffff;
+}
+.ds-header-tab.active {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  text-decoration-color: #1751D9;
+  text-decoration-thickness: 3px;
+}
+.ds-header-tab.active::after {
+  display: none;
+}
+
+/* ========== Sidebar ========== */
+.ds-sidebar {
+  width: 280px;
+  background: #1e1e1e;
+  border-right: 1px solid #2e2e2e;
+  overflow-y: auto;
+  padding: 32px 0;
+  flex-shrink: 0;
+}
+.ds-sidebar-tier-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888888;
+  padding: 0 32px 24px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.ds-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.ds-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ds-sidebar::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 2px;
+}
+
+.ds-sidebar-category {
+  margin-bottom: 4px;
+}
+
+.ds-sidebar-category-title {
+  font-size: 14px;
+  font-weight: 400;
+  color: #eeeeee;
+  padding: 10px 32px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+  opacity: 0.8;
+}
+.ds-sidebar-category-title:hover {
+  background: #262626;
+}
+
+.ds-sidebar-children {
+  overflow: hidden;
+}
+
+.ds-sidebar-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 400;
+  color: #888888;
+  padding: 8px 32px 8px 58px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
+  border-radius: 0 20px 20px 0;
+  margin-right: 12px;
+}
+.ds-sidebar-item:hover {
+  background: #262626;
+  color: #ffffff;
+}
+.ds-sidebar-item.active {
+  color: #ffffff;
+  background: #262626;
+  font-weight: 600;
+}
+.ds-sidebar-item.active::after {
+  content: '→';
+  font-size: 16px;
+  font-weight: 400;
+  opacity: 0.5;
+}
+
+/* ========== Main Content ========== */
+.ds-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 80px 100px;
+  background: #121212;
+}
+.ds-main::-webkit-scrollbar {
+  width: 6px;
+}
+.ds-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ds-main::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 3px;
+}
+
+/* ========== Component Doc ========== */
+.doc-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+  line-height: 1.2;
+}
+
+.doc-description {
+  font-size: 15px;
+  color: #aaaaaa;
+  margin-bottom: 64px;
+  line-height: 1.7;
+  max-width: 800px;
+}
+
+/* PREVAX 데이터 패널 가로/세로 스크롤바 (다크 톤) */
+.prevax-scroll { scrollbar-width: thin; scrollbar-color: #3a3a42 transparent; }
+.prevax-scroll::-webkit-scrollbar { height: 10px; width: 10px; }
+.prevax-scroll::-webkit-scrollbar-track { background: #141417; border-radius: 5px; }
+.prevax-scroll::-webkit-scrollbar-thumb { background: #3a3a42; border-radius: 5px; border: 2px solid #141417; }
+.prevax-scroll::-webkit-scrollbar-thumb:hover { background: #4a4a52; }
+.prevax-scroll::-webkit-scrollbar-corner { background: #141417; }
+
+/* Icon button (Figma: 디자인 시스템 3 > Icon button) — 아이콘 + 라벨, #3d4143, 4px radius, h34, padding 8/3, gap 4 */
+.prevax-iconbtn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  height: 34px; padding: 3px 8px;
+  background: #3d4143; border: none; border-radius: 4px;
+  cursor: pointer; font-family: inherit; white-space: nowrap;
+  transition: background 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+.prevax-iconbtn:hover { background: #474c4e; }
+.prevax-iconbtn:active { background: #2f3335; }
+
+/* 리포트 뷰어 툴바 아이콘 버튼 (ghost) */
+.prevax-toolbtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; padding: 0;
+  background: transparent; border: none; border-radius: 5px;
+  color: #9a9aa2; cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.prevax-toolbtn:hover { background: rgba(255,255,255,0.07); color: #e8e8ec; }
+.prevax-toolbtn:active { background: rgba(255,255,255,0.12); }
+
+/* GIS 하단 실시간 이벤트 패널 */
+@keyframes gis-live-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(240,67,106,0.55); }
+  70%  { box-shadow: 0 0 0 5px rgba(240,67,106,0); }
+  100% { box-shadow: 0 0 0 0 rgba(240,67,106,0); }
+}
+.gis-live-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+  background: #F0436A; animation: gis-live-pulse 1.8s ease-out infinite;
+}
+.gis-ev-card {
+  flex-shrink: 0; width: 176px; position: relative; overflow: hidden;
+  background: linear-gradient(180deg, #202027 0%, #191920 100%);
+  border: 1px solid #2e2e36; border-radius: 8px;
+  padding: 11px 13px; cursor: pointer;
+  transition: transform 0.16s cubic-bezier(0.4,0,0.2,1), border-color 0.16s, box-shadow 0.16s;
+}
+.gis-ev-card:hover {
+  transform: translateY(-2px);
+  border-color: #3a3a44;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+.gis-ev-toggle {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  height: 26px; padding: 0 8px; border-radius: 4px;
+  background: #2a2a30; border: 1px solid #3a3a42; cursor: pointer; color: #d4d4d8;
+  font-family: inherit; white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.gis-ev-toggle:hover { background: #33333a; border-color: #4a4a52; color: #fff; }
+.gis-ev-toggle:active { background: #232328; }
+/* 카드 캐러셀 좌/우 플로팅 네비 — 원형, 세로 중앙 */
+.gis-ev-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(32,32,38,0.92); border: 1px solid #3a3a42; color: #d4d4d8;
+  cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.45);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.gis-ev-carousel:hover .gis-ev-nav { opacity: 1; pointer-events: auto; }
+.gis-ev-nav:hover { background: #33333a; border-color: #4a4a52; color: #fff; transform: translateY(-50%) scale(1.08); }
+.gis-ev-nav:active { transform: translateY(-50%) scale(0.96); }
+.gis-ev-nav.left  { left: 6px; }
+.gis-ev-nav.right { right: 6px; }
+/* 작은 변형 (칩 캐러셀용) */
+.gis-ev-nav.sm { width: 20px; height: 20px; }
+.gis-ev-nav.sm.left  { left: 0; }
+.gis-ev-nav.sm.right { right: 0; }
+.gis-ev-nav.sm:hover { transform: translateY(-50%) scale(1.1); }
+.gis-ev-nav.sm:active { transform: translateY(-50%) scale(0.94); }
+.gis-chip-scroll::-webkit-scrollbar { display: none; }
+
+/* Inner Tabs */
+.doc-inner-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid #2e2e2e;
+  margin-bottom: 32px;
+}
+.doc-inner-tab {
+  font-size: 14px;
+  font-weight: 500;
+  color: #888888;
+  padding: 12px 4px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  user-select: none;
+}
+.doc-inner-tab:hover {
+  color: #ffffff;
+}
+.doc-inner-tab.active {
+  color: #ffffff;
+  border-bottom-color: #1751D9;
+  font-weight: 600;
+}
+
+/* Anatomy Box */
+.doc-anatomy-section {
+  margin-bottom: 48px;
+}
+.doc-anatomy-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+.doc-anatomy-box {
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  margin-bottom: 24px;
+  border: 1px solid #2e2e2e;
+}
+.doc-anatomy-placeholder {
+  border: 2px dashed #444444;
+  padding: 32px;
+  border-radius: 8px;
+  background: #121212;
+  color: #888888;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Typography Table */
+.doc-typography-table {
+  border: 1px solid #2e2e2e;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 16px;
+  margin-bottom: 48px;
+}
+.doc-typography-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr;
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #2e2e2e;
+  padding: 16px 24px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #aaaaaa;
+}
+.doc-typography-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr;
+  padding: 16px 24px;
+  border-bottom: 1px solid #1e1e1e;
+  align-items: center;
+}
+.doc-typography-row:last-child {
+  border-bottom: none;
+}
+.doc-typo-name {
+  color: #ffffff;
+}
+.doc-typo-value {
+  font-size: 13px;
+  color: #aaaaaa;
+  font-family: 'Pretendard GOV', monospace;
+}
+
+/* Color Palette */
+.doc-color-palette {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  margin-bottom: 48px;
+}
+.doc-color-bar {
+  display: flex;
+  height: 60px;
+  width: 100%;
+}
+.doc-color-swatch {
+  flex: 1;
+}
+.doc-color-info-row {
+  display: flex;
+  width: 100%;
+  margin-top: 12px;
+}
+.doc-color-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.doc-color-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+.doc-color-hex {
+  font-size: 12px;
+  color: #aaaaaa;
+  font-family: 'Pretendard', monospace;
+  text-transform: uppercase;
+}
+
+/* Grid Anatomy (for Iconography) */
+.doc-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px 24px;
+  margin-top: 16px;
+}
+.doc-grid-item {
+  display: flex;
+  flex-direction: column;
+}
+.doc-grid-placeholder {
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  margin-bottom: 16px;
+  border: 1px solid #2e2e2e;
+}
+.doc-grid-box {
+  width: 120px;
+  height: 120px;
+  border: 2px dashed #444444;
+  background: #121212;
+  border-radius: 4px;
+}
+.doc-grid-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+.doc-grid-desc {
+  font-size: 13px;
+  color: #aaaaaa;
+  line-height: 1.6;
+}
+.doc-grid-desc > div {
+  margin-bottom: 4px;
+}
+.doc-description code {
+  background: #262626;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Pretendard GOV', monospace;
+  font-size: 13px;
+  color: #1751D9;
+  font-weight: 500;
+}
+.doc-code-link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s, background 0.2s;
+}
+.doc-code-link:hover {
+  text-decoration-color: #1751D9;
+  background: #1e3a8a;
+}
+
+/* Property Block */
+.doc-property {
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #2e2e2e;
+}
+.doc-property:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.doc-prop-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.doc-prop-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.doc-prop-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #eeeeee;
+}
+
+/* Conditions */
+.doc-conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.doc-condition {
+  font-size: 13px;
+  color: #cccccc;
+  padding: 8px 16px;
+  background: #1e1e1e;
+  border-left: 3px solid #333333;
+  border-radius: 0 6px 6px 0;
+  transition: border-color 0.2s, background 0.2s;
+  font-family: 'Pretendard GOV', monospace;
+  line-height: 1.5;
+}
+.doc-condition:hover {
+  border-left-color: #1751D9;
+  background: #262626;
+}
+
+.doc-condition-label {
+  color: #888888;
+  font-size: 11px;
+  margin-bottom: 2px;
+  display: block;
+}
+
+/* SpacingMap Chips */
+.doc-spacing-map {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 16px;
+  background: #1e1e1e;
+  border-radius: 8px;
+  border: 1px solid #2e2e2e;
+}
+
+.doc-spacing-map-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #999;
+  margin-bottom: 4px;
+  width: 100%;
+}
+
+.doc-spacing-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: #1e2b45;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  font-family: 'Pretendard', monospace;
+  transition: background 0.15s, transform 0.15s;
+  cursor: default;
+}
+.doc-spacing-chip:hover {
+  background: #2b3c5a;
+  transform: translateY(-1px);
+}
+
+/* Type Badge */
+.doc-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  background: #262626;
+  color: #aaaaaa;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 12px;
+  font-family: 'Pretendard', monospace;
+}
+
+/* Welcome Screen */
+.doc-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  gap: 16px;
+  color: #555555;
+}
+.doc-welcome-title {
+  font-size: 64px;
+  font-weight: 550;
+  color: #1751D9;
+  letter-spacing: -1px;
+  font-family: 'Nanum Pen Script', cursive;
+}
+.doc-welcome-subtitle {
+  font-size: 16px;
+  color: #888888;
+  max-width: 800px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.doc-welcome-hint {
+  font-size: 13px;
+  color: #666666;
+  margin-top: 24px;
+}
+/* Animation Preview */
+.anim-preview-container {
+  border: 1px solid #2e2e2e;
+  border-radius: 8px;
+  background-color: #1e1e1e;
+  padding: 24px;
+  margin-top: -24px;
+  margin-bottom: 48px;
+}
+.anim-play-btn {
+  background-color: #1751D9;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: 'Pretendard GOV', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: none;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+.anim-play-btn:hover {
+  background-color: #004DFF;
+}
+.anim-track {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 48px;
+  background-color: #eee;
+  border-radius: 24px;
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+.anim-track:last-child {
+  margin-bottom: 0;
+}
+.anim-track-label {
+  position: absolute;
+  left: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  z-index: 1;
+}
+.anim-box {
+  width: 40px;
+  height: 40px;
+  background-color: #1751D9;
+  border-radius: 20px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  will-change: transform;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .ds-sidebar {
+    width: 180px;
+  }
+  .ds-main {
+    padding: 32px;
+  }
+  .doc-title {
+    font-size: 24px;
+  }
+}
+
+/* ========== Animations ========== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ========== Custom Cursor ========== */
+body {
+  /* hide default cursor to make custom cursor pop, but fall back if it fails */
+  cursor: none;
+}
+a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
+  cursor: none !important;
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  border: 2px solid rgba(23, 81, 217, 0.8);
+  background-color: rgba(23, 81, 217, 0.1);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+}
+
+.custom-cursor.hover {
+  width: 43px;
+  height: 43px;
+  background-color: rgba(23, 81, 217, 0.2);
+  border-color: rgba(23, 81, 217, 0.4);
+}
+/* Unified Document Section */
+.doc-unified-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.doc-section-block {
+  padding: 64px 0;
+  border-bottom: 1px solid #f0f0f0;
+  scroll-margin-top: 100px; /* Adjusted for taller header */
+}
+
+.doc-section-block:last-child {
+  border-bottom: none;
+}
+
+.doc-section-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.doc-section-title::before {
+  content: '';
+  display: none; /* Removed the blue bar to match Montage style */
+}
+
+/* Specific tab content refinements for unified view */
+.doc-tab-content-inner {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Ensure sticky tab header background matches main background */
+.ds-main > div > div[style*="position: sticky"] {
+  background-color: #121212 !important;
+  border-bottom-color: #2e2e2e !important;
+}
+.ds-main {
+  position: relative;
+}
+
+/* Responsive adjustments for unified view */
+@media (max-width: 768px) {
+  .doc-section-block {
+    padding: 32px 0;
+  }
+}
+/* Floating Back to Top Button */
+.back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 48px;
+  height: 48px;
+  background-color: #1751D9;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(23, 81, 217, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  border: none;
+  transform: translateY(10px);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background-color: #3471FF;
+  box-shadow: 0 6px 16px rgba(23, 81, 217, 0.4);
+  transform: translateY(-4px);
+}
+
+.back-to-top svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ==========================================================================
+   Button Variants & Matrix (pintel-design-system standard)
+   ========================================================================== */
+
+/* Button Matrix Container */
+.btn-matrix-container {
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 12px;
+  border: 1px solid #2e2e2e;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #1e1e1e;
+}
+
+.btn-matrix-grid {
+  display: grid;
+  grid-template-columns: 100px repeat(4, 150px);
+  gap: 20px 16px;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-matrix-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #888888;
+  text-align: left;
+  user-select: none;
+  font-family: 'Pretendard GOV', sans-serif;
+}
+
+.btn-matrix-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Base button class for demo matrix (non-interactive display) */
+.ds-btn-demo {
+  width: 130px;
+  height: 40px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Pretendard GOV', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+/* 1. Primary Solid (Blue) */
+.ds-btn-demo.primary-solid.state-normal {
+  background-color: #1751D9;
+  color: #FFFFFF;
+}
+.ds-btn-demo.primary-solid.state-hovered {
+  background-color: #3471FF;
+  color: #FFFFFF;
+}
+.ds-btn-demo.primary-solid.state-pressed {
+  background-color: #004DFF;
+  color: #FFFFFF;
+}
+.ds-btn-demo.primary-solid.state-disabled {
+  background-color: #1a1a1a;
+  border-color: #2a2a2a;
+  color: #555555;
+}
+
+/* 2. Secondary Solid (Dark Grey) */
+.ds-btn-demo.secondary-solid.state-normal {
+  background-color: #262626;
+  border-color: #333333;
+  color: #ffffff;
+}
+.ds-btn-demo.secondary-solid.state-hovered {
+  background-color: #333333;
+  border-color: #444444;
+  color: #ffffff;
+}
+.ds-btn-demo.secondary-solid.state-pressed {
+  background-color: #1e1e1e;
+  border-color: #2a2a2a;
+  color: #ffffff;
+}
+.ds-btn-demo.secondary-solid.state-disabled {
+  background-color: #1a1a1a;
+  border-color: #222222;
+  color: #555555;
+}
+
+/* 3. Primary Outline (Dark Border, White Text) */
+.ds-btn-demo.primary-outline.state-normal {
+  background-color: transparent;
+  border-color: #444444;
+  color: #ffffff;
+}
+.ds-btn-demo.primary-outline.state-hovered {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: #888888;
+  color: #ffffff;
+}
+.ds-btn-demo.primary-outline.state-pressed {
+  background-color: #262626;
+  border-color: #aaaaaa;
+  color: #ffffff;
+}
+.ds-btn-demo.primary-outline.state-disabled {
+  background-color: transparent;
+  border-color: #222222;
+  color: #555555;
+}
+
+/* 4. Secondary Outline (Grey Border) */
+.ds-btn-demo.secondary-outline.state-normal {
+  background-color: transparent;
+  border-color: #333333;
+  color: #aaaaaa;
+}
+.ds-btn-demo.secondary-outline.state-hovered {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: #444444;
+  color: #ffffff;
+}
+.ds-btn-demo.secondary-outline.state-pressed {
+  background-color: #262626;
+  border-color: #555555;
+  color: #ffffff;
+}
+.ds-btn-demo.secondary-outline.state-disabled {
+  background-color: transparent;
+  border-color: #222222;
+  color: #555555;
+}
+
+/* Interactive Playground Section */
+.btn-playground-container {
+  margin-top: 32px;
+  background: #1e1e1e;
+  padding: 32px;
+  border-radius: 12px;
+  border: 1px solid #2e2e2e;
+  width: 100%;
+  max-width: 800px;
+  margin: 32px auto 0;
+  text-align: left;
+}
+
+.btn-playground-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #2e2e2e;
+  padding-bottom: 10px;
+  font-family: 'Pretendard GOV', sans-serif;
+}
+
+.btn-playground-row {
+  display: flex;
+  gap: 20px;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+/* Real Interactive Button Class */
+.ds-btn-interactive {
+  width: 140px;
+  height: 44px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Pretendard GOV', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  cursor: none !important;
+}
+
+/* Interactive hover & active animations */
+.ds-btn-interactive.primary-solid {
+  background-color: #1751D9;
+  color: #FFFFFF;
+}
+.ds-btn-interactive.primary-solid:hover {
+  background-color: #3471FF;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(23, 81, 217, 0.25);
+}
+.ds-btn-interactive.primary-solid:active {
+  background-color: #004DFF;
+  transform: translateY(0);
+}
+
+.ds-btn-interactive.secondary-solid {
+  background-color: #262626;
+  border-color: #333333;
+  color: #ffffff;
+}
+.ds-btn-interactive.secondary-solid:hover {
+  background-color: #333333;
+  border-color: #444444;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+.ds-btn-interactive.secondary-solid:active {
+  background-color: #1e1e1e;
+  border-color: #2a2a2a;
+  transform: translateY(0);
+}
+
+.ds-btn-interactive.primary-outline {
+  background-color: transparent;
+  border-color: #444444;
+  color: #ffffff;
+}
+.ds-btn-interactive.primary-outline:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: #888888;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.05);
+}
+.ds-btn-interactive.primary-outline:active {
+  background-color: #262626;
+  border-color: #aaaaaa;
+  color: #ffffff;
+  transform: translateY(0);
+}
+
+.ds-btn-interactive.secondary-outline {
+  background-color: transparent;
+  border-color: #333333;
+  color: #aaaaaa;
+}
+.ds-btn-interactive.secondary-outline:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: #444444;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.ds-btn-interactive.secondary-outline:active {
+  background-color: #262626;
+  border-color: #555555;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Alert Component Styling & Dark Theme for Alert Doc
+   ========================================================================== */
+
+/* Dark Theme overrides for ds-main */
+.ds-main.ds-dark-theme {
+  background-color: #121212;
+  color: #eeeeee;
+}
+.ds-main.ds-dark-theme::-webkit-scrollbar-thumb {
+  background: #333333;
+}
+.ds-main.ds-dark-theme .doc-title {
+  color: #ffffff;
+}
+.ds-main.ds-dark-theme .doc-description {
+  color: #888888;
+}
+.ds-main.ds-dark-theme .doc-section-title {
+  color: #ffffff;
+}
+.ds-main.ds-dark-theme .doc-section-block {
+  border-bottom: 1px solid #222222;
+}
+
+.ds-main.ds-dark-theme .doc-anatomy-title {
+  color: #ffffff;
+}
+
+.ds-main.ds-dark-theme .doc-description code {
+  background: #2b2b2b;
+  color: #60a5fa;
+}
+
+.ds-main.ds-dark-theme .doc-code-link:hover {
+  background: #1e3a8a;
+  text-decoration-color: #60a5fa;
+}
+
+
+/* Sticky navigation overrides for dark theme */
+.ds-main.ds-dark-theme > div > div[style*="position: sticky"] {
+  background-color: #121212 !important;
+  border-bottom-color: #2e2e2e !important;
+}
+.ds-main.ds-dark-theme .doc-inner-tab {
+  color: #888888;
+}
+.ds-main.ds-dark-theme .doc-inner-tab:hover {
+  color: #ffffff;
+}
+.ds-main.ds-dark-theme .doc-inner-tab.active {
+  color: #ffffff;
+  border-bottom-color: #1751D9;
+}
+
+/* Simulated Alert Styling */
+.ds-alert-simulated {
+  display: flex;
+  width: 100%;
+  border-radius: 6px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  text-align: left;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+.ds-alert-simulated.success {
+  background: rgba(30, 212, 90, 0.08);
+  border: 1px solid #1ed45a;
+  border-left-width: 4px;
+}
+.ds-alert-simulated.info {
+  background: rgba(52, 113, 255, 0.08);
+  border: 1px solid #3471ff;
+  border-left-width: 4px;
+}
+.ds-alert-simulated.warning {
+  background: rgba(255, 169, 56, 0.08);
+  border: 1px solid #ffa938;
+  border-left-width: 4px;
+}
+.ds-alert-simulated.error {
+  background: rgba(255, 99, 99, 0.08);
+  border: 1px solid #ff6363;
+  border-left-width: 4px;
+}
+
+.ds-alert-icon {
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.ds-alert-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ds-alert-content {
+  flex: 1;
+}
+
+.ds-alert-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #ffffff;
+}
+
+.ds-alert-message {
+  font-size: 12px;
+  color: #cccccc;
+  line-height: 1.5;
+}
+
+.ds-alert-action-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+.ds-alert-action-btn:hover {
+  filter: brightness(1.2);
+  transform: translateY(-1px);
+}
+.ds-alert-action-btn:active {
+  transform: translateY(0);
+}
+
+.ds-alert-close-btn {
+  margin-left: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  color: #888888;
+  flex-shrink: 0;
+  transition: color 0.15s;
+  user-select: none;
+}
+.ds-alert-close-btn:hover {
+  color: #ffffff;
+}
+
+/* Anatomy Badge */
+.anatomy-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #1751D9;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: bold;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   Accordion Component Styling (Dark Theme & Traffic Control Aesthetics)
+   ========================================================================== */
+
+.ds-accordion-item {
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #2e2e2e;
+  transition: all 0.2s ease-in-out;
+}
+
+.ds-accordion-item:hover {
+  border-bottom-color: #444444;
+}
+
+.ds-accordion-trigger {
+  width: 100%;
+  height: 40px;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  color: #ffffff;
+  outline: none;
+  font-family: 'Pretendard GOV', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  user-select: none;
+  text-align: left;
+}
+
+.ds-accordion-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.ds-accordion-trigger-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ds-accordion-chevron {
+  width: 16px;
+  height: 16px;
+  color: #888888;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s ease;
+  flex-shrink: 0;
+}
+
+.ds-accordion-trigger.expanded .ds-accordion-chevron,
+.ds-accordion-item.expanded .ds-accordion-chevron {
+  transform: rotate(90deg);
+  color: #3471ff;
+}
+
+.ds-accordion-content-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #161618;
+}
+
+.ds-accordion-content-wrapper.open,
+.ds-accordion-item.expanded .ds-accordion-content-wrapper {
+  max-height: 500px;
+}
+
+.ds-accordion-content {
+  padding: 16px 24px;
+  color: #cccccc;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Custom scrollbar for playground control panels */
+.ds-playground-controls {
+  overflow-y: auto;
+}
+.ds-playground-controls::-webkit-scrollbar {
+  width: 4px;
+}
+.ds-playground-controls::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ds-playground-controls::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+}
+.ds-playground-controls::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Custom hover halo for radio button circles */
+.ds-radio-option:hover .ds-radio-circle {
+  box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.08);
+}
+
+
+
+

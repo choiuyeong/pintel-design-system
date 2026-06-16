@@ -646,6 +646,41 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
           </div>
         );
       }
+      if (doc.customLayout === 'word-break') {
+        return (
+          <div className="doc-tab-content-inner fade-in" style={{ textAlign: 'left' }}>
+            <div className="doc-tab-content">
+              {doc.overview && (
+                <p style={{ fontSize: '15px', color: '#aaa', lineHeight: 1.7, marginBottom: '28px', maxWidth: '760px', wordBreak: 'keep-all' }}>{doc.overview}</p>
+              )}
+              <div style={{
+                background: '#ffffff', borderRadius: '16px', padding: '64px 40px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px'
+              }}>
+                <div style={{
+                  fontSize: '40px', fontWeight: 800, color: '#1a1a1a', lineHeight: 1.5,
+                  letterSpacing: '-0.02em', textAlign: 'center', maxWidth: '660px', wordBreak: 'keep-all'
+                }}>
+                  {(doc.words || []).map((w, i) => (
+                    <span key={i}>
+                      <span
+                        style={{
+                          background: '#FAD4D4', borderRadius: '5px', padding: '2px 4px',
+                          boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone'
+                        }}
+                      >{w}</span>
+                      {i < (doc.words.length - 1) ? ' ' : ''}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {doc.usage && (
+                <p style={{ fontSize: '14px', color: '#cccccc', lineHeight: 1.7, marginTop: '24px', maxWidth: '760px', wordBreak: 'keep-all' }}>{doc.usage}</p>
+              )}
+            </div>
+          </div>
+        );
+      }
       if (doc.customLayout === 'custom-table') {
         return (
           <div className="doc-tab-content-inner fade-in" style={{ textAlign: 'left' }}>
@@ -666,6 +701,11 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
                   </div>
                 ))}
               </div>
+              {doc.note && (
+                <div className="doc-token-note" style={{ marginTop: '24px', padding: '16px 20px', backgroundColor: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: '8px', fontSize: '13px', lineHeight: '1.7', color: '#888', whiteSpace: 'pre-line' }}>
+                  {doc.note}
+                </div>
+              )}
               {doc.previewType === 'animation-duration' && (
                 <div className="anim-preview-container fade-in">
                   <button className="anim-play-btn" onClick={() => setAnimPlay(!animPlay)}>
@@ -1852,6 +1892,9 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
   }
   if (componentId === 'list-card-default') {
     return <ListCardPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'table-default') {
+    return <TablePlayground activeSubTab={activeSubTab} />;
   }
   if (componentId === 'chart-mixed') {
     return (
@@ -4658,6 +4701,161 @@ function ListCellPlayground({ activeSubTab }) {
           </div>
         </div>
 
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   TablePlayground — Content(Normal/Input) · Pagination(None/Extended/Compact/Minimize)
+   ───────────────────────────────────────────────────────────────── */
+function TablePlayground({ activeSubTab }) {
+  const [contentType, setContentType] = useState('Input'); // 'Normal' | 'Input'
+  const [pagination, setPagination] = useState('Compact');  // 'None' | 'Extended' | 'Compact' | 'Minimize'
+  const [page, setPage] = useState(1);
+  const totalPages = 10;
+  const rows = [1, 2, 3];
+
+  const thStyle = { textAlign: 'left', padding: '12px 16px', fontSize: '13px', fontWeight: 600, color: '#8a8a8f' };
+  const tdStyle = { textAlign: 'left', padding: '14px 16px', fontSize: '14px', color: '#ffffff' };
+
+  const Checkbox = () => (
+    <div style={{ width: '18px', height: '18px', border: '1.5px solid #4a4a4e', borderRadius: '4px', flexShrink: 0, boxSizing: 'border-box' }} />
+  );
+
+  const Pager = () => {
+    if (pagination === 'None') return null;
+
+    const arrow = (label, onClick, disabled) => (
+      <span
+        onClick={disabled ? undefined : onClick}
+        style={{
+          minWidth: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          borderRadius: '6px', fontSize: '15px', userSelect: 'none',
+          color: disabled ? '#3e3e42' : '#a1a1aa', cursor: disabled ? 'default' : 'pointer',
+        }}
+      >{label}</span>
+    );
+    const pageChip = (n) => {
+      const active = n === page;
+      return (
+        <span
+          key={`p${n}`}
+          onClick={() => setPage(n)}
+          style={{
+            minWidth: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            borderRadius: '6px', fontSize: '13px', cursor: 'pointer', userSelect: 'none',
+            fontWeight: active ? 700 : 500,
+            color: active ? '#fff' : '#a1a1aa',
+            backgroundColor: active ? '#3a3a3c' : 'transparent',
+          }}
+        >{n}</span>
+      );
+    };
+    const ellipsis = (key) => <span key={key} style={{ minWidth: '20px', textAlign: 'center', color: '#52525b', fontSize: '13px', userSelect: 'none' }}>…</span>;
+
+    if (pagination === 'Minimize') {
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+          {arrow('‹', () => setPage((p) => Math.max(1, p - 1)), page === 1)}
+          <span style={{ fontSize: '13px', color: '#71717a' }}>
+            <b style={{ color: '#fff', fontWeight: 700 }}>{page}</b> / {totalPages}
+          </span>
+          {arrow('›', () => setPage((p) => Math.min(totalPages, p + 1)), page === totalPages)}
+        </div>
+      );
+    }
+
+    let items;
+    if (pagination === 'Extended') {
+      items = Array.from({ length: totalPages }, (_, i) => pageChip(i + 1));
+    } else { // Compact
+      const seq = [];
+      if (page <= 5) seq.push(1, 2, 3, 4, 5, '…', totalPages);
+      else if (page >= totalPages - 3) seq.push(1, '…', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      else seq.push(1, '…', page - 1, page, page + 1, '…', totalPages);
+      items = seq.map((s, i) => (s === '…' ? ellipsis(`e${i}`) : pageChip(s)));
+    }
+
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
+        {arrow('‹', () => setPage((p) => Math.max(1, p - 1)), page === 1)}
+        {items}
+        {arrow('›', () => setPage((p) => Math.min(totalPages, p + 1)), page === totalPages)}
+      </div>
+    );
+  };
+
+  const TablePreview = () => (
+    <div style={{ width: '100%', maxWidth: '420px', backgroundColor: '#151517', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.24)' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr style={{ borderBottom: '1px solid #2a2a2a' }}>
+            {contentType === 'Input' && <th style={{ width: '44px', padding: '12px 0 12px 16px' }} />}
+            <th style={thStyle}>Head</th>
+            <th style={thStyle}>Head</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, idx) => (
+            <tr key={r} style={{ borderBottom: idx < rows.length - 1 ? '1px solid #232325' : 'none' }}>
+              {contentType === 'Input' && (
+                <td style={{ padding: '14px 0 14px 16px' }}><Checkbox /></td>
+              )}
+              <td style={tdStyle}>Cell</td>
+              <td style={tdStyle}>Cell</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {pagination !== 'None' && (
+        <div style={{ borderTop: '1px solid #2a2a2a', padding: '12px' }}>
+          <Pager />
+        </div>
+      )}
+    </div>
+  );
+
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '24px 0' }}>
+        <TablePreview />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ fontSize: '20px', fontWeight: '700', color: '#fff', marginBottom: '24px' }}>Interactive Demo</div>
+
+      <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', minHeight: '360px' }}>
+        {/* Left: Preview */}
+        <div style={{ flex: 1.8, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', boxSizing: 'border-box' }}>
+          <TablePreview />
+        </div>
+
+        {/* Right: Controls */}
+        <div
+          className="ds-playground-controls"
+          style={{ flex: 1, background: '#141414', borderLeft: '1px solid #2a2a2a', padding: '24px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: '24px', maxHeight: '420px', overflowY: 'auto' }}
+        >
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Content</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {['Normal', 'Input'].map((t) => (
+                <PlaygroundRadioOption key={t} label={t} checked={contentType === t} onChange={() => setContentType(t)} />
+              ))}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Pagination</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {['None', 'Extended', 'Compact', 'Minimize'].map((t) => (
+                <PlaygroundRadioOption key={t} label={t} checked={pagination === t} onChange={() => setPagination(t)} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

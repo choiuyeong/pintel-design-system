@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "gen:template-code": "node mcp/gen-template-code.mjs",
+    "prebuild": "node mcp/gen-template-code.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },

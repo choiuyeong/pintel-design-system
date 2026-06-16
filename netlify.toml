@@ -1,0 +1,10 @@
+# Netlify 배포 설정 — 정적 사이트(Vite) + MCP HTTP 엔드포인트(/mcp)
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+# Functions API v2 — Node 런타임에서 ESM(.mjs) 함수 실행
+[functions]
+  node_bundler = "esbuild"

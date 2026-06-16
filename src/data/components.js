@@ -40,6 +40,7 @@ export const TIERS = {
             id: 'typography', name: 'Typography',
             children: [
               { id: 'typo-style', name: 'Typography.Style' },
+              { id: 'typo-wordbreak', name: 'Word break' },
             ],
           },
           {
@@ -141,6 +142,10 @@ export const TIERS = {
           {
             id: 'list-cell', name: 'List cell',
             children: [{ id: 'list-cell-default', name: 'List cell' }]
+          },
+          {
+            id: 'table', name: 'Table',
+            children: [{ id: 'table-default', name: 'Table' }]
           }
         ]
       },
@@ -318,6 +323,10 @@ export const TIERS = {
         label: 'Templates',
         categories: [
           {
+            id: 'tpl-dashboard', name: 'Dashboard(CS)',
+            children: [{ id: 'library-dashboard', name: 'Dashboard(CS)' }]
+          },
+          {
             id: 'tpl-login', name: 'Login',
             children: [{ id: 'library-login', name: 'Login' }]
           },
@@ -346,12 +355,24 @@ export const TIERS = {
             children: [{ id: 'library-events', name: 'Settings(이벤트 관리)' }]
           },
           {
+            id: 'tpl-event-search', name: 'Event Search(CS)',
+            children: [{ id: 'library-event-search', name: 'Event Search(CS)' }]
+          },
+          {
             id: 'tpl-history', name: 'History(CS)',
             children: [{ id: 'library-history', name: 'History(CS)' }]
           },
           {
             id: 'tpl-stats', name: 'Statistics(CS)',
             children: [{ id: 'library-stats', name: 'Statistics(CS)' }]
+          },
+          {
+            id: 'tpl-ux-agent', name: 'UX Agent 활용성 리뷰',
+            children: [{ id: 'library-ux-agent', name: 'UX Agent 활용성 리뷰' }]
+          },
+          {
+            id: 'tpl-permission', name: 'Settings(권한 설정)',
+            children: [{ id: 'library-permission', name: 'Settings(권한 설정)' }]
           }
         ]
       }
@@ -397,10 +418,10 @@ export const COMPONENT_DOCS = {
         "type": "enum",
         "conditions": [
           {
-            "condition": "compact: 패널(#1a1a1a) 내부 배치용으로 아이콘 40px, 제목 14px, 상하 여백 24px"
+            "condition": "compact: 패널(#1a1a1a) 내부 배치용으로 아이콘 40px, 제목 14px, 상하 여백 24px (Spacing 24)"
           },
           {
-            "condition": "full: 전체 페이지 영역용으로 아이콘 72px, 제목 18px, 상하 여백 64px"
+            "condition": "full: 전체 페이지 영역용으로 아이콘 72px, 제목 18px, 상하 여백 64px (Spacing 64)"
           },
           {
             "condition": "공통적으로 다크 배경(#121212) 또는 패널(#1a1a1a) 위에 가운데 정렬되며 모서리 둥글기 8px 적용"
@@ -855,7 +876,7 @@ export const COMPONENT_DOCS = {
             "condition": "sm(12px), md(14px 기본), lg(16px) 세 단계 제공"
           },
           {
-            "condition": "컨테이너 패딩은 좌우 8px 기준 모서리 둥글기 8px 적용"
+            "condition": "컨테이너 패딩은 좌우 8px (Spacing 08) 기준 모서리 둥글기 8px 적용"
           },
           {
             "condition": "패널 배경(#1a1a1a) 위 보더(#2e2e2e) 선택적으로 사용"
@@ -906,7 +927,7 @@ export const COMPONENT_DOCS = {
             "condition": "생략 표시는 보조텍스트(#888) 색상으로 표기한다"
           },
           {
-            "condition": "번호 사이 간격은 4px로 정렬한다"
+            "condition": "번호 사이 간격은 4px (Spacing 04)로 정렬한다"
           }
         ]
       },
@@ -945,7 +966,7 @@ export const COMPONENT_DOCS = {
             "condition": "슬라이드 또는 온보딩 단계 수만큼 점을 렌더링"
           },
           {
-            "condition": "점 사이 간격 8px 고정 가로 정렬"
+            "condition": "점 사이 간격 8px (Spacing 08) 고정 가로 정렬"
           },
           {
             "condition": "점이 8개를 넘으면 양 끝 점을 축소(4px)해 말줄임 형태로 표시 권장"
@@ -1153,7 +1174,7 @@ export const COMPONENT_DOCS = {
         "type": "string",
         "conditions": [
           {
-            "condition": "Body 14px 기준 가로 라벨, 좌우 패딩 16px 상하 패딩 10px"
+            "condition": "Body 14px 기준 가로 라벨, 좌우 패딩 16px (Spacing 16) 상하 패딩 8px (Spacing 08)"
           },
           {
             "condition": "라벨 옆 카운트 배지는 패널 톤(#1a1a1a) 위 모서리 둥글기 8px 적용"
@@ -1236,7 +1257,7 @@ export const COMPONENT_DOCS = {
             "condition": "우측 정렬되는 아이콘 버튼 그룹(권장 최대 3개)"
           },
           {
-            "condition": "아이콘 24px, 버튼 영역 둥글기 8px, 아이콘 간 간격 12px"
+            "condition": "아이콘 24px, 버튼 영역 둥글기 8px, 아이콘 간 간격 12px (Spacing 12)"
           },
           {
             "condition": "위험 상태 알림 배지는 Native(위험) #FF6363, 주의 알림은 Cautionary #FFA938 사용"
@@ -1460,7 +1481,7 @@ export const COMPONENT_DOCS = {
             "condition": "화살표(arrow)는 앵커 중심을 향하도록 8px 크기로 패널 보더(2e2e2e)와 동일 색으로 렌더링"
           },
           {
-            "condition": "화면 경계 충돌 시 반대 방향으로 자동 플립되며 앵커와 본문 사이 간격은 8px 유지"
+            "condition": "화면 경계 충돌 시 반대 방향으로 자동 플립되며 앵커와 본문 사이 간격은 8px (Spacing 08) 유지"
           }
         ]
       },
@@ -1579,7 +1600,7 @@ export const COMPONENT_DOCS = {
             "condition": "말풍선 본문은 배경 패널(#1a1a1a), 보더 #2e2e2e, 모서리 둥글기 8px"
           },
           {
-            "condition": "대상 요소와 말풍선 사이 간격은 8px, 화살표 크기는 가로세로 8px"
+            "condition": "대상 요소와 말풍선 사이 간격은 8px (Spacing 08), 화살표 크기는 가로세로 8px"
           },
           {
             "condition": "화살표는 본문과 동일한 배경(#1a1a1a)으로 지정 방향의 대상을 향함"
@@ -1598,7 +1619,7 @@ export const COMPONENT_DOCS = {
             "condition": "위험 경고 맥락에서는 Native 색상(#FF6363) 강조 텍스트 허용"
           },
           {
-            "condition": "좌우 여백 12px, 상하 여백 8px, 최대 너비 220px에서 줄바꿈"
+            "condition": "좌우 여백 12px (Spacing 12), 상하 여백 8px (Spacing 08), 최대 너비 220px에서 줄바꿈"
           },
           {
             "condition": "교통 상황 같은 본문 텍스트는 밝은 기본 텍스트로 표기"
@@ -1656,6 +1677,17 @@ export const COMPONENT_DOCS = {
       { name: 'Status / Positive', hex: '#1ED45A', role: '성공, 안전, 연결됨, 정상 작동 상태', variable: '--pintel-color-positive' },
       { name: 'Status / Cautionary', hex: '#FFA938', role: '주의, 대기, 데이터 지연, 이상 징후', variable: '--pintel-color-cautionary' },
       { name: 'Status / Native', hex: '#FF6363', role: '위험, 장애, 사고 발생, 긴급 조치 필요', variable: '--pintel-color-native' },
+      { name: 'Accent / Red', hex: '#FF5C5C', role: '앞쪽 요소 강조 — 빨강 (시각적 대비)', variable: '--pintel-color-accent-red' },
+      { name: 'Accent / Red Orange', hex: '#FF7847', role: '앞쪽 요소 강조 — 레드 오렌지', variable: '--pintel-color-accent-red-orange' },
+      { name: 'Accent / Orange', hex: '#FF9F2E', role: '앞쪽 요소 강조 — 주황', variable: '--pintel-color-accent-orange' },
+      { name: 'Accent / Lime', hex: '#8CD929', role: '앞쪽 요소 강조 — 라임', variable: '--pintel-color-accent-lime' },
+      { name: 'Accent / Green', hex: '#2ED45A', role: '앞쪽 요소 강조 — 초록', variable: '--pintel-color-accent-green' },
+      { name: 'Accent / Cyan', hex: '#1FC8E6', role: '앞쪽 요소 강조 — 시안', variable: '--pintel-color-accent-cyan' },
+      { name: 'Accent / Light Blue', hex: '#45A6F5', role: '앞쪽 요소 강조 — 라이트 블루', variable: '--pintel-color-accent-light-blue' },
+      { name: 'Accent / Blue', hex: '#5B8DEF', role: '앞쪽 요소 강조 — 파랑', variable: '--pintel-color-accent-blue' },
+      { name: 'Accent / Violet', hex: '#9B8CFA', role: '앞쪽 요소 강조 — 바이올렛', variable: '--pintel-color-accent-violet' },
+      { name: 'Accent / Purple', hex: '#C77DFF', role: '앞쪽 요소 강조 — 퍼플', variable: '--pintel-color-accent-purple' },
+      { name: 'Accent / Pink', hex: '#FF7AD4', role: '앞쪽 요소 강조 — 핑크', variable: '--pintel-color-accent-pink' },
     ],
     behavior: '실시간 관제 피드백을 직관적으로 전달합니다. 정상(Positive)은 연결됨/안전/정상 작동을, 경고(Cautionary)는 주의/지체/이상 징후를, 위험(Native)은 사고/신호 위반/장비 장애 등 즉각적 조치가 필요한 상황을 의미합니다. 색상 외에도 심볼(아이콘)을 병기하여 정보 전달의 오류를 방지합니다.',
     usage: '도로 교통 신호 상태, 장비 연결 가용성, 도시 안전 이벤트 발생 여부 등 시스템의 상태를 구분하는 모든 영역에 적용합니다.',
@@ -1711,6 +1743,14 @@ export const COMPONENT_DOCS = {
     ],
     usage: '정보의 위계에 따라 적절한 텍스트 스타일을 적용합니다. 제목(Title, Display)은 시각적 주목도를 높이고, 본문(Body, Label, Caption)은 가독성을 최우선으로 고려합니다.'
   },
+  'typo-wordbreak': {
+    name: 'Word break',
+    description: '웹(개발) 환경에서는 텍스트가 음절(어절) 단위로 나뉘어 자동으로 줄바꿈됩니다. 따라서 디자인할 때 별도로 줄바꿈을 지정하지 않아도 됩니다.',
+    customLayout: 'word-break',
+    overview: '한글은 word-break: keep-all 규칙을 적용해 단어(어절)가 중간에서 끊기지 않고 어절 단위로 줄바꿈됩니다. 아래 예시에서 분홍색으로 강조된 각 덩어리가 줄바꿈의 최소 단위입니다.',
+    words: ['분석을', '넘어', '실행으로,', '도시의', '내일을', '운영합니다'],
+    usage: '제목·본문 등 한글 텍스트 영역에는 word-break: keep-all 을 기본 적용합니다. 강제 줄바꿈(<br>)이나 고정 너비로 줄을 나누지 말고, 컨테이너 너비에 따라 어절 단위로 자연스럽게 흐르도록 둡니다.'
+  },
 
   // ─── Core: Layout & Depth ──────────────────────────
   'spacing-style': {
@@ -1720,13 +1760,19 @@ export const COMPONENT_DOCS = {
     gridTemplate: '1fr 1fr 1fr 2fr',
     tableHeaders: ['명칭 (Name)', '크기 (px)', 'REM 환산', '사용처 (Usage)'],
     tableRows: [
+      ['Spacing 02', '2px', '0.125rem', '헤어라인 인접 미세 여백, 보더 간격'],
       ['Spacing 04', '4px', '0.25rem', '미세한 컴포넌트 내부 여백'],
       ['Spacing 08', '8px', '0.5rem', '기본적인 아이템 간격'],
+      ['Spacing 12', '12px', '0.75rem', '아이콘·라벨 간격, 조밀한 내부 여백'],
       ['Spacing 16', '16px', '1rem', '일반적인 섹션 내부 간격'],
       ['Spacing 24', '24px', '1.5rem', '컴포넌트 그룹 간 간격'],
-      ['Spacing 32', '32px', '2rem', '대형 섹션 여백']
+      ['Spacing 32', '32px', '2rem', '대형 섹션 여백'],
+      ['Spacing 40', '40px', '2.5rem', '관제 대시보드 패널 간 여백'],
+      ['Spacing 48', '48px', '3rem', '페이지 주요 영역 구분 여백'],
+      ['Spacing 64', '64px', '4rem', '전체 페이지 상하 여백, 최상위 레이아웃']
     ],
-    usage: '요소 간의 논리적 그룹화를 위해 4px/8px 단위의 여백을 사용합니다. 관련 있는 요소는 좁게, 다른 그룹과는 넓게 배치하여 구조를 명확히 합니다.'
+    usage: '요소 간의 논리적 그룹화를 위해 4px/8px 단위의 여백을 사용합니다. 관련 있는 요소는 좁게, 다른 그룹과는 넓게 배치하여 구조를 명확히 합니다.',
+    note: '※ 스페이싱 레이어 구분\n· 레이아웃·문서 기준 여백: 위 Foundation 스케일(4/8pt, px·rem)을 사용합니다.\n· 컴포넌트 prop 입력 여백: 별도의 SpacingMap 토큰(\'none\' · \'px\' · \'25\' … \'1500\')을 사용하며, WPF에서는 Thickness로 바인딩됩니다.\n· SpacingMap은 px와 선형 비례하지 않는 독립 스케일이므로(예: \'300\' → 24px, \'250\' → 10px) Foundation 표(4/8pt)와 수치를 혼용하지 마세요.'
   },
   'elevation-style': {
     name: 'Elevation',
@@ -2348,7 +2394,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '세그먼트 사양',
         type: 'string',
         conditions: [
-          { condition: "내부 여백: 가로 16px, 세로 6px" },
+          { condition: "내부 여백: 가로 16px (Spacing 16), 세로 8px (Spacing 08)" },
           { condition: "글자 크기: 13px (Body 1)" },
           { condition: "모서리 둥글기: 활성 상태 탭 4px, 전체 래퍼 6px" },
         ],
@@ -2371,6 +2417,35 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         ],
       },
     ],
+    code: `<div className="ds-segmented">
+  <button className="ds-seg is-active">일별</button>
+  <button className="ds-seg">주별</button>
+  <button className="ds-seg">월별</button>
+</div>
+
+/* CSS */
+.ds-segmented {
+  display: inline-flex;
+  gap: 4px;                 /* Spacing 04 */
+  padding: 4px;             /* Spacing 04 */
+  background: #1e1e1e;
+  border-radius: 6px;
+}
+.ds-seg {
+  padding: 8px 16px;        /* Spacing 08 / Spacing 16 */
+  font-size: 13px;
+  color: #888888;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.ds-seg:hover { color: #aaaaaa; }
+.ds-seg.is-active {
+  background: #1751D9;      /* 기간 필터는 #3471FF */
+  color: #ffffff;
+  font-weight: 700;
+}`,
   },
   'category-default': {
     name: 'Category',
@@ -2382,8 +2457,8 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '레이아웃 사양',
         type: 'string',
         conditions: [
-          { condition: "칩 내부 여백: 가로 16px, 세로 8px" },
-          { condition: "칩 간 간격: 8px" },
+          { condition: "칩 내부 여백: 가로 16px (Spacing 16), 세로 8px (Spacing 08)" },
+          { condition: "칩 간 간격: 8px (Spacing 08)" },
           { condition: "글자 크기: 14px (Body 1)" },
           { condition: "모서리 둥글기: 8px" },
         ],
@@ -2490,9 +2565,9 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         type: 'SpacingMap',
         spacingMap: true,
         conditions: [
-          { condition: "기본: 8px 4px" },
-          { condition: "indent-1 (1단계): padding-left 24px" },
-          { condition: "indent-2 (2단계): padding-left 48px" },
+          { condition: "기본: 8px 4px (Spacing 08 / Spacing 04)" },
+          { condition: "indent-1 (1단계): padding-left 24px (Spacing 24)" },
+          { condition: "indent-2 (2단계): padding-left 48px (Spacing 48)" },
         ],
       },
       {
@@ -2576,7 +2651,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         conditions: [
           { condition: "배경색: #1a1a1a, 테두리 1px solid #2a2a2a" },
           { condition: "모서리 둥글기 (Border-radius): 12px" },
-          { condition: "내부 여백 (Padding): 24px 20px" },
+          { condition: "내부 여백 (Padding): 24px (Spacing 24) 16px (Spacing 16)" },
         ],
       },
       {
@@ -2587,13 +2662,83 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
           { condition: "배경색: #1a1a1a, 테두리 1px solid #2a2a2a" },
           { condition: "좌측 상태 지시선: 4px solid #FFA938 (Cautionary)" },
           { condition: "모서리 둥글기 (Border-radius): 4px" },
-          { condition: "내부 여백 (Padding): 16px 20px" },
+          { condition: "내부 여백 (Padding): 16px 16px (Spacing 16)" },
+        ],
+      },
+    ],
+    code: `{/* 통계 필터 카드 */}
+<section className="ds-card">
+  <header className="ds-card-head">
+    <h3>위험 통계</h3>
+    <button className="ds-card-action">Excel</button>
+  </header>
+  <div className="ds-card-body">{children}</div>
+</section>
+
+{/* 알림 배너 카드 */}
+<aside className="ds-card ds-card--banner">
+  <p>지체 구간 3건이 감지되었습니다.</p>
+</aside>
+
+/* CSS */
+.ds-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 24px 16px;        /* Spacing 24 / Spacing 16 */
+}
+.ds-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ds-card--banner {
+  border-left: 4px solid #FFA938;   /* Cautionary */
+  border-radius: 4px;
+  padding: 16px;             /* Spacing 16 */
+}`,
+  },
+
+  // ─── Table ──────────────────────────────────
+  'table-default': {
+    name: 'Table',
+    description: '테이블(Table)은 행과 열로 구조화된 데이터를 표시하는 컴포넌트입니다. 헤더, 셀, 선택용 체크박스(Input), 하단 페이지네이션으로 구성되며 장비 목록·이벤트 이력 등 대량 데이터 탐색에 사용됩니다.',
+    tabs: [
+      { id: 'design', label: 'Design' },
+      { id: 'web', label: 'Web' },
+      { id: 'cs', label: 'Cs' }
+    ],
+    overview: 'Content 옵션으로 행 선택용 체크박스(Input) 노출 여부를, Pagination 옵션으로 하단 페이지네이션 형태(None · Extended · Compact · Minimize)를 전환할 수 있습니다.',
+    designTokens: [
+      { name: 'Header Font', value: '13px / 600 / #8a8a8f', role: '헤더(Head) 텍스트' },
+      { name: 'Cell Font', value: '14px / #ffffff', role: '본문 셀(Cell) 텍스트' },
+      { name: 'Row Divider', value: '1px solid #232325', role: '행 사이 구분선' },
+      { name: 'Checkbox', value: '18px / 1.5px #4a4a4e', role: '행 선택 체크박스(Input)' },
+      { name: 'Active Page', value: '#3a3a3c / radius 6px', role: '현재 페이지 강조 배경' }
+    ],
+    properties: [
+      {
+        name: 'content',
+        title: '콘텐츠 형태',
+        type: "'Normal' | 'Input'",
+        conditions: [
+          { condition: "Normal: 헤더 + 셀만 표시" },
+          { condition: "Input: 행 좌측에 선택 체크박스 추가" },
+        ],
+      },
+      {
+        name: 'pagination',
+        title: '페이지네이션',
+        type: "'None' | 'Extended' | 'Compact' | 'Minimize'",
+        conditions: [
+          { condition: "None: 페이지네이션 없음" },
+          { condition: "Extended: 모든 페이지 번호 노출" },
+          { condition: "Compact: 현재 페이지 주변 + 생략(…) + 마지막" },
+          { condition: "Minimize: 현재/전체 페이지만 표시" },
         ],
       },
     ],
   },
-
-  // ─── Table ──────────────────────────────────
   'table-row': {
     name: 'Table.Row',
     description: '테이블의 행 컨테이너에요. 장비 목록 등의 아이템을 표시합니다.',
@@ -2775,7 +2920,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         type: 'CSS',
         conditions: [
           { condition: "display: flex, flex-direction: column" },
-          { condition: "gap: 6px" },
+          { condition: "gap: 8px (Spacing 08)" },
         ],
       },
       {
@@ -2787,6 +2932,21 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         ],
       },
     ],
+    code: `<div className="ds-field">
+  <label className="ds-field-label">지점명</label>
+  <input className="ds-input" value={v} onChange={e => setV(e.target.value)} />
+</div>
+
+/* CSS */
+.ds-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;                  /* Spacing 08 */
+}
+.ds-field-label {
+  font-size: 12px;
+  color: #888;
+}`,
   },
   'form-input': {
     name: 'Form.Input',
@@ -2841,7 +3001,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         conditions: [
           { condition: "display: grid" },
           { condition: "grid-template-columns: 1fr 1fr" },
-          { condition: "gap: 12px" },
+          { condition: "gap: 12px (Spacing 12)" },
         ],
       },
     ],
@@ -2940,7 +3100,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
       },
       {
         title: 'Trim area',
-        description: '시각적 균형을 위해 비워두어야 하는 영역으로 아이콘이 침범하지 않도록 합니다.\n여백: 상하좌우 2px',
+        description: '시각적 균형을 위해 비워두어야 하는 영역으로 아이콘이 침범하지 않도록 합니다.\n여백: 상하좌우 2px (Spacing 02)',
       },
       {
         title: 'Safe area',
@@ -3000,7 +3160,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         type: 'string',
         conditions: [
           { condition: "기본 18x18px, 모서리 둥글기 4px" },
-          { condition: "라벨과의 간격 8px, 글자 14px" },
+          { condition: "라벨과의 간격 8px (Spacing 08), 글자 14px" },
         ],
       },
     ],
@@ -3033,7 +3193,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         type: 'string',
         conditions: [
           { condition: "외곽 원 18x18px, 내부 점 8x8px" },
-          { condition: "라벨과의 간격 8px, 글자 14px" },
+          { condition: "라벨과의 간격 8px (Spacing 08), 글자 14px" },
         ],
       },
     ],
@@ -3178,7 +3338,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '입력 박스 (Box)',
         type: 'string',
         conditions: [
-          { condition: "배경 #1e1e1e, 테두리 1px #2e2e2e, 둥글기 8px, 내부 여백 12px" },
+          { condition: "배경 #1e1e1e, 테두리 1px #2e2e2e, 둥글기 8px, 내부 여백 12px (Spacing 12)" },
           { condition: "최소 높이 96px, 행간 1.6, 글자 14px" },
         ],
       },
@@ -3271,7 +3431,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         type: 'string',
         conditions: [
           { condition: "테두리: 1px solid #2e2e2e (기본), 포커스/활성 시 #1751D9" },
-          { condition: "모서리 둥글기 8px, 내부 여백 16px" },
+          { condition: "모서리 둥글기 8px, 내부 여백 16px (Spacing 16)" },
           { condition: "배경: 투명 또는 #1a1a1a" },
         ],
       },
@@ -3334,7 +3494,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '컨테너 배경',
         type: 'ColorToken',
         conditions: [
-          { condition: '#1e1e1e (내부 padding 2px)' }
+          { condition: '#1e1e1e (내부 padding 2px / Spacing 02)' }
         ]
       },
       {
@@ -3387,7 +3547,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '레이아웃',
         type: 'Flex',
         conditions: [
-          { condition: '내부 요소 가로 정렬 (gap 8px)' }
+          { condition: '내부 요소 가로 정렬 (gap 8px / Spacing 08)' }
         ]
       }
     ]

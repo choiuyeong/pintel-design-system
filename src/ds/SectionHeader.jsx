@@ -7,7 +7,37 @@ import { SP, TYPE, W, T } from '../data/tokens';
 
 // 섹션·패널·카드 상단 헤더 — 제목 + 헤딩 콘텐츠(상태·개수 등) + 트레일링(액션·메타)
 // 간격: 제목과 헤딩 콘텐츠 사이 SP[8], 트레일링은 marginLeft:auto 로 우측 정렬.
-export function SectionHeader({ heading, headingContent, trailing }) {
+// loading=true일 때 skeleton 플레이스홀더로 표시.
+export function SectionHeader({ heading, headingContent, trailing, loading = false }) {
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: SP[8],
+        width: '100%', minHeight: 32,
+      }}>
+        {/* heading skeleton — 회색 막대 */}
+        <div style={{
+          width: '160px', height: '20px',
+          background: '#2e2e2e', borderRadius: '4px',
+          flexShrink: 0,
+        }} />
+        {/* headingContent skeleton — 더 작은 막대 (선택) */}
+        <div style={{
+          width: '100px', height: '16px',
+          background: '#2e2e2e', borderRadius: '4px',
+          flexShrink: 0,
+        }} />
+        {/* trailing skeleton — 우측 정렬 */}
+        <div style={{
+          marginLeft: 'auto',
+          width: '80px', height: '16px',
+          background: '#2e2e2e', borderRadius: '4px',
+          flexShrink: 0,
+        }} />
+      </div>
+    );
+  }
+
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: SP[8],

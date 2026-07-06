@@ -1792,6 +1792,12 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
   if (componentId === 'present-menu') {
     return <ContextMenuPlayground activeSubTab={activeSubTab} />;
   }
+  if (componentId === 'feedback-fallback') {
+    return <FallbackViewPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'loading-skeleton') {
+    return <SkeletonPlayground activeSubTab={activeSubTab} />;
+  }
   if (componentId === 'alert-default') {
     return <AlertPlayground activeSubTab={activeSubTab} />;
   }
@@ -4353,6 +4359,7 @@ function ChipPlayground({ activeSubTab }) {
 function SectionHeaderPlayground({ activeSubTab }) {
   const [showHeadingContent, setShowHeadingContent] = useState(true);
   const [trailingOption, setTrailingOption] = useState('link'); // 'none' | 'link' | 'meta' | 'icon'
+  const [loading, setLoading] = useState(false);
 
   // 미니 Chip (헤딩 콘텐츠 슬롯 예시)
   const MiniChip = ({ dark = false }) => (
@@ -4454,21 +4461,16 @@ function SectionHeaderPlayground({ activeSubTab }) {
         <div style={{ flex: 1.8, background: '#121214', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px' }}>
           {/* 패널 카드 안의 섹션 헤더 */}
           <div style={{ width: '100%', maxWidth: '420px', background: '#1b1c1e', border: '1px solid #2c2c30', borderRadius: '10px', padding: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minHeight: '32px' }}>
-              <span style={{ fontSize: '20px', lineHeight: '28px', fontWeight: 700, color: '#ffffff', letterSpacing: '-0.012em' }}>알림</span>
-              {showHeadingContent && <MiniChip dark />}
-              {trailingOption === 'link' && (
-                <span style={{ marginLeft: 'auto', fontSize: '15px', fontWeight: 500, color: '#3385FF', cursor: 'pointer' }}>모두 보기</span>
+            <SectionHeader
+              loading={loading}
+              heading={loading ? undefined : '알림'}
+              headingContent={loading ? undefined : (showHeadingContent ? <MiniChip dark /> : undefined)}
+              trailing={loading ? undefined : (
+                trailingOption === 'link' ? <span style={{ fontSize: '15px', fontWeight: 500, color: '#3385FF', cursor: 'pointer' }}>모두 보기</span> :
+                trailingOption === 'meta' ? <span style={{ fontSize: '13px', fontWeight: 500, color: '#8a8a8f' }}>방금 갱신</span> :
+                trailingOption === 'icon' ? <Icon name="cycle" size={16} /> : undefined
               )}
-              {trailingOption === 'meta' && (
-                <span style={{ marginLeft: 'auto', fontSize: '13px', fontWeight: 500, color: '#8a8a8f' }}>방금 갱신</span>
-              )}
-              {trailingOption === 'icon' && (
-                <span style={{ marginLeft: 'auto', display: 'inline-flex', width: '28px', height: '28px', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', background: '#26272b', color: '#c2c4c8', cursor: 'pointer' }}>
-                  <Icon name="cycle" size={16} />
-                </span>
-              )}
-            </div>
+            />
             {/* 본문 자리 표시(헤더와 본문의 관계를 보여주는 더미) */}
             <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <div style={{ height: '10px', borderRadius: '4px', background: '#26272b', width: '92%' }} />
@@ -4488,8 +4490,21 @@ function SectionHeaderPlayground({ activeSubTab }) {
             </div>
           </div>
 
-          {/* Trailing content */}
+          {/* Loading state */}
           <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Loading state</div>
+            <button type="button" onClick={() => setLoading(!loading)} style={{
+              height: 30, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: 'pointer', fontFamily: T.font,
+              fontSize: TYPE.caption1.fontSize, fontWeight: W.regular,
+              background: loading ? 'rgba(0,102,255,0.12)' : '#2a2a30',
+              border: `1px solid ${loading ? T.primary : '#3a3a42'}`, color: loading ? T.primaryStrong : '#d4d4d8',
+            }}>
+              {loading ? '✓ loading' : '○ normal'}
+            </button>
+          </div>
+
+          {/* Trailing content */}
+          <div style={{ marginTop: '24px' }}>
             <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Trailing content</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <RadioOption label="None" checked={trailingOption === 'none'} onChange={() => setTrailingOption('none')} />
@@ -6607,6 +6622,240 @@ function ContextMenuPlayground({ activeSubTab }) {
             <ContextMenuBody pinned={pinned} onPin={() => { setPinned((v) => !v); setMenu(null); }} onPick={() => setMenu(null)} />
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// Skeleton(Loading) — 콘텐츠 로드 전 실제 레이아웃 형태의 회색 플레이스홀더 + shimmer.
+//  variant(text/circle/card) × loading(true/false), shimmer 애니메이션.
+function SkeletonPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드(스켈레톤) */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '720px', height: '340px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 흰 패널 */}
+          <div style={{ position: 'absolute', left: '200px', top: '44px', width: '320px', height: '272px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
+
+          {/* 1. text 변형 — 가로 막대(높이 14px, 모서리 4px) */}
+          <div style={{ position: 'absolute', left: '240px', top: '88px', width: '240px', height: '14px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          {/* 2. circle 변형 — 정원(60×60, 아바타) */}
+          <div style={{ position: 'absolute', left: '324px', top: '130px', width: '72px', height: '72px', background: '#d4d4d8', borderRadius: '50%', zIndex: 3 }} />
+          {/* 3. card 변형 — 둥근 사각형(모서리 8px) */}
+          <div style={{ position: 'absolute', left: '280px', top: '220px', width: '160px', height: '80px', background: '#e4e4e7', borderRadius: '8px', zIndex: 3 }} />
+          {/* 4. shimmer 표시 — 연한 하이라이트 바 */}
+          <div style={{ position: 'absolute', left: '240px', top: '88px', width: '60px', height: '14px', background: 'rgba(136, 136, 150, 0.3)', borderRadius: '4px', zIndex: 3, opacity: 0.6 }} />
+
+          {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            <line x1="200" y1="95" x2="240" y2="95" stroke="#999" strokeWidth="1.2" /><circle cx="240" cy="95" r="1.6" fill="#999" />
+            <line x1="200" y1="166" x2="324" y2="166" stroke="#999" strokeWidth="1.2" /><circle cx="324" cy="166" r="1.6" fill="#999" />
+            <line x1="200" y1="260" x2="280" y2="260" stroke="#999" strokeWidth="1.2" /><circle cx="280" cy="260" r="1.6" fill="#999" />
+            <line x1="520" y1="95" x2="560" y2="95" stroke="#999" strokeWidth="1.2" /><circle cx="560" cy="95" r="1.6" fill="#999" />
+          </svg>
+          {/* Callouts — 흰 원 + 검정 텍스트 */}
+          <div style={{ position: 'absolute', left: '150px', top: '95px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '150px', top: '166px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '150px', top: '260px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '570px', top: '95px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+        </div>
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: 'Text 변형 (막대)' },
+            { num: 2, label: 'Circle 변형 (아바타)' },
+            { num: 3, label: 'Card 변형 (썸네일)' },
+            { num: 4, label: 'Shimmer (하이라이트)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — variant 토글 + loading 애니메이션
+  const [variant, setVariant] = useState('text');
+  const [loading, setLoading] = useState(true);
+  const seg = (val, cur, set, label) => (
+    <button type="button" onClick={() => set(val)} style={{
+      height: 30, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: 'pointer', fontFamily: T.font,
+      fontSize: TYPE.caption1.fontSize, fontWeight: cur === val ? W.semibold : W.regular,
+      background: cur === val ? 'rgba(0,102,255,0.12)' : '#2a2a30',
+      border: `1px solid ${cur === val ? T.primary : '#3a3a42'}`, color: cur === val ? T.primaryStrong : '#d4d4d8',
+    }}>{label}</button>
+  );
+
+  const skeletonEl = loading ? (
+    <div style={{
+      display: variant === 'circle' ? 'flex' : 'block',
+      gap: variant === 'circle' ? SP[8] : 'auto',
+      alignItems: variant === 'circle' ? 'center' : 'auto',
+    }}>
+      {variant === 'text' && (
+        <>
+          <div style={{ width: '100%', height: '14px', background: '#2e2e2e', borderRadius: '4px', marginBottom: SP[8] }} />
+          <div style={{ width: '80%', height: '14px', background: '#2e2e2e', borderRadius: '4px' }} />
+        </>
+      )}
+      {variant === 'circle' && (
+        <div style={{ width: '60px', height: '60px', background: '#2e2e2e', borderRadius: '50%', flexShrink: 0 }} />
+      )}
+      {variant === 'card' && (
+        <div style={{ width: '100%', height: '120px', background: '#2e2e2e', borderRadius: '8px' }} />
+      )}
+    </div>
+  ) : (
+    <div style={{ fontSize: TYPE.label1.fontSize, color: '#9a9aa2' }}>
+      {variant === 'text' && '콘텐츠가 로드되었습니다'}
+      {variant === 'circle' && '👤 Avatar'}
+      {variant === 'card' && '🖼️ Card Content'}
+    </div>
+  );
+
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', gap: SP[16], flexWrap: 'wrap', marginBottom: SP[16], alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: SP[4], alignItems: 'center' }}>
+          <span style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', marginRight: SP[4] }}>variant</span>
+          {['text', 'circle', 'card'].map(x => seg(x, variant, setVariant, x))}
+        </div>
+        <button type="button" onClick={() => setLoading(!loading)} style={{
+          height: 30, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: 'pointer', fontFamily: T.font,
+          fontSize: TYPE.caption1.fontSize, fontWeight: W.regular,
+          background: '#2a2a30', border: '1px solid #3a3a42', color: '#d4d4d8',
+        }}>
+          {loading ? '✓ loading' : '○ loaded'}
+        </button>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '240px', border: '1px solid #2a2a2a', borderRadius: '12px', background: '#121212', padding: SP[24] }}>
+        <div style={{ width: '100%', maxWidth: '360px' }}>
+          {skeletonEl}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Fallback view — 정상 콘텐츠를 표시할 수 없을 때의 대체 화면.
+//  variant(error/empty/forbidden) × size(compact/full), 액션 버튼(주요=Primary).
+const FALLBACK_VARIANTS = {
+  error:     { icon: 'error',       color: T.error,      title: '데이터를 불러오지 못했습니다',   desc: '네트워크 상태를 확인한 뒤 다시 시도하세요', action: '재시도' },
+  empty:     { icon: 'folder_open', color: '#8a8a92',    title: '표시할 데이터가 없습니다',       desc: '검색 조건을 변경해 다시 시도해 보세요',   action: null },
+  forbidden: { icon: 'warning',     color: T.cautionary, title: '접근 권한이 없습니다',           desc: '관리자에게 권한을 요청하세요',           action: null },
+};
+const FALLBACK_SIZES = {
+  compact: { icon: 40, title: TYPE.label1.fontSize, desc: TYPE.caption1.fontSize, pad: SP[24], gap: SP[8] },
+  full:    { icon: 72, title: TYPE.headline1.fontSize, desc: TYPE.label1.fontSize, pad: SP[64], gap: SP[12] },
+};
+
+function FallbackViewContent({ variant = 'empty', size = 'compact', loading = false, onRetry }) {
+  const v = FALLBACK_VARIANTS[variant];
+  const s = FALLBACK_SIZES[size];
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      textAlign: 'center', gap: s.gap, padding: `${s.pad} ${SP[24]}`, width: '100%', boxSizing: 'border-box',
+    }}>
+      <Icon name={v.icon} size={s.icon} color={v.color} />
+      <div style={{ fontSize: s.title, fontWeight: W.semibold, color: '#e8e8ec' }}>{v.title}</div>
+      <div style={{ fontSize: s.desc, color: '#8a8a92', lineHeight: 1.5 }}>{v.desc}</div>
+      {v.action && (
+        <button type="button" onClick={onRetry} disabled={loading} style={{
+          marginTop: SP[8], height: 36, padding: `0 ${SP[16]}`, borderRadius: 8, cursor: loading ? 'default' : 'pointer',
+          fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, fontFamily: T.font, color: '#fff',
+          background: loading ? T.primaryHeavy : T.primary, border: 'none', opacity: loading ? 0.8 : 1,
+          display: 'inline-flex', alignItems: 'center', gap: SP[8],
+        }}>
+          {loading && <Icon name="cycle" size={14} color="#fff" />}
+          {loading ? '재시도 중…' : v.action}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function FallbackViewPlayground({ activeSubTab }) {
+  const [variant, setVariant] = useState('error');
+  const [size, setSize] = useState('compact');
+  const [loading, setLoading] = useState(false);
+  const retry = () => { setLoading(true); };
+
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드(스켈레톤) — Text field anatomy와 동일 시각 언어 */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '720px', height: '360px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 흰 패널(레이어드 룩), center x=360 */}
+          <div style={{ position: 'absolute', left: '200px', top: '44px', width: '320px', height: '272px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
+
+          {/* 1. 일러스트/아이콘 — 점선 placeholder (center y≈110) */}
+          <div style={{ position: 'absolute', left: '324px', top: '74px', width: '72px', height: '72px', border: '1.5px dashed #a1a1aa', borderRadius: '12px', zIndex: 3 }} />
+          {/* 2. 제목(Title) — 스켈레톤 바 (center y≈180) */}
+          <div style={{ position: 'absolute', left: '280px', top: '172px', width: '160px', height: '16px', background: '#d4d4d8', borderRadius: '6px', zIndex: 3 }} />
+          {/* 3. 보조 설명(Description) — 스켈레톤 바 (center y≈208) */}
+          <div style={{ position: 'absolute', left: '255px', top: '203px', width: '210px', height: '10px', background: '#e4e4e7', borderRadius: '5px', zIndex: 3 }} />
+          {/* 4. 액션 버튼(Action) — Button (center y≈254) */}
+          <div style={{ position: 'absolute', left: '312px', top: '236px', width: '96px', height: '36px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: T.primary }}>Button</div>
+
+          {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. 아이콘 좌측 경계(x=324)까지 */}
+            <line x1="200" y1="110" x2="324" y2="110" stroke="#999" strokeWidth="1.2" /><circle cx="324" cy="110" r="1.6" fill="#999" />
+            {/* 2. 제목 좌측 경계(x=280)까지 */}
+            <line x1="200" y1="180" x2="280" y2="180" stroke="#999" strokeWidth="1.2" /><circle cx="280" cy="180" r="1.6" fill="#999" />
+            {/* 3. 설명 좌측 경계(x=255)까지 */}
+            <line x1="200" y1="208" x2="255" y2="208" stroke="#999" strokeWidth="1.2" /><circle cx="255" cy="208" r="1.6" fill="#999" />
+            {/* 4. 버튼 우측 경계(x=408)까지 */}
+            <line x1="520" y1="254" x2="408" y2="254" stroke="#999" strokeWidth="1.2" /><circle cx="408" cy="254" r="1.6" fill="#999" />
+          </svg>
+          {/* Callouts — 흰 원 + 검정 텍스트 */}
+          <div style={{ position: 'absolute', left: '150px', top: '110px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '150px', top: '180px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '150px', top: '208px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '570px', top: '254px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+        </div>
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '일러스트 / 아이콘' },
+            { num: 2, label: '제목 (Title)' },
+            { num: 3, label: '보조 설명 (Description)' },
+            { num: 4, label: '액션 버튼 (Action)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — variant × size 전환 + 재시도 로딩
+  const seg = (val, cur, set, label) => (
+    <button type="button" onClick={() => { set(val); setLoading(false); }} style={{
+      height: 30, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: 'pointer', fontFamily: T.font,
+      fontSize: TYPE.caption1.fontSize, fontWeight: cur === val ? W.semibold : W.regular,
+      background: cur === val ? 'rgba(0,102,255,0.12)' : '#2a2a30',
+      border: `1px solid ${cur === val ? T.primary : '#3a3a42'}`, color: cur === val ? T.primaryStrong : '#d4d4d8',
+    }}>{label}</button>
+  );
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', gap: SP[16], flexWrap: 'wrap', marginBottom: SP[16] }}>
+        <div style={{ display: 'flex', gap: SP[4], alignItems: 'center' }}>
+          <span style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', marginRight: SP[4] }}>variant</span>
+          {['error', 'empty', 'forbidden'].map(x => seg(x, variant, setVariant, x))}
+        </div>
+        <div style={{ display: 'flex', gap: SP[4], alignItems: 'center' }}>
+          <span style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', marginRight: SP[4] }}>size</span>
+          {['compact', 'full'].map(x => seg(x, size, setSize, x))}
+        </div>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '340px', border: '1px solid #2a2a2a', borderRadius: '12px', background: '#121212', padding: SP[16] }}>
+        <div style={{ width: size === 'full' ? '100%' : '320px', background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: '8px' }}>
+          <FallbackViewContent variant={variant} size={size} loading={loading} onRetry={retry} />
+        </div>
       </div>
     </div>
   );

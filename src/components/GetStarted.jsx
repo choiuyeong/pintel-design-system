@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import InteractiveClump3D from './InteractiveClump3D';
+import { T } from '../data/tokens';
 
 const skeletonStyle = `
   @keyframes shimmer {
@@ -16,12 +17,17 @@ const skeletonStyle = `
     position: absolute;
     top: 0;
     left: 0;
-    background: linear-gradient(90deg, #e8ecf3 25%, #f4f6fa 50%, #e8ecf3 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.8s infinite linear;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(120% 90% at 50% 0%, #1a1a21 0%, #131317 50%, #0e0e11 100%);
     border-radius: 24px;
     z-index: 5;
     overflow: hidden;
+  }
+  .skeleton-gem {
+    animation: pulse 1.6s infinite ease-in-out;
+    filter: drop-shadow(0 0 18px rgba(0, 102, 255, 0.35));
   }
   .skeleton-text-container {
     width: 100%;
@@ -56,13 +62,17 @@ function HeroSkeleton() {
   return (
     <div className="skeleton-hero">
       <style dangerouslySetInnerHTML={{ __html: skeletonStyle }} />
-      <div className="skeleton-text-container">
-        <div className="skeleton-title" />
-      </div>
-      <div className="skeleton-sphere" style={{ width: '70px', height: '70px', top: '30%', left: '22%', animationDelay: '0.1s' }} />
-      <div className="skeleton-sphere" style={{ width: '45px', height: '45px', top: '58%', left: '72%', animationDelay: '0.3s' }} />
-      <div className="skeleton-sphere" style={{ width: '85px', height: '85px', top: '40%', left: '46%', animationDelay: '0.5s' }} />
-      <div className="skeleton-sphere" style={{ width: '55px', height: '55px', top: '18%', left: '58%', animationDelay: '0.7s' }} />
+      {/* 파랑색 보석 실루엣 하나 — 로딩 플레이스홀더(브랜드 히어로 보석 암시) */}
+      <svg className="skeleton-gem" width="120" height="120" viewBox="0 0 100 100" fill="none">
+        <polygon points="50,8 84,32 70,90 30,90 16,32" fill={T.primary} fillOpacity="0.42" />
+        <g stroke={T.primaryStrong} strokeOpacity="0.55" strokeWidth="1.3" strokeLinejoin="round">
+          <polygon points="50,8 84,32 70,90 30,90 16,32" fill="none" />
+          <line x1="50" y1="8" x2="50" y2="90" />
+          <line x1="16" y1="32" x2="84" y2="32" />
+          <line x1="16" y1="32" x2="50" y2="90" />
+          <line x1="84" y1="32" x2="50" y2="90" />
+        </g>
+      </svg>
     </div>
   );
 }
@@ -171,8 +181,52 @@ export default function GetStarted() {
           <h2 className="doc-section-title" style={{ color: '#ffffff' }}>시스템 구조 (Structure)</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
             {[
-              { title: 'Foundations', desc: '색상, 타이포그래피, 간격 등 시스템의 근간이 되는 디자인 토큰입니다.', img: '/foundations_banner_light.png' },
-              { title: 'Components', desc: '버튼, 폼, 테이블 등 실제 화면 구성에 사용되는 재사용 UI 컴포넌트입니다.', img: '/components_banner_light.png' },
+              { title: 'Foundations', desc: '색상, 타이포그래피, 간격 등 시스템의 근간이 되는 디자인 토큰입니다.', art: (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+                    <span style={{ fontSize: '44px', fontWeight: 700, color: '#fff', lineHeight: 1, letterSpacing: '-0.02em' }}>Aa</span>
+                    <span style={{ fontSize: '30px', fontWeight: 500, color: '#9aa0a8', lineHeight: 1 }}>가</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    {/* eslint-disable-next-line pintel/prefer-color-token -- 팔레트 견본 표시: 색상 값 자체를 보여주는 용도 */}
+                    {['#0066FF', '#1ED45A', '#FFA938', '#FF6363', '#00A9FF'].map((c) => (
+                      <span key={c} style={{ width: '26px', height: '26px', borderRadius: '8px', background: c, boxShadow: '0 2px 6px rgba(0,0,0,0.4)' }} />
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', width: '150px' }}>
+                    {[52, 80, 108, 140].map((w) => (
+                      <span key={w} style={{ height: '6px', width: `${w}px`, borderRadius: '3px', background: '#333' }} />
+                    ))}
+                  </div>
+                </div>
+              ) },
+              { title: 'Components', desc: '버튼, 폼, 테이블 등 실제 화면 구성에 사용되는 재사용 UI 컴포넌트입니다.', art: (
+                <div style={{ width: '100%', maxWidth: '224px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ height: '30px', borderRadius: '6px', background: '#1a1a1a', border: '1px solid #333', display: 'flex', alignItems: 'center', padding: '0 10px' }}>
+                    <span style={{ fontSize: '11px', color: '#666' }}>텍스트 입력</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ width: '16px', height: '16px', borderRadius: '4px', background: T.primary, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                      </span>
+                      <span style={{ fontSize: '12px', color: '#ccc' }}>선택</span>
+                    </span>
+                    <span style={{ height: '30px', padding: '0 16px', borderRadius: '6px', background: T.primary, color: '#fff', fontSize: '12px', fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>확인</span>
+                  </div>
+                  <div style={{ borderRadius: '6px', overflow: 'hidden', border: '1px solid #333' }}>
+                    <div style={{ display: 'flex', height: '22px', background: '#242424' }}>
+                      <span style={{ flex: 1, borderRight: '1px solid #333' }} /><span style={{ flex: 1 }} />
+                    </div>
+                    {[0, 1].map((r) => (
+                      <div key={r} style={{ display: 'flex', height: '20px', borderTop: '1px solid #2a2a2a' }}>
+                        <span style={{ flex: 1, borderRight: '1px solid #2a2a2a', display: 'flex', alignItems: 'center', padding: '0 8px' }}><span style={{ width: '40%', height: '5px', borderRadius: '3px', background: '#3a3a3a' }} /></span>
+                        <span style={{ flex: 1, display: 'flex', alignItems: 'center', padding: '0 8px' }}><span style={{ width: '55%', height: '5px', borderRadius: '3px', background: '#3a3a3a' }} /></span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) },
             ].map((item) => (
               <div key={item.title} style={{
                 borderRadius: '24px',
@@ -186,7 +240,7 @@ export default function GetStarted() {
                 padding: '24px',
                 boxSizing: 'border-box'
               }}
-              onMouseOver={(e) => { e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.2)'; e.currentTarget.style.borderColor = '#1751D9'; }}
+              onMouseOver={(e) => { e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.2)'; e.currentTarget.style.borderColor = T.primary; }}
               onMouseOut={(e) => { e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = '#2e2e2e'; }}
               >
                 <div style={{ 
@@ -201,7 +255,7 @@ export default function GetStarted() {
                   boxSizing: 'border-box',
                   marginBottom: '24px'
                 }}>
-                  <img src={item.img} alt={item.title} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '8px' }} />
+                  {item.art}
                 </div>
                 <div style={{ padding: '0 8px 8px' }}>
                   <h3 style={{

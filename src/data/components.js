@@ -1,6 +1,8 @@
 /**
  * 핀텔공방 - 디자인 시스템 컴포넌트 데이터
  */
+import { ICONS } from './tokens.js';
+import { COMPONENT_CODE } from './components-code.js';
 
 /** 계층 정의 */
 export const TIERS = {
@@ -34,6 +36,8 @@ export const TIERS = {
             children: [
               { id: 'color-primary', name: 'Color.Primary' },
               { id: 'color-status', name: 'Color.Status' },
+              { id: 'color-accent', name: 'Color.Accent' },
+              { id: 'color-neutral', name: 'Color.Neutral' },
             ],
           },
           {
@@ -106,8 +110,8 @@ export const TIERS = {
             children: [{ id: 'button-text', name: 'Text button' }]
           },
           {
-            id: 'tab-button', name: 'Tab button',
-            children: [{ id: 'button-tab', name: 'Tab button' }]
+            id: 'icon-button', name: 'Icon button',
+            children: [{ id: 'button-icon', name: 'Icon button' }]
           }
         ]
       },
@@ -144,6 +148,10 @@ export const TIERS = {
             children: [{ id: 'list-cell-default', name: 'List cell' }]
           },
           {
+            id: 'section-header', name: 'Section header',
+            children: [{ id: 'section-header-default', name: 'Section header' }]
+          },
+          {
             id: 'table', name: 'Table',
             children: [{ id: 'table-default', name: 'Table' }]
           }
@@ -166,7 +174,6 @@ export const TIERS = {
           { id: 'switch', name: 'Switch', children: [{ id: 'control-switch', name: 'Switch' }] },
           { id: 'text-area', name: 'Text area', children: [{ id: 'field-textarea', name: 'Text area' }] },
           { id: 'text-field', name: 'Text field', children: [{ id: 'field-text', name: 'Text field' }] },
-          { id: 'time-picker', name: 'Time picker', children: [{ id: 'control-timepicker', name: 'Time picker' }] },
         ]
       },
       {
@@ -316,63 +323,79 @@ export const TIERS = {
   library: {
     id: 'library',
     label: 'Library',
-    description: '디자인 시스템 컴포넌트로 구성한 화면 예시 (Templates)',
+    description: '컴포넌트 구성 라이브러리',
     groups: [
       {
-        id: 'library-templates',
-        label: 'Templates',
+        id: 'library-account', label: '계정',
         categories: [
+          { id: 'tpl-login', name: '로그인', children: [{ id: 'library-login', name: '로그인' }] },
+          { id: 'tpl-signup', name: '회원가입', children: [{ id: 'library-signup', name: '회원가입' }] },
+        ]
+      },
+      {
+        id: 'library-monitoring', label: '관제 화면',
+        categories: [
+          { id: 'tpl-dashboard', name: '대시보드', children: [{ id: 'library-dashboard', name: '대시보드' }] },
           {
-            id: 'tpl-dashboard', name: 'Dashboard(CS)',
-            children: [{ id: 'library-dashboard', name: 'Dashboard(CS)' }]
+            id: 'tpl-live', name: '실시간 영상',
+            children: [
+              { id: 'library-live', name: '기본' },
+              { id: 'library-live-focus', name: 'Focus (고정)' },
+            ]
           },
+          { id: 'tpl-selective', name: '선별관제 모니터링', children: [
+            { id: 'library-selective', name: '선별관제 모니터링' },
+            { id: 'library-selective-away', name: '자리비움 수신자' },
+          ] },
+          { id: 'tpl-gis', name: 'GIS 관제', children: [{ id: 'library-gis-monitor', name: 'GIS 관제' }] },
+        ]
+      },
+      {
+        id: 'library-event', label: '이벤트',
+        categories: [
+          { id: 'tpl-event-search', name: '이벤트 조회', children: [{ id: 'library-event-search', name: '이벤트 조회' }] },
+          { id: 'tpl-event-activation', name: '이벤트 활성화 관리', children: [{ id: 'library-event-activation', name: '이벤트 활성화 관리' }] },
+          { id: 'tpl-event-def-add', name: '이벤트 정의 추가', children: [{ id: 'library-event-def-add', name: '이벤트 정의 추가' }] },
+        ]
+      },
+      {
+        id: 'library-settings', label: '설정',
+        categories: [
+          { id: 'tpl-settings', name: '장비 관리', children: [{ id: 'library-settings', name: '장비 관리' }] },
           {
-            id: 'tpl-login', name: 'Login',
-            children: [{ id: 'library-login', name: 'Login' }]
+            id: 'tpl-camera-form', name: '카메라 정보 관리',
+            children: [
+              { id: 'library-camera-form', name: '기본 (단일 스크롤)' },
+              { id: 'library-camera-form2', name: '탭형' },
+            ]
           },
-          {
-            id: 'tpl-signup', name: 'Sign up',
-            children: [{ id: 'library-signup', name: 'Sign up' }]
-          },
-          {
-            id: 'tpl-selective', name: 'Selective Monitoring(CS)',
-            children: [{ id: 'library-selective', name: 'Selective Monitoring(CS)' }]
-          },
-          {
-            id: 'tpl-live', name: 'Live Video(CS)',
-            children: [{ id: 'library-live', name: 'Live Video(CS)' }]
-          },
-          {
-            id: 'tpl-gis', name: 'GIS Monitoring(CS)',
-            children: [{ id: 'library-gis-monitor', name: 'GIS Monitoring(CS)' }]
-          },
-          {
-            id: 'tpl-settings', name: 'Settings(장비관리)',
-            children: [{ id: 'library-settings', name: 'Settings(장비관리)' }]
-          },
-          {
-            id: 'tpl-events', name: 'Settings(이벤트 관리)',
-            children: [{ id: 'library-events', name: 'Settings(이벤트 관리)' }]
-          },
-          {
-            id: 'tpl-event-search', name: 'Event Search(CS)',
-            children: [{ id: 'library-event-search', name: 'Event Search(CS)' }]
-          },
-          {
-            id: 'tpl-history', name: 'History(CS)',
-            children: [{ id: 'library-history', name: 'History(CS)' }]
-          },
-          {
-            id: 'tpl-stats', name: 'Statistics(CS)',
-            children: [{ id: 'library-stats', name: 'Statistics(CS)' }]
-          },
+          { id: 'tpl-camera-group', name: '카메라 그룹 관리', children: [{ id: 'library-camera-group', name: '카메라 그룹 관리' }] },
+          { id: 'tpl-events', name: '이벤트 관리', children: [{ id: 'library-events', name: '이벤트 관리' }] },
+          { id: 'tpl-alarm', name: '알림 설정', children: [{ id: 'library-alarm-settings', name: '알림 설정' }] },
+          { id: 'tpl-permission', name: '권한 설정', children: [{ id: 'library-permission', name: '권한 설정' }] },
+        ]
+      },
+      {
+        id: 'library-report', label: '이력·통계',
+        categories: [
+          { id: 'tpl-history', name: '이력 조회', children: [{ id: 'library-history', name: '이력 조회' }] },
+          { id: 'tpl-stats', name: '통계 보고서', children: [{ id: 'library-stats', name: '통계 보고서' }] },
+        ]
+      },
+    ]
+  },
+  'ai-agent': {
+    id: 'ai-agent',
+    label: 'AI Agent',
+    description: 'AI 에이전트 기반 UX 자동화 분석 및 활용성 리뷰',
+    groups: [
+      {
+        id: 'ai-agent-review',
+        label: 'UX Review',
+        categories: [
           {
             id: 'tpl-ux-agent', name: 'UX Agent 활용성 리뷰',
             children: [{ id: 'library-ux-agent', name: 'UX Agent 활용성 리뷰' }]
-          },
-          {
-            id: 'tpl-permission', name: 'Settings(권한 설정)',
-            children: [{ id: 'library-permission', name: 'Settings(권한 설정)' }]
           }
         ]
       }
@@ -434,7 +457,7 @@ export const COMPONENT_DOCS = {
         "type": "ReactNode",
         "conditions": [
           {
-            "condition": "주요 액션은 Primary(#1751D9) 채움 버튼, 호버 시 Primary Strong(#3471FF)로 전환"
+            "condition": "주요 액션은 Primary(#0066FF) 채움 버튼, 호버 시 Primary Strong(#3385FF)로 전환"
           },
           {
             "condition": "버튼 높이 36px, 모서리 둥글기 8px, 라벨 14px"
@@ -454,8 +477,8 @@ export const COMPONENT_DOCS = {
   },
   "feedback-pushbadge": {
     "name": "Push badge",
-    "description": "아이콘이나 메뉴 항목 위에 겹쳐 미확인 알림 개수나 새 이벤트 발생을 표시하는 위험색 기반의 작은 배지이다.",
-    "overview": "Push badge는 관제 대시보드의 사이드 메뉴, 툴바 아이콘, 탭 헤더 위에 절대 위치로 겹쳐 미확인 항목을 강조하는 소형 알림 표식이다. 숫자형(개수 표시)과 점형(dot, 단순 발생 표시)의 두 가지 변형을 제공하며, 위험 상태를 알리기 위해 Native 색상(FF6363)을 배경으로 사용한다. 개수가 99를 초과하면 99+ 형태로 축약하고, 미확인 항목이 없으면 비표시(hidden) 상태로 전환된다.",
+    "description": "아이콘이나 메뉴 항목 위에 겹쳐 미확인 알림 개수나 새 이벤트 발생을 표시하는 Primary(브랜드색) 기반의 작은 오버레이 배지이다.",
+    "overview": "Push badge는 관제 대시보드의 사이드 메뉴, 툴바 아이콘, 탭 헤더 위에 절대 위치로 겹쳐 미확인 항목을 강조하는 소형 알림 표식이다. 숫자형(count)과 점형(dot, 단순 발생 표시)의 두 가지 변형을 제공한다. 신규·미확인 알림은 Primary(#0066FF)를 배경으로 사용하고, 위험·긴급(예: 장애·사고)을 알릴 때는 상태색(error #FF6363)으로 매핑한다. 개수가 99를 초과하면 99+ 형태로 축약하고, 미확인 항목이 없으면(0) 비표시(hidden) 상태로 전환된다.",
     "properties": [
       {
         "name": "variant",
@@ -469,7 +492,7 @@ export const COMPONENT_DOCS = {
             "condition": "count는 미확인 개수를 중앙 정렬로 표시하고 dot은 발생 여부만 표시한다"
           },
           {
-            "condition": "두 변형 모두 배경은 Native(FF6363)을 사용한다"
+            "condition": "기본 배경은 Primary(#0066FF). 위험·긴급 알림은 상태색 error(#FF6363)로 매핑"
           }
         ]
       },
@@ -527,7 +550,7 @@ export const COMPONENT_DOCS = {
         "type": "enum",
         "conditions": [
           {
-            "condition": "info(정보)는 Primary Strong(3471FF) 아이콘과 좌측 보더, 본문 텍스트는 기본 흰색 계열 적용"
+            "condition": "info(정보)는 Primary Strong(3385FF) 아이콘과 좌측 보더, 본문 텍스트는 기본 흰색 계열 적용"
           },
           {
             "condition": "caution(주의)는 Cautionary(FFA938) 아이콘과 좌측 보더로 경고성 상황을 표시"
@@ -575,6 +598,10 @@ export const COMPONENT_DOCS = {
     ],
     "behavior": "변형 값에 따라 좌측 아이콘과 강조 색상이 자동으로 전환되며, 본문은 여러 줄로 늘어나도 박스 높이가 내용에 맞춰 확장됩니다. 인라인 요소이므로 부모 영역의 너비를 따라 가득 차도록 배치됩니다.",
     "usage": "신호 연동 실패나 CCTV 연결 끊김 같은 장애 상황에는 error 변형을, 차량 정체 임계치 접근 등 주의가 필요한 상황에는 caution 변형을 사용하세요. 폼 영역 내 입력 안내에는 info를, 설정 저장 완료 알림에는 success를 활용하면 관제 흐름에서 상태를 일관되게 전달할 수 있습니다.",
+    "tokensUsed": ["variant 색: info #3385FF · caution #FFA938 · error #FF6363 · success #1ED45A", "컨테이너 배경 #1e1e1e · 보더 #2e2e2e · radius 8", "좌측 상태색 accent 보더", "본문 Body 14px · 보조 #888"],
+    "aliases": ["영역 경고", "인라인 알림", "상태 메시지", "주의 배너", "오류 안내", "정보 안내", "section message", "inline alert", "banner"],
+    "antiPatterns": ["타이틀바·탭 위 전역 경고 배너로 사용 금지(영역 내부 인라인 전용)", "작은 인라인 칩/배지를 즉흥 제작하지 말 것 → 이 컴포넌트 사용", "잠깐 떴다 사라지는 알림에는 Snackbar/Toast 사용"],
+    "examples": ["<SectionMessage variant='caution' title='정체 임계치 접근'>강변북로 평균 속도가 기준치 이하입니다.</SectionMessage>", "<SectionMessage variant='error' title='신호 연동 실패'>제어기 연결이 끊어졌습니다. 네트워크를 확인하세요.</SectionMessage>"],
     "code": "import { SectionMessage } from '@pintel/ui';\n\nfunction SignalPanel() {\n  return (\n    <div>\n      <SectionMessage variant='error' title='신호 연동 실패'>\n        교차로 12번 신호 제어기와의 연결이 끊어졌습니다. 네트워크 상태를 확인하세요.\n      </SectionMessage>\n\n      <SectionMessage variant='caution' title='정체 임계치 접근'>\n        강변북로 구간의 평균 속도가 기준치 이하로 떨어지고 있습니다.\n      </SectionMessage>\n\n      <SectionMessage variant='success' title='설정 저장 완료'>\n        관제 구역 설정이 정상적으로 반영되었습니다.\n      </SectionMessage>\n    </div>\n  );\n}"
   },
   "feedback-snackbar": {
@@ -588,7 +615,7 @@ export const COMPONENT_DOCS = {
         "type": "enum",
         "conditions": [
           {
-            "condition": "default는 패널 배경 #1a1a1a 위에 본문 텍스트, 액션 텍스트는 Primary Strong #3471FF 사용"
+            "condition": "default는 패널 배경 #1a1a1a 위에 본문 텍스트, 액션 텍스트는 Primary Strong #3385FF 사용"
           },
           {
             "condition": "positive는 좌측 4px 강조선과 아이콘에 Status Positive #1ED45A 적용(작업 저장/등록 완료 알림)"
@@ -610,7 +637,7 @@ export const COMPONENT_DOCS = {
             "condition": "단일 텍스트 버튼만 허용하며 메시지 우측에 배치(실행 취소, 다시 시도 등)"
           },
           {
-            "condition": "액션 라벨 색상은 Primary Strong #3471FF, hover 시 Primary Heavy #004DFF"
+            "condition": "액션 라벨 색상은 Primary Strong #3385FF, hover 시 Primary Heavy #0052CC"
           },
           {
             "condition": "액션이 없으면 우측에 보조텍스트 #888 색상의 닫기 아이콘만 노출"
@@ -649,13 +676,16 @@ export const COMPONENT_DOCS = {
         "type": "enum",
         "conditions": [
           {
-            "condition": "circular(원형 스피너)와 linear(선형 진행 바) 두 가지 값을 가짐"
+            "condition": "circular(원형 스피너) · linear(선형 진행 바) · wave(물 채움) 세 가지 값을 가짐"
           },
           {
-            "condition": "circular은 회전 트랙으로 트랙은 보더색 #2e2e2e, 활성 호는 Primary Strong #3471FF 적용"
+            "condition": "circular은 회전 트랙으로 트랙은 보더색 #2e2e2e, 활성 호는 Primary Strong #3385FF 적용"
           },
           {
-            "condition": "linear은 높이 4px 바로 배경 #1e1e1e 위에 Primary #1751D9 진행색 채움"
+            "condition": "linear은 높이 4px 바로 배경 #1e1e1e 위에 Primary #0066FF 진행색 채움"
+          },
+          {
+            "condition": "wave는 원형 컨테이너(테두리 Primary)에 value%까지 물이 차오르고 표면이 출렁이며 중앙에 퍼센트 표기 — 진행률 시각화에 사용"
           },
           {
             "condition": "무한 회전 또는 진행 시 모서리 둥글기 8px 기준의 라운드 처리"
@@ -687,7 +717,7 @@ export const COMPONENT_DOCS = {
         "type": "enum",
         "conditions": [
           {
-            "condition": "기본 처리 중은 Primary 계열 (Primary Strong #3471FF) 회전색 사용"
+            "condition": "기본 처리 중은 Primary 계열 (Primary Strong #3385FF) 회전색 사용"
           },
           {
             "condition": "경고성 대기(지연 발생)는 Cautionary #FFA938로 스피너색 전환"
@@ -703,7 +733,6 @@ export const COMPONENT_DOCS = {
     ],
     "behavior": "마운트되는 즉시 스피너 회전 또는 바 진행 애니메이션을 시작하며, 처리가 완료되어 언마운트될 때 자연스럽게 사라집니다. 전체화면 변형은 반투명 딤 레이어로 하단 콘텐츠 조작을 차단하고, 영역 변형은 해당 패널 내부 중앙에 정렬됩니다.",
     "usage": "교차로 CCTV 영상 로딩이나 검지 통계 집계처럼 수 초 이상 걸리는 작업에는 원형 스피너를 영역 또는 전체화면으로 사용하고, 진행률을 알 수 있는 데이터 내보내기에는 선형 바를 권장합니다. 조회 버튼 클릭 후 응답 대기 시에는 버튼 인라인 변형으로 중복 클릭을 방지하세요.",
-    "code": "import { Loading } from '@pintel/ui';\n\n// 교차로 CCTV 영상 로딩 (영역 스피너)\nfunction CctvPanel({ isLoading, children }) {\n  return (\n    <div className='panel'>\n      {isLoading ? (\n        <Loading variant='circular' scope='region' size={40} label='영상 분석 중' />\n      ) : (\n        children\n      )}\n    </div>\n  );\n}\n\n// 데이터 내보내기 진행률 (선형 바)\n<Loading variant='linear' value={progress} status='default' />\n\n// 조회 버튼 대기 (인라인)\n<button disabled={pending}>\n  {pending && <Loading variant='circular' scope='inline' />}\n  검지 데이터 조회\n</button>\n\n// 전체화면 오버레이\n<Loading variant='circular' scope='fullscreen' label='보고서 생성 중' />"
   },
   "loading-skeleton": {
     "name": "Skeleton",
@@ -793,13 +822,13 @@ export const COMPONENT_DOCS = {
         "type": "boolean",
         "conditions": [
           {
-            "condition": "활성 항목의 아이콘과 라벨은 프라이머리 강조 색 (3471FF)으로 표시"
+            "condition": "활성 항목의 아이콘과 라벨은 프라이머리 강조 색 (3385FF)으로 표시"
           },
           {
             "condition": "비활성 항목은 보조 텍스트 색 (888)로 표시"
           },
           {
-            "condition": "활성 표시가 필요하면 상단에 프라이머리 색 (1751D9) 인디케이터 라인 노출"
+            "condition": "활성 표시가 필요하면 상단에 프라이머리 색 (0066FF) 인디케이터 라인 노출"
           },
           {
             "condition": "한 번에 하나의 항목만 활성 상태를 가짐"
@@ -833,7 +862,7 @@ export const COMPONENT_DOCS = {
   "nav-page-counter": {
     "name": "Page counter",
     "description": "현재 페이지와 전체 페이지 수를 (3 / 12) 형태로 간결히 표시하는 위치 인디케이터 컴포넌트입니다.",
-    "overview": "Page counter는 현재 페이지 값, 구분자(슬래시), 전체 페이지 값으로 구성되어 캐러셀이나 리스트, 문서 뷰에서의 현재 위치를 한눈에 안내합니다. 현재 값은 기본 텍스트로, 전체 값과 구분자는 보조 텍스트(#888)로 처리하여 위계를 둡니다. 활성(기본), 비활성(단일 페이지), 강조(현재 값 Primary Strong #3471FF) 변형을 지원하며 다크 패널(#1a1a1a) 위에서 사용됩니다.",
+    "overview": "Page counter는 현재 페이지 값, 구분자(슬래시), 전체 페이지 값으로 구성되어 캐러셀이나 리스트, 문서 뷰에서의 현재 위치를 한눈에 안내합니다. 현재 값은 기본 텍스트로, 전체 값과 구분자는 보조 텍스트(#888)로 처리하여 위계를 둡니다. 활성(기본), 비활성(단일 페이지), 강조(현재 값 Primary Strong #3385FF) 변형을 지원하며 다크 패널(#1a1a1a) 위에서 사용됩니다.",
     "properties": [
       {
         "name": "current",
@@ -844,7 +873,7 @@ export const COMPONENT_DOCS = {
             "condition": "1 이상 total 이하의 정수값을 표시"
           },
           {
-            "condition": "기본 텍스트 14px, 강조 변형 시 Primary Strong #3471FF 적용"
+            "condition": "기본 텍스트 14px, 강조 변형 시 Primary Strong #3385FF 적용"
           },
           {
             "condition": "total 초과 값 입력 시 total로 클램프 처리"
@@ -885,7 +914,7 @@ export const COMPONENT_DOCS = {
       }
     ],
     "behavior": "current 값이 변경되면 숫자만 즉시 갱신되며 구분자와 total은 고정된 채 위치 위계를 유지합니다. total이 1이면 자동으로 비활성 변형이 적용되어 보조 텍스트 색(#888)으로 흐리게 표시됩니다.",
-    "usage": "교통 관제 화면에서 다중 CCTV 스냅샷 캐러셀이나 돌발상황 이벤트 리스트의 페이지네이션 위치 안내에 사용합니다. 현재 페이지를 강조해야 하는 경우(예: 우선순위 이벤트 페이지)에는 강조 변형으로 current 값에 Primary Strong(#3471FF)을 적용하세요.",
+    "usage": "교통 관제 화면에서 다중 CCTV 스냅샷 캐러셀이나 돌발상황 이벤트 리스트의 페이지네이션 위치 안내에 사용합니다. 현재 페이지를 강조해야 하는 경우(예: 우선순위 이벤트 페이지)에는 강조 변형으로 current 값에 Primary Strong(#3385FF)을 적용하세요.",
     "code": "function PageCounter({ current, total, size = 'md' }) {\n  const fontSize = size === 'sm' ? 12 : size === 'lg' ? 16 : 14;\n  const muted = { color: '#888' };\n  return (\n    <span\n      style={{\n        display: 'inline-flex',\n        alignItems: 'center',\n        gap: 4,\n        padding: '0 8px',\n        borderRadius: 8,\n        background: '#1a1a1a',\n        fontSize,\n        color: '#fff',\n      }}\n    >\n      <strong>{Math.min(current, total)}</strong>\n      <span style={muted}>/</span>\n      <span style={muted}>{total}</span>\n    </span>\n  );\n}\n\n// 사용 예 (교통 관제 CCTV 캐러셀)\n<PageCounter current={3} total={12} size='md' />"
   },
   "nav-pagination": {
@@ -899,10 +928,10 @@ export const COMPONENT_DOCS = {
         "type": "number",
         "conditions": [
           {
-            "condition": "활성 페이지 버튼은 배경 Primary(#1751D9) 흰색 텍스트로 강조한다"
+            "condition": "활성 페이지 버튼은 배경 Primary(#0066FF) 흰색 텍스트로 강조한다"
           },
           {
-            "condition": "호버 시 Primary Strong(#3471FF)로 밝아진다"
+            "condition": "호버 시 Primary Strong(#3385FF)로 밝아진다"
           },
           {
             "condition": "비활성 번호 버튼은 패널 배경(#1a1a1a) 보조텍스트(#888)를 사용한다"
@@ -948,14 +977,14 @@ export const COMPONENT_DOCS = {
         ]
       }
     ],
-    "behavior": "번호나 화살표를 클릭하면 해당 페이지로 이동하며 활성 버튼이 Primary(#1751D9)로 강조된다. 페이지 수가 많아 표시 범위를 넘어서면 중간 구간을 생략 표시(...)로 접고 첫/끝 페이지는 항상 노출한다.",
+    "behavior": "번호나 화살표를 클릭하면 해당 페이지로 이동하며 활성 버튼이 Primary(#0066FF)로 강조된다. 페이지 수가 많아 표시 범위를 넘어서면 중간 구간을 생략 표시(...)로 접고 첫/끝 페이지는 항상 노출한다.",
     "usage": "교통 돌발 이벤트 로그나 CCTV 장비 목록처럼 수백 건 이상의 행을 다루는 테이블 하단에 배치해 페이지 단위로 탐색하게 한다. 한 화면 행 수(예: 20건)에 맞춰 총 페이지를 산출하고, 모바일 협폭 화면에서는 sibling-count를 줄여 번호 노출을 최소화한다.",
     "code": "import { Pagination } from '@pintel/ui';\n\nfunction EventLogFooter() {\n  const [page, setPage] = useState(1);\n\n  return (\n    <Pagination\n      currentPage={page}\n      totalPages={42}\n      siblingCount={1}\n      onPageChange={(next) => setPage(next)}\n    />\n  );\n}"
   },
   "nav-pagination-dots": {
     "name": "Pagination dots",
     "description": "캐러셀이나 온보딩 흐름의 현재 페이지 위치를 점(dot) 묶음으로 표시하고 활성 점을 브랜드 컬러로 강조하는 인디케이터입니다.",
-    "overview": "Pagination dots는 전체 페이지 수만큼의 점과 현재 위치를 나타내는 활성 점으로 구성되며, 다크 패널(#1a1a1a) 위에서 위치 맥락을 가볍게 전달합니다. 점은 기본(비활성), 활성, 호버/포커스 상태를 가지며 활성 점은 Primary Strong(#3471FF)로 확대 또는 가로 확장되어 강조됩니다. 관제 대시보드의 좁은 카드형 슬라이드나 온보딩 단계 표시처럼 정보 밀도가 높은 화면에서 최소한의 시각 요소로 진행 상황을 알려 줍니다.",
+    "overview": "Pagination dots는 전체 페이지 수만큼의 점과 현재 위치를 나타내는 활성 점으로 구성되며, 다크 패널(#1a1a1a) 위에서 위치 맥락을 가볍게 전달합니다. 점은 기본(비활성), 활성, 호버/포커스 상태를 가지며 활성 점은 Primary Strong(#3385FF)로 확대 또는 가로 확장되어 강조됩니다. 관제 대시보드의 좁은 카드형 슬라이드나 온보딩 단계 표시처럼 정보 밀도가 높은 화면에서 최소한의 시각 요소로 진행 상황을 알려 줍니다.",
     "properties": [
       {
         "name": "count",
@@ -982,7 +1011,7 @@ export const COMPONENT_DOCS = {
             "condition": "현재 페이지에 해당하는 점을 활성 상태로 지정"
           },
           {
-            "condition": "활성 점 색상 Primary Strong(#3471FF), 비활성 점 보조텍스트(#888)"
+            "condition": "활성 점 색상 Primary Strong(#3385FF), 비활성 점 보조텍스트(#888)"
           },
           {
             "condition": "활성 점은 6px 원에서 18px 너비의 라운드 바(둥글기 8px)로 확장되며 전환 200ms"
@@ -1001,22 +1030,22 @@ export const COMPONENT_DOCS = {
             "condition": "true이면 점 클릭으로 해당 페이지 이동, false이면 표시 전용"
           },
           {
-            "condition": "호버 시 비활성 점 색상이 보더(#2e2e2e)에서 Primary(#1751D9)로 변경"
+            "condition": "호버 시 비활성 점 색상이 보더(#2e2e2e)에서 Primary(#0066FF)로 변경"
           },
           {
-            "condition": "키보드 포커스 링 Primary Heavy(#004DFF) 2px"
+            "condition": "키보드 포커스 링 Primary Heavy(#0052CC) 2px"
           }
         ]
       }
     ],
-    "behavior": "activeIndex가 변경되면 이전 활성 점은 6px 원으로 축소되고 새 활성 점은 18px 라운드 바로 확장되며 색상이 Primary Strong(#3471FF)로 200ms 전환됩니다. interactive가 true일 때 점 클릭이나 방향키 입력으로 페이지를 이동하고 포커스 링(Primary Heavy #004DFF)으로 현재 대상을 표시합니다.",
+    "behavior": "activeIndex가 변경되면 이전 활성 점은 6px 원으로 축소되고 새 활성 점은 18px 라운드 바로 확장되며 색상이 Primary Strong(#3385FF)로 200ms 전환됩니다. interactive가 true일 때 점 클릭이나 방향키 입력으로 페이지를 이동하고 포커스 링(Primary Heavy #0052CC)으로 현재 대상을 표시합니다.",
     "usage": "교통 관제 카드 슬라이드(예: 교차로별 혼잡도 요약 페이지 전환)나 초기 온보딩 단계 안내에서 페이지 위치를 가볍게 보여줄 때 사용하며, 점 개수가 8개를 넘으면 숫자 페이지네이션으로 대체하는 것을 권장합니다. 표시 전용이 기본이고, 사용자가 직접 페이지를 넘겨야 하는 경우에만 interactive를 활성화하세요.",
     "code": "import { PaginationDots } from '@pintel/ui';\n\nfunction CongestionCarousel() {\n  const [page, setPage] = useState(0);\n\n  return (\n    <PaginationDots\n      count={5}\n      activeIndex={page}\n      interactive\n      onChange={setPage}\n    />\n  );\n}"
   },
   "nav-progress-indicator": {
     "name": "Progress indicator",
     "description": "작업 진행률(0~100%)을 선형 또는 원형 형태로 시각화하여 처리 상태를 직관적으로 전달하는 인디케이터입니다.",
-    "overview": "Progress indicator는 트랙(배경 바)과 채움(progress fill)으로 구성되며, 선형(Linear)과 원형(Circular) 두 가지 변형을 제공합니다. 진행률이 확정된 작업에는 determinate 상태를, 종료 시점을 알 수 없는 작업에는 흐름 애니메이션이 반복되는 indeterminate 상태를 사용합니다. 채움색은 핀텔 Primary(#1751D9)를 기본으로 하며, 다크 패널(#1a1a1a) 위에서 진행 상태를 명확히 구분합니다.",
+    "overview": "Progress indicator는 트랙(배경 바)과 채움(progress fill)으로 구성되며, 선형(Linear)과 원형(Circular) 두 가지 변형을 제공합니다. 진행률이 확정된 작업에는 determinate 상태를, 종료 시점을 알 수 없는 작업에는 흐름 애니메이션이 반복되는 indeterminate 상태를 사용합니다. 채움색은 핀텔 Primary(#0066FF)를 기본으로 하며, 다크 패널(#1a1a1a) 위에서 진행 상태를 명확히 구분합니다.",
     "properties": [
       {
         "name": "variant",
@@ -1033,7 +1062,7 @@ export const COMPONENT_DOCS = {
             "condition": "원형은 지름 40px 기준, 스트로크 두께 4px"
           },
           {
-            "condition": "트랙 배경은 보더 색(#2e2e2e), 채움은 Primary(#1751D9)"
+            "condition": "트랙 배경은 보더 색(#2e2e2e), 채움은 Primary(#0066FF)"
           }
         ]
       },
@@ -1043,7 +1072,7 @@ export const COMPONENT_DOCS = {
         "type": "enum",
         "conditions": [
           {
-            "condition": "determinate는 value(0~100) 비율만큼 채움색(#1751D9)으로 표시"
+            "condition": "determinate는 value(0~100) 비율만큼 채움색(#0066FF)으로 표시"
           },
           {
             "condition": "indeterminate는 채움 막대가 트랙을 반복 이동하는 흐름 애니메이션"
@@ -1073,7 +1102,7 @@ export const COMPONENT_DOCS = {
         ]
       }
     ],
-    "behavior": "determinate 모드에서는 value 변경 시 채움 폭(또는 원호 길이)이 부드럽게 전환되며, indeterminate 모드에서는 채움 막대가 트랙을 따라 반복 이동하는 애니메이션이 동작합니다. 작업 완료 시 채움색을 Primary(#1751D9)에서 Status Positive(#1ED45A)로 바꿔 종료 상태를 시각적으로 강조할 수 있습니다.",
+    "behavior": "determinate 모드에서는 value 변경 시 채움 폭(또는 원호 길이)이 부드럽게 전환되며, indeterminate 모드에서는 채움 막대가 트랙을 따라 반복 이동하는 애니메이션이 동작합니다. 작업 완료 시 채움색을 Primary(#0066FF)에서 Status Positive(#1ED45A)로 바꿔 종료 상태를 시각적으로 강조할 수 있습니다.",
     "usage": "진행 비율을 알 수 있는 작업(예: 교통 영상 분석 작업 큐 처리율, 누적 데이터 마이그레이션)에는 determinate 선형 변형을, 응답 대기처럼 종료 시점을 알 수 없는 작업(예: 관제 서버 연결 시도)에는 indeterminate 원형 변형을 사용합니다. 진행 지연이나 임계 초과가 감지되면 채움색을 Cautionary(#FFA938)로 바꿔 운영자가 즉시 인지하도록 합니다.",
     "code": "import { ProgressIndicator } from '@pintel/ui';\n\nfunction AnalysisQueueStatus() {\n  return (\n    <div>\n      <ProgressIndicator\n        variant='linear'\n        mode='determinate'\n        value={72}\n        showLabel\n      />\n\n      <ProgressIndicator\n        variant='circular'\n        mode='indeterminate'\n      />\n    </div>\n  );\n}"
   },
@@ -1113,7 +1142,7 @@ export const COMPONENT_DOCS = {
             "condition": "완료 단계 노드는 Status Positive (#1ED45A) 배경에 흰색 체크 아이콘 표시"
           },
           {
-            "condition": "현재 단계 노드는 Primary Strong (#3471FF) 배경과 1751D9 외곽 글로우로 강조"
+            "condition": "현재 단계 노드는 Primary Strong (#3385FF) 배경과 0066FF 외곽 글로우로 강조"
           },
           {
             "condition": "대기 단계 노드는 입력 배경 (#1e1e1e)에 보더 (#2e2e2e), 번호 텍스트는 보조텍스트 (#888)"
@@ -1147,7 +1176,7 @@ export const COMPONENT_DOCS = {
   "nav-tab": {
     "name": "Tab",
     "description": "같은 화면 안에서 콘텐츠 섹션을 전환하는 가로형 탭 내비게이션으로, 활성 탭 하단에 브랜드 컬러 언더라인을 표시합니다.",
-    "overview": "Tab은 가로로 나열된 라벨과 활성 탭 하단의 브랜드 컬러 언더라인으로 구성되며, 페이지 내 섹션 전환에 사용합니다. 기본(비활성), 활성, 호버, 비활성화(disabled) 상태를 가지며 라벨에 카운트 배지를 함께 표기하는 변형을 지원합니다. 필터 목적의 Tab button과 달리 화면 레이아웃 수준의 콘텐츠 묶음을 전환하는 용도로 구분해 사용합니다.",
+    "overview": "Tab은 가로로 나열된 라벨과 활성 탭 하단의 브랜드 컬러 언더라인으로 구성되며, 페이지 내 섹션 전환에 사용합니다. 기본(비활성), 활성, 호버, 비활성화(disabled) 상태를 가지며 라벨에 카운트 배지를 함께 표기하는 변형을 지원합니다. 필터 목적의 세그먼트 컨트롤과 달리 화면 레이아웃 수준의 콘텐츠 묶음을 전환하는 용도로 구분해 사용합니다.",
     "properties": [
       {
         "name": "active",
@@ -1155,13 +1184,13 @@ export const COMPONENT_DOCS = {
         "type": "boolean",
         "conditions": [
           {
-            "condition": "활성 탭 라벨은 기본 텍스트(흰색 계열)와 하단 언더라인 2px 브랜드 컬러(#3471FF Primary Strong) 적용"
+            "condition": "활성 탭 라벨은 기본 텍스트(흰색 계열)와 하단 언더라인 2px 브랜드 컬러(#3385FF Primary Strong) 적용"
           },
           {
             "condition": "비활성 탭 라벨은 보조텍스트(#888) 색상에 언더라인 없음"
           },
           {
-            "condition": "호버 시 라벨 색상이 밝아지며 #1751D9(Primary) 톤의 미세한 하단 인디케이터 노출"
+            "condition": "호버 시 라벨 색상이 밝아지며 #0066FF(Primary) 톤의 미세한 하단 인디케이터 노출"
           },
           {
             "condition": "disabled 탭은 #888보다 흐린 톤으로 표시되고 포인터 이벤트 차단"
@@ -1238,7 +1267,7 @@ export const COMPONENT_DOCS = {
             "condition": "true일 때 좌측에 24px 크기의 뒤로가기 아이콘 노출"
           },
           {
-            "condition": "기본 아이콘 색상은 보조 텍스트(#888), 호버 시 Primary Strong(#3471FF)"
+            "condition": "기본 아이콘 색상은 보조 텍스트(#888), 호버 시 Primary Strong(#3385FF)"
           },
           {
             "condition": "상위 화면으로 이동하는 진입점 역할"
@@ -1263,12 +1292,12 @@ export const COMPONENT_DOCS = {
             "condition": "위험 상태 알림 배지는 Native(위험) #FF6363, 주의 알림은 Cautionary #FFA938 사용"
           },
           {
-            "condition": "활성(눌림) 상태는 Primary(#1751D9) 배경으로 표시"
+            "condition": "활성(눌림) 상태는 Primary(#0066FF) 배경으로 표시"
           }
         ]
       }
     ],
-    "behavior": "뒤로가기 버튼을 누르면 이전 화면으로 이동하고, 우측 액션 아이콘은 호버 시 보조 텍스트(#888)에서 Primary Strong(#3471FF)으로 전환되며 클릭 시 화면 단위 동작(새로고침, 알림 열기 등)을 실행합니다. 화면 스크롤과 무관하게 상단에 고정되어 항상 현재 위치를 노출합니다.",
+    "behavior": "뒤로가기 버튼을 누르면 이전 화면으로 이동하고, 우측 액션 아이콘은 호버 시 보조 텍스트(#888)에서 Primary Strong(#3385FF)으로 전환되며 클릭 시 화면 단위 동작(새로고침, 알림 열기 등)을 실행합니다. 화면 스크롤과 무관하게 상단에 고정되어 항상 현재 위치를 노출합니다.",
     "usage": "교차로 관제 상세나 CCTV 영상 화면처럼 별도 화면으로 진입하는 경우 좌측에 뒤로가기와 위치 타이틀(예: 강남대로 12번 교차로)을 두고, 우측에는 실시간 새로고침과 위험 알림(Native 색상 배지) 액션을 배치합니다. 액션 아이콘은 3개 이내로 제한해 관제 화면에서 시선 분산을 줄이세요.",
     "code": "import { TopNavigation } from '@pintel/ui';\n\nfunction IntersectionDetailHeader() {\n  return (\n    <TopNavigation\n      showBack\n      title='강남대로 12번 교차로'\n      onBack={() => history.back()}\n      actions={[\n        <IconButton key='refresh' icon='refresh' onClick={handleRefresh} />,\n        <IconButton key='alert' icon='alert' badge='danger' onClick={openAlerts} />,\n      ]}\n    />\n  );\n}"
   },
@@ -1289,7 +1318,7 @@ export const COMPONENT_DOCS = {
             "condition": "본문 글자 14px, 입력 텍스트 흰색 계열, 플레이스홀더 보조텍스트 #888"
           },
           {
-            "condition": "포커스 시 보더가 Primary Strong #3471FF 로 강조"
+            "condition": "포커스 시 보더가 Primary Strong #3385FF 로 강조"
           },
           {
             "condition": "비활성 상태에서는 보더 #2e2e2e 유지하고 텍스트 #888 로 흐리게 처리"
@@ -1305,10 +1334,10 @@ export const COMPONENT_DOCS = {
             "condition": "패널 배경 #1a1a1a, 보더 #2e2e2e, 모서리 둥글기 8px"
           },
           {
-            "condition": "항목 hover 또는 키보드 선택 시 배경 Primary #1751D9"
+            "condition": "항목 hover 또는 키보드 선택 시 배경 Primary #0066FF"
           },
           {
-            "condition": "입력값과 일치하는 텍스트는 Primary Strong #3471FF 로 강조"
+            "condition": "입력값과 일치하는 텍스트는 Primary Strong #3385FF 로 강조"
           },
           {
             "condition": "결과가 없을 때 보조텍스트 #888 로 안내 문구(검색 결과 없음) 표시"
@@ -1375,7 +1404,7 @@ export const COMPONENT_DOCS = {
             "condition": "위로 드래그 시 full로 확장, 아래로 드래그 시 peek 또는 닫힘으로 전환"
           },
           {
-            "condition": "드래그 중에는 핸들 색상이 Primary Strong 3471FF로 강조"
+            "condition": "드래그 중에는 핸들 색상이 Primary Strong 3385FF로 강조"
           }
         ]
       },
@@ -1402,67 +1431,6 @@ export const COMPONENT_DOCS = {
     "behavior": "하단에서 위로 슬라이드되며 열리고 드래그 핸들 또는 딤 영역 탭으로 닫힙니다. 드래그 방향과 속도에 따라 peek와 full 높이 사이를 부드럽게 스냅 전환합니다.",
     "usage": "모바일 관제 화면에서 지도 위 특정 교차로나 CCTV 마커를 탭했을 때 상세 정보와 액션(영상 보기, 신고 접수 등)을 하단 시트로 노출하는 데 사용합니다. 위험 상태(Native FF6363) 알림 처리처럼 즉시 확인이 필요한 액션은 peek 높이로 먼저 띄워 시야 차단을 최소화하는 것을 권장합니다.",
     "code": "import { BottomSheet } from '@pintel/ui';\n\nfunction IntersectionActions({ open, onClose }) {\n  return (\n    <BottomSheet\n      open={open}\n      onClose={onClose}\n      heightVariant='peek'\n      dim\n    >\n      <BottomSheet.Handle />\n      <BottomSheet.Body>\n        <h3>강남대로 교차로</h3>\n        <p>실시간 혼잡도 및 CCTV 액션</p>\n        <button onClick={onClose}>영상 보기</button>\n      </BottomSheet.Body>\n    </BottomSheet>\n  );\n}"
-  },
-  "present-menu": {
-    "name": "Menu",
-    "description": "트리거 클릭 시 열려 아이콘과 구분선, 위험 항목을 포함한 작업 목록을 제공하는 컨텍스트/드롭다운 메뉴 컴포넌트입니다.",
-    "overview": "Menu는 트리거(아이콘 버튼 또는 텍스트 버튼)를 클릭하면 패널 형태로 펼쳐지는 컨텍스트 메뉴로, 항목 리스트와 선두 아이콘, 그룹을 나누는 구분선, 그리고 삭제 등 위험 동작을 표시하는 위험(destructive) 항목으로 구성됩니다. 각 항목은 기본(default), 호버(hover), 비활성(disabled) 상태를 가지며 호버 시 배경 하이라이트로 선택 위치를 명확히 보여줍니다. 관제 화면의 카메라 또는 이벤트 카드 우측 더보기 버튼에서 열려 상세 보기, 내보내기, 삭제 같은 작업을 한 곳에 모아 제공합니다.",
-    "properties": [
-      {
-        "name": "items",
-        "title": "메뉴 항목 (Items)",
-        "type": "array",
-        "conditions": [
-          {
-            "condition": "각 항목은 label(텍스트)과 선택적 icon(좌측 16px 아이콘), onClick으로 구성"
-          },
-          {
-            "condition": "패널 배경 #1a1a1a, 보더 #2e2e2e, 모서리 둥글기 8px, 항목 높이 36px"
-          },
-          {
-            "condition": "항목 글자 14px, 기본 텍스트는 본문색, 보조 설명은 보조텍스트 #888"
-          },
-          {
-            "condition": "호버 상태에서 배경 하이라이트 적용(Primary #1751D9 계열의 저채도 톤), 좌측 아이콘과 텍스트 정렬 유지"
-          }
-        ]
-      },
-      {
-        "name": "variant",
-        "title": "항목 변형 (Variant)",
-        "type": "enum",
-        "conditions": [
-          {
-            "condition": "default(일반 작업): 기본 텍스트색과 아이콘 사용"
-          },
-          {
-            "condition": "danger(위험/삭제): 텍스트와 아이콘에 Native 색 #FF6363 적용, 호버 시 동일 색의 저채도 배경 강조"
-          },
-          {
-            "condition": "divider(구분선): 그룹 분리용 1px 라인을 보더색 #2e2e2e로 표시하며 클릭 불가"
-          }
-        ]
-      },
-      {
-        "name": "disabled",
-        "title": "비활성 (Disabled)",
-        "type": "boolean",
-        "conditions": [
-          {
-            "condition": "true일 때 해당 항목의 텍스트와 아이콘 불투명도를 낮춰 보조텍스트 #888 수준으로 흐리게 표시"
-          },
-          {
-            "condition": "호버 하이라이트와 클릭 이벤트가 비활성화됨"
-          },
-          {
-            "condition": "권한이 없거나 현재 관제 상태에서 수행 불가한 작업(예: 녹화 중 삭제)을 막을 때 사용"
-          }
-        ]
-      }
-    ],
-    "behavior": "트리거 클릭 시 패널이 트리거 기준으로 정렬되어 열리고, 바깥 영역 클릭이나 Esc 입력 또는 항목 선택 시 닫힙니다. 키보드 위아래 방향키로 항목을 이동하며 호버와 동일한 하이라이트가 따라 움직이고 Enter로 실행됩니다.",
-    "usage": "교통 관제 대시보드에서 카메라 카드나 이벤트 행의 더보기 버튼에 연결해 상세 보기, 영상 내보내기, 즐겨찾기 같은 작업을 모아 제공하세요. 삭제처럼 되돌리기 어려운 작업은 반드시 danger 변형(Native #FF6363)으로 구분선 아래에 배치해 일반 작업과 시각적으로 분리하는 것을 권장합니다.",
-    "code": "import { Menu } from '@pintel/ui';\nimport { Eye, Download, Trash } from '@pintel/icons';\n\nfunction CameraCardMenu() {\n  return (\n    <Menu trigger={<IconButton icon={<MoreIcon />} />}>\n      <Menu.Item icon={<Eye />} onClick={openDetail}>\n        상세 보기\n      </Menu.Item>\n      <Menu.Item icon={<Download />} onClick={exportClip}>\n        영상 내보내기\n      </Menu.Item>\n      <Menu.Divider />\n      <Menu.Item variant='danger' icon={<Trash />} onClick={removeCamera}>\n        카메라 삭제\n      </Menu.Item>\n    </Menu>\n  );\n}"
   },
   "present-popover": {
     "name": "Popover",
@@ -1510,7 +1478,7 @@ export const COMPONENT_DOCS = {
             "condition": "default는 패널 배경(1a1a1a) 기반의 정보 표시용"
           },
           {
-            "condition": "info 강조 시 좌측 보더 또는 헤더에 Primary Strong(3471FF) 사용"
+            "condition": "info 강조 시 좌측 보더 또는 헤더에 Primary Strong(3385FF) 사용"
           },
           {
             "condition": "상태 알림용으로 정상 Positive(1ED45A), 주의 Cautionary(FFA938), 위험 Native(FF6363) 토큰으로 화살표와 헤더 강조 가능"
@@ -1533,7 +1501,7 @@ export const COMPONENT_DOCS = {
         "type": "enum",
         "conditions": [
           {
-            "condition": "default(기본)는 확인 버튼 배경에 Primary(파랑 1751D9)를 사용"
+            "condition": "default(기본)는 확인 버튼 배경에 Primary(파랑 0066FF)를 사용"
           },
           {
             "condition": "danger(위험)는 확인 버튼 배경에 Native 위험색(빨강 FF6363)을 사용하며 교통 차단이나 장비 강제 종료 같은 비가역 작업에 적용"
@@ -1571,7 +1539,7 @@ export const COMPONENT_DOCS = {
             "condition": "푸터 우측 정렬, 취소 버튼은 보더형(보더 2e2e2e, 텍스트 888)"
           },
           {
-            "condition": "확인 버튼은 variant에 따라 Primary(1751D9) 또는 Native(FF6363) 채움, 호버 시 Primary Strong(3471FF)으로 강조"
+            "condition": "확인 버튼은 variant에 따라 Primary(0066FF) 또는 Native(FF6363) 채움, 호버 시 Primary Strong(3385FF)으로 강조"
           },
           {
             "condition": "버튼 높이 36px, 모서리 둥글기 8px, 글자 14px"
@@ -1660,13 +1628,13 @@ export const COMPONENT_DOCS = {
     overview: '핀텔의 브랜드 아이덴티티를 상징하는 프라이머리 컬러는 지능형 영상 분석 시스템의 전문성과 공공 서비스의 신뢰성을 시각적으로 대변합니다. 대시보드의 복잡한 데이터 속에서 사용자가 시각적 질서를 빠르게 파악할 수 있도록 돕는 기준점이 됩니다.',
     customLayout: 'color-palette',
     colors: [
-      { name: 'Primary / Normal', hex: '#1751D9', role: '브랜드 대표색, 주요 버튼 및 활성 상태 하이라이트', variable: '--pintel-color-primary' },
-      { name: 'Primary / Strong', hex: '#3471FF', role: '호버(Hover) 또는 강조가 필요한 텍스트/아이콘', variable: '--pintel-color-primary-strong' },
-      { name: 'Primary / Heavy', hex: '#004DFF', role: '클릭(Active) 또는 배경과의 높은 대비가 필요한 요소', variable: '--pintel-color-primary-heavy' },
+      { name: 'Primary / Normal', hex: '#0066FF', role: '브랜드 대표색, 주요 버튼 및 활성 상태 하이라이트', variable: '--pintel-color-primary' },
+      { name: 'Primary / Strong', hex: '#3385FF', role: '호버(Hover) 또는 강조가 필요한 텍스트/아이콘', variable: '--pintel-color-primary-strong' },
+      { name: 'Primary / Heavy', hex: '#0052CC', role: '클릭(Active) 또는 배경과의 높은 대비가 필요한 요소', variable: '--pintel-color-primary-heavy' },
     ],
     behavior: '브랜드 컬러는 인터랙티브 요소(버튼, 선택 탭)의 활성 상태를 나타내며, 대시보드의 주요 지표나 강조해야 할 장비의 하이라이트에 적용됩니다. 관제 서비스 특성상 배경색과의 명도 대비를 4.5:1 이상으로 유지하여 시각적 피로도를 최소화하고 집중도를 높입니다.',
     usage: '공공기관의 신뢰성을 강조하는 주요 지점 마커, 메뉴 활성바, 데이터 강조 등에 사용합니다. 스마트 시티 대시보드의 전문성과 안정감을 전달하는 핵심 시각 요소입니다.',
-    code: `/* CSS Variables */\n:root {\n  --pintel-color-primary: #1751D9;\n  --pintel-color-primary-strong: #3471FF;\n  --pintel-color-primary-heavy: #004DFF;\n}\n\n/* Usage Example */\n.ds-button-primary {\n  background-color: var(--pintel-color-primary);\n  color: #ffffff;\n  border: none;\n  padding: 8px 16px;\n  border-radius: 4px;\n  cursor: pointer;\n}`
+    code: `/* CSS Variables */\n:root {\n  --pintel-color-primary: #0066FF;\n  --pintel-color-primary-strong: #3385FF;\n  --pintel-color-primary-heavy: #0052CC;\n}\n\n/* Usage Example */\n.ds-button-primary {\n  background-color: var(--pintel-color-primary);\n  color: #ffffff;\n  border: none;\n  padding: 8px 16px;\n  border-radius: 4px;\n  cursor: pointer;\n}`
   },
   'color-status': {
     name: 'Color.Status',
@@ -1677,21 +1645,57 @@ export const COMPONENT_DOCS = {
       { name: 'Status / Positive', hex: '#1ED45A', role: '성공, 안전, 연결됨, 정상 작동 상태', variable: '--pintel-color-positive' },
       { name: 'Status / Cautionary', hex: '#FFA938', role: '주의, 대기, 데이터 지연, 이상 징후', variable: '--pintel-color-cautionary' },
       { name: 'Status / Native', hex: '#FF6363', role: '위험, 장애, 사고 발생, 긴급 조치 필요', variable: '--pintel-color-native' },
-      { name: 'Accent / Red', hex: '#FF5C5C', role: '앞쪽 요소 강조 — 빨강 (시각적 대비)', variable: '--pintel-color-accent-red' },
-      { name: 'Accent / Red Orange', hex: '#FF7847', role: '앞쪽 요소 강조 — 레드 오렌지', variable: '--pintel-color-accent-red-orange' },
-      { name: 'Accent / Orange', hex: '#FF9F2E', role: '앞쪽 요소 강조 — 주황', variable: '--pintel-color-accent-orange' },
-      { name: 'Accent / Lime', hex: '#8CD929', role: '앞쪽 요소 강조 — 라임', variable: '--pintel-color-accent-lime' },
-      { name: 'Accent / Green', hex: '#2ED45A', role: '앞쪽 요소 강조 — 초록', variable: '--pintel-color-accent-green' },
-      { name: 'Accent / Cyan', hex: '#1FC8E6', role: '앞쪽 요소 강조 — 시안', variable: '--pintel-color-accent-cyan' },
-      { name: 'Accent / Light Blue', hex: '#45A6F5', role: '앞쪽 요소 강조 — 라이트 블루', variable: '--pintel-color-accent-light-blue' },
-      { name: 'Accent / Blue', hex: '#5B8DEF', role: '앞쪽 요소 강조 — 파랑', variable: '--pintel-color-accent-blue' },
-      { name: 'Accent / Violet', hex: '#9B8CFA', role: '앞쪽 요소 강조 — 바이올렛', variable: '--pintel-color-accent-violet' },
-      { name: 'Accent / Purple', hex: '#C77DFF', role: '앞쪽 요소 강조 — 퍼플', variable: '--pintel-color-accent-purple' },
-      { name: 'Accent / Pink', hex: '#FF7AD4', role: '앞쪽 요소 강조 — 핑크', variable: '--pintel-color-accent-pink' },
     ],
     behavior: '실시간 관제 피드백을 직관적으로 전달합니다. 정상(Positive)은 연결됨/안전/정상 작동을, 경고(Cautionary)는 주의/지체/이상 징후를, 위험(Native)은 사고/신호 위반/장비 장애 등 즉각적 조치가 필요한 상황을 의미합니다. 색상 외에도 심볼(아이콘)을 병기하여 정보 전달의 오류를 방지합니다.',
     usage: '도로 교통 신호 상태, 장비 연결 가용성, 도시 안전 이벤트 발생 여부 등 시스템의 상태를 구분하는 모든 영역에 적용합니다.',
     code: `/* Status Colors Usage */\n.status-positive { color: #1ED45A; }   /* 정상 / 안전 */\n.status-cautionary { color: #FFA938; } /* 주의 / 지체 */\n.status-native { color: #FF6363; }     /* 위험 / 장애 */\n\n/* Indicator Example */\n.status-dot {\n  width: 8px;\n  height: 8px;\n  border-radius: 50%;\n  display: inline-block;\n}\n.status-dot.positive { background-color: #1ED45A; }`
+  },
+  'color-accent': {
+    name: 'Color.Accent',
+    description: '데이터 시각화·범례·태그 등에서 항목을 구분하기 위해 쓰는 전경(Foreground) 강조 색상 팔레트입니다.',
+    overview: 'Accent는 시각적 대비를 명확히 유지하기 위해 앞쪽 요소(차트 계열, 카테고리 칩, 다중 범례)에 사용하는 11색 팔레트입니다. 빨강~핑크까지 색상환을 따라 배치되어, 여러 항목을 동시에 구분해야 할 때 인접 색과 충분히 구별됩니다. 상태(Status)와 달리 의미가 고정돼 있지 않으며, 데이터 계열 구분 등 "구별"이 목적입니다.',
+    customLayout: 'color-palette',
+    colors: [
+      { name: 'Accent / Red', hex: '#FF5C5C', role: '전경 강조 — 빨강', variable: '--pintel-color-accent-red' },
+      { name: 'Accent / Red Orange', hex: '#FF7847', role: '전경 강조 — 레드 오렌지', variable: '--pintel-color-accent-red-orange' },
+      { name: 'Accent / Orange', hex: '#FF9F2E', role: '전경 강조 — 주황', variable: '--pintel-color-accent-orange' },
+      { name: 'Accent / Lime', hex: '#8CD929', role: '전경 강조 — 라임', variable: '--pintel-color-accent-lime' },
+      { name: 'Accent / Green', hex: '#2ED45A', role: '전경 강조 — 초록', variable: '--pintel-color-accent-green' },
+      { name: 'Accent / Cyan', hex: '#1FC8E6', role: '전경 강조 — 시안', variable: '--pintel-color-accent-cyan' },
+      { name: 'Accent / Light Blue', hex: '#45A6F5', role: '전경 강조 — 라이트 블루', variable: '--pintel-color-accent-light-blue' },
+      { name: 'Accent / Blue', hex: '#5B8DEF', role: '전경 강조 — 파랑', variable: '--pintel-color-accent-blue' },
+      { name: 'Accent / Violet', hex: '#9B8CFA', role: '전경 강조 — 바이올렛', variable: '--pintel-color-accent-violet' },
+      { name: 'Accent / Purple', hex: '#C77DFF', role: '전경 강조 — 퍼플', variable: '--pintel-color-accent-purple' },
+      { name: 'Accent / Pink', hex: '#FF7AD4', role: '전경 강조 — 핑크', variable: '--pintel-color-accent-pink' },
+    ],
+    behavior: '여러 데이터 계열·카테고리를 동시에 표시할 때 팔레트 순서대로 배정해 인접 항목이 구별되게 합니다. 상태 의미(정상/주의/위험)는 Status 색을 쓰고, Accent는 "의미 없는 구분"에만 사용합니다. 다크 배경 위 대비를 고려해 채도·명도를 조정한 값입니다.',
+    usage: '차트 계열 색, 다중 범례, 카테고리 태그/칩, 지도 레이어 구분 등 "항목 구별"이 필요한 곳에 사용합니다. 단일 강조나 브랜드 표현에는 Primary를 사용하세요.',
+    code: `/* CSS Variables — Accent palette */\n:root {\n  --pintel-color-accent-red: #FF5C5C;\n  --pintel-color-accent-orange: #FF9F2E;\n  --pintel-color-accent-green: #2ED45A;\n  --pintel-color-accent-blue: #5B8DEF;\n  --pintel-color-accent-purple: #C77DFF;\n  /* …red-orange · lime · cyan · light-blue · violet · pink */\n}\n\n/* Chart series example */\nconst SERIES = [\n  'var(--pintel-color-accent-blue)',\n  'var(--pintel-color-accent-green)',\n  'var(--pintel-color-accent-orange)',\n];`
+  },
+  'color-neutral': {
+    name: 'Color.Neutral',
+    description: '배경·표면·테두리·텍스트의 명도 위계를 만드는 무채색(그레이) 스케일입니다.',
+    overview: 'Neutral은 밝음(99)에서 어둠(5)까지 14단계로 구성된 그레이 램프입니다. 숫자는 명도(Lightness, %)에 대응하며, 다크 테마 관제 UI의 배경·패널·구분선·보조 텍스트 위계를 일관되게 쌓는 기반입니다. 큰 숫자일수록 밝고(텍스트·전경), 작은 숫자일수록 어둡습니다(배경·딥 서피스).',
+    customLayout: 'color-palette',
+    colors: [
+      { name: 'Neutral / 99', hex: '#FCFCFC', role: '최상위 전경 텍스트 / 라이트 표면', variable: '--pintel-color-neutral-99' },
+      { name: 'Neutral / 95', hex: '#F2F2F2', role: '강조 텍스트 / 밝은 표면', variable: '--pintel-color-neutral-95' },
+      { name: 'Neutral / 90', hex: '#E6E6E6', role: '기본 텍스트(다크 위)', variable: '--pintel-color-neutral-90' },
+      { name: 'Neutral / 80', hex: '#CCCCCC', role: '본문 텍스트', variable: '--pintel-color-neutral-80' },
+      { name: 'Neutral / 70', hex: '#B3B3B3', role: '보조 텍스트', variable: '--pintel-color-neutral-70' },
+      { name: 'Neutral / 60', hex: '#999999', role: '비활성 텍스트 / 플레이스홀더', variable: '--pintel-color-neutral-60' },
+      { name: 'Neutral / 50', hex: '#808080', role: '중간 그레이 (아이콘·디바이더 강)', variable: '--pintel-color-neutral-50' },
+      { name: 'Neutral / 40', hex: '#666666', role: '약한 아이콘 / 테두리 강조', variable: '--pintel-color-neutral-40' },
+      { name: 'Neutral / 30', hex: '#4D4D4D', role: '테두리 / 구분선(밝은 편)', variable: '--pintel-color-neutral-30' },
+      { name: 'Neutral / 22', hex: '#383838', role: '테두리 / 컨트롤 외곽', variable: '--pintel-color-neutral-22' },
+      { name: 'Neutral / 20', hex: '#333333', role: '카드·패널 테두리', variable: '--pintel-color-neutral-20' },
+      { name: 'Neutral / 15', hex: '#262626', role: '카드·표면 배경', variable: '--pintel-color-neutral-15' },
+      { name: 'Neutral / 10', hex: '#1A1A1A', role: '패널 배경 / 베이스 서피스', variable: '--pintel-color-neutral-10' },
+      { name: 'Neutral / 5',  hex: '#0D0D0D', role: '최하위 딥 배경', variable: '--pintel-color-neutral-5' },
+    ],
+    behavior: '숫자(명도)가 클수록 전경(텍스트·아이콘), 작을수록 배경(서피스)에 사용합니다. 인접 단계 간 대비가 작으므로 텍스트/배경 조합은 충분한 명도 차(권장 4.5:1 이상)를 두고 선택합니다. 단일 의미(예: "패널 배경")에는 같은 단계를 일관되게 재사용합니다.',
+    usage: '다크 테마의 배경(5~15)·카드/패널(15~22)·테두리/구분선(20~40)·보조~본문 텍스트(60~90)·강조 텍스트(95~99) 위계에 사용합니다. 화면마다 다른 회색을 임의로 쓰지 말고 이 스케일에서 선택하세요.',
+    code: `/* CSS Variables — Neutral scale */\n:root {\n  --pintel-color-neutral-99: #FCFCFC;\n  --pintel-color-neutral-90: #E6E6E6;\n  --pintel-color-neutral-60: #999999;\n  --pintel-color-neutral-20: #333333;\n  --pintel-color-neutral-10: #1A1A1A;\n  --pintel-color-neutral-5:  #0D0D0D;\n}\n\n/* Usage */\n.panel { background: var(--pintel-color-neutral-10); border: 1px solid var(--pintel-color-neutral-20); }\n.text-secondary { color: var(--pintel-color-neutral-70); }`
   },
 
   // ─── Core: Typography ──────────────────────────────
@@ -1699,22 +1703,9 @@ export const COMPONENT_DOCS = {
     name: 'Icon',
     description: '연상되는 유사한 기능이나 콘텐츠를 시각적으로 표현하는 요소로, 사용자가 인터페이스를 빠르게 탐색할 수 있도록 돕습니다.',
     customLayout: 'iconography',
-    overview: 'Material Symbols 기반 핀텔 아이콘 세트입니다. 모든 아이콘은 20×20 그리드에 정렬되며, 활성(#00A9FF) · 주의(#FFA938) · 위험(#FF6363) · 비활성(#B1B1B2) 상태 색을 사용합니다.',
-    icons: [
-      { name: 'check_circle', label: '확인 / 완료' },
-      { name: 'check_on', label: '체크 ON' },
-      { name: 'check_off', label: '체크 OFF' },
-      { name: 'arrow_drop_down', label: '드롭다운' },
-      { name: 'calendar_today', label: '기간 / 날짜' },
-      { name: 'search', label: '검색' },
-      { name: 'trending_up', label: '추세 상승' },
-      { name: 'cancel', label: '취소 / 지우기' },
-      { name: 'sensors', label: '센서 / 탐지' },
-      { name: 'error', label: '오류 / 경고' },
-      { name: 'nest_cam_outdoor', label: 'CCTV 카메라' },
-      { name: 'arrow_back_ios', label: '이전 / 뒤로' },
-    ],
-    usage: '버튼 · 입력 · 리스트 · 맵 마커 등에서 기능을 직관적으로 전달할 때 사용합니다. 같은 의미에는 같은 아이콘을 일관되게 적용하세요.',
+    overview: 'Figma "디자인 시스템 3" Icon 섹션에서 추출한 핀텔 아이콘 세트입니다. 모든 아이콘은 20×20 그리드에 정렬되며, 활성(#0066FF) · 주의(#FFA938) · 위험(#FF6363) · 비활성(#B1B1B2) 상태 색을 사용합니다. 토큰 단일 출처(tokens.js ICONS)에서 정의되어 화면·MCP가 동일 목록을 공유합니다.',
+    icons: ICONS,
+    usage: '버튼 · 입력 · 리스트 · 맵 마커 등에서 기능을 직관적으로 전달할 때 사용합니다. 같은 의미에는 같은 아이콘을 일관되게 적용하세요. 코드에서는 <Icon name="search" size={20} /> 형태로 사용합니다.',
   },
   'typo-style': {
     name: 'Typography.Style',
@@ -1745,11 +1736,11 @@ export const COMPONENT_DOCS = {
   },
   'typo-wordbreak': {
     name: 'Word break',
-    description: '웹(개발) 환경에서는 텍스트가 음절(어절) 단위로 나뉘어 자동으로 줄바꿈됩니다. 따라서 디자인할 때 별도로 줄바꿈을 지정하지 않아도 됩니다.',
+    description: '웹(개발) 환경에서는 텍스트가 어절(단어) 단위로 나뉘어 자동으로 줄바꿈됩니다. 따라서 디자인할 때 별도로 줄바꿈을 지정하지 않아도 됩니다.',
     customLayout: 'word-break',
-    overview: '한글은 word-break: keep-all 규칙을 적용해 단어(어절)가 중간에서 끊기지 않고 어절 단위로 줄바꿈됩니다. 아래 예시에서 분홍색으로 강조된 각 덩어리가 줄바꿈의 최소 단위입니다.',
+    overview: '줄바꿈 정본 토큰 WRAP = { word-break: keep-all; overflow-wrap: break-word; } 을 전역(body) 기본으로 적용합니다. ① keep-all — 한글은 단어(어절)가 중간에서 끊기지 않고 어절 단위로 줄바꿈되며(아래 예시의 분홍색 덩어리가 최소 단위), 영문 단어도 통째로 유지됩니다. ② overflow-wrap: break-word — 컨테이너보다 긴 단일 토큰(URL·식별자 등)만 예외적으로 끊어 오버플로를 막습니다. 이 조합이 한글 포함 웹 텍스트에서 가장 보편적이고 안전한 기본값입니다.',
     words: ['분석을', '넘어', '실행으로,', '도시의', '내일을', '운영합니다'],
-    usage: '제목·본문 등 한글 텍스트 영역에는 word-break: keep-all 을 기본 적용합니다. 강제 줄바꿈(<br>)이나 고정 너비로 줄을 나누지 말고, 컨테이너 너비에 따라 어절 단위로 자연스럽게 흐르도록 둡니다.'
+    usage: '제목·본문 등 모든 텍스트에 WRAP 토큰(keep-all + overflow-wrap: break-word)이 전역 기본으로 적용됩니다. 강제 줄바꿈(<br>)이나 고정 너비로 줄을 나누지 말고, 컨테이너 너비에 따라 어절 단위로 자연스럽게 흐르도록 둡니다. 단일 줄 고정이 필요한 곳(라벨·표 셀 등)에서만 white-space: nowrap 으로 개별 예외 처리합니다. 코드에서 개별 강제 적용이 필요하면 인라인에 {...WRAP} 를 스프레드합니다.'
   },
 
   // ─── Core: Layout & Depth ──────────────────────────
@@ -2247,9 +2238,9 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: 'Primary Solid (브랜드 솔리드)',
         type: 'ColorToken',
         conditions: [
-          { condition: "Normal: 배경 #1751D9 (--pintel-color-primary), 글자 #FFFFFF" },
-          { condition: "Hovered: 배경 #3471FF (--pintel-color-primary-strong), 글자 #FFFFFF" },
-          { condition: "Pressed: 배경 #004DFF (--pintel-color-primary-heavy), 글자 #FFFFFF" },
+          { condition: "Normal: 배경 #0066FF (--pintel-color-primary), 글자 #FFFFFF" },
+          { condition: "Hovered: 배경 #3385FF (--pintel-color-primary-strong), 글자 #FFFFFF" },
+          { condition: "Pressed: 배경 #0052CC (--pintel-color-primary-heavy), 글자 #FFFFFF" },
           { condition: "Disabled: 배경 #F0F0F0, 글자 #B0B0B0" },
         ],
       },
@@ -2269,9 +2260,9 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: 'Primary Outline (브랜드 아웃라인)',
         type: 'ColorToken',
         conditions: [
-          { condition: "Normal: 배경 #FFFFFF, 테두리 #1751D9, 글자 #1751D9" },
-          { condition: "Hovered: 배경 #EBF2FF, 테두리 #3471FF, 글자 #3471FF" },
-          { condition: "Pressed: 배경 #DCE9FF, 테두리 #004DFF, 글자 #004DFF" },
+          { condition: "Normal: 배경 #FFFFFF, 테두리 #0066FF, 글자 #0066FF" },
+          { condition: "Hovered: 배경 #EBF2FF, 테두리 #3385FF, 글자 #3385FF" },
+          { condition: "Pressed: 배경 #DCE9FF, 테두리 #0052CC, 글자 #0052CC" },
           { condition: "Disabled: 배경 #FFFFFF, 테두리 #E5E7EB, 글자 #D1D5DB" },
         ],
       },
@@ -2297,11 +2288,18 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
     ],
     behavior: '마우스가 버튼 영역에 들어가면 호버(Hovered) 피드백을 통해 컴포넌트가 활성화되었음을 시각적으로 알려주며, 마우스 포인터가 포인팅 형태가 됩니다. 클릭 및 탭 동작 시점(Pressed)에는 명도를 낮춰 즉각적인 상태 반응을 전달합니다. 비활성(Disabled) 상태의 경우 시스템 동작을 보증할 수 없는 조건에서 상호작용 및 포커스가 차단됩니다.',
     usage: 'Primary Solid: 한 화면에서 시각적으로 가장 강력해야 하는 단 하나의 결정적 액션(예: 저장, 등록, 분석 시작)에 활용합니다.\nSecondary Solid: 일반적인 긍정 혹은 주요 동작과 무관한 다수 버튼(예: 새로고침, 목록보기)에 사용합니다.\nPrimary Outline: 메인 솔리드 버튼에 대한 서브 동작(예: 장비 편집, 필터 지정)에 사용하여 시각적 위계를 관리합니다.\nSecondary Outline: 취소, 닫기, 이전 화면 이동 등 정보의 중요도가 가장 낮거나 취소 성격의 액션에 매칭합니다.',
+    tokensUsed: ['Primary Solid: #0066FF / hover #3385FF / press #0052CC', '텍스트 #fff', 'TYPE.label1/caption1', 'W.semibold(Primary)/medium', 'SP 패딩 · radius 4~8'],
+    aliases: ['버튼', '저장', '등록', '적용', '확인', '실행', '분석 시작', '액션 버튼', 'button', 'primary button', 'submit'],
+    antiPatterns: ['한 화면에 Primary Solid 여러 개 금지 → 결정적 액션 하나만', '폐기된 구 파랑 Primary 값 사용 금지 → 확정 #0066FF 세트만', '수동 상태 표시(경과 시간·미열람 등)를 버튼처럼 보이게 만들지 말 것(보조 텍스트로)'],
+    examples: [
+      "<button className='ds-btn ds-btn-primary'>저장</button>",
+      "// 서브 동작은 Outline, 취소/닫기는 Secondary Outline로 위계 관리",
+    ],
     code: `/* CSS Variables */
 :root {
-  --pintel-color-primary: #1751D9;
-  --pintel-color-primary-strong: #3471FF;
-  --pintel-color-primary-heavy: #004DFF;
+  --pintel-color-primary: #0066FF;
+  --pintel-color-primary-strong: #3385FF;
+  --pintel-color-primary-heavy: #0052CC;
 }
 
 /* 1. Primary Solid */
@@ -2384,68 +2382,72 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
   cursor: not-allowed;
 }`
   },
-  'button-tab': {
-    name: 'Tab button',
-    description: '여러 옵션 중 하나를 선택하는 세그먼트 제어(Segmented Controls) 및 필터 전환 탭 형태의 버튼입니다.',
-    overview: '대시보드 상단 필터 영역의 핵심 요소입니다. 단위(일별/주별/월별), 기간(7일/14일/30일), 지표(활용도/평균시간/건수)의 전환을 위해 배경 박스(#1e1e1e) 내에 나란히 배열되며, 선택된 활성 상태(Active)는 브랜드 고유 배경색(#1751D9 또는 #3471FF)과 흰색 텍스트로 강조되고, 비활성 상태는 어두운 그레이(#888) 색상으로 표현되어 시각적 위계를 효과적으로 제어합니다.',
+  'button-icon': {
+    name: 'Icon button',
+    description: '라벨 없이 아이콘만으로 단일 동작을 실행하는 버튼입니다. 좁은 공간이나 도구 모음에서 사용합니다.',
+    overview: '아이콘 버튼은 동작을 나타내는 단일 아이콘과 이를 감싸는 컨테이너(원형 또는 둥근 사각)로 구성됩니다. 의미가 명확한 아이콘(검색·편집·삭제·재생 등)에 한해 라벨을 생략하며, 접근성을 위해 aria-label을 반드시 제공합니다.',
     properties: [
       {
-        name: 'layout',
-        title: '세그먼트 사양',
+        name: 'anatomy',
+        title: '구성 (Anatomy)',
         type: 'string',
         conditions: [
-          { condition: "내부 여백: 가로 16px (Spacing 16), 세로 8px (Spacing 08)" },
-          { condition: "글자 크기: 13px (Body 1)" },
-          { condition: "모서리 둥글기: 활성 상태 탭 4px, 전체 래퍼 6px" },
+          { condition: "1. Icon: 동작을 나타내는 단일 아이콘 — Foundation 아이콘 세트, 18~20px" },
+          { condition: "2. Container: 아이콘을 감싸는 클릭 영역 — 원형 또는 둥근 사각, 권장 크기 32~40px" },
         ],
       },
       {
-        name: 'colors-active',
-        title: '활성 상태 (Active State)',
-        type: 'ColorToken',
+        name: 'variants',
+        title: '변형 (Variants)',
+        type: 'string',
         conditions: [
-          { condition: "단위/지표 필터: 배경 #1751D9, 글자 #FFFFFF (Bold)" },
-          { condition: "기간 필터: 배경 #3471FF, 글자 #FFFFFF (Bold)" },
+          { condition: "Normal: 컨테이너 없는 평면 아이콘 — 호버 시에만 연한 배경" },
+          { condition: "Outlined: 1px 테두리 + 투명 배경" },
+          { condition: "Solid: 채움 — 핀텔 Primary(Normal #0066FF / Hovered #3385FF / Pressed #0052CC)" },
+          { condition: "Background/Normal: 연한 중립 채움 + 중립 아이콘" },
+          { condition: "Background/Alternative: 진한 중립 채움 + 흰색 아이콘" },
         ],
       },
       {
-        name: 'colors-inactive',
-        title: '비활성 상태 (Inactive State)',
-        type: 'ColorToken',
+        name: 'states',
+        title: '상태 (States)',
+        type: 'enum',
         conditions: [
-          { condition: "글자 #888888, 호버 시 밝기 상승 (#aaaaaa)" },
+          { condition: "Normal: 기본" },
+          { condition: "Hovered: 배경을 한 단계 진하게 (Solid는 #3385FF)" },
+          { condition: "Pressed: 더 진하게 (Solid는 #0052CC)" },
+          { condition: "Disabled: 투명도 낮춤, 클릭 차단" },
         ],
       },
     ],
-    code: `<div className="ds-segmented">
-  <button className="ds-seg is-active">일별</button>
-  <button className="ds-seg">주별</button>
-  <button className="ds-seg">월별</button>
-</div>
+    behavior: '클릭 시 연결된 단일 동작을 즉시 실행합니다. 아이콘 의미가 모호할 수 있는 경우 Tooltip을 함께 제공합니다.',
+    usage: '툴바, 테이블 행 액션, 카드 우상단 동작(편집/삭제/더보기) 등 라벨을 둘 공간이 부족한 곳에 사용합니다.',
+    tokensUsed: ['컨테이너 32~40px(조밀 시 축소)', '아이콘 18~20px', 'Solid: #0066FF / #3385FF / #0052CC', 'Normal: 투명 + 호버 시 연한 배경', 'aria-label 필수'],
+    aliases: ['아이콘 버튼', '삭제 버튼', '편집 버튼', '더보기', '아이콘만', '툴바 버튼', 'icon button', 'delete button', 'edit button'],
+    antiPatterns: ['aria-label 없이 사용 금지(접근성)', '의미가 모호한 아이콘 단독 사용 금지 → Tooltip 동반', '라벨이 필요하면 아이콘+텍스트 버튼(Button/Tbtn) 사용'],
+    examples: [
+      "<button className='ds-icon-button' aria-label='삭제'><svg>{/* trash */}</svg></button>",
+      "// 컨테이너 원형(50%) 또는 둥근 사각(8) · 조밀한 팝업에선 26~28px로 축소",
+    ],
+    code: `<button className="ds-icon-button" aria-label="재생">
+  <svg>{/* play icon */}</svg>
+</button>
 
 /* CSS */
-.ds-segmented {
+.ds-icon-button {
+  width: 40px;
+  height: 40px;
   display: inline-flex;
-  gap: 4px;                 /* Spacing 04 */
-  padding: 4px;             /* Spacing 04 */
-  background: #1e1e1e;
-  border-radius: 6px;
-}
-.ds-seg {
-  padding: 8px 16px;        /* Spacing 08 / Spacing 16 */
-  font-size: 13px;
-  color: #888888;
-  background: transparent;
-  border: none;
-  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #3a3a42;
+  border-radius: 8px;            /* 원형은 50% */
+  background: #2a2a30;
+  color: #d4d4d8;
   cursor: pointer;
 }
-.ds-seg:hover { color: #aaaaaa; }
-.ds-seg.is-active {
-  background: #1751D9;      /* 기간 필터는 #3471FF */
-  color: #ffffff;
-  font-weight: 700;
-}`,
+.ds-icon-button:hover { background: #34343c; }
+.ds-icon-button:disabled { opacity: 0.4; cursor: not-allowed; }`,
   },
   'category-default': {
     name: 'Category',
@@ -2468,7 +2470,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '활성 칩 (Active Chip)',
         type: 'ColorToken',
         conditions: [
-          { condition: "배경 #1751D9 (--pintel-color-primary), 글자 #FFFFFF (Bold)" },
+          { condition: "배경 #0066FF (--pintel-color-primary), 글자 #FFFFFF (Bold)" },
           { condition: "대체 스타일: 배경 #18181B, 글자 #FFFFFF (다크 강조형)" },
         ],
       },
@@ -2512,7 +2514,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
   cursor: pointer;
 }
 .ds-category-chip.is-active {
-  background: var(--pintel-color-primary, #1751D9);
+  background: var(--pintel-color-primary, #0066FF);
   color: #fff;
   font-weight: 700;
 }
@@ -3137,21 +3139,70 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
     ]
   },
 
+  'section-header-default': {
+    name: 'Section header',
+    description: '섹션·패널·카드의 상단을 구성하는 헤더입니다. 제목 + 제목 옆 보조 정보(상태·개수 Chip) + 우측 트레일링(액션·메타) 슬롯으로 이루어집니다.',
+    overview: '관제 대시보드의 위젯·패널마다 반복되는 가장 사용 빈도가 높은 헤더 패턴입니다. 좌측 Heading으로 영역을 식별하고, 그 옆 Heading content 슬롯에 상태·개수 등 보조 정보(주로 Chip)를 두며, 우측 Trailing content 슬롯에는 "더보기" 링크·새로고침 아이콘·갱신 시각 같은 액션/메타를 배치합니다. 세 슬롯 모두 선택적이며, 트레일링은 항상 우측 끝으로 정렬됩니다.',
+    behavior: 'Heading content와 Trailing content는 선택 슬롯으로, 없으면 영역을 차지하지 않습니다(트레일링은 marginLeft:auto 로 항상 우측 끝 정렬). Trailing이 링크·아이콘 버튼 등 인터랙티브 요소이면 Hover/Active 피드백은 해당 컴포넌트(Text button·Icon button)의 규칙을 따릅니다. 헤더 자체는 상태를 갖지 않는 레이아웃 컨테이너입니다.',
+    usage: '카드/패널 타이틀("알림" + 개수 Chip + "모두 보기"), 위젯 헤더("이벤트" + LIVE 상태 + 새로고침), 테이블 섹션 제목("접속 기기" + 정상 + 내보내기) 등에 사용합니다. Trailing은 단순 장식 텍스트보다 더보기·필터·갱신 시각 같은 실사용 액션/메타로 채우는 것을 권장합니다. Heading content의 Chip은 자유 텍스트보다 상태·개수·카테고리로 용도를 한정해 Library 화면 간 일관성을 유지하세요.',
+    properties: [
+      {
+        name: 'heading',
+        title: '제목 (Heading)',
+        type: 'ReactNode',
+        conditions: [
+          { condition: '타이포: Typography.Style Heading 2 (20px / 28px)' },
+          { condition: '굵기: Bold(700)' },
+          { condition: '색상: Label.Strong (#ffffff, 다크 표면 위 최상위 텍스트)' }
+        ]
+      },
+      {
+        name: 'headingContent',
+        title: '헤딩 콘텐츠 (Heading content)',
+        type: 'ReactNode',
+        conditions: [
+          { condition: '제목 우측에 배치되는 보조 정보 슬롯 (선택)' },
+          { condition: '주 사용처: 상태·개수·카테고리 Chip' },
+          { condition: '제목과의 간격: SP[8] (8px)' }
+        ]
+      },
+      {
+        name: 'trailing',
+        title: '트레일링 콘텐츠 (Trailing content)',
+        type: 'ReactNode',
+        conditions: [
+          { condition: '우측 끝 정렬(marginLeft: auto)되는 액션·메타 슬롯 (선택)' },
+          { condition: '주 사용처: 더보기·필터(Text button) · 새로고침(Icon button) · 갱신 시각(메타 텍스트)' },
+          { condition: '메타 텍스트 타이포: Body 2 (15px / 22px), Medium, 보조 텍스트 색' }
+        ]
+      }
+    ]
+  },
+
   // ───  ──────────────────────────────────->->->->->->->->->->->->->->->->
   'control-checkbox': {
     name: 'Checkbox',
     description: '여러 항목 중 다수를 동시에 선택하거나, 단일 항목의 동의 여부를 표시하는 다중 선택 컨트롤입니다.',
-    overview: '체크박스는 독립적인 다중 선택(Multi-select)에 사용됩니다. 선택(Checked), 미선택(Unchecked), 일부 선택(Indeterminate), 비활성(Disabled) 상태를 가지며, 선택 시 브랜드 컬러(#1751D9)로 채워지고 흰색 체크 아이콘이 표시됩니다.',
+    overview: '체크박스는 독립적인 다중 선택(Multi-select)에 사용됩니다. Library 화면(이벤트 조회·권한 설정 등)은 디자인 시스템 아이콘 check_on/check_off를 그대로 써서 선택(Checked)·미선택(Unchecked)을 표현합니다. 표·그리드의 일괄 선택 헤더와 셀에도 동일 아이콘을 사용하며, 부모(전체 선택)–자식 토글 구조를 지원합니다.',
     properties: [
       {
         name: 'states',
         title: '상태 (States)',
         type: 'enum',
         conditions: [
-          { condition: "Unchecked: 테두리 1.5px #71717A, 배경 투명" },
-          { condition: "Checked: 배경 #1751D9, 체크 아이콘 #FFFFFF" },
-          { condition: "Indeterminate: 배경 #1751D9, 가로 막대 #FFFFFF" },
+          { condition: "Unchecked: 아이콘 check_off" },
+          { condition: "Checked: 아이콘 check_on (브랜드 컬러 #0066FF 채움 + 흰색 체크)" },
           { condition: "Disabled: 투명도 40%, 클릭 차단" },
+          { condition: "Indeterminate(일부 선택): 전용 아이콘 미제공 — 필요 시 매트릭스 사각 변형에서 커스텀 처리" },
+        ],
+      },
+      {
+        name: 'variant',
+        title: '구현 변형 (Variant)',
+        type: 'enum',
+        conditions: [
+          { condition: "표준: Icon check_on/check_off (라벨과 함께면 18px, 단독이면 16px)" },
+          { condition: "매트릭스 사각형: 16px 사각 + 1.5px 테두리(미선택 #4a4a52) → 선택 시 #0066FF 채움 + 흰 체크 (권한 설정 매트릭스 PCell)" },
         ],
       },
       {
@@ -3159,46 +3210,66 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '크기 (Size)',
         type: 'string',
         conditions: [
-          { condition: "기본 18x18px, 모서리 둥글기 4px" },
-          { condition: "라벨과의 간격 8px (Spacing 08), 글자 14px" },
+          { condition: "라벨 동반 18px / 단독 16px" },
+          { condition: "라벨과의 간격 8px (Spacing 08), 글자 14px, 색 미선택 #9a9aa2 · 선택 #e8e8ec" },
         ],
       },
     ],
-    behavior: '체크 영역 또는 라벨을 클릭하면 선택 상태가 토글됩니다. 부모-자식 구조에서는 자식 일부만 선택된 경우 부모가 Indeterminate 상태로 표시됩니다.',
-    usage: '관제 항목 다중 필터, 약관 동의, 옵션 설정 등 두 개 이상을 동시에 선택할 수 있는 영역에 사용합니다. 상호 배타적인 단일 택일에는 Radio를 사용하세요.',
-    code: `<label className="ds-checkbox">
-  <input type="checkbox" checked={checked} onChange={onChange} />
-  <span className="ds-checkbox-box" />
-  <span className="ds-checkbox-label">라벨</span>
-</label>`,
+    behavior: '체크 영역 또는 라벨을 클릭하면 선택 상태가 토글됩니다. "전체 선택"은 하위 항목을 일괄 토글하고, 하위가 모두 선택되면 부모도 선택(check_on)으로 반영됩니다. (아이콘 방식은 일부 선택 상태를 별도 표현하지 않으므로, 일부 선택 시 부모는 미선택으로 둡니다.)',
+    usage: '관제 항목 다중 필터(이벤트 종류), 권한 매트릭스, 약관 동의, 옵션 설정 등 두 개 이상을 동시에 선택하는 영역에 사용합니다. 상호 배타적인 단일 택일에는 Radio를 사용하세요.',
+    tokensUsed: ['T.primary #0066FF (선택 채움)', '색 선택 #e8e8ec · 미선택 #9a9aa2', 'SP[8] (아이콘-라벨 간격)', 'TYPE.label1/caption1 (라벨)', 'Icon check_on / check_off'],
+    aliases: ['체크박스', '체크 목록', '다중 선택', '여러 개 선택', '복수 선택', '옵션 선택', '약관 동의', '전체 선택', 'checkbox', 'multi select'],
+    antiPatterns: ['상호 배타적 단일 선택에 사용 금지 → Radio 사용', '즉시 적용되는 On/Off 설정에 사용 금지 → Switch 사용', '사각형·색을 하드코딩해 새 체크박스를 임의 제작하지 말 것 → 정본 아이콘 또는 매트릭스 사각 변형(16px/1.5px #4a4a52 → 선택 시 #0066FF) 사용'],
+    examples: [
+      "<Checkbox checked={on} onChange={setOn}>이벤트 알림</Checkbox>",
+      "// 매트릭스 셀(권한 설정): 16px 사각 + 1.5px 테두리, 선택 시 #0066FF 채움 + 흰 체크",
+    ],
   },
   'control-radio': {
     name: 'Radio',
     description: '서로 배타적인 여러 선택지 중 하나만 선택하는 단일 선택(Single-select) 컨트롤입니다.',
-    overview: '라디오 버튼은 같은 그룹(name) 내에서 단 하나만 선택되도록 보장합니다. 선택 시 외곽 원과 내부 점이 브랜드 컬러(#1751D9)로 채워지며, 다른 항목을 선택하면 이전 선택은 자동으로 해제됩니다.',
+    overview: '라디오 버튼은 같은 그룹(name) 내에서 단 하나만 선택되도록 보장합니다. 외곽 원(Control)과 라벨(Label)로 구성되며, 선택 시 외곽 원 전체가 브랜드 컬러(#0066FF)로 채워지고 가운데 흰 점이 표시되며, 다른 항목을 선택하면 이전 선택은 자동으로 해제됩니다.',
     properties: [
+      {
+        name: 'anatomy',
+        title: '구성 (Anatomy)',
+        type: 'string',
+        conditions: [
+          { condition: "1. Control: 외곽 원 + 내부 점 — 선택 상태를 나타내는 선택 컨트롤" },
+          { condition: "2. Label: 옵션을 설명하는 텍스트 라벨 (라벨 클릭으로도 선택)" },
+        ],
+      },
       {
         name: 'states',
         title: '상태 (States)',
         type: 'enum',
         conditions: [
-          { condition: "Unselected: 외곽 원 1.5px #71717A, 내부 비움" },
-          { condition: "Selected: 외곽 테두리 및 내부 점 #1751D9" },
+          { condition: "Unchecked: 외곽 원 2px #71717A 테두리, 내부 비움(투명)" },
+          { condition: "Checked: 외곽 원 전체 #0066FF 채움 + 가운데 흰색 점" },
+          { condition: "Hovered: 컨트롤 뒤 연한 원형 상태 레이어" },
+          { condition: "Pressed: 컨트롤 뒤 진한 원형 상태 레이어" },
           { condition: "Disabled: 투명도 40%, 클릭 차단" },
         ],
       },
       {
         name: 'size',
         title: '크기 (Size)',
-        type: 'string',
+        type: 'enum',
         conditions: [
-          { condition: "외곽 원 18x18px, 내부 점 8x8px" },
-          { condition: "라벨과의 간격 8px (Spacing 08), 글자 14px" },
+          { condition: "Small: 외곽 원 16x16px, 내부 점 6x6px, 라벨 13px, 간격 6px" },
+          { condition: "Medium: 외곽 원 20x20px, 내부 점 8x8px, 라벨 14px, 간격 8px (Spacing 08)" },
         ],
       },
     ],
     behavior: '한 그룹에서 하나만 선택되며, 새 항목 선택 시 기존 선택이 해제됩니다. 라벨 클릭으로도 선택할 수 있습니다.',
     usage: '단위/지표 택일, 정렬 기준, 설정값 단일 선택 등 상호 배타적인 옵션 중 하나를 고를 때 사용합니다. 다중 선택에는 Checkbox를 사용하세요.',
+    tokensUsed: ['T.primary #0066FF (선택 외곽 원 전체 채움)', '내부 점 #fff', '미선택 테두리 2px #71717A', '라벨 TYPE.label2 13px', '간격 6px (Small) / SP[8] (Medium)'],
+    aliases: ['라디오', '라디오 버튼', '단일 선택', '택일', '하나만 선택', '집계 단위 선택', '정렬 기준 선택', 'radio', 'single select'],
+    antiPatterns: ['다중 선택에 사용 금지 → Checkbox 사용', '선택 시 테두리만 두고 작은 점을 넣지 말 것 → 외곽 원 전체 #0066FF 채움 + 흰 점(정본)', '옵션이 많아 좁으면 Select 사용 고려'],
+    examples: [
+      "<label className='ds-radio'><input type='radio' name='unit' /> <span className='ds-radio-dot' /> 일별</label>",
+      "// Small: 외곽 16px · 내부 점 6px · 라벨 13px · 간격 6px",
+    ],
     code: `<label className="ds-radio">
   <input type="radio" name="unit" value="day" />
   <span className="ds-radio-dot" /> 일별
@@ -3207,24 +3278,35 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
   'control-switch': {
     name: 'Switch',
     description: '켜짐/꺼짐(On/Off) 두 상태를 즉시 전환하는 토글 컨트롤입니다.',
-    overview: '스위치는 설정의 활성/비활성을 즉각 반영하는 토글입니다. On 상태에서는 트랙이 브랜드 컬러(#1751D9)로 채워지고 손잡이가 우측으로 이동하며, 별도의 저장 동작 없이 즉시 적용되는 설정에 적합합니다.',
+    overview: '스위치는 설정의 활성/비활성을 즉각 반영하는 토글입니다. 좌우로 움직이는 손잡이(Thumb)와 이를 담는 트랙(Container)으로 구성되며, On 상태에서는 트랙이 브랜드 컬러(#0066FF)로 채워지고 손잡이가 우측으로 이동합니다. 별도의 저장 동작 없이 즉시 적용되는 설정에 적합합니다.',
     properties: [
+      {
+        name: 'anatomy',
+        title: '구성 (Anatomy)',
+        type: 'string',
+        conditions: [
+          { condition: "1. Thumb: 좌우로 이동하는 원형 손잡이 — 18px 흰색 + 그림자" },
+          { condition: "2. Container: On/Off를 담는 트랙(pill) — Off #3a3a3a / On #0066FF, 40x22px, 둥글기 11px" },
+        ],
+      },
       {
         name: 'states',
         title: '상태 (States)',
         type: 'enum',
         conditions: [
           { condition: "Off: 트랙 #3a3a3a, 손잡이 좌측" },
-          { condition: "On: 트랙 #1751D9, 손잡이 우측" },
-          { condition: "Disabled: 투명도 40%, 클릭 차단" },
+          { condition: "On: 트랙 #0066FF, 손잡이 우측" },
+          { condition: "Hover: 트랙 색 한 단계 강조 (On → #3385FF / Off → 밝은 그레이)" },
+          { condition: "Disabled: 투명도 40%, 클릭 차단 (On/Off 모두)" },
         ],
       },
       {
         name: 'size',
         title: '크기 (Size)',
-        type: 'string',
+        type: 'enum',
         conditions: [
-          { condition: "트랙 40x22px, 손잡이 18px 원형" },
+          { condition: "Small: 트랙 36x20px, 손잡이 16px 원형" },
+          { condition: "Medium(기본): 트랙 40x22px, 손잡이 18px 원형" },
           { condition: "전환 애니메이션 150ms ease" },
         ],
       },
@@ -3238,16 +3320,28 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
   },
   'control-slider': {
     name: 'Slider',
-    description: '연속적이거나 단계적인 수치 범위에서 값을 드래그로 조절하는 컨트롤입니다.',
-    overview: '슬라이더는 트랙(Track), 채워진 구간(Fill), 조절 손잡이(Thumb)로 구성됩니다. 사용자가 손잡이를 드래그하여 값을 직관적으로 조정하며, 채워진 구간은 브랜드 컬러(#1751D9)로 표시됩니다.',
+    description: '트랙 위 손잡이를 드래그해 수치나 구간(범위)을 조절하는 컨트롤입니다. 손잡이 2개로 시작~끝 구간을 고르는 범위(Range) 모드를 지원하며, 녹화 영상의 구간 선택 등에 사용합니다.',
+    overview: '슬라이더는 트랙(Track), 채워진 구간(Fill), 조절 손잡이(Thumb), 현재 값/구간을 보여주는 Heading과 Value 라벨로 구성됩니다. 손잡이를 드래그하면 채워진 구간이 브랜드 컬러(#0066FF)로 표시되며, 범위 모드에서는 두 손잡이 사이가 선택 구간이 됩니다.',
     properties: [
       {
         name: 'anatomy',
         title: '구성 (Anatomy)',
         type: 'string',
         conditions: [
-          { condition: "Track: 높이 4px, 배경 #3a3a3a, 둥글기 2px" },
-          { condition: "Fill: #1751D9, Thumb: 16x16 원형 #FFFFFF + 그림자" },
+          { condition: "1. Thumb: 드래그 손잡이 — 18x18 원형 #0066FF + 흰 테두리/그림자 (범위 모드는 2개)" },
+          { condition: "2. Heading: 현재 선택 값/구간 표시 (예: 02:18 ~ 12:40)" },
+          { condition: "3. Track: 전체 범위 바 — 채워진 구간 #0066FF, 나머지 #3a3a3a(다크)/#d4d4d8(라이트), 높이 4px" },
+          { condition: "4. Value: 각 손잡이의 현재 값 라벨" },
+        ],
+      },
+      {
+        name: 'mode',
+        title: '모드 (Mode)',
+        type: 'enum',
+        conditions: [
+          { condition: "Single: 손잡이 1개로 단일 값 조절(탐지 반경·임계치·재생 위치 등)" },
+          { condition: "Highlight(녹화 영상): 시작점(0) 고정 + 손잡이 1개 — 시작부터 손잡이까지 채워진 구간이 하이라이트 시간대" },
+          { condition: "Range: 손잡이 2개로 시작~끝 구간 선택" },
         ],
       },
       {
@@ -3255,21 +3349,35 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '값 (Value)',
         type: 'number',
         conditions: [
-          { condition: "min / max / step 지정, 드래그 시 현재 값 툴팁 표시" },
-          { condition: "범위(Range) 모드: 손잡이 2개로 구간 선택" },
+          { condition: "min / max / step 지정, 드래그 시 현재 값/시간을 Heading·Value에 표시" },
+          { condition: "범위 모드: 두 손잡이가 교차하지 않도록 최소 간격 유지" },
         ],
       },
     ],
-    behavior: '손잡이를 드래그하거나 트랙을 클릭하면 값이 변경되며, 키보드 방향키로 step 단위 미세 조정이 가능합니다. 드래그 중 현재 값을 툴팁으로 안내합니다.',
-    usage: '탐지 반경, 임계치, 투명도, 영상 재생 위치 등 범위 내 수치를 직관적으로 조절할 때 사용합니다.',
+    behavior: '손잡이를 드래그하거나 트랙을 클릭하면 값이 변경되며, 키보드 방향키로 step 단위 미세 조정이 가능합니다. 범위 모드에서는 두 손잡이 사이가 선택 구간이 되고, 시작 손잡이가 끝 손잡이를 넘지 못하도록 제한됩니다.',
+    usage: '녹화 영상의 구간(시작~끝) 선택, 탐지 반경, 임계치, 투명도, 영상 재생 위치 등 범위 내 수치를 직관적으로 조절할 때 사용합니다.',
     code: `<input type="range" min={0} max={100} step={1}
   value={v} onChange={e => setV(Number(e.target.value))} className="ds-slider" />`,
   },
   'control-select': {
     name: 'Select',
     description: '드롭다운 목록을 펼쳐 여러 옵션 중 하나를 선택하는 컨트롤입니다.',
-    overview: '셀렉트는 현재 선택값과 펼침 아이콘(▾)을 표시하는 트리거와, 클릭 시 열리는 옵션 목록으로 구성됩니다. 좁은 공간에서 많은 옵션을 깔끔하게 제공하며, 선택값은 트리거에 반영됩니다.',
+    overview: '셀렉트는 라벨(Heading)·필수 표시·보조 설명을 갖춘 필드와, 현재 선택값/플레이스홀더와 펼침 아이콘(▾)을 표시하는 트리거, 클릭 시 열리는 옵션 목록으로 구성됩니다. 좁은 공간에서 많은 옵션을 깔끔하게 제공하며, 선택값은 트리거에 반영됩니다.',
     properties: [
+      {
+        name: 'anatomy',
+        title: '구성 (Anatomy)',
+        type: 'string',
+        conditions: [
+          { condition: "1. Heading: 필드 상단 라벨" },
+          { condition: "2. Required badge: 필수 입력 표시(빨강 * #FF6363)" },
+          { condition: "3. Leading icon: 입력 영역 좌측 아이콘(선택)" },
+          { condition: "4. Dropdown icon: 우측 펼침 chevron(▾), 펼침 시 180° 회전" },
+          { condition: "5. Placeholder: 선택 전 안내 문구 #71717A" },
+          { condition: "6. Description: 필드 하단 보조 설명" },
+          { condition: "7. Field: 트리거 컨테이너 — 배경 #1e1e1e, 테두리 1px #2e2e2e, 둥글기 8px, 높이 40px" },
+        ],
+      },
       {
         name: 'trigger',
         title: '트리거 (Trigger)',
@@ -3284,7 +3392,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '옵션 목록 (Menu)',
         type: 'string',
         conditions: [
-          { condition: "선택 항목 강조: 글자 #1751D9 또는 배경 하이라이트" },
+          { condition: "선택 항목 강조: 글자 #0066FF 또는 배경 하이라이트" },
           { condition: "호버 항목 배경 #262626, 그림자 Elevation 2" },
         ],
       },
@@ -3316,7 +3424,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '상태 (States)',
         type: 'enum',
         conditions: [
-          { condition: "Focus: 테두리 #1751D9 + 포커스 링" },
+          { condition: "Focus: 테두리 #0066FF + 포커스 링" },
           { condition: "Error: 테두리 및 메시지 #FF6363, Disabled: 투명도 40%" },
         ],
       },
@@ -3331,15 +3439,20 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
   'field-textarea': {
     name: 'Text area',
     description: '여러 줄의 긴 텍스트를 입력받는 멀티라인 입력 필드입니다.',
-    overview: '텍스트 영역은 메모, 설명, 조치 사유 등 여러 줄 입력에 사용합니다. 높이 조절(resize)과 글자 수 카운터를 제공할 수 있으며, 어두운 테마에서 충분한 내부 여백과 행간으로 가독성을 확보합니다.',
+    overview: '텍스트 영역은 메모, 설명, 조치 사유 등 여러 줄 입력에 사용합니다. 구성은 ① Heading(라벨) + ⑤ Required badge(*), ⑥ Field(입력 박스) 안의 ② Placeholder · ③ Leading content(글자수 카운터) · ⑦ Trailing content(액션 버튼), 그리고 ④ Description(보조 설명)으로 이루어집니다. 어두운 테마에서 충분한 내부 여백과 행간으로 가독성을 확보하고, maxLength 지정 시 카운터로 한도를 안내합니다.',
     properties: [
       {
-        name: 'box',
-        title: '입력 박스 (Box)',
+        name: 'anatomy',
+        title: '구성 (Anatomy)',
         type: 'string',
         conditions: [
-          { condition: "배경 #1e1e1e, 테두리 1px #2e2e2e, 둥글기 8px, 내부 여백 12px (Spacing 12)" },
-          { condition: "최소 높이 96px, 행간 1.6, 글자 14px" },
+          { condition: "1. Heading: 입력 항목 라벨 — Label 1(14px), SemiBold, #e8e8ec" },
+          { condition: "2. Placeholder: 입력 전 안내 문구 — #a1a1aa" },
+          { condition: "3. Leading content: 좌측 하단 글자수 카운터(N/MAX) — Caption 1, #7a7a7a (초과 시 #FF6363)" },
+          { condition: "4. Description: 필드 하단 보조 설명 — Label 2, #8a8a8f (Error 시 메시지로 전환, #FF6363)" },
+          { condition: "5. Required badge: Heading 우측 필수 표시(*) — #FF6363" },
+          { condition: "6. Field: 입력 박스 — 배경 #161618, 테두리 1px #2e2e2e, 둥글기 8px, 내부 여백 12px(Spacing 12), 행간 1.6, 글자 14px" },
+          { condition: "7. Trailing content: 우측 하단 액션 슬롯(텍스트 버튼 등) — #3385FF" },
         ],
       },
       {
@@ -3347,15 +3460,72 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '상태 (States)',
         type: 'enum',
         conditions: [
-          { condition: "Focus: 테두리 #1751D9, Error: 테두리 #FF6363" },
-          { condition: "글자 수 카운터(선택): 우측 하단 #888" },
+          { condition: "Focus: 테두리 #0066FF + 포커스 링 rgba(0,102,255,0.25)" },
+          { condition: "Error: 테두리 #FF6363 + 링 rgba(255,99,99,0.22), Description를 오류 메시지로 표시" },
+          { condition: "Disabled: 입력 차단, 투명도 저하" },
         ],
       },
     ],
-    behavior: '입력에 따라 높이를 수동(드래그) 또는 자동(auto-grow)으로 조절할 수 있으며, maxLength 지정 시 초과 입력을 막고 카운터로 안내합니다.',
-    usage: '관제 일지, 조치 사유, 메모, 신고 내용 등 한 줄을 넘는 자유 텍스트 입력에 사용합니다.',
-    code: `<textarea className="ds-textarea" rows={4} maxLength={500}
-  value={v} onChange={e => setV(e.target.value)} placeholder="내용을 입력하세요" />`,
+    webProps: [
+      { name: 'label', type: 'string', defaultValue: 'undefined', desc: 'Heading(라벨) 텍스트' },
+      { name: 'required', type: 'boolean', defaultValue: 'false', desc: 'Heading 우측 필수 표시(*) 노출' },
+      { name: 'value', type: 'string', defaultValue: "''", desc: '입력 값 (controlled)' },
+      { name: 'onChange', type: '(e) => void', defaultValue: 'undefined', desc: '입력 변경 콜백' },
+      { name: 'placeholder', type: 'string', defaultValue: 'undefined', desc: '입력 전 안내 문구' },
+      { name: 'maxLength', type: 'number', defaultValue: 'undefined', desc: '최대 글자수. 지정 시 좌측 하단 카운터(N/max) 표시' },
+      { name: 'description', type: 'string', defaultValue: 'undefined', desc: '필드 하단 보조 설명' },
+      { name: 'error', type: 'boolean', defaultValue: 'false', desc: '오류 상태(테두리·링·메시지 색 전환)' },
+      { name: 'errorMessage', type: 'string', defaultValue: 'undefined', desc: 'error=true일 때 Description 자리에 표시할 메시지' },
+      { name: 'trailing', type: 'ReactNode', defaultValue: 'undefined', desc: '우측 하단 Trailing content 슬롯(액션 버튼 등)' },
+      { name: 'rows', type: 'number', defaultValue: '3', desc: '기본 표시 줄 수(이후 resize:vertical)' },
+      { name: 'disabled', type: 'boolean', defaultValue: 'false', desc: '비활성화' },
+    ],
+    behavior: '입력에 따라 높이를 수동(드래그, resize:vertical) 또는 자동(auto-grow)으로 조절할 수 있으며, maxLength 지정 시 초과 입력을 막고 카운터로 안내합니다. 포커스 시 테두리가 브랜드 컬러(#0066FF)로 강조되고, Error 상태에서는 Description이 오류 메시지로 전환됩니다.',
+    usage: '관제 일지, 조치 사유, 메모, 신고 내용 등 한 줄을 넘는 자유 텍스트 입력에 사용합니다. 글자수 제한이 있으면 Leading content 카운터를, 입력과 함께 즉시 동작(등록·첨부 등)이 필요하면 Trailing content를 사용합니다.',
+    webCode: `import { useState } from 'react';
+import { SP, TYPE, W, T } from '../data/tokens';
+
+// 멀티라인 입력 — 라벨(필수) + 필드(글자수·액션) + 설명
+export function TextArea({
+  label, required, value, onChange, placeholder,
+  maxLength = 2000, description, error, errorMessage, trailing, rows = 3, disabled,
+}) {
+  const [focused, setFocused] = useState(false);
+  const borderColor = error ? T.error : focused ? T.primary : '#2e2e2e';
+  return (
+    <div>
+      {label && (
+        <label style={{ display: 'flex', alignItems: 'center', gap: 3, marginBottom: SP[8], ...TYPE.label1, fontWeight: W.semibold, color: '#e8e8ec' }}>
+          {label}
+          {required && <span style={{ color: T.error, fontWeight: W.bold }}>*</span>}
+        </label>
+      )}
+      <div style={{
+        background: '#161618', border: \`1px solid \${borderColor}\`, borderRadius: 8,
+        boxShadow: error ? '0 0 0 3px rgba(255,99,99,0.22)' : focused ? '0 0 0 3px rgba(0,102,255,0.25)' : 'none',
+        padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: SP[8],
+      }}>
+        <textarea
+          value={value} onChange={onChange} placeholder={placeholder}
+          rows={rows} maxLength={maxLength} disabled={disabled}
+          onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+          style={{ width: '100%', resize: 'vertical', background: 'transparent', border: 'none', outline: 'none', color: '#fff', ...TYPE.label1, lineHeight: 1.6 }}
+        />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ ...TYPE.caption1, color: (value?.length ?? 0) > maxLength ? T.error : '#7a7a7a' }}>
+            {value?.length ?? 0}/{maxLength}
+          </span>
+          {trailing}
+        </div>
+      </div>
+      {(error ? errorMessage : description) && (
+        <div style={{ marginTop: SP[8], ...TYPE.label2, color: error ? T.error : '#8a8a8f' }}>
+          {error ? errorMessage : description}
+        </div>
+      )}
+    </div>
+  );
+}`,
   },
   'field-search': {
     name: 'Search field',
@@ -3367,8 +3537,11 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '구성 (Anatomy)',
         type: 'string',
         conditions: [
-          { condition: "좌측 돋보기 아이콘(16px #888), 입력 영역, 우측 Clear(×) 버튼" },
-          { condition: "배경 #1e1e1e, 테두리 1px #2e2e2e, 둥글기 8px, 높이 40px" },
+          { condition: "1. Search icon: 좌측 돋보기 아이콘 16~18px, #888" },
+          { condition: "2. Placeholder: 입력 전 안내 문구, #71717A" },
+          { condition: "3. Value: 입력된 키워드 텍스트, #FFFFFF(다크) / #18181B(라이트)" },
+          { condition: "4. Field: 입력 영역 컨테이너 — 배경 #1e1e1e, 테두리 1px #2e2e2e, 둥글기 8px, 높이 40px" },
+          { condition: "5. Clear button: 입력값이 있을 때만 노출되는 우측 초기화(×) 버튼" },
         ],
       },
       {
@@ -3376,8 +3549,9 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '상태 (States)',
         type: 'enum',
         conditions: [
-          { condition: "Placeholder 글자 #71717A" },
-          { condition: "Focus: 테두리 #1751D9 + 포커스 링" },
+          { condition: "Empty: Placeholder 글자 #71717A, Clear 버튼 숨김" },
+          { condition: "Focus: 테두리 #0066FF + 포커스 링" },
+          { condition: "Filled: Value 표기 + 우측 Clear(×) 버튼 노출" },
         ],
       },
     ],
@@ -3400,7 +3574,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         type: 'enum',
         conditions: [
           { condition: "Default: 테두리 1px #3a3a3a, 글자 #cccccc" },
-          { condition: "Active(필터 적용): 테두리 및 글자 #1751D9, 배경 rgba(23,81,217,0.1)" },
+          { condition: "Active(필터 적용): 테두리 및 글자 #0066FF, 배경 rgba(0, 102, 255,0.1)" },
         ],
       },
       {
@@ -3408,17 +3582,13 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '카운트 배지 (Count Badge)',
         type: 'number',
         conditions: [
-          { condition: "적용된 필터 수를 우측 원형 배지(#1751D9, 흰 글자)로 표시" },
+          { condition: "적용된 필터 수를 우측 원형 배지(#0066FF, 흰 글자)로 표시" },
           { condition: "0건이면 배지 미표시" },
         ],
       },
     ],
     behavior: '클릭하면 필터 옵션 패널이 열리고, 조건을 적용하면 버튼이 활성 상태로 바뀌며 적용 개수가 배지에 반영됩니다. 다시 눌러 패널을 닫거나 필터를 초기화할 수 있습니다.',
     usage: '관제 리스트, 이벤트 로그, 통계 테이블 상단에서 표시 데이터를 조건별로 좁힐 때 사용합니다.',
-    code: `<button className="ds-filter-btn is-active">
-  <svg>{/* funnel */}</svg> 필터
-  <span className="ds-filter-badge">3</span>
-</button>`,
   },
   'framed-style-default': {
     name: 'Framed style',
@@ -3430,17 +3600,30 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '프레임 사양 (Frame)',
         type: 'string',
         conditions: [
-          { condition: "테두리: 1px solid #2e2e2e (기본), 포커스/활성 시 #1751D9" },
+          { condition: "테두리: 1px solid #2e2e2e (기본), 포커스/활성 시 #0066FF" },
           { condition: "모서리 둥글기 8px, 내부 여백 16px (Spacing 16)" },
           { condition: "배경: 투명 또는 #1a1a1a" },
         ],
       },
       {
-        name: 'legend',
-        title: '프레임 라벨 (Legend)',
+        name: 'frameLabel',
+        title: '프레임 라벨 (Frame label)',
         type: 'ReactNode',
         conditions: [
-          { condition: "상단 테두리에 걸치는 라벨(Legend) 선택적 표기, 글자 12px #888" },
+          { condition: "상단 테두리에 걸치는 라벨 선택적 표기, 글자 12px #888" },
+        ],
+      },
+      {
+        name: 'states',
+        title: '상태 (States)',
+        type: 'string',
+        conditions: [
+          { condition: "Normal: 기본 — 테두리 #2e2e2e(다크) / 연한 회색(라이트)" },
+          { condition: "Hovered: 마우스 오버 — 내부 fill을 한 단계 진하게 표현" },
+          { condition: "Selected: 포커스/활성 — 테두리 브랜드 컬러 #0066FF" },
+          { condition: "Negative: 오류/경고 — 테두리 #FF6363" },
+          { condition: "Disabled: 비활성 — 명도 낮춤, 상호작용 없음" },
+          { condition: "Selected는 Normal · Hovered와 조합, Negative · Disabled는 단독 상태" },
         ],
       },
     ],
@@ -3451,44 +3634,23 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
   {/* inputs */}
 </fieldset>`,
   },
-  'control-timepicker': {
-    name: 'Time picker',
-    description: '시·분(·초) 단위의 시간을 선택하는 입력 컨트롤입니다.',
-    overview: '타임피커는 시간 입력 트리거와, 클릭 시 열리는 시/분 선택 패널로 구성됩니다. 24시간제를 기본으로 하며, 관제 환경의 정확한 시간 지정(예: 신호 스케줄, 단속 시간대)을 위해 직접 입력과 휠 선택을 함께 지원합니다.',
-    properties: [
-      {
-        name: 'trigger',
-        title: '트리거 (Trigger)',
-        type: 'string',
-        conditions: [
-          { condition: "좌측 시계 아이콘 + HH:MM 표기, 배경 #1e1e1e, 둥글기 8px" },
-          { condition: "포커스 시 테두리 #1751D9" },
-        ],
-      },
-      {
-        name: 'panel',
-        title: '선택 패널 (Panel)',
-        type: 'string',
-        conditions: [
-          { condition: "시(00–23)/분(00–59) 휠 또는 목록, 선택값 #1751D9 강조" },
-          { condition: "직접 타이핑 입력 허용, 24시간제 기본" },
-        ],
-      },
-    ],
-    behavior: '트리거 클릭 시 시/분 선택 패널이 열리고, 값 선택 또는 직접 입력 후 확정하면 트리거에 반영됩니다. Date picker와 조합해 일시(日時)를 함께 지정할 수 있습니다.',
-    usage: '신호 운영 스케줄, 단속 시간대 설정, 이벤트 조회 시간 지정 등 시각 입력이 필요한 곳에 사용합니다.',
-    code: `<div className="ds-timepicker" onClick={open}>
-  <svg>{/* clock */}</svg>
-  <span>{time ?? 'HH:MM'}</span>
-</div>`,
-  },
   'control-segmented': {
     name: 'Control.Segmented',
-    description: '여러 옵션 중 하나를빠르선택 아이템사용는 세그먼트 버튼 컨트롤이요. (예: 일별/주별/월별)',
-    overview: '기호 배->인 2~4->도->션 중에->일 ->->선택 아이템사용는 ->->컨트롤입다. 드롭다운보다 직관적으로 모든 옵션을 보여줍니다.',
+    description: '여러 옵션 중 하나를 빠르게 선택하는 세그먼트 버튼 컨트롤입니다. (예: 일별/주별/월별)',
+    overview: '기간이나 보기 방식 등 2~4개의 옵션 중 하나를 즉시 선택하는 컨트롤입니다. 드롭다운보다 직관적으로 모든 옵션을 한눈에 보여줍니다.',
     behavior: '선택되지 않은 옵션을 클릭하면 해당 위치로 하이라이트 박스가 부드럽게 이동(Sliding)하며 활성 상태가 변경됩니다.',
     usage: '차트의 데이터 집계 단위(일별/주별/월별)나 목록의 보기 방식 등을 전환할 때 사용합니다.',
     properties: [
+      {
+        name: 'anatomy',
+        title: '구성 (Anatomy)',
+        type: 'string',
+        conditions: [
+          { condition: "1. Segment: 개별 선택 항목 — 활성 시 흰 배경(다크: #2b2b2b) + 브랜드 컬러 라벨" },
+          { condition: "2. Label: 세그먼트 텍스트 — 활성 #0066FF, 비활성 #888" },
+          { condition: "3. Container: 세그먼트를 감싸는 트랙 — 배경 #1e1e1e, 내부 padding 2px(Spacing 02), 둥글기 6~8px" },
+        ]
+      },
       {
         name: 'background',
         title: '컨테너 배경',
@@ -3502,7 +3664,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '선택 아이템',
         type: 'CSS',
         conditions: [
-          { condition: 'background: #2b2b2b, color: #1751D9' },
+          { condition: 'background: #2b2b2b, color: #0066FF' },
           { condition: 'border-radius: 4px' }
         ]
       }
@@ -3510,17 +3672,35 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
   },
   'control-datepicker': {
     name: 'Control.DatePicker',
-    description: '짜크기간->선택 아이템는 캘린더 형태->버튼이에요 우측에 입력 아이콘이 표시됩니다.',
-    overview: '사용자가 특정 가짜크기간 범위를 지정할 수 있도록->주는 컨트롤입다. 버튼 내부에 캘린더 아이콘을 배치하여 목적을 명확히 합니다.',
-    behavior: '버튼을 클릭하면 하단이나 팝업 형태로 달력(Calendar) 패널이 열리며, 날짜 선택 시 패널이 닫히고 선택된 날짜 포맷이 버튼 텍스트에 반영됩니다.',
-    usage: '통계 ->보이에요조회 데이터의 사용자가지크기간(Custom Range)->특정->->사용됩니다.',
+    description: '날짜 또는 기간을 선택하는 캘린더 팝오버 컨트롤이에요. 시간 입력이 필요하면 달력 하단에 시·분 입력 행을 결합해 일시(日時)를 함께 지정합니다.',
+    overview: '월 이동(‹ ›)·요일 헤더(월~일)·날짜 그리드·하단 푸터(오늘/적용)로 구성됩니다. 단일 날짜와 기간(시작~종료)을 모두 지원하며, 시작·종료 끝점은 Primary(#0066FF) 원형, 사이 구간은 연한 파랑 밴드로 표시합니다. 시간까지 필요할 때는 날짜 그리드와 푸터 사이에 시간 입력 행(시작·종료 HH:MM)을 끼워 넣어 한 팝오버에서 일시를 함께 확정합니다.',
+    behavior: '버튼을 클릭하면 캘린더 팝오버가 열립니다. 날짜를 한 번 클릭하면 시작, 다시 클릭하면 종료가 지정되어 기간이 선택됩니다. 시간 행에서 시·분을 입력한 뒤 [적용]을 누르면 선택한 날짜+시간이 함께 확정됩니다.',
+    usage: '통계·이벤트 조회 등에서 사용자 지정 기간(Custom Range)을 지정할 때 사용합니다. 초 단위까지 필요하거나 기존 관제 화면(Statistics·Event Search)과 통일하려면 날짜 필드 + 시·분·초 드롭다운 방식을 쓰고, 단일 팝오버로 끝내려면 이 시간 결합 방식을 씁니다.',
     properties: [
       {
         name: 'icon',
         title: '입력 아이콘',
         type: 'Icon',
         conditions: [
-          { condition: '측 배치 (크기 16px)' }
+          { condition: '우측 배치 (크기 16px)' }
+        ]
+      },
+      {
+        name: 'mode',
+        title: '선택 모드',
+        type: 'enum',
+        conditions: [
+          { condition: 'single(단일 날짜) / range(기간: 시작~종료)' },
+          { condition: 'range는 끝점 Primary 원형 + 사이 구간 연한 파랑(#EAF0FF) 밴드' },
+        ]
+      },
+      {
+        name: 'time',
+        title: '시간 결합 (Time row)',
+        type: 'boolean',
+        conditions: [
+          { condition: '활성 시 날짜 그리드와 푸터 사이에 시간 입력 행(시작·종료 HH:MM) 노출' },
+          { condition: '시·분(HH:MM) 입력 · 24시간제 · [적용]으로 날짜+시간 동시 확정' },
         ]
       }
     ]
@@ -3558,7 +3738,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
     name: 'List.Checkable',
     description: '좌측 사이드바에서 사용하는 체크박스와 텍스트, 숫자 배지가 결합된 리스트 아이템이에요.',
     overview: '다중 선택이 가능한 트리 목록을 표시할 때 사용합니다. 아이템의 이름과 상태(선택 여부), 그리고 부가적인 데이터 건수 등을 한 줄에 압축적으로 보여줍니다.',
-    behavior: '행 전체 영역나 체크박스를 클릭하면 선택 상태가 ->며, 선택 시 텍스트와 체크박스 색상->브랜드 컬러(#1751D9)로 하이라이트됩니다.',
+    behavior: '행 전체 영역나 체크박스를 클릭하면 선택 상태가 ->며, 선택 시 텍스트와 체크박스 색상->브랜드 컬러(#0066FF)로 하이라이트됩니다.',
     usage: '관제 리스트나 통계 정보 보별에서 여러 개의 지점이나 장비 등을 개별적으로 선택 및 해제하여 메인 차트나 지도의 데이터를 필터링할 때 사용합니다.',
     properties: [
       {
@@ -3576,7 +3756,7 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
         title: '선택 상태',
         type: 'CSS',
         conditions: [
-          { condition: '체크 ->아이템을텍스트색상: #1751D9 (브랜드 컬러' }
+          { condition: '체크 ->아이템을텍스트색상: #0066FF (브랜드 컬러' }
         ]
       }
     ]
@@ -3638,10 +3818,11 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
       { name: 'type', type: "'success' | 'info' | 'warning' | 'error'", defaultValue: "'info'", desc: '알럿의 피드백 유형 및 테마 색상 설정' },
       { name: 'title', type: 'string', defaultValue: 'undefined', desc: '알럿 상단에 굵게 노출될 제목 텍스트' },
       { name: 'message', type: 'string', defaultValue: 'required', desc: '알럿 본문에 들어갈 설명 메시지 텍스트' },
-      { name: 'isCloseable', type: 'boolean', defaultValue: 'true', desc: '우측 상단 닫기(X) 버튼 제공 여부' },
+      { name: 'isCloseable', type: 'boolean', defaultValue: 'true', desc: "닫기 버튼 제공 여부 (bottom: 하단 footer의 '닫기' 버튼 / inline: 우측 상단 × )" },
       { name: 'onClose', type: '() => void', defaultValue: 'undefined', desc: '닫기 버튼 클릭 시 호출되는 콜백 함수' },
-      { name: 'actionLabel', type: 'string', defaultValue: 'undefined', desc: '우측 하단 또는 내부의 추가 조치 액션 버튼 텍스트' },
-      { name: 'onAction', type: '() => void', defaultValue: 'undefined', desc: '액션 버튼 클릭 시 호출되는 콜백 함수' }
+      { name: 'actionLabel', type: 'string', defaultValue: 'undefined', desc: '추가 조치 액션 버튼 텍스트' },
+      { name: 'onAction', type: '() => void', defaultValue: 'undefined', desc: '액션 버튼 클릭 시 호출되는 콜백 함수' },
+      { name: 'actionLayout', type: "'bottom' | 'inline'", defaultValue: "'bottom'", desc: "액션 버튼 배치 — 'bottom'은 본문 아래 footer 행 우측 정렬(기본), 'inline'은 닫기 버튼과 같은 우측 열에 배치" }
     ],
     csProperties: [
       { name: 'AlertType', type: 'AlertType (Enum)', desc: '알럿 종류 설정 (Success, Info, Warning, Error)' },
@@ -3650,29 +3831,44 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
       { name: 'IsCloseable', type: 'bool', desc: '닫기(X) 버튼을 화면에 표시할지 여부' },
       { name: 'CloseCommand', type: 'ICommand', desc: '닫기 버튼 클릭 시 실행될 ViewModel 바인딩 커맨드' },
       { name: 'ActionLabel', type: 'string', desc: '액션 실행을 위한 버튼의 텍스트 콘텐츠' },
-      { name: 'ActionCommand', type: 'ICommand', desc: '액션 버튼 클릭 시 실행될 ViewModel 바인딩 커맨드' }
+      { name: 'ActionCommand', type: 'ICommand', desc: '액션 버튼 클릭 시 실행될 ViewModel 바인딩 커맨드' },
+      { name: 'ActionPlacement', type: 'AlertActionPlacement (Enum)', desc: '액션 버튼 배치 (Bottom: 본문 하단 footer 우측 정렬 / Inline: 닫기와 같은 우측 열)' }
     ],
     webCode: `// React Alert Component Example
 import React from 'react';
 import './Alert.css';
 
-export function Alert({ type = 'info', title, message, isCloseable = true, onClose, actionLabel, onAction }) {
+export function Alert({ type = 'info', title, message, isCloseable = true, onClose, actionLabel, onAction, actionLayout = 'bottom' }) {
+  const action = actionLabel && onAction && (
+    <button className="ds-alert-action" onClick={onAction}>{actionLabel}</button>
+  );
+  const isBottom = actionLayout === 'bottom';
   return (
-    <div className={\`ds-alert \${type}\`}>
-      <div className="ds-alert-icon" />
-      <div className="ds-alert-content">
-        {title && <div className="ds-alert-title">{title}</div>}
-        <div className="ds-alert-message">{message}</div>
-        {actionLabel && onAction && (
-          <button className="ds-alert-action" onClick={onAction}>
-            {actionLabel}
-          </button>
+    <div className={\`ds-alert \${type} layout-\${actionLayout}\`}>
+      {/* 상단 행: 아이콘 + 본문 (+ inline일 땐 우측 상단 × · 액션) */}
+      <div className="ds-alert-row">
+        <div className="ds-alert-icon" />
+        <div className="ds-alert-content">
+          {title && <div className="ds-alert-title">{title}</div>}
+          <div className="ds-alert-message">{message}</div>
+        </div>
+        {!isBottom && (
+          <div className="ds-alert-aside">
+            {isCloseable && (
+              <button className="ds-alert-close" onClick={onClose} aria-label="Close alert">×</button>
+            )}
+            {action}
+          </div>
         )}
       </div>
-      {isCloseable && (
-        <button className="ds-alert-close" onClick={onClose} aria-label="Close alert">
-          ×
-        </button>
+      {/* 하단 footer 행(기본): [닫기][액션] 우측 정렬 */}
+      {isBottom && (isCloseable || action) && (
+        <div className="ds-alert-footer">
+          {isCloseable && (
+            <button className="ds-alert-close-text" onClick={onClose}>닫기</button>
+          )}
+          {action}
+        </div>
       )}
     </div>
   );
@@ -3747,6 +3943,27 @@ export function Alert({ type = 'info', title, message, isCloseable = true, onClo
         conditions: [
           { condition: "Neutral: 회색조 비활성/태그" },
           { condition: "Accent: 핀텔 브랜드 컬러 강조 배지" }
+        ]
+      },
+      {
+        name: 'size',
+        title: '크기',
+        type: 'string',
+        conditions: [
+          { condition: "XSmall (높이 20px): 테이블 셀·리스트 등 조밀한 영역의 인라인 카운트/상태 표시" },
+          { condition: "Small (높이 24px): 기본값. 카드·폼·필터 등 대부분의 일반 UI에서 가장 널리 사용" },
+          { condition: "Medium (높이 28px): 헤더·툴바 등 단독으로 노출되어 높은 주목도가 필요한 영역" },
+          { condition: "좌우 너비는 콘텐츠에 맞춰 가변, 높이는 위 3단계로 고정하여 사용" }
+        ]
+      },
+      {
+        name: 'gap',
+        title: '나열 간격',
+        type: 'string',
+        conditions: [
+          { condition: "Badge를 여러 개 나열할 때 간격을 일정하게 사용" },
+          { condition: "XSmall · Small: 6px 권장" },
+          { condition: "Medium: 8px (Spacing 08) 권장" }
         ]
       },
       {
@@ -4252,18 +4469,27 @@ export function Toast({ type = 'neutral', message, showIcon = true, duration = 3
   },
   'control-checkmark': {
     name: 'Control.Checkmark',
-    description: '선택 상태를 직관적으로 나타내는 체크마크와 라벨의 결합 컴포넌트입니다.',
-    overview: '체크마크 컴포넌트는 단독으로 사용되거나 리스트 아이템 등의 제어 요소와 결합하여 상태의 활성화 여부를 표현합니다. 불필요한 사각형 테두리를 걷어내고 체크마크 자체의 유무로 정돈된 비주얼을 구현합니다.',
-    behavior: '클릭 시 체크마크의 표시 여부와 라벨의 활성 텍스트 컬러가 동적으로 토글됩니다. 비활성화(Disabled) 상태에서는 시각적으로 피드백이 투명하게 흐려지며 클릭 액션이 차단됩니다.',
-    usage: '체크형 리스트 셀, 다중 필터 다이어그램, 혹은 약관 동의 등 다양한 다중 선택 제어 요소에 활용됩니다.',
+    description: 'Checkbox 하위에서 체크된 콘텐츠임을 나타내는 체크(✓) 표시 컴포넌트입니다. 사각형 박스 없이 체크마크만으로 "선택됨" 상태를 보여줍니다.',
+    overview: '체크마크는 Checkbox 컨트롤의 선택(checked) 상태를 표현하는 표시 요소입니다. 박스 테두리를 두지 않고 체크마크의 유무만으로 해당 콘텐츠가 선택·완료되었음을 정돈된 비주얼로 전달합니다. 사용자가 직접 켜고 끄는 단독 토글 컨트롤이 아니라, Checkbox의 상태에 종속되어 "체크된 콘텐츠"를 라벨/항목과 함께 나타낼 때 사용합니다. 단독으로 켜고 끄는 입력이 필요하면 Checkbox를 사용하세요.',
+    behavior: 'Checkbox의 checked 상태에 연동되어 표시/숨김됩니다. 체크된 콘텐츠에는 체크마크가 노출되고, 해제되면 숨겨지며 라벨 색상도 비활성 톤으로 반전됩니다. 비활성화(Disabled) 상태에서는 투명하게 흐려지고 상호작용이 차단됩니다.',
+    usage: '체크박스로 선택된 리스트 항목·옵션·약관 동의 등 "체크된 콘텐츠"에 선택됨/완료 표시를 노출할 때 사용합니다. 켜고 끄는 입력 컨트롤 자체가 필요하면 Checkbox(control-checkbox)를 사용하세요.',
     properties: [
       {
         name: 'checked',
-        title: '체크 상태',
+        title: '체크 상태 (Checkbox 연동)',
         type: 'boolean',
         conditions: [
-          { condition: 'true (활성 상태 - 시안 블루 혹은 화이트 체크 표시)' },
-          { condition: 'false (비활성 상태 - 체크 표시 숨김 및 라벨 색상 반전)' }
+          { condition: 'true (체크된 콘텐츠 - 시안 블루 혹은 화이트 체크마크 노출)' },
+          { condition: 'false (미선택 - 체크마크 숨김 및 라벨 색상 비활성 반전)' }
+        ]
+      },
+      {
+        name: 'color',
+        title: '체크마크 색상',
+        type: 'Enum',
+        conditions: [
+          { condition: 'Accent (#00A9FF 계열 - 일반 선택 강조)' },
+          { condition: 'Neutral (화이트/그레이 - 강조가 불필요한 맥락)' }
         ]
       },
       {
@@ -4277,6 +4503,54 @@ export function Toast({ type = 'neutral', message, showIcon = true, duration = 3
         ]
       }
     ]
+  },
+  'present-menu': {
+    name: 'Menu',
+    description: '요소를 마우스 오른쪽 버튼으로 클릭했을 때 커서 위치에 뜨는 컨텍스트(우클릭) 메뉴입니다. 해당 대상에 실행 가능한 동작을 아이콘 + 라벨 목록으로 제공합니다.',
+    overview: '컨텍스트 메뉴는 대상(영상 셀, 카메라 등)에 대한 동작을 커서 근처에 모아 보여주는 팝업 목록입니다. 각 항목은 의미가 맞는 Foundation 아이콘과 한국어 라벨로 구성되며, 성격이 다른 동작 그룹 사이에는 구분선을 두어 위계를 정리합니다. 상태를 토글하는 대표 동작(예: 고정)은 강조색으로 최상단에 배치합니다.',
+    behavior: '대상 위에서 마우스 오른쪽 버튼을 누르면 커서 위치에 열리고, 컨테이너 경계를 벗어나지 않도록 위치가 보정됩니다. 항목을 선택하거나 바깥 영역을 클릭하면 닫힙니다. 상태 토글 항목(고정 ↔ 고정 해제)은 현재 상태에 따라 라벨이 바뀝니다.',
+    usage: '실시간 영상 셀의 동작 메뉴(영상 분석 설정·재연결·웹 연결·점검모드 전환 등)처럼, 특정 대상에 종속된 동작을 커서 근처에서 빠르게 실행할 때 사용합니다. 화면 전역 동작이나 폼 제출용 버튼 묶음에는 사용하지 않습니다.',
+    properties: [
+      {
+        name: 'anatomy',
+        title: '구성 (Anatomy)',
+        type: 'string',
+        conditions: [
+          { condition: '패널: 배경 #1E2229, 테두리 1px #2c3540, 모서리 8px, 그림자 0 18px 48px rgba(0,0,0,0.72), 폭 216px' },
+          { condition: '항목: 좌측 14px 아이콘 + 라벨, 좌우 padding SP[12] · 상하 7px, 아이콘·라벨 간격 SP[8]' },
+          { condition: '아이콘: Foundation 아이콘 세트(Icon), 뉴트럴 #8a8a92' },
+          { condition: '구분선: 동작 그룹 사이 1px #2c3540' },
+        ],
+      },
+      {
+        name: 'emphasis',
+        title: '강조 항목 (Emphasis)',
+        type: 'string',
+        conditions: [
+          { condition: '대표 토글 동작은 최상단 배치 + 주의색(#ffd699 라벨, keep 아이콘 T.cautionary)' },
+          { condition: '상태에 따라 라벨 전환: 고정 ↔ 고정 해제' },
+        ],
+      },
+      {
+        name: 'items',
+        title: '항목 구성 (Items)',
+        type: 'Array',
+        conditions: [
+          { condition: '{ label, icon, sepBefore?, sepAfter? } 형태의 항목 배열' },
+          { condition: '아이콘·순서는 Figma "Component 24"(783:1750) videoContext 세트를 따름' },
+        ],
+      },
+    ],
   }
 };
+
+// 정본 컴포넌트(src/ds/*.jsx) → code·importPath 병합(단일 출처).
+//  src/ds 모듈이 원본이며, gen-component-code.mjs 가 생성한 COMPONENT_CODE 로
+//  문서 사이트·MCP가 동일한 정본 코드를 공유합니다. (아래 병합이 인라인 값보다 우선)
+for (const [id, c] of Object.entries(COMPONENT_CODE)) {
+  if (COMPONENT_DOCS[id]) {
+    COMPONENT_DOCS[id].code = c.code;
+    COMPONENT_DOCS[id].importPath = c.file;
+  }
+}
 

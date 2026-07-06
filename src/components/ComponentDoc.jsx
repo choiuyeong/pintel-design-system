@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Fragment } from 'react';
 import { COMPONENT_DOCS, SPACING_MAP, CATEGORIES, TIERS } from '../data/components';
+import { T, SP, TYPE, W, COLOR_ACCENT, COLOR_STATUS } from '../data/tokens';
 import { Icon } from './icons';
 
 /**
@@ -27,6 +28,39 @@ function isDownloadableTierId(id) {
     )
   );
   return isComp || isService;
+}
+
+/**
+ * 렌더된 <svg> DOM 노드를 PNG로 변환해 다운로드한다.
+ * viewBox를 유지한 채 export 크기(기본 256px)로 캔버스에 그려 투명 배경 PNG로 저장.
+ */
+function downloadSvgAsPng(svgEl, fileName, exportSize = 256) {
+  if (!svgEl) return;
+  const clone = svgEl.cloneNode(true);
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  clone.setAttribute('width', exportSize);
+  clone.setAttribute('height', exportSize);
+  const svgString = new XMLSerializer().serializeToString(clone);
+  const svgUrl = URL.createObjectURL(new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' }));
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = exportSize;
+    canvas.height = exportSize;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, exportSize, exportSize);
+    URL.revokeObjectURL(svgUrl);
+    canvas.toBlob((blob) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${fileName}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    }, 'image/png');
+  };
+  img.src = svgUrl;
 }
 
 /**
@@ -147,7 +181,7 @@ function renderComponentThumbnail(id) {
           <div style={{
             width: '110px',
             padding: '5px',
-            backgroundColor: '#1751D9',
+            backgroundColor: '#0066FF',
             color: '#fff',
             fontSize: '8px',
             fontWeight: 'bold',
@@ -215,7 +249,7 @@ function renderComponentThumbnail(id) {
         <BrowserFrame>
           <div style={{
             padding: '5px 12px',
-            backgroundColor: '#1751D9',
+            backgroundColor: '#0066FF',
             color: '#fff',
             fontSize: '8px',
             fontWeight: 'bold',
@@ -228,7 +262,7 @@ function renderComponentThumbnail(id) {
       return (
         <BrowserFrame>
           <div style={{ display: 'flex', gap: '3px' }}>
-            <div style={{ padding: '3px 6px', backgroundColor: '#1751D9', color: '#fff', fontSize: '7px', borderRadius: '8px', fontWeight: 'bold' }}>Chip</div>
+            <div style={{ padding: '3px 6px', backgroundColor: '#0066FF', color: '#fff', fontSize: '7px', borderRadius: '8px', fontWeight: 'bold' }}>Chip</div>
             <div style={{ padding: '3px 6px', backgroundColor: '#e4e4e7', color: '#71717a', fontSize: '7px', borderRadius: '8px' }}>Chip</div>
             <div style={{ padding: '3px 6px', backgroundColor: '#e4e4e7', color: '#71717a', fontSize: '7px', borderRadius: '8px' }}>Chip</div>
           </div>
@@ -237,16 +271,16 @@ function renderComponentThumbnail(id) {
     case 'button-text':
       return (
         <BrowserFrame>
-          <div style={{ fontSize: '9px', color: '#1751D9', fontWeight: 'bold' }}>
+          <div style={{ fontSize: '9px', color: '#0066FF', fontWeight: 'bold' }}>
             Text button
           </div>
         </BrowserFrame>
       );
-    case 'button-tab':
+    case 'button-icon':
       return (
         <BrowserFrame>
-          <div style={{ fontSize: '9px', color: '#1751D9', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '2px' }}>
-            Tab button <span style={{ fontSize: '7px' }}>&gt;</span>
+          <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#0066FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 19,12 8,19" /></svg>
           </div>
         </BrowserFrame>
       );
@@ -278,7 +312,7 @@ function renderComponentThumbnail(id) {
         <BrowserFrame>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#18181b', color: '#fff', fontSize: '8px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid #ffffff', zIndex: 3 }}>A</div>
-            <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#3471FF', color: '#fff', fontSize: '8px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid #ffffff', marginLeft: '-6px', zIndex: 2 }}>B</div>
+            <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#3385FF', color: '#fff', fontSize: '8px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid #ffffff', marginLeft: '-6px', zIndex: 2 }}>B</div>
             <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#e4e4e7', color: '#555', fontSize: '8px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid #ffffff', marginLeft: '-6px', zIndex: 1 }}>+2</div>
           </div>
         </BrowserFrame>
@@ -336,7 +370,7 @@ function renderComponentThumbnail(id) {
       return (
         <BrowserFrame>
           <div style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
-            <div style={{ padding: '3px 7px', backgroundColor: '#1751D9', color: '#fff', fontSize: '7px', borderRadius: '5px', fontWeight: 'bold' }}>Category</div>
+            <div style={{ padding: '3px 7px', backgroundColor: '#0066FF', color: '#fff', fontSize: '7px', borderRadius: '5px', fontWeight: 'bold' }}>Category</div>
             <div style={{ padding: '3px 7px', backgroundColor: '#f3f4f6', color: '#71717a', fontSize: '7px', borderRadius: '5px' }}>Category</div>
             <div style={{ padding: '3px 7px', backgroundColor: '#f3f4f6', color: '#71717a', fontSize: '7px', borderRadius: '5px' }}>Category</div>
             <div style={{ width: '12px', height: '12px', border: '1px dashed #a1a1aa', borderRadius: '3px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#a1a1aa', fontSize: '9px', lineHeight: 1 }}>+</div>
@@ -347,7 +381,7 @@ function renderComponentThumbnail(id) {
       return (
         <BrowserFrame>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '16px', height: '16px', borderRadius: '4px', backgroundColor: '#1751D9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '16px', height: '16px', borderRadius: '4px', backgroundColor: '#0066FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <FigCheckmark size={14} color="#fff" />
             </div>
             <span style={{ fontSize: '8px', color: '#18181b' }}>Checkbox</span>
@@ -358,8 +392,8 @@ function renderComponentThumbnail(id) {
       return (
         <BrowserFrame>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid #1751D9', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' }}>
-              <div style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#1751D9' }} />
+            <div style={{ width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#0066FF', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#fff' }} />
             </div>
             <span style={{ fontSize: '8px', color: '#18181b' }}>Radio</span>
           </div>
@@ -368,7 +402,7 @@ function renderComponentThumbnail(id) {
     case 'control-switch':
       return (
         <BrowserFrame>
-          <div style={{ width: '40px', height: '22px', borderRadius: '11px', backgroundColor: '#1751D9', position: 'relative' }}>
+          <div style={{ width: '40px', height: '22px', borderRadius: '11px', backgroundColor: '#0066FF', position: 'relative' }}>
             <div style={{ position: 'absolute', top: '2px', right: '2px', width: '18px', height: '18px', borderRadius: '50%', backgroundColor: '#fff' }} />
           </div>
         </BrowserFrame>
@@ -378,8 +412,8 @@ function renderComponentThumbnail(id) {
         <BrowserFrame>
           <div style={{ width: '120px', position: 'relative', display: 'flex', alignItems: 'center' }}>
             <div style={{ height: '4px', flex: 1, borderRadius: '2px', backgroundColor: '#e4e4e7' }} />
-            <div style={{ position: 'absolute', left: 0, height: '4px', width: '55%', borderRadius: '2px', backgroundColor: '#1751D9' }} />
-            <div style={{ position: 'absolute', left: '55%', width: '14px', height: '14px', borderRadius: '50%', backgroundColor: '#fff', border: '2px solid #1751D9', transform: 'translateX(-50%)', boxSizing: 'border-box' }} />
+            <div style={{ position: 'absolute', left: 0, height: '4px', width: '55%', borderRadius: '2px', backgroundColor: '#0066FF' }} />
+            <div style={{ position: 'absolute', left: '55%', width: '14px', height: '14px', borderRadius: '50%', backgroundColor: '#fff', border: '2px solid #0066FF', transform: 'translateX(-50%)', boxSizing: 'border-box' }} />
           </div>
         </BrowserFrame>
       );
@@ -397,8 +431,8 @@ function renderComponentThumbnail(id) {
         <BrowserFrame>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <span style={{ fontSize: '7px', color: '#71717a' }}>지점명</span>
-            <div style={{ width: '120px', height: '22px', border: '1px solid #1751D9', borderRadius: '6px', backgroundColor: '#fff', display: 'flex', alignItems: 'center', padding: '0 6px', boxSizing: 'border-box' }}>
-              <div style={{ width: '1.5px', height: '12px', backgroundColor: '#1751D9' }} />
+            <div style={{ width: '120px', height: '22px', border: '1px solid #0066FF', borderRadius: '6px', backgroundColor: '#fff', display: 'flex', alignItems: 'center', padding: '0 6px', boxSizing: 'border-box' }}>
+              <div style={{ width: '1.5px', height: '12px', backgroundColor: '#0066FF' }} />
             </div>
           </div>
         </BrowserFrame>
@@ -425,10 +459,10 @@ function renderComponentThumbnail(id) {
     case 'filter-button-default':
       return (
         <BrowserFrame>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px', border: '1px solid #1751D9', borderRadius: '6px', color: '#1751D9', fontSize: '8px', fontWeight: 'bold' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px', border: '1px solid #0066FF', borderRadius: '6px', color: '#0066FF', fontSize: '8px', fontWeight: 'bold' }}>
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg>
             필터
-            <span style={{ backgroundColor: '#1751D9', color: '#fff', borderRadius: '50%', width: '12px', height: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '7px' }}>3</span>
+            <span style={{ backgroundColor: '#0066FF', color: '#fff', borderRadius: '50%', width: '12px', height: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '7px' }}>3</span>
           </div>
         </BrowserFrame>
       );
@@ -438,15 +472,6 @@ function renderComponentThumbnail(id) {
           <div style={{ width: '110px', height: '44px', border: '1px solid #c4c4c8', borderRadius: '6px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' }}>
             <span style={{ position: 'absolute', top: '-6px', left: '8px', background: '#fff', padding: '0 4px', fontSize: '7px', color: '#888' }}>Frame</span>
             <div style={{ width: '70px', height: '4px', borderRadius: '2px', backgroundColor: '#e4e4e7' }} />
-          </div>
-        </BrowserFrame>
-      );
-    case 'control-timepicker':
-      return (
-        <BrowserFrame>
-          <div style={{ width: '110px', height: '24px', border: '1px solid #e4e4e7', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '5px', padding: '0 8px', backgroundColor: '#fff', boxSizing: 'border-box' }}>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#71717a" strokeWidth="2.2"><circle cx="12" cy="12" r="9" /><polyline points="12 7 12 12 15 14" /></svg>
-            <span style={{ fontSize: '8px', color: '#18181b' }}>09:30</span>
           </div>
         </BrowserFrame>
       );
@@ -524,8 +549,8 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
                       }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.transform = 'translateY(-4px)';
-                        e.currentTarget.style.borderColor = '#1751D9';
-                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(23, 81, 217, 0.15)';
+                        e.currentTarget.style.borderColor = '#0066FF';
+                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 102, 255, 0.15)';
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.transform = 'none';
@@ -604,14 +629,24 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
           <div className="doc-tab-content-inner fade-in" style={{ textAlign: 'left' }}>
             <div className="doc-tab-content">
               {doc.overview && (
-                <p style={{ fontSize: '15px', color: '#aaa', lineHeight: 1.7, marginBottom: '28px', maxWidth: '760px' }}>{doc.overview}</p>
+                <p style={{ ...TYPE.body2Reading, color: '#aaa', marginBottom: '28px', maxWidth: '760px' }}>{doc.overview}</p>
               )}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '12px' }}>
                 {(doc.icons || []).map((ic) => (
-                  <div key={ic.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', padding: '24px 12px 16px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '10px' }}>
-                    <Icon name={ic.name} size={28} />
-                    <div style={{ fontSize: '12px', color: '#fff', fontFamily: 'monospace' }}>{ic.name}</div>
+                  <div key={ic.name} data-icon-card style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', padding: '24px 12px 16px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '10px' }}>
+                    <span data-icon-svg style={{ display: 'flex' }}><Icon name={ic.name} size={28} /></span>
+                    <div style={{ fontSize: '12px', color: '#fff', fontFamily: "'Pretendard GOV', monospace" }}>{ic.name}</div>
                     {ic.label && <div style={{ fontSize: '11px', color: '#888' }}>{ic.label}</div>}
+                    <button
+                      onClick={(e) => downloadSvgAsPng(e.currentTarget.closest('[data-icon-card]').querySelector('[data-icon-svg] svg'), ic.name)}
+                      title={`${ic.name}.png 다운로드`}
+                      style={{ marginTop: '2px', padding: '5px 12px', fontSize: '11px', fontWeight: 600, color: '#cfd2d6', background: '#222428', border: '1px solid #34373c', borderRadius: '6px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px', transition: 'all 0.15s' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#0066FF'; e.currentTarget.style.borderColor = '#0066FF'; e.currentTarget.style.color = '#fff'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = '#222428'; e.currentTarget.style.borderColor = '#34373c'; e.currentTarget.style.color = '#cfd2d6'; }}
+                    >
+                      <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v8M4.5 7l3.5 3.5L11.5 7M3 13.5h10" /></svg>
+                      PNG
+                    </button>
                   </div>
                 ))}
               </div>
@@ -651,7 +686,7 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
           <div className="doc-tab-content-inner fade-in" style={{ textAlign: 'left' }}>
             <div className="doc-tab-content">
               {doc.overview && (
-                <p style={{ fontSize: '15px', color: '#aaa', lineHeight: 1.7, marginBottom: '28px', maxWidth: '760px', wordBreak: 'keep-all' }}>{doc.overview}</p>
+                <p style={{ ...TYPE.body2Reading, color: '#aaa', marginBottom: '28px', maxWidth: '760px', wordBreak: 'keep-all' }}>{doc.overview}</p>
               )}
               <div style={{
                 background: '#ffffff', borderRadius: '16px', padding: '64px 40px',
@@ -780,7 +815,7 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
                       <div className="doc-typo-name">{color.name}</div>
                       <div className="doc-typo-value" style={{ fontFamily: 'monospace', color: color.hex, fontWeight: 'bold' }}>{color.hex}</div>
                       <div className="doc-typo-value" style={{ fontSize: '13px' }}>{color.role}</div>
-                      <div className="doc-typo-value" style={{ fontFamily: 'monospace', fontSize: '12px', color: '#1751D9' }}>{color.variable}</div>
+                      <div className="doc-typo-value" style={{ fontFamily: 'monospace', fontSize: '12px', color: '#0066FF' }}>{color.variable}</div>
                     </div>
                   ))}
                 </div>
@@ -803,7 +838,7 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
         <div className="doc-tab-content-inner fade-in" style={{ textAlign: 'left' }}>
           {/* Overview / Design Slogan */}
           {doc.overview && (
-            <p style={{ color: '#cccccc', fontSize: '15px', lineHeight: '1.6', marginBottom: '32px' }}>
+            <p style={{ ...TYPE.body2Reading, color: '#cccccc', marginBottom: '32px' }}>
               {doc.overview}
             </p>
           )}
@@ -904,7 +939,7 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
                 {doc.designTokens.map((token, idx) => (
                   <div key={idx} className="doc-typography-row" style={{ gridTemplateColumns: '1.5fr 1.5fr 2fr', borderBottom: '1px solid #f0f0f0', color: '#666' }}>
                     <div className="doc-typo-name" style={{ color: '#111', fontWeight: 600 }}>{token.name}</div>
-                    <div className="doc-typo-value" style={{ fontFamily: 'monospace', color: '#1751D9' }}>{token.value}</div>
+                    <div className="doc-typo-value" style={{ fontFamily: 'monospace', color: '#0066FF' }}>{token.value}</div>
                     <div className="doc-typo-value" style={{ color: '#666' }}>{token.role}</div>
                   </div>
                 ))}
@@ -1052,7 +1087,7 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
                 {activeCsProps.map((prop, idx) => (
                   <div key={idx} className="doc-typography-row" style={{ gridTemplateColumns: '1.5fr 1.2fr 2fr', borderBottom: '#f0f0f0' }}>
                     <div className="doc-typo-name" style={{ fontWeight: 600, color: '#111' }}>{prop.name}</div>
-                    <div className="doc-typo-value" style={{ fontFamily: 'monospace', color: '#1751D9' }}>{prop.type}</div>
+                    <div className="doc-typo-value" style={{ fontFamily: 'monospace', color: '#0066FF' }}>{prop.type}</div>
                     <div className="doc-typo-value" style={{ color: '#666' }}>{prop.desc}</div>
                   </div>
                 ))}
@@ -1073,7 +1108,7 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
                   {doc.properties.map((prop, idx) => (
                     <div key={idx} className="doc-typography-row" style={{ gridTemplateColumns: '1.5fr 1.5fr 3fr', borderBottom: '1px solid #f0f0f0', color: '#666' }}>
                       <div className="doc-typo-name" style={{ fontWeight: 600, color: '#111' }}>{prop.name}Property</div>
-                      <div className="doc-typo-value" style={{ fontFamily: 'monospace', color: '#1751D9' }}>
+                      <div className="doc-typo-value" style={{ fontFamily: 'monospace', color: '#0066FF' }}>
                         {prop.type === 'ColorToken' ? 'Brush' : prop.type === 'SpacingMap' ? 'Thickness' : 'String'}
                       </div>
                       <div style={{ fontSize: '13px' }}>
@@ -1345,9 +1380,9 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
                 style={{
                   padding: '6px 12px',
                   backgroundColor: 'transparent',
-                  border: '1px solid #1751D9',
+                  border: '1px solid #0066FF',
                   borderRadius: '4px',
-                  color: '#1751D9',
+                  color: '#0066FF',
                   fontSize: '12px',
                   cursor: 'pointer',
                   display: 'flex',
@@ -1355,7 +1390,7 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
                   gap: '6px',
                   transition: 'all 0.2s'
                 }}
-                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(23,81,217,0.1)' }}
+                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0, 102, 255,0.1)' }}
                 onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent' }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1645,7 +1680,7 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
                   <span style={{
                     fontSize: '16px',
                     fontWeight: 700,
-                    color: isHovered ? '#1751D9' : '#1f2937',
+                    color: isHovered ? '#0066FF' : '#1f2937',
                     transition: 'color 0.2s'
                   }}>
                     {item.title}
@@ -1658,7 +1693,7 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
                 {/* Arrow indicator (only visible on hover) */}
                 <div style={{
                   fontSize: '20px',
-                  color: '#1751D9',
+                  color: '#0066FF',
                   opacity: isHovered ? 1 : 0,
                   transform: isHovered ? 'translateX(0)' : 'translateX(-8px)',
                   transition: 'opacity 0.25s ease, transform 0.25s ease',
@@ -1724,8 +1759,47 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
   if (componentId === 'content-badge-default') {
     return <ContentBadgePlayground activeSubTab={activeSubTab} />;
   }
+  if (componentId === 'framed-style-default') {
+    return <FramedStylePlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'field-search') {
+    return <SearchFieldPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'field-textarea') {
+    return <TextAreaPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'field-text') {
+    return <TextFieldPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'control-radio') {
+    return <RadioPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'control-select') {
+    return <SelectPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'control-slider') {
+    return <SliderPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'control-switch') {
+    return <SwitchPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'present-tooltip') {
+    return <TooltipPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'present-popup') {
+    return <PopupPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'present-menu') {
+    return <ContextMenuPlayground activeSubTab={activeSubTab} />;
+  }
   if (componentId === 'alert-default') {
     return <AlertPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'feedback-pushbadge') {
+    return <PushBadgePlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'loading-default') {
+    return <LoadingPlayground activeSubTab={activeSubTab} />;
   }
   if (componentId && componentId.startsWith('accordion-')) {
     return <AccordionPlayground componentId={componentId} activeSubTab={activeSubTab} />;
@@ -1835,25 +1909,16 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
     return <CheckmarkPlayground activeSubTab={activeSubTab} />;
   }
   if (componentId === 'control-segmented') {
-    return (
-      <div style={{ padding: '24px', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ display: 'inline-flex', backgroundColor: '#1e1e1e', padding: '4px', borderRadius: '6px' }}>
-          <div style={{ padding: '6px 16px', color: '#1751D9', backgroundColor: '#2b2b2b', borderRadius: '4px', fontSize: '14px', fontWeight: 'bold' }}>일별</div>
-          <div style={{ padding: '6px 16px', color: '#888', fontSize: '14px' }}>주별</div>
-          <div style={{ padding: '6px 16px', color: '#888', fontSize: '14px' }}>월별</div>
-        </div>
-      </div>
-    );
+    return <SegmentedControlPlayground activeSubTab={activeSubTab} />;
   }
   if (componentId === 'control-datepicker') {
-    return (
-      <div style={{ padding: '24px', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#1e1e1e', padding: '8px 16px', borderRadius: '4px', color: '#888', fontSize: '14px', border: '1px solid #333' }}>
-          사용자 지정
-          <FigCalendarToday size={16} color="#00A9FF" style={{ marginLeft: '12px' }} />
-        </div>
-      </div>
-    );
+    return <DatePickerPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'control-checkbox') {
+    return <CheckboxPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'filter-button-default') {
+    return <FilterButtonPlayground activeSubTab={activeSubTab} />;
   }
   if (componentId === 'banner-summary') {
     return (
@@ -1866,32 +1931,16 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
     );
   }
   if (componentId === 'list-checkable') {
-    return (
-      <div style={{ padding: '24px', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ backgroundColor: '#1a1a1a', width: '250px', padding: '16px', borderRadius: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', color: '#1751D9' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#1751D9"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-              <span style={{ fontSize: '14px' }}>지점 B</span>
-            </div>
-            <span style={{ fontSize: '14px', fontWeight: 'bold' }}>13</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', color: '#fff' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2"><circle cx="12" cy="12" r="10"/></svg>
-              <span style={{ fontSize: '14px' }}>지점 C</span>
-            </div>
-            <span style={{ fontSize: '14px', fontWeight: 'bold' }}>13</span>
-          </div>
-        </div>
-      </div>
-    );
+    return <ListCheckablePlayground />;
   }
   if (componentId === 'list-cell-default') {
     return <ListCellPlayground activeSubTab={activeSubTab} />;
   }
   if (componentId === 'list-card-default') {
     return <ListCardPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'section-header-default') {
+    return <SectionHeaderPlayground activeSubTab={activeSubTab} />;
   }
   if (componentId === 'table-default') {
     return <TablePlayground activeSubTab={activeSubTab} />;
@@ -1900,21 +1949,21 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
     return (
       <div style={{ padding: '32px', backgroundColor: '#2b2b2b', borderRadius: '8px', width: '100%', maxWidth: '700px', margin: '0 auto' }}>
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', marginBottom: '40px', fontSize: '13px', color: '#bbb' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#1751D9' }}></div> 평균</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#0066FF' }}></div> 평균</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><div style={{ width: '8px', height: '8px', backgroundColor: '#f59e0b' }}></div> 전일 차이</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><div style={{ width: '16px', height: '0px', borderTop: '2px dashed #bbb', position: 'relative' }}><div style={{ position: 'absolute', width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#fff', top: '-3px', left: '6px' }}></div></div> 비교 기준</div>
         </div>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: '180px' }}>
-          <div style={{ width: '8%', height: '40%', background: 'linear-gradient(to bottom, rgba(23,81,217,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
-          <div style={{ width: '8%', height: '60%', background: 'linear-gradient(to bottom, rgba(23,81,217,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
-          <div style={{ width: '8%', height: '80%', background: 'linear-gradient(to bottom, rgba(23,81,217,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
-          <div style={{ width: '8%', height: '50%', background: 'linear-gradient(to bottom, rgba(23,81,217,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
+          <div style={{ width: '8%', height: '40%', background: 'linear-gradient(to bottom, rgba(0, 102, 255,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
+          <div style={{ width: '8%', height: '60%', background: 'linear-gradient(to bottom, rgba(0, 102, 255,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
+          <div style={{ width: '8%', height: '80%', background: 'linear-gradient(to bottom, rgba(0, 102, 255,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
+          <div style={{ width: '8%', height: '50%', background: 'linear-gradient(to bottom, rgba(0, 102, 255,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
           <div style={{ position: 'relative', width: '8%', height: '75%', background: '#f59e0b', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}>
             <span style={{ position: 'absolute', top: '-24px', left: '50%', transform: 'translateX(-50%)', color: '#f59e0b', fontSize: '14px', fontWeight: 'bold' }}>23</span>
           </div>
-          <div style={{ width: '8%', height: '45%', background: 'linear-gradient(to bottom, rgba(23,81,217,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
-          <div style={{ width: '8%', height: '30%', background: 'linear-gradient(to bottom, rgba(23,81,217,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
-          <div style={{ width: '8%', height: '20%', background: 'linear-gradient(to bottom, rgba(23,81,217,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
+          <div style={{ width: '8%', height: '45%', background: 'linear-gradient(to bottom, rgba(0, 102, 255,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
+          <div style={{ width: '8%', height: '30%', background: 'linear-gradient(to bottom, rgba(0, 102, 255,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
+          <div style={{ width: '8%', height: '20%', background: 'linear-gradient(to bottom, rgba(0, 102, 255,0.8), transparent)', borderTopLeftRadius: '4px', borderTopRightRadius: '4px' }}></div>
         </div>
       </div>
     );
@@ -1923,148 +1972,8 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
     return <CardPlayground activeSubTab={activeSubTab} />;
   }
 
-  if (componentId === 'button-tab') {
-    if (activeSubTab === 'anatomy') {
-      return (
-        <div style={{ width: '100%' }}>
-          {/* 라이트 카드 */}
-          <div style={{
-            position: 'relative',
-            background: '#efefef',
-            borderRadius: '16px',
-            width: '720px',
-            height: '340px',
-            margin: '0 auto 24px',
-            overflow: 'hidden',
-            boxSizing: 'border-box'
-          }}>
-            {/* 탭 컴포넌트 — 중앙 */}
-            <div style={{
-              position: 'absolute',
-              left: '240px',
-              top: '150px',
-              width: '240px',
-              height: '40px',
-              backgroundColor: '#ffffff',
-              borderRadius: '8px',
-              border: '1.5px solid #e4e4e7',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
-              padding: '4px',
-              boxSizing: 'border-box',
-              display: 'flex',
-              alignItems: 'center',
-              zIndex: 3,
-            }}>
-              {/* Active Tab Item (1) */}
-              <div style={{
-                width: '74px',
-                height: '32px',
-                backgroundColor: '#18181b',
-                color: '#ffffff',
-                borderRadius: '6px',
-                fontSize: '13px',
-                fontWeight: 'bold',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'default',
-                userSelect: 'none'
-              }}>Text 1</div>
-              {/* Inactive Tab Item 1 (2) */}
-              <div style={{
-                width: '74px',
-                height: '32px',
-                color: '#71717a',
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'default',
-                userSelect: 'none'
-              }}>Text 2</div>
-              {/* Inactive Tab Item 2 */}
-              <div style={{
-                width: '74px',
-                height: '32px',
-                color: '#71717a',
-                fontSize: '13px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'default',
-                userSelect: 'none'
-              }}>Text 3</div>
-            </div>
-
-            {/* SVG 직선 */}
-            <svg
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}
-            >
-              {/* 1. Active Tab -> 수직선 위로 */}
-              <line x1="280" y1="90" x2="280" y2="146" stroke="#999" strokeWidth="1.2" />
-              {/* 2. Inactive Tab -> 수평선 우측으로 */}
-              <line x1="540" y1="170" x2="360" y2="170" stroke="#999" strokeWidth="1.2" />
-              <circle cx="360" cy="170" r="1.5" fill="#999" />
-              {/* 3. Tab Container -> 수직선 아래로 */}
-              <line x1="360" y1="250" x2="360" y2="194" stroke="#999" strokeWidth="1.2" />
-            </svg>
-
-            {/* Callouts */}
-            <div style={{ position: 'absolute', left: '280px', top: '90px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-            <div style={{ position: 'absolute', left: '540px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-            <div style={{ position: 'absolute', left: '360px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
-          </div>
-
-          {/* Legend */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
-            {[
-              { num: 1, label: 'Active Tab (활성 탭 아이템)' },
-              { num: 2, label: 'Inactive Tab (비활성 탭 아이템)' },
-              { num: 3, label: 'Tab Container (전체 용기)' },
-            ].map(item => (
-              <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
-                {item.num}. {item.label}
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', width: '100%', textAlign: 'left' }}>
-        <div style={{ fontSize: '13px', color: '#888', fontWeight: 'bold', width: '100%', marginBottom: '8px' }}>대시보드 세그먼트 탭 버튼 (Segmented Controls)</div>
-        
-        {/* 단위 세그먼트 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-          <span style={{ fontSize: '12px', color: '#666', fontWeight: 600 }}>단위 필터 탭 (일별 / 주별 / 월별)</span>
-          <div style={{ display: 'inline-flex', backgroundColor: '#1e1e1e', padding: '3px', borderRadius: '6px', alignSelf: 'flex-start' }}>
-            <span style={{ padding: '6px 16px', color: '#fff', backgroundColor: '#1751D9', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' }}>일별</span>
-            <span style={{ padding: '6px 16px', color: '#888', fontSize: '13px', cursor: 'pointer' }}>주별</span>
-            <span style={{ padding: '6px 16px', color: '#888', fontSize: '13px', cursor: 'pointer' }}>월별</span>
-          </div>
-        </div>
-
-        {/* 기간 세그먼트 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-          <span style={{ fontSize: '12px', color: '#666', fontWeight: 600 }}>기간 필터 탭 (7일 / 14일 / 30일)</span>
-          <div style={{ display: 'inline-flex', backgroundColor: '#1e1e1e', padding: '3px', borderRadius: '6px', alignSelf: 'flex-start' }}>
-            <span style={{ padding: '6px 16px', color: '#fff', backgroundColor: '#3471FF', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' }}>7일</span>
-            <span style={{ padding: '6px 16px', color: '#888', fontSize: '13px', cursor: 'pointer' }}>14일</span>
-            <span style={{ padding: '6px 16px', color: '#888', fontSize: '13px', cursor: 'pointer' }}>30일</span>
-          </div>
-        </div>
-
-        {/* 지표 세그먼트 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-          <span style={{ fontSize: '12px', color: '#666', fontWeight: 600 }}>지표 필터 탭 (활용도 / 평균시간 / 건수)</span>
-          <div style={{ display: 'inline-flex', backgroundColor: '#1e1e1e', padding: '3px', borderRadius: '6px', alignSelf: 'flex-start' }}>
-            <span style={{ padding: '6px 16px', color: '#fff', backgroundColor: '#1751D9', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold', cursor: 'pointer' }}>활용도</span>
-            <span style={{ padding: '6px 16px', color: '#888', fontSize: '13px', cursor: 'pointer' }}>평균시간</span>
-            <span style={{ padding: '6px 16px', color: '#888', fontSize: '13px', cursor: 'pointer' }}>건수</span>
-          </div>
-        </div>
-      </div>
-    );
+  if (componentId === 'button-icon') {
+    return <IconButtonPlayground activeSubTab={activeSubTab} />;
   }
 
   if (componentId === 'category-default') {
@@ -2158,7 +2067,7 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
 }
 
 function ContentBadgePlayground({ activeSubTab }) {
-  const [color, setColor] = useState('accent');
+  const [level, setLevel] = useState(4); // Variants = Hierarchy Level(1~4)
   const [leadingIcon, setLeadingIcon] = useState(true);
   const [trailingIcon, setTrailingIcon] = useState(true);
 
@@ -2197,8 +2106,8 @@ function ContentBadgePlayground({ activeSubTab }) {
             zIndex: 3,
           }}>
             <div style={{ width: '12px', height: '12px', border: '1.5px solid #a1a1aa', borderRadius: '2px', flexShrink: 0 }} />
-            <span style={{ fontWeight: 500, lineHeight: 1 }}>Label</span>
-            <span style={{ fontSize: '14px', color: '#a1a1aa', flexShrink: 0, marginLeft: 'auto', lineHeight: 1, userSelect: 'none' }}>×</span>
+            <span style={{ fontWeight: W.medium, lineHeight: 1 }}>Label</span>
+            <span style={{ fontSize: TYPE.label1.fontSize, color: '#a1a1aa', flexShrink: 0, marginLeft: 'auto', lineHeight: 1, userSelect: 'none' }}>×</span>
           </div>
 
           {/* SVG 직선 */}
@@ -2230,7 +2139,7 @@ function ContentBadgePlayground({ activeSubTab }) {
             { num: 3, label: 'Trailing icon' },
             { num: 4, label: 'Container' },
           ].map(item => (
-            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
               {item.num}. {item.label}
             </div>
           ))}
@@ -2241,18 +2150,130 @@ function ContentBadgePlayground({ activeSubTab }) {
 
 
   // Interactive Tab Content
-  const isAccent = color === 'accent';
-  const badgeBg = isAccent ? 'rgba(0, 194, 255, 0.08)' : 'rgba(255, 255, 255, 0.05)';
-  const badgeBorder = isAccent ? '1px solid rgba(0, 194, 255, 0.4)' : '1px solid rgba(255, 255, 255, 0.2)';
-  const badgeColor = isAccent ? '#00C2FF' : '#E5E7EB';
-  const iconBorderColor = isAccent ? 'rgba(0, 194, 255, 0.4)' : 'rgba(255, 255, 255, 0.3)';
+  // 위계(Hierarchy) 4단계 — 강조도 내림차순. Accent(브랜드)/Neutral × 채움/외곽 조합.
+  const HIER = [
+    { level: 4, variant: 'accent-filled',   desc: '화면 내에서 가장 중요하고 주목도 높은 정보를 강조하여 전달합니다.' },
+    { level: 3, variant: 'accent-outline',  desc: '주요 정보 다음으로 사용자의 주목을 끌 필요가 있는 긍정적이거나 중요한 상태를 나타냅니다.' },
+    { level: 2, variant: 'neutral-filled',  desc: '콘텐츠의 일반적인 상태나 분류 정보를 중립적으로 표시합니다.' },
+    { level: 1, variant: 'neutral-outline', desc: '가장 낮은 우선순위의 부가 정보를 표시할 때 사용합니다.' },
+  ];
+  const hierBadgeStyle = (variant) => {
+    const base = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '24px', minWidth: '52px', padding: '0 10px', borderRadius: '6px', fontSize: TYPE.caption1.fontSize, fontWeight: W.semibold, whiteSpace: 'nowrap', boxSizing: 'border-box', flexShrink: 0 };
+    switch (variant) {
+      case 'accent-filled':   return { ...base, background: T.primary, color: '#fff', border: `1px solid ${T.primary}` };
+      case 'accent-outline':  return { ...base, background: 'transparent', color: T.primaryStrong, border: `1px solid ${T.primaryStrong}` };
+      case 'neutral-filled':  return { ...base, background: '#3f3f46', color: '#e4e4e7', border: '1px solid #3f3f46' };
+      case 'neutral-outline': return { ...base, background: 'transparent', color: '#a1a1aa', border: '1px solid #52525b' };
+      default: return base;
+    }
+  };
+
+  // Variants 프리뷰 색 = 선택한 Level의 위계 스타일을 그대로 반영(채움/외곽 × Accent/Neutral)
+  const lvObj = HIER.find(h => h.level === level) || HIER[0];
+  const bs = hierBadgeStyle(lvObj.variant);
+  const badgeBg = bs.background;
+  const badgeBorder = bs.border;
+  const badgeColor = bs.color;
+  const iconBorderColor = bs.color;
 
   return (
     <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
 
+      {/* ── Hierarchy 섹션 ── */}
+      <div style={{ marginBottom: SP[48] }}>
+        <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: '20px' }}>Hierarchy</div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {HIER.map((lv, i) => (
+            <div key={lv.level} style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '14px 4px', borderTop: i === 0 ? 'none' : '1px solid #232323' }}>
+              <span style={hierBadgeStyle(lv.variant)}>Badge</span>
+              <span style={{ fontSize: TYPE.label1.fontSize, color: '#c9c9cf', lineHeight: '1.6' }}>
+                <b style={{ color: '#fff', fontWeight: W.bold }}>Level.{lv.level}</b> → {lv.desc}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Color 섹션 ── */}
+      <div style={{ marginBottom: SP[48] }}>
+        <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: '20px' }}>Color customize</div>
+
+        {/* 라이트 카드 — Neutral / Accent / Status 행 */}
+        <div style={{
+          background: '#ffffff',
+          borderRadius: '16px',
+          padding: '36px 40px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: SP[24],
+          marginBottom: SP[16],
+        }}>
+          {(() => {
+            // 토큰 기반 배지: 배경 = 색상 13% 틴트, 전경 = 색상값(Accent/Foreground)
+            const tint = (hex) => `${hex}22`;
+            const colorBadge = (bg, fg, label) => (
+              <span key={label} style={{
+                display: 'inline-flex', alignItems: 'center', height: '26px', padding: '0 12px',
+                borderRadius: '8px', background: bg, color: fg,
+                fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, whiteSpace: 'nowrap', letterSpacing: '-0.1px',
+              }}>{label}</span>
+            );
+
+            // Neutral — 명도 위계 (Assistive → Strong)
+            const NEUTRAL = [
+              { label: 'Assistive',   bg: '#f1f1f3', fg: '#bcbcc2' },
+              { label: 'Alternative', bg: '#eeeef0', fg: '#9a9aa2' },
+              { label: 'Neutral',     bg: '#e9e9ec', fg: '#71717a' },
+              { label: 'Normal',      bg: '#e4e4e7', fg: '#3f3f46' },
+              { label: 'Strong',      bg: '#e0e0e4', fg: '#18181b' },
+            ];
+            // Accent — 토큰에서 선택 (구별용 강조색)
+            const accentLabels = {
+              accentRedOrange: 'Red Orange', accentLime: 'Lime', accentCyan: 'Cyan',
+              accentLightBlue: 'Light Blue', accentViolet: 'Violet',
+            };
+            const ACCENT = Object.keys(accentLabels).map((key) => {
+              const c = COLOR_ACCENT.find((a) => a.key === key);
+              return { label: accentLabels[key], bg: tint(c.value), fg: c.value };
+            });
+            // Status — 상태 시맨틱 (Positive / Cautionary / Negative) + 정보(Primary)
+            const STATUS = [
+              { label: 'Positive',    color: COLOR_STATUS[0].value },
+              { label: 'Cautionary',  color: COLOR_STATUS[1].value },
+              { label: 'Negative',    color: COLOR_STATUS[2].value },
+              { label: 'Information', color: T.primary },
+            ].map((s) => ({ label: s.label, bg: tint(s.color), fg: s.color }));
+
+            const Row = ({ name, items }) => (
+              <div style={{ display: 'flex', alignItems: 'center', gap: SP[40] }}>
+                <span style={{ width: '64px', flexShrink: 0, fontSize: TYPE.label1.fontSize, fontWeight: W.medium, color: '#9a9aa2' }}>{name}</span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: SP[12] }}>
+                  {items.map((it) => colorBadge(it.bg, it.fg, it.label))}
+                </div>
+              </div>
+            );
+
+            return (
+              <>
+                <Row name="Neutral" items={NEUTRAL} />
+                <Row name="Accent" items={ACCENT} />
+                <Row name="Status" items={STATUS} />
+              </>
+            );
+          })()}
+        </div>
+
+        {/* 설명 */}
+        <div style={{ fontSize: TYPE.label1.fontSize, color: '#888', lineHeight: '1.7' }}>
+          Neutral, Accent, Status 컬러를 사용하여 부가 정보를 제공하거나 상태를 더욱 명확하게 표현합니다.{' '}
+          Accent 컬러를 사용할 때 배경과 텍스트의 최소 명도 대비를 보장하기 위해{' '}
+          <span style={{ color: '#60a5fa', fontWeight: W.semibold }}>Accent/Foreground 색상</span>을 사용합니다.
+        </div>
+      </div>
+
       {/* ── Size 섹션 ── */}
-      <div style={{ marginBottom: '48px' }}>
-        <div style={{ fontSize: '20px', fontWeight: '700', color: '#fff', marginBottom: '20px' }}>Size</div>
+      <div style={{ marginBottom: SP[48] }}>
+        <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: '20px' }}>Size</div>
 
         {/* 라이트 카드 */}
         <div style={{
@@ -2260,19 +2281,19 @@ function ContentBadgePlayground({ activeSubTab }) {
           borderRadius: '16px',
           padding: '48px 40px 40px',
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
-          gap: '96px',
-          marginBottom: '16px',
+          gap: SP[40],
+          marginBottom: SP[16],
         }}>
           {[
-            { label: 'XSmall', h: 20, fs: 11, px: '0 6px',  annotSize: 20 },
-            { label: 'Small',  h: 24, fs: 12, px: '0 8px',  annotSize: 22 },
-            { label: 'Medium', h: 28, fs: 13, px: '0 10px', annotSize: 24 },
+            { label: 'XSmall', h: 20, fs: 11, px: '0 6px',  annotSize: 20, use: '테이블 셀·리스트 등 조밀한 영역의 인라인 카운트/상태 표시' },
+            { label: 'Small',  h: 24, fs: 12, px: '0 8px',  annotSize: 22, use: '기본값. 카드·폼·필터 등 대부분의 일반 UI에서 가장 널리 사용' },
+            { label: 'Medium', h: 28, fs: 13, px: '0 10px', annotSize: 24, use: '헤더·툴바 등 단독으로 노출되어 높은 주목도가 필요한 영역' },
           ].map(item => (
-            <div key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+            <div key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: SP[16], width: '180px' }}>
               {/* 컬럼 라벨 */}
-              <div style={{ fontSize: '13px', fontWeight: '600', color: '#888' }}>{item.label}</div>
+              <div style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#888' }}>{item.label}</div>
 
               {/* 배지 + annotation */}
               <div style={{ position: 'relative', display: 'inline-flex' }}>
@@ -2286,7 +2307,7 @@ function ContentBadgePlayground({ activeSubTab }) {
                   display: 'flex',
                   alignItems: 'center',
                   fontSize: `${item.fs}px`,
-                  fontWeight: 500,
+                  fontWeight: W.medium,
                   color: '#666',
                   whiteSpace: 'nowrap',
                   letterSpacing: '-0.1px',
@@ -2304,7 +2325,7 @@ function ContentBadgePlayground({ activeSubTab }) {
                   background: '#EF4444',
                   color: '#fff',
                   fontSize: `${item.fs - 2}px`,
-                  fontWeight: '700',
+                  fontWeight: W.bold,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -2313,19 +2334,114 @@ function ContentBadgePlayground({ activeSubTab }) {
                   zIndex: 2,
                 }}>{item.h}</div>
               </div>
+
+              {/* 사이즈별 용처 */}
+              <div style={{ marginTop: SP[4], fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', lineHeight: '1.5', textAlign: 'center' }}>
+                {item.use}
+              </div>
             </div>
           ))}
         </div>
 
         {/* 설명 */}
-        <div style={{ fontSize: '14px', color: '#888', lineHeight: '1.7' }}>
+        <div style={{ fontSize: TYPE.label1.fontSize, color: '#888', lineHeight: '1.7' }}>
           좌우 사이즈는 자유롭게 커스터마이징하여 사용할 수 있으나{' '}
-          <span style={{ color: '#60a5fa', fontWeight: '600' }}>높이는 고정하여 사용합니다.</span>
+          <span style={{ color: '#60a5fa', fontWeight: W.semibold }}>높이는 고정하여 사용합니다.</span>
+        </div>
+      </div>
+
+      {/* ── Spacing 섹션 ── */}
+      <div style={{ marginBottom: SP[48] }}>
+        <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: '20px' }}>Spacing</div>
+
+        {/* 라이트 카드 — 사이즈별 나열 간격 */}
+        <div style={{
+          background: '#ffffff',
+          borderRadius: '16px',
+          padding: '48px 40px',
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+          gap: SP[40],
+          marginBottom: SP[16],
+        }}>
+          {[
+            { label: 'XSmall', h: 20, fs: 11, px: '0 6px', gap: 6, annotSize: 20 },
+            { label: 'Small',  h: 24, fs: 12, px: '0 8px', gap: 6, annotSize: 22 },
+            { label: 'Medium', h: 28, fs: 13, px: '0 10px', gap: 8, annotSize: 24 },
+          ].map(item => {
+            const badge = (
+              <div style={{
+                height: `${item.h}px`,
+                padding: item.px,
+                borderRadius: '4px',
+                background: '#f4f4f5',
+                border: '1px solid #e4e4e7',
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: `${item.fs}px`,
+                fontWeight: W.medium,
+                color: '#666',
+                whiteSpace: 'nowrap',
+                letterSpacing: '-0.1px',
+              }}>Badge</div>
+            );
+            return (
+              <div key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '180px' }}>
+                {/* 컬럼 라벨 */}
+                <div style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#888' }}>{item.label}</div>
+
+                {/* 배지 2개 + 간격 마커/annotation */}
+                <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: `${item.gap}px` }}>
+                  {badge}
+                  {/* 간격 마커(빨간 세로선) */}
+                  <span style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '2px',
+                    height: `${item.h}px`,
+                    background: '#EF4444',
+                    borderRadius: '1px',
+                  }} />
+                  {badge}
+                  {/* 간격 값 annotation 뱃지 */}
+                  <div style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: `calc(100% + ${item.annotSize / 2}px)`,
+                    transform: 'translate(-50%, -50%)',
+                    width: `${item.annotSize}px`,
+                    height: `${item.annotSize}px`,
+                    borderRadius: '50%',
+                    background: '#EF4444',
+                    color: '#fff',
+                    fontSize: `${item.fs - 2}px`,
+                    fontWeight: W.bold,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 1px 4px rgba(239,68,68,0.4)',
+                    border: '1.5px solid #fff',
+                    zIndex: 2,
+                  }}>{item.gap}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 설명 */}
+        <div style={{ fontSize: TYPE.label1.fontSize, color: '#888', lineHeight: '1.7' }}>
+          Badge를 여러 개 나열하는 경우 간격을 일정하게 사용합니다.{' '}
+          <span style={{ color: '#60a5fa', fontWeight: W.semibold }}>XSmall · Small 일 때 6px, Medium 일 때 8px</span>{' '}
+          간격을 사용하는 것을 권장합니다.
         </div>
       </div>
 
       {/* ── Variants 섹션 ── */}
-      <div style={{ fontSize: '20px', fontWeight: '700', color: '#fff', marginBottom: '16px' }}>Variants</div>
+      <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: SP[16] }}>Variants</div>
 
       
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
@@ -2334,14 +2450,15 @@ function ContentBadgePlayground({ activeSubTab }) {
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '8px',
+            gap: SP[8],
             padding: '6px 12px',
             borderRadius: '6px',
             background: badgeBg,
             border: badgeBorder,
             color: badgeColor,
-            fontSize: '14px',
-            fontWeight: 500,
+            fontSize: TYPE.label1.fontSize,
+            fontWeight: W.medium,
+            lineHeight: 1,
             transition: 'all 0.2s'
           }}>
             {leadingIcon && (
@@ -2354,15 +2471,15 @@ function ContentBadgePlayground({ activeSubTab }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '10px',
-                fontWeight: 'bold',
+                fontWeight: W.bold,
                 opacity: 0.8
               }}>
                 <span style={{ display: 'inline-block', width: '6px', height: '6px', border: `1.5px solid ${badgeColor}`, borderRadius: '1px', opacity: 0.7 }}></span>
               </div>
             )}
             
-            <span>Label</span>
-            
+            <span style={{ lineHeight: 1 }}>Label</span>
+
             {trailingIcon && (
               <div style={{
                 width: '16px',
@@ -2373,10 +2490,10 @@ function ContentBadgePlayground({ activeSubTab }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '10px',
-                fontWeight: 'bold',
+                fontWeight: W.bold,
                 opacity: 0.8
               }}>
-                <span style={{ fontSize: '10px', fontWeight: 'bold', lineHeight: '1' }}>×</span>
+                <svg width="7" height="7" viewBox="0 0 8 8" fill="none" stroke={badgeColor} strokeWidth="1.5" strokeLinecap="round" style={{ display: 'block' }}><path d="M1 1l6 6M7 1L1 7" /></svg>
               </div>
             )}
           </div>
@@ -2386,13 +2503,13 @@ function ContentBadgePlayground({ activeSubTab }) {
         <div 
           className="ds-playground-controls"
           style={{ 
-            flex: 1, 
-            background: '#141414', 
-            borderLeft: '1px solid #2a2a2a', 
-            padding: '24px', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '24px',
+            flex: 1,
+            background: '#141414',
+            borderLeft: '1px solid #2a2a2a',
+            padding: SP[24],
+            display: 'flex',
+            flexDirection: 'column',
+            gap: SP[24],
             maxHeight: '360px',
             overflowY: 'auto',
             boxSizing: 'border-box'
@@ -2420,7 +2537,7 @@ function ContentBadgePlayground({ activeSubTab }) {
                     height: '20px',
                     borderRadius: '50%',
                     border: checked ? '2px solid #111' : '2px solid #3e3e42',
-                    backgroundColor: checked ? '#3471FF' : '#1b1b1d',
+                    backgroundColor: checked ? '#3385FF' : '#1b1b1d',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -2439,9 +2556,9 @@ function ContentBadgePlayground({ activeSubTab }) {
                 </div>
                 <span style={{
                   marginLeft: '10px',
-                  fontSize: '14px',
+                  fontSize: TYPE.label1.fontSize,
                   color: checked ? '#ffffff' : '#a1a1aa',
-                  fontWeight: checked ? '600' : '400',
+                  fontWeight: checked ? W.semibold : W.regular,
                   transition: 'color 0.15s'
                 }}>
                   {label}
@@ -2451,27 +2568,25 @@ function ContentBadgePlayground({ activeSubTab }) {
 
             return (
               <>
-                {/* Color Option */}
+                {/* Hierarchy (Level) Option */}
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Color</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <RadioOption 
-                      label="Neutral" 
-                      checked={color === 'neutral'} 
-                      onChange={() => setColor('neutral')} 
-                    />
-                    <RadioOption 
-                      label="Accent" 
-                      checked={color === 'accent'} 
-                      onChange={() => setColor('accent')} 
-                    />
+                  <div style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#888', marginBottom: SP[12] }}>Hierarchy</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: SP[12] }}>
+                    {[
+                      { lv: 4, t: 'Level.4 · Accent 채움' },
+                      { lv: 3, t: 'Level.3 · Accent 외곽' },
+                      { lv: 2, t: 'Level.2 · Neutral 채움' },
+                      { lv: 1, t: 'Level.1 · Neutral 외곽' },
+                    ].map((o) => (
+                      <RadioOption key={o.lv} label={o.t} checked={level === o.lv} onChange={() => setLevel(o.lv)} />
+                    ))}
                   </div>
                 </div>
 
                 {/* Leading Icon Option */}
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Leading icon</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#888', marginBottom: SP[12] }}>Leading icon</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: SP[12] }}>
                     <RadioOption 
                       label="False" 
                       checked={!leadingIcon} 
@@ -2487,8 +2602,8 @@ function ContentBadgePlayground({ activeSubTab }) {
 
                 {/* Trailing Icon Option */}
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Trailing icon</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#888', marginBottom: SP[12] }}>Trailing icon</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: SP[12] }}>
                     <RadioOption 
                       label="False" 
                       checked={!trailingIcon} 
@@ -2505,6 +2620,1417 @@ function ContentBadgePlayground({ activeSubTab }) {
             );
           })()}
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Framed style — 테두리(Frame) 컨테이너. Anatomy(구조) + Interactive(States 매트릭스).
+function FramedStylePlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#efefef', borderRadius: '16px',
+          width: '720px', height: '300px', margin: '0 auto 24px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box',
+        }}>
+          {/* 프레임 컨테이너 */}
+          <div style={{ position: 'relative', width: '320px', height: '104px', border: '1.5px solid #c4c4c8', borderRadius: '10px', background: '#fff', boxSizing: 'border-box' }}>
+            <span style={{ position: 'absolute', top: '-9px', left: '16px', background: '#efefef', padding: '0 6px', fontSize: TYPE.caption1.fontSize, color: '#888' }}>Frame label</span>
+            <div style={{ margin: '22px', height: '60px', background: '#ececf3', borderRadius: '6px' }} />
+          </div>
+        </div>
+
+        {/* Legend — 3열 그리드 */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Frame (테두리 컨테이너)' },
+            { num: 2, label: 'Frame label (상단 라벨, 선택)' },
+            { num: 3, label: 'Content area (내부 콘텐츠)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — States 매트릭스 (Normal/Selected × Normal/Hovered/Negative/Disabled)
+  const violet = (COLOR_ACCENT.find(a => a.key === 'accentViolet') || {}).value || '#9B8CFA';
+  const fillN = `${violet}1A`; // Normal fill (10%)
+  const fillH = `${violet}30`; // Hovered fill (더 진하게)
+  const fillD = `${violet}12`; // Disabled fill (약하게)
+
+  const ROWS = [
+    { key: 'Normal',   label: 'Normal' },
+    { key: 'Hovered',  label: 'Hovered' },
+    { key: 'Negative', label: 'Negative' },
+    { key: 'Disabled', label: 'Disabled' },
+  ];
+  const COLS = ['Normal', 'Selected'];
+
+  // 각 (행, 열) 조합의 프레임 스타일 — null이면 해당 조합 미사용(빈 칸)
+  const styleFor = (rowKey, col) => {
+    const selected = col === 'Selected';
+    // Selected는 Normal·Hovered 상태와만 조합 (Negative·Disabled는 단독)
+    if (selected && (rowKey === 'Negative' || rowKey === 'Disabled')) return null;
+    switch (rowKey) {
+      case 'Normal':   return { border: selected ? T.primary : '#e2e2e8', fill: fillN };
+      case 'Hovered':  return { border: selected ? T.primary : '#cbcbd4', fill: fillH };
+      case 'Negative': return { border: T.error, fill: fillN };
+      case 'Disabled': return { border: '#e8e8ec', fill: fillD, opacity: 0.55 };
+      default: return null;
+    }
+  };
+
+  const BOX_W = 240, BOX_H = 64;
+  const Frame = ({ st }) => {
+    if (!st) return <div style={{ width: `${BOX_W}px` }} />;
+    return (
+      <div style={{
+        width: `${BOX_W}px`, height: `${BOX_H}px`, border: `1.5px solid ${st.border}`,
+        borderRadius: '12px', background: '#fff', padding: '10px',
+        display: 'flex', alignItems: 'stretch', boxSizing: 'border-box', opacity: st.opacity || 1,
+      }}>
+        <div style={{ flex: 1, background: st.fill, borderRadius: '6px' }} />
+      </div>
+    );
+  };
+
+  const colHeader = { fontSize: TYPE.label1.fontSize, fontWeight: W.medium, color: '#9a9aa2', textAlign: 'center' };
+  const rowLabel = { fontSize: TYPE.label1.fontSize, fontWeight: W.medium, color: '#9a9aa2' };
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: '20px' }}>States</div>
+
+      {/* 라이트 카드 — States 매트릭스 */}
+      <div style={{ background: '#ffffff', borderRadius: '16px', padding: SP[40], display: 'flex', justifyContent: 'center', marginBottom: SP[16] }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: `90px ${BOX_W}px ${BOX_W}px`,
+          columnGap: SP[48], rowGap: '28px', alignItems: 'center',
+        }}>
+          {/* 헤더 행 */}
+          <div />
+          <div style={colHeader}>Normal</div>
+          <div style={colHeader}>Selected</div>
+
+          {/* 상태 행 */}
+          {ROWS.map(r => (
+            <Fragment key={r.key}>
+              <div style={rowLabel}>{r.label}</div>
+              {COLS.map(c => <Frame key={c} st={styleFor(r.key, c)} />)}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+
+      {/* 설명 */}
+      <div style={{ fontSize: TYPE.label1.fontSize, color: '#888', lineHeight: '1.7' }}>
+        프레임 컨테이너의 상호작용 상태를 정의합니다. Normal(기본) · Hovered(마우스 오버, fill을 한 단계 진하게) ·{' '}
+        <span style={{ color: '#60a5fa', fontWeight: W.semibold }}>Selected(포커스/활성, 테두리 {T.primary})</span> ·{' '}
+        <span style={{ color: '#f87171', fontWeight: W.semibold }}>Negative(오류, 테두리 {T.error})</span> · Disabled(비활성, 명도 낮춤).{' '}
+        Selected는 Normal · Hovered 상태와 조합되며, Negative · Disabled는 단독 상태입니다.
+      </div>
+    </div>
+  );
+}
+
+// Text field(field-text) — 한 줄 입력. Anatomy(8요소 구조 도식) + Interactive(실동작).
+function TextFieldPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    const fieldBox = {
+      position: 'absolute', left: '250px', width: '300px', height: '44px',
+      display: 'flex', alignItems: 'center', gap: '10px', padding: '0 12px',
+      background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', boxSizing: 'border-box', zIndex: 3,
+    };
+    const ph = { fontSize: TYPE.label1.fontSize, color: '#a1a1aa' };
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '500px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 필드 묶음 뒤 흰 패널(레이어드 룩) */}
+          <div style={{ position: 'absolute', left: '220px', top: '92px', width: '360px', height: '320px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
+
+          {/* Heading + Required badge */}
+          <div style={{ position: 'absolute', left: '250px', top: '120px', display: 'inline-flex', alignItems: 'center', gap: '3px', zIndex: 3 }}>
+            <span style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: '#18181b' }}>Heading</span>
+            <span style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: T.error }}>*</span>
+          </div>
+
+          {/* 기본 필드 — Placeholder */}
+          <div style={{ ...fieldBox, top: '150px' }}>
+            <span style={ph}>Placeholder</span>
+          </div>
+
+          {/* Description */}
+          <div style={{ position: 'absolute', left: '250px', top: '206px', fontSize: TYPE.label2.fontSize, color: '#a1a1aa', zIndex: 3 }}>Description</div>
+
+          {/* Leading icon + Trailing contents 필드 */}
+          <div style={{ ...fieldBox, top: '250px' }}>
+            <span style={{ width: '18px', height: '18px', borderRadius: '4px', border: '1.5px dashed #a1a1aa', flexShrink: 0 }} />
+            <span style={{ ...ph, flex: 1 }}>Placeholder</span>
+            <span style={{ width: '22px', height: '22px', borderRadius: '5px', background: 'rgba(0,102,255,0.14)', flexShrink: 0 }} />
+          </div>
+
+          {/* Trailing button 필드 */}
+          <div style={{ ...fieldBox, top: '330px', padding: 0 }}>
+            <span style={{ ...ph, flex: 1, padding: '0 12px' }}>Placeholder</span>
+            <span style={{ alignSelf: 'stretch', width: '1px', background: '#e4e4e7' }} />
+            <span style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: T.primary, padding: '0 14px', whiteSpace: 'nowrap' }}>Button</span>
+          </div>
+
+          {/* SVG 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            <line x1="248" y1="132" x2="204" y2="132" stroke="#999" strokeWidth="1.2" />{/* 1 Heading */}
+            <line x1="248" y1="172" x2="204" y2="172" stroke="#999" strokeWidth="1.2" />{/* 2 Placeholder */}
+            <line x1="248" y1="213" x2="204" y2="213" stroke="#999" strokeWidth="1.2" />{/* 3 Description */}
+            <line x1="248" y1="272" x2="204" y2="272" stroke="#999" strokeWidth="1.2" />{/* 4 Leading icon */}
+            <line x1="400" y1="374" x2="400" y2="412" stroke="#999" strokeWidth="1.2" />{/* 5 Field */}
+            <line x1="320" y1="120" x2="320" y2="96" stroke="#999" strokeWidth="1.2" />{/* 6 Required badge */}
+            <line x1="552" y1="272" x2="600" y2="272" stroke="#999" strokeWidth="1.2" />{/* 7 Trailing contents */}
+            <line x1="552" y1="352" x2="600" y2="352" stroke="#999" strokeWidth="1.2" />{/* 8 Trailing button */}
+          </svg>
+
+          {/* Callouts — 흰 원 + 검정 텍스트 */}
+          <div style={{ position: 'absolute', left: '190px', top: '132px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '190px', top: '172px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '190px', top: '213px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '190px', top: '272px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '400px', top: '426px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
+          <div style={{ position: 'absolute', left: '320px', top: '82px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>6</div>
+          <div style={{ position: 'absolute', left: '614px', top: '272px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>7</div>
+          <div style={{ position: 'absolute', left: '614px', top: '352px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>8</div>
+        </div>
+
+        {/* Legend — 3열 그리드 */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: 'Heading' },
+            { num: 2, label: 'Placeholder' },
+            { num: 3, label: 'Description' },
+            { num: 4, label: 'Leading icon' },
+            { num: 5, label: 'Field' },
+            { num: 6, label: 'Required badge' },
+            { num: 7, label: 'Trailing contents' },
+            { num: 8, label: 'Trailing button' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return <TextFieldInteractive />;
+}
+
+// Interactive — 다크 폼용 실동작 텍스트 필드(Heading·Required·Description·포커스·Trailing 지우기)
+function TextFieldInteractive() {
+  const [v, setV] = useState('');
+  const [focused, setFocused] = useState(false);
+  const empty = v.trim() === '';
+  const error = focused === false && empty; // blur 시 비어 있으면 오류
+  const borderColor = error ? T.error : focused ? T.primary : '#2e2e2e';
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', minHeight: '220px', background: '#1e1e1e', padding: '24px' }}>
+        <div style={{ width: '360px', display: 'flex', flexDirection: 'column', gap: SP[8] }}>
+          {/* Heading + Required badge */}
+          <label style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#a1a1aa' }}>
+            지점명 <span style={{ color: T.error }}>*</span>
+          </label>
+          {/* Field */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '8px', height: '40px', padding: '0 12px',
+            background: '#161618', borderRadius: '8px', boxSizing: 'border-box',
+            border: `1px solid ${borderColor}`,
+            boxShadow: focused ? '0 0 0 3px rgba(0,102,255,0.25)' : 'none',
+            transition: 'border-color 0.15s, box-shadow 0.15s',
+          }}>
+            <input
+              value={v}
+              onChange={(e) => setV(e.target.value)}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              placeholder="지점명을 입력하세요"
+              style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: '#fff', fontSize: TYPE.label1.fontSize, fontFamily: 'inherit' }}
+            />
+            {v && (
+              <button type="button" aria-label="지우기" onClick={() => setV('')}
+                style={{ width: '18px', height: '18px', borderRadius: '50%', background: '#3a3a40', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, padding: 0 }}>
+                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="#d4d4d8" strokeWidth="1.6" strokeLinecap="round"><path d="M1 1l6 6M7 1L1 7" /></svg>
+              </button>
+            )}
+          </div>
+          {/* Description / Error */}
+          <span style={{ fontSize: TYPE.caption1.fontSize, color: error ? T.error : '#7a7a7a' }}>
+            {error ? '필수 입력 항목입니다.' : '관제 지점의 표시 이름을 입력합니다.'}
+          </span>
+        </div>
+      </div>
+      <div style={{ marginTop: SP[12], fontSize: TYPE.caption1.fontSize, color: '#7a7a7a' }}>
+        포커스 시 테두리가 브랜드 컬러(#0066FF)로 강조되고, 비운 채로 포커스를 벗어나면 오류(#FF6363)로 표시됩니다.
+      </div>
+    </div>
+  );
+}
+
+// Search field(field-search) — 키워드 검색 입력. Anatomy(구조 도식) + Interactive(실동작).
+function SearchFieldPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    // 입력 필드 한 줄(placeholder/value 두 가지 예시) 공통 스타일
+    const fieldBase = {
+      position: 'absolute', left: '230px', width: '300px', height: '52px',
+      display: 'flex', alignItems: 'center', gap: '10px', padding: '0 14px',
+      borderRadius: '10px', boxSizing: 'border-box', zIndex: 3,
+    };
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
+          width: '760px', height: '420px', margin: '0 auto 24px', boxSizing: 'border-box',
+        }}>
+          {/* 필드 뒤 흰 패널(레이어드 룩) */}
+          <div style={{ position: 'absolute', left: '195px', top: '124px', width: '370px', height: '172px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
+
+          {/* 필드 1 — Placeholder(입력 전) */}
+          <div style={{ ...fieldBase, top: '150px', background: '#f1f1f4', border: '1px solid #e4e4e7' }}>
+            <Icon name="search" size={18} color="#a1a1aa" />
+            <span style={{ fontSize: TYPE.label1.fontSize, color: '#a1a1aa' }}>Please enter your search term.</span>
+          </div>
+
+          {/* 필드 2 — Value(입력 후) + Clear 버튼 */}
+          <div style={{ ...fieldBase, top: '226px', background: '#fff', border: '1px solid #e4e4e7' }}>
+            <Icon name="search" size={18} color="#71717a" />
+            <span style={{ fontSize: TYPE.label1.fontSize, color: '#18181b', flex: 1 }}>Entered keyword</span>
+            <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: '#c4c4c8', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round"><path d="M1 1l6 6M7 1L1 7" /></svg>
+            </span>
+          </div>
+
+          {/* SVG 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. Search icon -> 좌측 */}
+            <line x1="192" y1="176" x2="238" y2="176" stroke="#999" strokeWidth="1.2" />
+            {/* 2. Placeholder -> 위 */}
+            <line x1="440" y1="124" x2="440" y2="150" stroke="#999" strokeWidth="1.2" />
+            {/* 3. Value -> 아래 */}
+            <line x1="370" y1="320" x2="370" y2="278" stroke="#999" strokeWidth="1.2" />
+            {/* 4. Field -> 우측 */}
+            <line x1="586" y1="176" x2="530" y2="176" stroke="#999" strokeWidth="1.2" />
+            {/* 5. Clear button -> 우측 */}
+            <line x1="586" y1="252" x2="516" y2="252" stroke="#999" strokeWidth="1.2" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '178px', top: '176px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '440px', top: '110px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '370px', top: '334px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '600px', top: '176px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
+          <div style={{ position: 'absolute', left: '600px', top: '252px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>5</div>
+        </div>
+
+        {/* Legend — 3열 그리드 */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: 'Search icon' },
+            { num: 2, label: 'Placeholder' },
+            { num: 3, label: 'Value' },
+            { num: 4, label: 'Field' },
+            { num: 5, label: 'Clear button' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 다크 대시보드용 실동작 검색 필드(입력값 있을 때만 Clear 노출)
+  return <SearchFieldInteractive />;
+}
+
+function SearchFieldInteractive() {
+  const [q, setQ] = useState('상수도 누수');
+  const [focused, setFocused] = useState(false);
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', height: '220px', background: '#1e1e1e' }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '10px', width: '360px', height: '40px', padding: '0 12px',
+          background: '#161618', borderRadius: '8px', boxSizing: 'border-box',
+          border: `1px solid ${focused ? T.primary : '#2e2e2e'}`,
+          boxShadow: focused ? `0 0 0 3px rgba(0,102,255,0.25)` : 'none',
+          transition: 'border-color 0.15s, box-shadow 0.15s',
+        }}>
+          <Icon name="search" size={18} color={focused ? T.primaryStrong : '#71717a'} />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            placeholder="검색어를 입력하세요"
+            style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: '#fff', fontSize: TYPE.label1.fontSize, fontFamily: 'inherit' }}
+          />
+          {q && (
+            <button
+              type="button"
+              aria-label="지우기"
+              onClick={() => setQ('')}
+              style={{ width: '18px', height: '18px', borderRadius: '50%', background: '#3a3a40', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, padding: 0 }}
+            >
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="#d4d4d8" strokeWidth="1.6" strokeLinecap="round"><path d="M1 1l6 6M7 1L1 7" /></svg>
+            </button>
+          )}
+        </div>
+      </div>
+      <div style={{ marginTop: SP[12], fontSize: TYPE.caption1.fontSize, color: '#7a7a7a' }}>
+        입력값이 있을 때만 우측 Clear(×) 버튼이 나타납니다. 포커스 시 테두리가 브랜드 컬러(#0066FF)로 강조됩니다.
+      </div>
+    </div>
+  );
+}
+
+// Text area(field-textarea) — 멀티라인 입력. Anatomy(7요소) + Interactive(글자수·액션·상태).
+function TextAreaPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
+          width: '760px', height: '420px', margin: '0 auto 24px', boxSizing: 'border-box',
+        }}>
+          {/* 뒤 흰 패널(레이어드 룩) */}
+          <div style={{ position: 'absolute', left: '195px', top: '146px', width: '380px', height: '150px', background: '#fff', borderRadius: '16px', zIndex: 2 }} />
+
+          {/* Heading + Required badge */}
+          <div style={{ position: 'absolute', left: '220px', top: '162px', zIndex: 3, display: 'flex', alignItems: 'center', gap: '3px' }}>
+            <span style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: '#18181b' }}>Heading</span>
+            <span style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: '#FF6363', lineHeight: 1 }}>*</span>
+          </div>
+
+          {/* Field 박스 */}
+          <div style={{
+            position: 'absolute', left: '220px', top: '188px', width: '320px', height: '84px',
+            background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 3,
+            display: 'flex', flexDirection: 'column', padding: '12px 14px', boxSizing: 'border-box',
+          }}>
+            <span style={{ fontSize: TYPE.label1.fontSize, color: '#a1a1aa', flex: 1 }}>Placeholder</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: TYPE.caption1.fontSize, color: '#a1a1aa' }}>6/2000</span>
+              <span style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: T.primary }}>Button</span>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div style={{ position: 'absolute', left: '220px', top: '284px', zIndex: 3, fontSize: TYPE.label2.fontSize, color: '#71717a' }}>Description</div>
+
+          {/* SVG 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. Heading -> 좌측 */}
+            <line x1="174" y1="172" x2="218" y2="172" stroke="#999" strokeWidth="1.2" />
+            {/* 5. Required badge -> 위 */}
+            <line x1="284" y1="130" x2="284" y2="162" stroke="#999" strokeWidth="1.2" />
+            {/* 2. Placeholder -> 좌측 */}
+            <line x1="174" y1="208" x2="218" y2="208" stroke="#999" strokeWidth="1.2" />
+            {/* 3. Leading content -> 좌측 */}
+            <line x1="174" y1="252" x2="230" y2="252" stroke="#999" strokeWidth="1.2" />
+            {/* 7. Trailing content -> 우측 */}
+            <line x1="591" y1="252" x2="530" y2="252" stroke="#999" strokeWidth="1.2" />
+            {/* 6. Field -> 아래 */}
+            <line x1="390" y1="326" x2="390" y2="274" stroke="#999" strokeWidth="1.2" />
+            {/* 4. Description -> 아래 */}
+            <line x1="260" y1="326" x2="260" y2="292" stroke="#999" strokeWidth="1.2" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '160px', top: '172px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '284px', top: '116px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>5</div>
+          <div style={{ position: 'absolute', left: '160px', top: '208px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '160px', top: '252px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '605px', top: '252px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>7</div>
+          <div style={{ position: 'absolute', left: '390px', top: '340px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>6</div>
+          <div style={{ position: 'absolute', left: '260px', top: '340px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
+        </div>
+
+        {/* Legend — 3열 그리드 */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: 'Heading' },
+            { num: 2, label: 'Placeholder' },
+            { num: 3, label: 'Leading content' },
+            { num: 4, label: 'Description' },
+            { num: 5, label: 'Required badge' },
+            { num: 6, label: 'Field' },
+            { num: 7, label: 'Trailing content' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return <TextAreaInteractive />;
+}
+
+function TextAreaInteractive() {
+  const [val, setVal] = useState('상수도 누수 의심 구간 점검 완료. 후속 조치 필요.');
+  const [focused, setFocused] = useState(false);
+  const [required, setRequired] = useState(true);
+  const [error, setError] = useState(false);
+  const [showButton, setShowButton] = useState(true);
+  const MAX = 2000;
+
+  const RadioOption = ({ label, checked, onChange }) => (
+    <div onClick={onChange} className="ds-radio-option" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', userSelect: 'none', padding: '2px 0' }}>
+      <div className="ds-radio-circle" style={{
+        width: '20px', height: '20px', borderRadius: '50%',
+        border: checked ? '2px solid #111' : '2px solid #3e3e42',
+        backgroundColor: checked ? '#3385FF' : '#1b1b1d',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', transition: 'all 0.15s',
+      }}>
+        {checked && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ffffff' }} />}
+      </div>
+      <span style={{ marginLeft: '10px', fontSize: '14px', color: checked ? '#ffffff' : '#a1a1aa', fontWeight: checked ? '600' : '400' }}>{label}</span>
+    </div>
+  );
+
+  const over = val.length > MAX;
+  const borderColor = error ? T.error : (focused ? T.primary : '#2e2e2e');
+  const ring = error ? '0 0 0 3px rgba(255,99,99,0.22)' : (focused ? '0 0 0 3px rgba(0,102,255,0.25)' : 'none');
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
+        {/* Left: Preview */}
+        <div style={{ flex: 1.8, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+          <div style={{ width: '100%', maxWidth: '380px' }}>
+            {/* Heading + Required */}
+            <label style={{ display: 'flex', alignItems: 'center', gap: '3px', marginBottom: SP[8], fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: '#e8e8ec' }}>
+              조치 내용
+              {required && <span style={{ color: T.error, fontWeight: W.bold, lineHeight: 1 }}>*</span>}
+            </label>
+            {/* Field */}
+            <div style={{
+              background: '#161618', border: `1px solid ${borderColor}`, borderRadius: '8px',
+              boxShadow: ring, transition: 'border-color 0.15s, box-shadow 0.15s',
+              padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: SP[8], boxSizing: 'border-box',
+            }}>
+              <textarea
+                value={val}
+                onChange={(e) => setVal(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                rows={3}
+                maxLength={MAX}
+                placeholder="조치 내용을 입력하세요"
+                style={{
+                  width: '100%', minHeight: '64px', resize: 'vertical', background: 'transparent', border: 'none', outline: 'none',
+                  color: '#fff', fontSize: TYPE.label1.fontSize, lineHeight: 1.6, fontFamily: 'inherit', padding: 0,
+                }}
+              />
+              {/* Leading(글자수) + Trailing(액션) */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: TYPE.caption1.fontSize, color: over ? T.error : '#7a7a7a' }}>{val.length}/{MAX}</span>
+                {showButton && (
+                  <button
+                    type="button"
+                    onClick={() => alert('등록')}
+                    style={{ background: 'transparent', border: 'none', color: T.primaryStrong, fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, cursor: 'pointer', padding: 0 }}
+                  >등록</button>
+                )}
+              </div>
+            </div>
+            {/* Description / Error message */}
+            <div style={{ marginTop: SP[8], fontSize: TYPE.label2.fontSize, color: error ? T.error : '#8a8a8f' }}>
+              {error ? '필수 입력 항목입니다.' : '관제 일지에 기록될 조치 내용을 입력합니다.'}
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Controls */}
+        <div className="ds-playground-controls" style={{ flex: 1, background: '#141414', borderLeft: '1px solid #2a2a2a', padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px', maxHeight: '360px', overflowY: 'auto', boxSizing: 'border-box' }}>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Required badge</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <RadioOption label="True" checked={required} onChange={() => setRequired(true)} />
+              <RadioOption label="False" checked={!required} onChange={() => setRequired(false)} />
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>State</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <RadioOption label="Default" checked={!error} onChange={() => setError(false)} />
+              <RadioOption label="Error" checked={error} onChange={() => setError(true)} />
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Trailing content</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <RadioOption label="Button" checked={showButton} onChange={() => setShowButton(true)} />
+              <RadioOption label="None" checked={!showButton} onChange={() => setShowButton(false)} />
+            </div>
+          </div>
+          <div style={{ fontSize: '12px', color: '#777', lineHeight: 1.5 }}>
+            · 글자수(Leading)는 {MAX}자 한도 안내<br />· 포커스 시 테두리 #0066FF, Error 시 #FF6363
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Segmented control(control-segmented) — 세그먼트 버튼. Anatomy(구조) + Interactive(전환).
+function SegmentedControlPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    const segBase = { width: '100px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: TYPE.body2.fontSize, boxSizing: 'border-box' };
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
+          width: '760px', height: '400px', margin: '0 auto 24px', boxSizing: 'border-box',
+        }}>
+          {/* 세그먼트 컨테이너 */}
+          <div style={{
+            position: 'absolute', left: '265px', top: '196px',
+            display: 'inline-flex', padding: SP[4], background: '#dcdce0', borderRadius: '8px', zIndex: 3, boxSizing: 'border-box',
+          }}>
+            <div style={{ ...segBase, background: '#fff', color: '#18181b', fontWeight: W.semibold, borderRadius: '6px', boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }}>Active</div>
+            <div style={{ ...segBase, color: '#8a8a90' }}>Inactive</div>
+            <div style={{ ...segBase, color: '#8a8a90' }}>Inactive</div>
+          </div>
+
+          {/* SVG 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. Segment -> 좌측 */}
+            <line x1="228" y1="220" x2="267" y2="220" stroke="#999" strokeWidth="1.2" />
+            {/* 2. Label -> 위 */}
+            <line x1="319" y1="178" x2="319" y2="199" stroke="#999" strokeWidth="1.2" />
+            {/* 3. Container -> 아래 */}
+            <line x1="435" y1="267" x2="435" y2="244" stroke="#999" strokeWidth="1.2" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '215px', top: '220px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '319px', top: '165px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '435px', top: '280px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
+        </div>
+
+        {/* Legend — 3열 그리드 */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: 'Segment' },
+            { num: 2, label: 'Label' },
+            { num: 3, label: 'Container' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 실동작 전환(다크). 데이터 스펙: 컨테이너 #1e1e1e, 활성 #2b2b2b + #0066FF.
+  return <SegmentedControlInteractive />;
+}
+
+function SegmentedControlInteractive() {
+  const OPTS = ['일별', '주별', '월별'];
+  const [sel, setSel] = useState('일별');
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', height: '220px', background: '#161618' }}>
+        <div style={{ display: 'inline-flex', padding: SP[4], background: '#1e1e1e', borderRadius: '8px' }}>
+          {OPTS.map((o) => {
+            const on = sel === o;
+            return (
+              <button
+                key={o}
+                type="button"
+                onClick={() => setSel(o)}
+                style={{
+                  padding: '6px 18px', border: 'none', cursor: 'pointer', borderRadius: '6px',
+                  fontSize: TYPE.label1.fontSize, fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s',
+                  background: on ? '#2b2b2b' : 'transparent',
+                  color: on ? T.primary : '#888',
+                  fontWeight: on ? W.bold : W.medium,
+                }}
+              >{o}</button>
+            );
+          })}
+        </div>
+      </div>
+      <div style={{ marginTop: SP[12], fontSize: TYPE.caption1.fontSize, color: '#7a7a7a' }}>
+        선택한 세그먼트만 활성 배경(#2b2b2b) + 브랜드 컬러(#0066FF) 라벨로 강조됩니다. 현재 선택: <span style={{ color: '#bdbdc4' }}>{sel}</span>
+      </div>
+    </div>
+  );
+}
+
+// Icon button(button-icon) — 아이콘만으로 동작. Anatomy(구조) + Interactive(실동작).
+function IconButtonPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#efefef', borderRadius: '16px',
+          width: '720px', height: '340px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box',
+        }}>
+          {/* 아이콘 버튼 — 중앙 (원형 Primary + 재생 아이콘) */}
+          <div style={{
+            position: 'absolute', left: '332px', top: '142px', width: '56px', height: '56px',
+            borderRadius: '50%', background: T.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3,
+          }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 19,12 8,19" /></svg>
+          </div>
+
+          {/* SVG 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 1. Icon -> 좌측 */}
+            <line x1="263" y1="170" x2="348" y2="170" stroke="#999" strokeWidth="1.2" />
+            {/* 2. Container -> 우측 */}
+            <line x1="457" y1="170" x2="390" y2="170" stroke="#999" strokeWidth="1.2" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '250px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '470px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+        </div>
+
+        {/* Legend — 3열 그리드(이미지와 동일: 2개 항목) */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Icon' },
+            { num: 2, label: 'Container' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — Primary(원형) + Ghost(사각) 변형 + Disabled
+  return <IconButtonInteractive />;
+}
+
+function IconButtonInteractive() {
+  const BTN = 44, ICON = 18;
+  const ROWS = ['Normal', 'Outlined', 'Solid', 'Background/Normal', 'Background/Alternative'];
+  const COLS = ['Normal', 'Hovered', 'Pressed', 'Disabled'];
+
+  // 변형(행) × 상태(열) → 컨테이너/아이콘 스타일. Solid는 핀텔 Primary 위계 사용.
+  const styleFor = (variant, state) => {
+    const dis = state === 'Disabled';
+    switch (variant) {
+      case 'Normal': {
+        const bg = dis ? 'transparent' : state === 'Hovered' ? '#f0f0f3' : state === 'Pressed' ? '#e4e4e7' : 'transparent';
+        return { bg, border: 'none', iconColor: dis ? '#c8c8ce' : '#18181b' };
+      }
+      case 'Outlined': {
+        const bg = dis ? 'transparent' : state === 'Hovered' ? '#f4f4f5' : state === 'Pressed' ? '#e8e8ec' : 'transparent';
+        return { bg, border: `1px solid ${dis ? '#e8e8ec' : '#d4d4d8'}`, iconColor: dis ? '#c8c8ce' : '#18181b' };
+      }
+      case 'Solid': {
+        const bg = state === 'Hovered' ? T.primaryStrong : state === 'Pressed' ? T.primaryHeavy : T.primary;
+        return { bg, border: 'none', iconColor: '#fff', opacity: dis ? 0.4 : 1 };
+      }
+      case 'Background/Normal': {
+        const bg = dis ? '#f4f4f5' : state === 'Hovered' ? '#e8e8ec' : state === 'Pressed' ? '#dcdce0' : '#f0f0f3';
+        return { bg, border: 'none', iconColor: dis ? '#c8c8ce' : '#71717a' };
+      }
+      case 'Background/Alternative': {
+        const bg = dis ? '#c4c4c8' : state === 'Hovered' ? '#86868e' : state === 'Pressed' ? '#71717a' : '#9a9aa2';
+        return { bg, border: 'none', iconColor: '#fff', opacity: dis ? 0.6 : 1 };
+      }
+      default: return { bg: 'transparent', border: 'none', iconColor: '#18181b' };
+    }
+  };
+
+  // 변형별 대표 아이콘 (이미지와 동일: 시계 / 공유 / 전송 / ×)
+  const renderIcon = (variant, color) => {
+    if (variant === 'Normal') return <Icon name="schedule" size={ICON} color={color} />;
+    if (variant === 'Outlined') {
+      return (
+        <svg width={ICON} height={ICON} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 15V4" /><path d="M8 8l4-4 4 4" /><path d="M5 13v6a1 1 0 001 1h12a1 1 0 001-1v-6" />
+        </svg>
+      );
+    }
+    if (variant === 'Solid') return <svg width={ICON} height={ICON} viewBox="0 0 24 24" fill={color}><polygon points="6,4 20,12 6,20" /></svg>;
+    // Background 행 → ×
+    return (
+      <svg width={ICON - 2} height={ICON - 2} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+    );
+  };
+
+  const Cell = ({ variant, state }) => {
+    const st = styleFor(variant, state);
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: `${BTN}px`, height: `${BTN}px`, borderRadius: '50%', background: st.bg, border: st.border, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: st.opacity || 1, boxSizing: 'border-box' }}>
+          {renderIcon(variant, st.iconColor)}
+        </div>
+      </div>
+    );
+  };
+
+  const colHeader = { fontSize: TYPE.label1.fontSize, fontWeight: W.medium, color: '#9a9aa2', textAlign: 'center' };
+  const rowLabel = { fontSize: TYPE.label1.fontSize, fontWeight: W.medium, color: '#9a9aa2' };
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      {/* 라이트 카드 — States 매트릭스 */}
+      <div style={{ background: '#ffffff', borderRadius: '16px', padding: SP[40], display: 'flex', justifyContent: 'center', marginBottom: SP[16] }}>
+        <div style={{ display: 'grid', gridTemplateColumns: `170px repeat(4, 90px)`, columnGap: SP[24], rowGap: '26px', alignItems: 'center' }}>
+          {/* 헤더 행 */}
+          <div />
+          {COLS.map(c => <div key={c} style={colHeader}>{c}</div>)}
+
+          {/* 변형 행 */}
+          {ROWS.map(r => (
+            <Fragment key={r}>
+              <div style={rowLabel}>{r}</div>
+              {COLS.map(c => <Cell key={c} variant={r} state={c} />)}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+
+      {/* 설명 */}
+      <div style={{ fontSize: TYPE.label1.fontSize, color: '#888', lineHeight: '1.7' }}>
+        변형(Normal · Outlined · Solid · Background)별 상호작용 상태입니다.{' '}
+        <span style={{ color: '#60a5fa', fontWeight: W.semibold }}>Solid는 핀텔 Primary 위계 — Normal {T.primary} · Hovered {T.primaryStrong} · Pressed {T.primaryHeavy}</span>{' '}
+        를 따르며, Disabled는 투명도를 낮춰 표현합니다. 라벨이 없으므로 <code style={{ color: '#9a9aa2' }}>aria-label</code>을 반드시 제공합니다.
+      </div>
+    </div>
+  );
+}
+
+// Radio(control-radio) — 단일 선택 컨트롤. Anatomy(구조) + Interactive(2가지 사이즈 + 선택).
+function RadioPlayground({ activeSubTab }) {
+  const [sel, setSel] = useState('day');
+  const [size, setSize] = useState('medium');
+
+  // 핀텔 가이드 — 라디오 2가지 사이즈
+  const SIZES = {
+    small:  { name: 'Small',  outer: 16, dot: 6, font: 13, gap: 6 },
+    medium: { name: 'Medium', outer: 20, dot: 8, font: 14, gap: 8 },
+  };
+
+  // 라디오 원 (selected/disabled + 사이즈)
+  // 선택 시: 외곽 원 전체를 T.primary로 채우고 가운데 흰 점 / 미선택: 투명 + 2px 회색 테두리
+  const Radio = ({ selected, disabled, outer, dot }) => (
+    <div style={{
+      width: `${outer}px`, height: `${outer}px`, borderRadius: '50%', boxSizing: 'border-box', flexShrink: 0,
+      background: selected ? T.primary : 'transparent',
+      border: selected ? 'none' : '2px solid #71717A',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      opacity: disabled ? 0.4 : 1, transition: 'background 0.15s, border-color 0.15s',
+    }}>
+      {selected && <div style={{ width: `${dot}px`, height: `${dot}px`, borderRadius: '50%', background: '#fff' }} />}
+    </div>
+  );
+
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#efefef', borderRadius: '16px',
+          width: '720px', height: '340px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box',
+        }}>
+          {/* 라디오 컴포넌트 — 중앙 (선택 상태) */}
+          <div style={{
+            position: 'absolute', left: '300px', top: '150px',
+            display: 'inline-flex', alignItems: 'center', gap: SP[8],
+            fontSize: TYPE.body1.fontSize, fontWeight: W.bold, color: '#18181b', zIndex: 3, userSelect: 'none',
+          }}>
+            <Radio selected outer={20} dot={8} />
+            <span>Radio</span>
+          </div>
+
+          {/* SVG 직선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 1. Control -> 좌측 */}
+            <line x1="240" y1="160" x2="298" y2="160" stroke="#999" strokeWidth="1.2" />
+            <circle cx="298" cy="160" r="1.5" fill="#999" />
+            {/* 2. Label -> 우측 */}
+            <line x1="440" y1="160" x2="382" y2="160" stroke="#999" strokeWidth="1.2" />
+            <circle cx="382" cy="160" r="1.5" fill="#999" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '230px', top: '160px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '450px', top: '160px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Control (선택 컨트롤 — 외곽 원 + 내부 점)' },
+            { num: 2, label: 'Label (텍스트 라벨)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 2가지 사이즈 비교 + 단일 선택 데모
+  const OPTS = [{ v: 'day', t: '일별' }, { v: 'week', t: '주별' }, { v: 'month', t: '월별' }];
+  const sz = SIZES[size];
+
+  // States 매트릭스용 — 컨트롤 뒤 원형 상태 레이어(hover/press)
+  const stateLayer = (st) => st === 'Hovered' ? '#f0f0f3' : st === 'Pressed' ? '#e0e0e6' : 'transparent';
+  const STATE_ROWS = ['Normal', 'Hovered', 'Pressed', 'Disabled'];
+  const StateCell = ({ state, checked }) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', opacity: state === 'Disabled' ? 0.4 : 1 }}>
+      <div style={{ position: 'relative', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: stateLayer(state) }} />
+        <Radio selected={checked} outer={20} dot={8} />
+      </div>
+      <span style={{ fontSize: TYPE.label1.fontSize, color: '#18181b' }}>{checked ? 'Checked' : 'Unchecked'}</span>
+    </div>
+  );
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      {/* ── Size 섹션 (2가지 사이즈) ── */}
+      <div style={{ marginBottom: SP[48] }}>
+        <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: '20px' }}>Size</div>
+        <div style={{ background: '#ffffff', borderRadius: '16px', padding: SP[40], display: 'flex', justifyContent: 'center', gap: '96px', marginBottom: SP[16] }}>
+          {Object.values(SIZES).map((s) => (
+            <div key={s.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: SP[16] }}>
+              <div style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#888' }}>{s.name} · 외곽 {s.outer}px</div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: `${s.gap}px` }}>
+                <Radio selected outer={s.outer} dot={s.dot} />
+                <span style={{ fontSize: `${s.font}px`, color: '#18181b', fontWeight: W.medium }}>Radio</span>
+              </div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: `${s.gap}px` }}>
+                <Radio selected={false} outer={s.outer} dot={s.dot} />
+                <span style={{ fontSize: `${s.font}px`, color: '#71717a', fontWeight: W.medium }}>Radio</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: TYPE.label1.fontSize, color: '#888', lineHeight: '1.7' }}>
+          핀텔 가이드 기준 <span style={{ color: '#60a5fa', fontWeight: W.semibold }}>두 가지 사이즈 — Small(외곽 16 · 점 6 · 라벨 13px) / Medium(외곽 20 · 점 8 · 라벨 14px)</span>. 선택 시 외곽 원이 {T.primary}로 채워지고 가운데 흰 점이 표시됩니다.
+        </div>
+      </div>
+
+      {/* ── States 섹션 ── */}
+      <div style={{ marginBottom: SP[48] }}>
+        <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: '20px' }}>States</div>
+        <div style={{ background: '#ffffff', borderRadius: '16px', padding: SP[40], display: 'flex', justifyContent: 'center', marginBottom: SP[16] }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '120px 200px 200px', columnGap: SP[24], rowGap: '22px', alignItems: 'center' }}>
+            {/* 헤더 행 */}
+            <div />
+            <div style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.medium, color: '#9a9aa2' }}>Unchecked</div>
+            <div style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.medium, color: '#9a9aa2' }}>Checked</div>
+            {/* 상태 행 */}
+            {STATE_ROWS.map((r) => (
+              <Fragment key={r}>
+                <div style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.medium, color: '#9a9aa2' }}>{r}</div>
+                <StateCell state={r} checked={false} />
+                <StateCell state={r} checked={true} />
+              </Fragment>
+            ))}
+          </div>
+        </div>
+        <div style={{ fontSize: TYPE.label1.fontSize, color: '#888', lineHeight: '1.7' }}>
+          Normal · Hovered(연한 원형 상태 레이어) · Pressed(진한 원형 상태 레이어) ·{' '}
+          <span style={{ color: '#60a5fa', fontWeight: W.semibold }}>Disabled(투명도 40% · 클릭 차단)</span>. Hover/Press 시 컨트롤 뒤에 원형 상태 레이어가 표시됩니다.
+        </div>
+      </div>
+
+      {/* ── Interactive (단일 선택) ── */}
+      <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: SP[16] }}>Interactive</div>
+      {/* 사이즈 토글 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], marginBottom: SP[16] }}>
+        <span style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2' }}>Size</span>
+        {['small', 'medium'].map((k) => (
+          <button key={k} type="button" onClick={() => setSize(k)} style={{
+            minWidth: '64px', height: '26px', padding: '0 10px', borderRadius: '6px', cursor: 'pointer',
+            fontSize: TYPE.caption1.fontSize, fontWeight: W.semibold, fontFamily: 'inherit',
+            color: size === k ? '#fff' : '#c9c9cf',
+            background: size === k ? T.primary : '#2a2a30',
+            border: `1px solid ${size === k ? T.primary : '#3a3a42'}`,
+          }}>{SIZES[k].name}</button>
+        ))}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: SP[32], background: '#202024', borderRadius: '20px', height: '180px' }}>
+        {OPTS.map((o) => (
+          <div key={o.v} onClick={() => setSel(o.v)} style={{ display: 'inline-flex', alignItems: 'center', gap: `${sz.gap}px`, cursor: 'pointer', userSelect: 'none' }}>
+            <Radio selected={sel === o.v} outer={sz.outer} dot={sz.dot} />
+            <span style={{ fontSize: `${sz.font}px`, color: sel === o.v ? '#fff' : '#9a9aa2', fontWeight: sel === o.v ? W.semibold : W.regular }}>{o.t}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: SP[12], fontSize: TYPE.caption1.fontSize, color: '#7a7a7a' }}>
+        같은 그룹에서 하나만 선택됩니다. 현재 선택: <span style={{ color: '#bdbdc4' }}>{OPTS.find(o => o.v === sel)?.t}</span>
+      </div>
+    </div>
+  );
+}
+
+// Select(control-select) — 드롭다운 단일 선택. Anatomy(7개 구성) + Interactive(펼침/선택).
+function SelectPlayground({ activeSubTab }) {
+  const [open, setOpen] = useState(false);
+  const [val, setVal] = useState(null);
+
+  if (activeSubTab === 'anatomy') {
+    const dash = '1.5px dashed #a1a1aa';
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
+          width: '760px', height: '420px', margin: '0 auto 24px', boxSizing: 'border-box',
+        }}>
+          {/* 필드 묶음 패널 */}
+          <div style={{ position: 'absolute', left: '220px', top: '185px', width: '370px', height: '140px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
+
+          {/* Heading + Required badge */}
+          <div style={{ position: 'absolute', left: '240px', top: '222px', fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: '#18181b', zIndex: 3 }}>
+            Heading <span style={{ color: '#FF6363' }}>*</span>
+          </div>
+
+          {/* Field (트리거) */}
+          <div style={{
+            position: 'absolute', left: '240px', top: '250px', width: '330px', height: '44px',
+            background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px',
+            display: 'flex', alignItems: 'center', gap: '10px', padding: '0 12px', boxSizing: 'border-box', zIndex: 3,
+          }}>
+            {/* Leading icon (점선 슬롯) */}
+            <div style={{ width: '18px', height: '18px', border: dash, borderRadius: '4px', flexShrink: 0 }} />
+            {/* Placeholder */}
+            <span style={{ flex: 1, fontSize: TYPE.label1.fontSize, color: '#a1a1aa' }}>Placeholder</span>
+            {/* Dropdown icon */}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#71717a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+          </div>
+
+          {/* Description */}
+          <div style={{ position: 'absolute', left: '240px', top: '305px', fontSize: TYPE.caption1.fontSize, color: '#a1a1aa', zIndex: 3 }}>Description</div>
+
+          {/* SVG 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. Heading -> 좌 */}
+            <line x1="182" y1="230" x2="236" y2="230" stroke="#999" strokeWidth="1.2" />
+            <circle cx="236" cy="230" r="1.5" fill="#999" />
+            {/* 2. Required badge -> 위 */}
+            <line x1="300" y1="164" x2="300" y2="222" stroke="#999" strokeWidth="1.2" />
+            <circle cx="300" cy="222" r="1.5" fill="#999" />
+            {/* 3. Leading icon -> 좌 */}
+            <line x1="182" y1="272" x2="246" y2="272" stroke="#999" strokeWidth="1.2" />
+            <circle cx="246" cy="272" r="1.5" fill="#999" />
+            {/* 4. Dropdown icon -> 우 */}
+            <line x1="624" y1="272" x2="566" y2="272" stroke="#999" strokeWidth="1.2" />
+            <circle cx="566" cy="272" r="1.5" fill="#999" />
+            {/* 5. Placeholder -> 아래 */}
+            <line x1="314" y1="379" x2="314" y2="296" stroke="#999" strokeWidth="1.2" />
+            <circle cx="314" cy="296" r="1.5" fill="#999" />
+            {/* 6. Description -> 좌 */}
+            <line x1="182" y1="312" x2="232" y2="312" stroke="#999" strokeWidth="1.2" />
+            <circle cx="232" cy="312" r="1.5" fill="#999" />
+            {/* 7. Field -> 아래 */}
+            <line x1="404" y1="379" x2="404" y2="296" stroke="#999" strokeWidth="1.2" />
+            <circle cx="404" cy="296" r="1.5" fill="#999" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '168px', top: '230px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '300px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '168px', top: '272px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '638px', top: '272px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
+          <div style={{ position: 'absolute', left: '314px', top: '393px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>5</div>
+          <div style={{ position: 'absolute', left: '168px', top: '312px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>6</div>
+          <div style={{ position: 'absolute', left: '404px', top: '393px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>7</div>
+        </div>
+
+        {/* Legend — 3열 그리드 */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: 'Heading' },
+            { num: 2, label: 'Required badge' },
+            { num: 3, label: 'Leading icon' },
+            { num: 4, label: 'Dropdown icon' },
+            { num: 5, label: 'Placeholder' },
+            { num: 6, label: 'Description' },
+            { num: 7, label: 'Field' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 실동작 셀렉트(Heading/Field/Description + 펼침 메뉴)
+  const OPTS = ['강남구', '서초구', '송파구'];
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', background: '#202024', borderRadius: '20px', minHeight: '300px', padding: '48px 0' }}>
+        <div style={{ width: '320px', position: 'relative' }}>
+          {/* Heading + Required */}
+          <div style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#e8e8ec', marginBottom: SP[8] }}>지점 선택 <span style={{ color: T.error }}>*</span></div>
+
+          {/* Field (트리거) */}
+          <div
+            onClick={() => setOpen(!open)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: SP[8], height: '40px', padding: '0 12px', cursor: 'pointer',
+              background: '#161618', borderRadius: '8px', boxSizing: 'border-box',
+              border: `1px solid ${open ? T.primary : '#2e2e35'}`, transition: 'border-color 0.15s',
+            }}
+          >
+            <Icon name="location_searching" size={16} color="#71717a" />
+            <span style={{ flex: 1, fontSize: TYPE.label1.fontSize, color: val ? '#fff' : '#71717a' }}>{val || '지점을 선택하세요'}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={open ? T.primaryStrong : '#8a8a92'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}><polyline points="6 9 12 15 18 9" /></svg>
+          </div>
+
+          {/* Description */}
+          <div style={{ fontSize: TYPE.caption1.fontSize, color: '#7a7a7a', marginTop: '6px' }}>관제할 지점을 선택하세요</div>
+
+          {/* 옵션 목록 */}
+          {open && (
+            <div style={{ position: 'absolute', left: 0, right: 0, top: '62px', background: '#1e1e22', border: '1px solid #2e2e35', borderRadius: '8px', boxShadow: '0 12px 32px rgba(0,0,0,0.5)', overflow: 'hidden', zIndex: 10 }}>
+              {OPTS.map((o) => {
+                const on = val === o;
+                return (
+                  <div
+                    key={o}
+                    onClick={() => { setVal(o); setOpen(false); }}
+                    style={{ padding: '10px 12px', fontSize: TYPE.label1.fontSize, cursor: 'pointer', color: on ? T.primaryStrong : '#d4d4d8', fontWeight: on ? W.semibold : W.regular, background: on ? 'rgba(0,102,255,0.1)' : 'transparent' }}
+                    onMouseEnter={(e) => { if (!on) e.currentTarget.style.background = '#262626'; }}
+                    onMouseLeave={(e) => { if (!on) e.currentTarget.style.background = 'transparent'; }}
+                  >{o}</div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+      <div style={{ marginTop: SP[12], fontSize: TYPE.caption1.fontSize, color: '#7a7a7a' }}>
+        트리거 클릭 시 옵션 목록이 열리고, 선택하면 닫히며 값이 반영됩니다. 펼침 시 chevron이 180° 회전합니다.
+      </div>
+    </div>
+  );
+}
+
+// Slider(control-slider) — 범위(2-thumb) 슬라이더. Anatomy(구조) + Interactive(녹화 영상 구간 선택).
+function SliderPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    // 트랙: x 170~600 (width 430), y 268. 손잡이 2개(좌 253 / 우 400)
+    const TRACK_L = 170, TRACK_R = 600, TRACK_Y = 268;
+    const LO = 253, HI = 400;
+    const thumb = (x) => ({
+      position: 'absolute', left: `${x}px`, top: `${TRACK_Y}px`, transform: 'translate(-50%, -50%)',
+      width: '18px', height: '18px', borderRadius: '50%', background: T.primary,
+      border: '2px solid #fff', boxShadow: '0 1px 4px rgba(0,0,0,0.25)', boxSizing: 'border-box', zIndex: 3,
+    });
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
+          width: '760px', height: '400px', margin: '0 auto 24px', boxSizing: 'border-box',
+        }}>
+          {/* Heading (Value ~ Value) */}
+          <div style={{ position: 'absolute', left: '410px', top: '217px', transform: 'translate(-50%, -50%)', fontSize: TYPE.headline1.fontSize, fontWeight: W.bold, color: '#18181b', whiteSpace: 'nowrap', zIndex: 3 }}>
+            Value ~ Value
+          </div>
+
+          {/* Track 베이스(전체) */}
+          <div style={{ position: 'absolute', left: `${TRACK_L}px`, top: `${TRACK_Y}px`, transform: 'translateY(-50%)', width: `${TRACK_R - TRACK_L}px`, height: '4px', borderRadius: '2px', background: '#d4d4d8', zIndex: 1 }} />
+          {/* Fill(선택 구간) */}
+          <div style={{ position: 'absolute', left: `${LO}px`, top: `${TRACK_Y}px`, transform: 'translateY(-50%)', width: `${HI - LO}px`, height: '4px', borderRadius: '2px', background: T.primary, zIndex: 2 }} />
+          {/* Thumb 2개 */}
+          <div style={thumb(LO)} />
+          <div style={thumb(HI)} />
+
+          {/* Value 라벨 (각 손잡이 아래) */}
+          <div style={{ position: 'absolute', left: `${LO}px`, top: '298px', transform: 'translateX(-50%)', fontSize: TYPE.label2.fontSize, color: '#18181b', zIndex: 3 }}>Value</div>
+          <div style={{ position: 'absolute', left: `${HI}px`, top: '298px', transform: 'translateX(-50%)', fontSize: TYPE.label2.fontSize, color: '#18181b', zIndex: 3 }}>Value</div>
+
+          {/* SVG 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. Thumb -> 좌 */}
+            <line x1="196" y1="268" x2="242" y2="268" stroke="#999" strokeWidth="1.2" />
+            <circle cx="242" cy="268" r="1.5" fill="#999" />
+            {/* 2. Heading -> 위 */}
+            <line x1="410" y1="184" x2="410" y2="205" stroke="#999" strokeWidth="1.2" />
+            <circle cx="410" cy="205" r="1.5" fill="#999" />
+            {/* 3. Track -> 우 */}
+            <line x1="614" y1="268" x2="602" y2="268" stroke="#999" strokeWidth="1.2" />
+            <circle cx="602" cy="268" r="1.5" fill="#999" />
+            {/* 4. Value -> 아래 */}
+            <line x1="400" y1="338" x2="400" y2="312" stroke="#999" strokeWidth="1.2" />
+            <circle cx="400" cy="312" r="1.5" fill="#999" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '183px', top: '268px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '410px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '628px', top: '268px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '400px', top: '352px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
+        </div>
+
+        {/* Legend — 3열 그리드 */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: 'Thumb' },
+            { num: 2, label: 'Heading' },
+            { num: 3, label: 'Track' },
+            { num: 4, label: 'Value' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 녹화 영상 구간 선택용 범위 슬라이더
+  return <VideoRangeSlider />;
+}
+
+// 녹화 영상 하이라이트 슬라이더 — 시작점(0)은 고정, 손잡이 1개로 하이라이트 끝 조절
+function VideoRangeSlider() {
+  const DURATION = 2700; // 녹화 길이 45:00 (초)
+  const [value, setValue] = useState(0.42); // 하이라이트 끝 위치 (시작은 0 고정)
+  const MARK = (11 * 60) / DURATION; // 11:00 지점 표시 (≈ 24.4%)
+  const trackRef = useRef(null);
+  const dragging = useRef(false);
+
+  const fmt = (frac) => {
+    const t = Math.max(0, Math.round(frac * DURATION));
+    const m = Math.floor(t / 60), s = t % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    const move = (e) => {
+      if (!dragging.current || !trackRef.current) return;
+      const rect = trackRef.current.getBoundingClientRect();
+      let frac = (e.clientX - rect.left) / rect.width;
+      frac = Math.max(0.02, Math.min(1, frac));
+      setValue(frac);
+    };
+    const up = () => { dragging.current = false; };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+    return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+  }, []);
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ background: '#202024', borderRadius: '20px', padding: '40px 48px 48px' }}>
+        <div style={{ maxWidth: '440px', margin: '0 auto' }}>
+        {/* Heading — 하이라이트 시간대(시작 고정 ~ 손잡이) + 길이 */}
+        <div style={{ textAlign: 'center', marginBottom: SP[32] }}>
+          <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', letterSpacing: '-0.2px', fontVariantNumeric: 'tabular-nums' }}>
+            {fmt(0)} ~ {fmt(value)}
+          </div>
+          <div style={{ fontSize: TYPE.label2.fontSize, color: '#9a9aa2', marginTop: SP[4] }}>
+            하이라이트 <span style={{ color: T.primaryStrong, fontWeight: W.semibold }}>{fmt(value)}</span> · 전체 {fmt(1)}
+          </div>
+        </div>
+
+        {/* Track + Thumb (시작 고정) */}
+        <div ref={trackRef} style={{ position: 'relative', height: '18px', margin: '0 9px' }}>
+          {/* 눈금(타임라인 느낌) */}
+          {[0, 0.2, 0.4, 0.6, 0.8, 1].map((t) => (
+            <div key={t} style={{ position: 'absolute', left: `${t * 100}%`, top: '50%', transform: 'translate(-50%, -50%)', width: '1px', height: '10px', background: '#3a3a42' }} />
+          ))}
+          {/* Track 베이스 */}
+          <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, transform: 'translateY(-50%)', height: '4px', borderRadius: '2px', background: '#3a3a42' }} />
+          {/* Highlight Fill — 시작(0)부터 손잡이까지 */}
+          <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 0, width: `${value * 100}%`, height: '4px', borderRadius: '2px', background: T.primary }} />
+          {/* 고정 시작점 표시 (드래그 불가) */}
+          <div style={{ position: 'absolute', top: '50%', left: 0, transform: 'translate(-50%, -50%)', width: '4px', height: '12px', borderRadius: '2px', background: T.primary }} />
+          {/* 11:00 지점 표시 — 세로 가이드선 + 위쪽 화살표 */}
+          <div style={{ position: 'absolute', left: `${MARK * 100}%`, top: '50%', transform: 'translate(-50%, -50%)', width: '2px', height: '18px', background: '#fff', opacity: 0.9, zIndex: 4 }} />
+          <div style={{ position: 'absolute', left: `${MARK * 100}%`, top: '-6px', transform: 'translate(-50%, -100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', zIndex: 5, whiteSpace: 'nowrap', pointerEvents: 'none' }}>
+            <span style={{ fontSize: TYPE.caption2.fontSize, color: '#fff', fontWeight: W.semibold }}>
+              <span style={{ fontVariantNumeric: 'tabular-nums' }}>11:00</span> 싸움
+            </span>
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="#fff"><polygon points="0,0 10,0 5,6" /></svg>
+          </div>
+          {/* 단일 손잡이 (하이라이트 끝) */}
+          <div
+            onMouseDown={(e) => { dragging.current = true; e.preventDefault(); }}
+            style={{
+              position: 'absolute', left: `${value * 100}%`, top: '50%', transform: 'translate(-50%, -50%)',
+              width: '18px', height: '18px', borderRadius: '50%', background: T.primary, border: '2px solid #fff',
+              boxShadow: '0 1px 6px rgba(0,0,0,0.4)', cursor: 'grab', boxSizing: 'border-box', zIndex: 3,
+            }}
+          />
+        </div>
+
+        {/* 값 라벨 — 시작(고정) / 손잡이 */}
+        <div style={{ position: 'relative', height: '20px', margin: '8px 9px 0' }}>
+          <span style={{ position: 'absolute', left: 0, transform: 'translateX(-50%)', fontSize: TYPE.caption1.fontSize, color: '#7a7a7a', fontVariantNumeric: 'tabular-nums' }}>{fmt(0)}</span>
+          <span style={{ position: 'absolute', left: `${value * 100}%`, transform: 'translateX(-50%)', fontSize: TYPE.caption1.fontSize, color: '#c9c9cf', fontVariantNumeric: 'tabular-nums' }}>{fmt(value)}</span>
+        </div>
+        </div>
+      </div>
+      <div style={{ marginTop: SP[12], fontSize: TYPE.caption1.fontSize, color: '#7a7a7a' }}>
+        시작 지점(00:00)은 고정이며, 손잡이를 드래그해 하이라이트 구간의 끝을 조절합니다. 채워진 파란 구간이 하이라이트 시간대입니다.
+      </div>
+    </div>
+  );
+}
+
+// 토글 스위치 — 2가지 사이즈 + hover. On=T.primary(hover T.primaryStrong) / Off=#3a3a42(hover #4a4a52)
+const SWITCH_SIZES = {
+  small:  { w: 36, h: 20, thumb: 16 },
+  medium: { w: 40, h: 22, thumb: 18 },
+};
+function SwitchToggle({ checked, disabled, onClick, size = 'medium', forceHover = false }) {
+  const [hover, setHover] = useState(false);
+  const s = SWITCH_SIZES[size];
+  const isHover = !disabled && (hover || forceHover);
+  const bg = disabled
+    ? (checked ? T.primary : '#3a3a42')
+    : checked
+      ? (isHover ? T.primaryStrong : T.primary)
+      : (isHover ? '#4a4a52' : '#3a3a42');
+  return (
+    <button
+      type="button" role="switch" aria-checked={checked} disabled={disabled} onClick={onClick}
+      onMouseEnter={() => !disabled && setHover(true)} onMouseLeave={() => setHover(false)}
+      style={{
+        position: 'relative', width: `${s.w}px`, height: `${s.h}px`, borderRadius: `${s.h / 2}px`, border: 'none', padding: 0,
+        background: bg, cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.4 : 1, transition: 'background 0.15s', flexShrink: 0,
+      }}
+    >
+      <span style={{
+        position: 'absolute', top: '2px', left: checked ? `${s.w - s.thumb - 2}px` : '2px', width: `${s.thumb}px`, height: `${s.thumb}px`,
+        borderRadius: '50%', background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.3)', transition: 'left 0.15s',
+      }} />
+    </button>
+  );
+}
+
+// Switch(control-switch) — On/Off 토글. Anatomy(Thumb·Container) + Interactive(토글 + 상태 + 사이즈).
+function SwitchPlayground({ activeSubTab }) {
+  const [on, setOn] = useState(true);
+
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
+          width: '760px', height: '300px', margin: '0 auto 24px', boxSizing: 'border-box',
+        }}>
+          {/* Container(트랙) — 중앙, Off 상태 예시 */}
+          <div style={{ position: 'absolute', left: '352px', top: '135px', width: '56px', height: '30px', borderRadius: '15px', background: '#c4c4c8', zIndex: 2 }} />
+          {/* Thumb */}
+          <div style={{ position: 'absolute', left: '355px', top: '138px', width: '24px', height: '24px', borderRadius: '50%', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.25)', zIndex: 3 }} />
+
+          {/* SVG 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 1. Thumb -> 좌 */}
+            <line x1="313" y1="150" x2="356" y2="150" stroke="#999" strokeWidth="1.2" />
+            <circle cx="356" cy="150" r="1.5" fill="#999" />
+            {/* 2. Container -> 우 */}
+            <line x1="457" y1="150" x2="410" y2="150" stroke="#999" strokeWidth="1.2" />
+            <circle cx="410" cy="150" r="1.5" fill="#999" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '300px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '470px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Thumb (손잡이)' },
+            { num: 2, label: 'Container (트랙)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 토글 + 상태(Off/On/Disabled) 참고
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ background: '#202024', borderRadius: '20px', padding: '40px 48px' }}>
+        {/* 인터랙티브 토글 */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '320px', margin: '0 auto' }}>
+          <span style={{ fontSize: TYPE.label1.fontSize, color: '#e8e8ec', fontWeight: W.medium }}>오버레이 표시</span>
+          <SwitchToggle checked={on} onClick={() => setOn(!on)} />
+        </div>
+        <div style={{ height: '1px', background: '#2e2e35', margin: '28px 0' }} />
+        {/* 상태 참고 */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '24px 24px' }}>
+          {[
+            { label: 'Off', checked: false },
+            { label: 'On', checked: true },
+            { label: 'Off · Hover', checked: false, hover: true },
+            { label: 'On · Hover', checked: true, hover: true },
+            { label: 'On · Disabled', checked: true, disabled: true },
+            { label: 'Off · Disabled', checked: false, disabled: true },
+          ].map((s) => (
+            <div key={s.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: SP[8] }}>
+              <SwitchToggle checked={s.checked} disabled={s.disabled} forceHover={s.hover} />
+              <span style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', whiteSpace: 'nowrap' }}>{s.label}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ height: '1px', background: '#2e2e35', margin: '28px 0' }} />
+        {/* 사이즈 (2가지) */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: '48px' }}>
+          {[
+            { label: 'Small · 36×20', size: 'small' },
+            { label: 'Medium · 40×22', size: 'medium' },
+          ].map((s) => (
+            <div key={s.size} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: SP[8] }}>
+              <SwitchToggle checked size={s.size} onClick={() => {}} />
+              <span style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2' }}>{s.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ marginTop: SP[12], fontSize: TYPE.caption1.fontSize, color: '#7a7a7a' }}>
+        클릭하면 즉시 토글되어 설정이 바로 적용됩니다. On 상태는 트랙이 {T.primary}로 채워지고 손잡이가 우측으로 이동하며, Hover 시 트랙 색이 한 단계 진해집니다(On → {T.primaryStrong}). 두 가지 사이즈(Small 36×20 / Medium 40×22)를 제공합니다.
       </div>
     </div>
   );
@@ -2722,7 +4248,7 @@ function ChipPlayground({ activeSubTab }) {
                     height: '20px',
                     borderRadius: '50%',
                     border: checked ? '2px solid #111' : '2px solid #3e3e42',
-                    backgroundColor: checked ? '#3471FF' : '#1b1b1d',
+                    backgroundColor: checked ? '#3385FF' : '#1b1b1d',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -2822,13 +4348,22 @@ function ChipPlayground({ activeSubTab }) {
   );
 }
 
-function AlertPlayground({ activeSubTab }) {
-  const [alertType, setAlertType] = useState('warning');
-  const [showTitle, setShowTitle] = useState(true);
-  const [showClose, setShowClose] = useState(true);
-  const [showAction, setShowAction] = useState(true);
-  const [customTitle, setCustomTitle] = useState('장비 상태 통신 감지 경고');
-  const [customMsg, setCustomMsg] = useState('지점 C의 보행자 감지 카메라에 10초 이상의 레이턴시 지연이 발생하고 있습니다.');
+// Section header(section-header-default) — 섹션/패널 상단 헤더.
+// Anatomy(Heading + Heading content + Trailing content) + Interactive(슬롯 토글).
+function SectionHeaderPlayground({ activeSubTab }) {
+  const [showHeadingContent, setShowHeadingContent] = useState(true);
+  const [trailingOption, setTrailingOption] = useState('link'); // 'none' | 'link' | 'meta' | 'icon'
+
+  // 미니 Chip (헤딩 콘텐츠 슬롯 예시)
+  const MiniChip = ({ dark = false }) => (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: '4px',
+      padding: '2px 8px', borderRadius: '12px',
+      background: dark ? 'rgba(0,102,255,0.16)' : '#eef4ff',
+      color: dark ? '#3385FF' : '#0066FF',
+      fontSize: '12px', fontWeight: 600, lineHeight: '16px', whiteSpace: 'nowrap',
+    }}>Chip ▾</span>
+  );
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -2842,58 +4377,607 @@ function AlertPlayground({ activeSubTab }) {
           height: '340px',
           margin: '0 auto 24px',
           overflow: 'hidden',
+          boxSizing: 'border-box',
+        }}>
+          {/* 헤더 컴포넌트 — 중앙 흰 스트립 */}
+          <div style={{
+            position: 'absolute',
+            left: '210px',
+            top: '128px',
+            width: '360px',
+            height: '56px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '0 16px',
+            background: '#ffffff',
+            borderRadius: '6px',
+            boxSizing: 'border-box',
+            zIndex: 3,
+          }}>
+            <span style={{ fontSize: '22px', fontWeight: 700, color: '#111111', whiteSpace: 'nowrap', letterSpacing: '-0.02em' }}>Heading</span>
+            <MiniChip />
+            <span style={{ marginLeft: 'auto', fontSize: '15px', fontWeight: 500, color: '#9a9aa2', whiteSpace: 'nowrap' }}>Text</span>
+          </div>
+
+          {/* SVG 직선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 1. Heading -> 좌측 수평선 */}
+            <line x1="170" y1="156" x2="226" y2="156" stroke="#999" strokeWidth="1.2" />
+            {/* 2. Heading content(Chip) -> 하단 수직선 */}
+            <line x1="364" y1="250" x2="364" y2="188" stroke="#999" strokeWidth="1.2" />
+            {/* 3. Trailing content(Text) -> 우측 수평선 */}
+            <line x1="610" y1="156" x2="556" y2="156" stroke="#999" strokeWidth="1.2" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '170px', top: '156px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '364px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '610px', top: '156px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Heading' },
+            { num: 2, label: 'Heading content' },
+            { num: 3, label: 'Trailing content' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive Playground (activeSubTab !== 'anatomy')
+  const RadioOption = ({ label, checked, onChange }) => (
+    <div onClick={onChange} className="ds-radio-option" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', userSelect: 'none', padding: '2px 0' }}>
+      <div className="ds-radio-circle" style={{
+        width: '20px', height: '20px', borderRadius: '50%',
+        border: checked ? '2px solid #111' : '2px solid #3e3e42',
+        backgroundColor: checked ? '#3385FF' : '#1b1b1d',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', transition: 'all 0.15s',
+      }}>
+        {checked && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ffffff' }} />}
+      </div>
+      <span style={{ marginLeft: '10px', fontSize: '14px', color: checked ? '#ffffff' : '#a1a1aa', fontWeight: checked ? '600' : '400', transition: 'color 0.15s' }}>{label}</span>
+    </div>
+  );
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
+        {/* Left: Preview Panel */}
+        <div style={{ flex: 1.8, background: '#121214', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px' }}>
+          {/* 패널 카드 안의 섹션 헤더 */}
+          <div style={{ width: '100%', maxWidth: '420px', background: '#1b1c1e', border: '1px solid #2c2c30', borderRadius: '10px', padding: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minHeight: '32px' }}>
+              <span style={{ fontSize: '20px', lineHeight: '28px', fontWeight: 700, color: '#ffffff', letterSpacing: '-0.012em' }}>알림</span>
+              {showHeadingContent && <MiniChip dark />}
+              {trailingOption === 'link' && (
+                <span style={{ marginLeft: 'auto', fontSize: '15px', fontWeight: 500, color: '#3385FF', cursor: 'pointer' }}>모두 보기</span>
+              )}
+              {trailingOption === 'meta' && (
+                <span style={{ marginLeft: 'auto', fontSize: '13px', fontWeight: 500, color: '#8a8a8f' }}>방금 갱신</span>
+              )}
+              {trailingOption === 'icon' && (
+                <span style={{ marginLeft: 'auto', display: 'inline-flex', width: '28px', height: '28px', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', background: '#26272b', color: '#c2c4c8', cursor: 'pointer' }}>
+                  <Icon name="cycle" size={16} />
+                </span>
+              )}
+            </div>
+            {/* 본문 자리 표시(헤더와 본문의 관계를 보여주는 더미) */}
+            <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ height: '10px', borderRadius: '4px', background: '#26272b', width: '92%' }} />
+              <div style={{ height: '10px', borderRadius: '4px', background: '#26272b', width: '78%' }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Control Panel */}
+        <div className="ds-playground-controls" style={{ flex: 1, background: '#1e1e20', borderLeft: '1px solid #2a2a2c', padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px', maxHeight: '360px', overflowY: 'auto', boxSizing: 'border-box' }}>
+          {/* Heading content */}
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Heading content</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <RadioOption label="None" checked={!showHeadingContent} onChange={() => setShowHeadingContent(false)} />
+              <RadioOption label="Chip" checked={showHeadingContent} onChange={() => setShowHeadingContent(true)} />
+            </div>
+          </div>
+
+          {/* Trailing content */}
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Trailing content</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <RadioOption label="None" checked={trailingOption === 'none'} onChange={() => setTrailingOption('none')} />
+              <RadioOption label="Text button (모두 보기)" checked={trailingOption === 'link'} onChange={() => setTrailingOption('link')} />
+              <RadioOption label="Meta text (갱신 시각)" checked={trailingOption === 'meta'} onChange={() => setTrailingOption('meta')} />
+              <RadioOption label="Icon button (새로고침)" checked={trailingOption === 'icon'} onChange={() => setTrailingOption('icon')} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Push badge(feedback-pushbadge) — 아이콘/메뉴 위 오버레이 알림 표식.
+// Anatomy(Dot badge / Container / Label) + Interactive(dot·count 변형 + 개수).
+function PushBadgePlayground({ activeSubTab }) {
+  const [variant, setVariant] = useState('count'); // 'count' | 'dot'
+  const [count, setCount] = useState(3);
+
+  if (activeSubTab === 'anatomy') {
+    // count 배지(컨테이너 + 라벨) — 좌측 ②, 우측 ③ 콜아웃 대상
+    const countBadge = (label, top) => (
+      <div style={{
+        position: 'absolute', left: '457px', top, width: '26px', height: '26px',
+        borderRadius: '50%', background: T.primary, color: '#fff',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: '13px', fontWeight: W.bold, zIndex: 3,
+      }}>{label}</div>
+    );
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
+          width: '720px', height: '340px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box',
+        }}>
+          {/* Dot badge (1) — 세로 중심 170 */}
+          <div style={{ position: 'absolute', left: '245px', top: '165px', width: '10px', height: '10px', borderRadius: '50%', background: T.primary, zIndex: 3 }} />
+          {/* Count badge — N (중심 470,142) */}
+          {countBadge('N', '129px')}
+          {/* Count badge — 1 (중심 470,198) */}
+          {countBadge('1', '185px')}
+
+          {/* SVG 직선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 1. Dot badge -> 우측 수평선 */}
+            <line x1="180" y1="170" x2="240" y2="170" stroke="#999" strokeWidth="1.2" />
+            {/* N: 2 Container(좌) · 3 Label(우) */}
+            <line x1="395" y1="142" x2="455" y2="142" stroke="#999" strokeWidth="1.2" />
+            <line x1="545" y1="142" x2="485" y2="142" stroke="#999" strokeWidth="1.2" />
+            {/* 1: 2 Container(좌) · 3 Label(우) */}
+            <line x1="395" y1="198" x2="455" y2="198" stroke="#999" strokeWidth="1.2" />
+            <line x1="545" y1="198" x2="485" y2="198" stroke="#999" strokeWidth="1.2" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '165px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '380px', top: '142px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '560px', top: '142px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '380px', top: '198px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '560px', top: '198px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Dot badge' },
+            { num: 2, label: 'Container' },
+            { num: 3, label: 'Label' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive Playground (activeSubTab !== 'anatomy')
+  const panelBg = '#121214';
+  const display = count > 99 ? '99+' : String(count);
+  const hidden = variant === 'count' && count === 0;
+
+  const RadioOption = ({ label, checked, onChange }) => (
+    <div onClick={onChange} className="ds-radio-option" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', userSelect: 'none', padding: '2px 0' }}>
+      <div className="ds-radio-circle" style={{
+        width: '20px', height: '20px', borderRadius: '50%',
+        border: checked ? '2px solid #111' : '2px solid #3e3e42',
+        backgroundColor: checked ? '#3385FF' : '#1b1b1d',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', transition: 'all 0.15s',
+      }}>
+        {checked && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ffffff' }} />}
+      </div>
+      <span style={{ marginLeft: '10px', fontSize: '14px', color: checked ? '#ffffff' : '#a1a1aa', fontWeight: checked ? '600' : '400', transition: 'color 0.15s' }}>{label}</span>
+    </div>
+  );
+
+  const stepBtn = {
+    width: '28px', height: '28px', borderRadius: '6px', background: '#222', border: '1px solid #333',
+    color: '#ddd', fontSize: '16px', lineHeight: 1, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+  };
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
+        {/* Left: Preview Panel */}
+        <div style={{ flex: 1.8, background: panelBg, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+          {/* 배지가 우상단으로 삐져나오는 만큼 호스트를 좌하단으로 보정해 조합(호스트+배지)의
+              바운딩 박스를 패널 정중앙에 맞춘다. (오버플로 ≈ 링 포함 count 8px / dot 4px → 절반 보정) */}
+          <div style={{ position: 'relative', display: 'inline-flex', transform: hidden ? 'none' : (variant === 'dot' ? 'translate(-2px, 2px)' : 'translate(-4px, 4px)') }}>
+            {/* Host (아이콘) — 배지가 얹히는 대상 */}
+            <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#1f2024', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c2c4c8' }}>
+              <Icon name="sensors" size={26} />
+            </div>
+            {/* Badge 오버레이 */}
+            {!hidden && (variant === 'dot' ? (
+              <span style={{ position: 'absolute', top: '-2px', right: '-2px', width: '12px', height: '12px', borderRadius: '50%', background: T.primary, boxShadow: `0 0 0 2px ${panelBg}` }} />
+            ) : (
+              <span style={{
+                position: 'absolute', top: '-6px', right: '-6px', minWidth: '18px', height: '18px', padding: '0 5px',
+                borderRadius: '9px', background: T.primary, color: '#fff', fontSize: '11px', fontWeight: 700,
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', boxShadow: `0 0 0 2px ${panelBg}`,
+              }}>{display}</span>
+            ))}
+          </div>
+          {hidden && (
+            <span style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, textAlign: 'center', fontSize: '12px', color: '#7a7a7a' }}>
+              count 0 → 배지 비표시(hidden)
+            </span>
+          )}
+        </div>
+
+        {/* Right: Control Panel */}
+        <div className="ds-playground-controls" style={{ flex: 1, background: '#141414', borderLeft: '1px solid #2a2a2a', padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px', maxHeight: '360px', overflowY: 'auto', boxSizing: 'border-box' }}>
+          {/* Variant */}
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Variant</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <RadioOption label="Count (숫자형)" checked={variant === 'count'} onChange={() => setVariant('count')} />
+              <RadioOption label="Dot (점형)" checked={variant === 'dot'} onChange={() => setVariant('dot')} />
+            </div>
+          </div>
+
+          {/* Count (count 변형일 때만) */}
+          <div style={{ opacity: variant === 'count' ? 1 : 0.4, pointerEvents: variant === 'count' ? 'auto' : 'none' }}>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Count</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+              <button style={stepBtn} onClick={() => setCount(c => Math.max(0, c - 1))}>−</button>
+              <span style={{ minWidth: '36px', textAlign: 'center', fontSize: '15px', fontWeight: 600, color: '#fff' }}>{count}</span>
+              <button style={stepBtn} onClick={() => setCount(c => Math.min(999, c + 1))}>+</button>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {[0, 1, 3, 12, 120].map(p => (
+                <button key={p} onClick={() => setCount(p)} style={{
+                  padding: '4px 10px', borderRadius: '6px', fontSize: '12px', cursor: 'pointer',
+                  background: count === p ? '#0066FF' : '#222', border: '1px solid', borderColor: count === p ? '#0066FF' : '#333', color: '#fff',
+                }}>{p}</button>
+              ))}
+            </div>
+            <div style={{ fontSize: '12px', color: '#777', marginTop: '12px', lineHeight: 1.5 }}>
+              · 99 초과 시 <b style={{ color: '#aaa' }}>99+</b> 로 축약<br />· 0이면 배지 비표시
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Loading 보조 컴포넌트 — 모듈 스코프 고정(렌더마다 재정의되면 React가 remount해 CSS 애니메이션이 매번 처음부터 다시 시작됨)
+function Spinner({ size, color, thickness = 4, center }) {
+  return (
+    <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
+      <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: `${thickness}px solid #2e2e2e`, borderTopColor: color, animation: 'pds-spin 0.8s linear infinite', boxSizing: 'border-box' }} />
+      {center != null && (
+        <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: W.bold, fontSize: `${Math.round(size * 0.34)}px`, fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+          {center}
+        </span>
+      )}
+    </div>
+  );
+}
+function LinearBar({ color }) {
+  return (
+    <div style={{ position: 'relative', width: '100%', maxWidth: '320px', height: '4px', borderRadius: '8px', background: '#1e1e1e', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 0, bottom: 0, borderRadius: '8px', background: color, animation: 'pds-bar 1.2s ease-in-out infinite' }} />
+    </div>
+  );
+}
+function WaterSurface({ d, fill, dur, op = 1, reverse }) {
+  return (
+    <div style={{ position: 'absolute', top: '-15px', left: 0, width: '100%', height: '22px', overflow: 'hidden' }}>
+      <svg viewBox="0 0 240 28" preserveAspectRatio="none" style={{ display: 'block', width: '200%', height: '100%', animation: `pds-wave-x ${dur}s linear infinite${reverse ? ' reverse' : ''}` }}>
+        <path d={d} fill={fill} fillOpacity={op} />
+      </svg>
+    </div>
+  );
+}
+// 물 채움(wave) — value%까지 차오르며, 수면이 위아래로 출렁(bob) + 반대 방향 파도 2겹 간섭
+function WaterCircle({ value, color }) {
+  const SIZE = 132;
+  // viewBox 240폭. translateX(-50%)로 viewBox 120 이동 → 주기가 120을 나누면 seamless.
+  const wave1 = 'M0 12 q 30 -9 60 0 t 60 0 t 60 0 t 60 0 L240 28 L0 28 Z';            // 주기 120, 진폭 9
+  const wave2 = 'M0 12 q 15 -6 30 0 t 30 0 t 30 0 t 30 0 t 30 0 t 30 0 t 30 0 t 30 0 L240 28 L0 28 Z'; // 주기 60, 진폭 6
+  return (
+    <div style={{ position: 'relative', width: `${SIZE}px`, height: `${SIZE}px`, borderRadius: '50%', overflow: 'hidden', border: `3px solid ${color}`, background: '#15151a', boxSizing: 'border-box' }}>
+      {/* 물 (바닥 기준 value% 높이) — 위아래 출렁(bob), 물 컬러 투명도 0.6 */}
+      <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: `${value}%`, opacity: 0.6, transition: 'height 0.18s linear', animation: 'pds-bob 2.6s ease-in-out infinite' }}>
+        {/* 본체 — 아래로 넉넉히 늘려 bob 시 바닥 틈 방지(원이 클리핑) */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: '-40px', background: color }} />
+        {/* 수면: 본체색 파도(정방향) + 흰색 하이라이트 파도(반대방향·짧은 파장) */}
+        <WaterSurface d={wave1} fill={color} dur={2.6} />
+        <WaterSurface d={wave2} fill="#ffffff" op={0.22} dur={4.2} reverse />
+      </div>
+      {/* 퍼센트 */}
+      <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: TYPE.headline1.fontSize, fontWeight: W.bold, zIndex: 3, textShadow: '0 1px 2px rgba(0,0,0,0.25)' }}>
+        {Math.round(value)}%
+      </span>
+    </div>
+  );
+}
+
+// Loading 컨트롤 라디오 — 모듈 스코프 고정(wave는 55ms마다 리렌더되어, 렌더 내부 정의 시 매번 remount→클릭 유실)
+function LoadingRadio({ label, checked, onChange, disabled }) {
+  return (
+    <div onClick={disabled ? undefined : onChange} className="ds-radio-option" style={{ display: 'flex', alignItems: 'center', cursor: disabled ? 'not-allowed' : 'pointer', userSelect: 'none', padding: '2px 0', opacity: disabled ? 0.4 : 1 }}>
+      <div className="ds-radio-circle" style={{
+        width: '20px', height: '20px', borderRadius: '50%',
+        border: checked ? '2px solid #111' : '2px solid #3e3e42',
+        backgroundColor: checked ? '#3385FF' : '#1b1b1d',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', transition: 'all 0.15s',
+      }}>
+        {checked && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ffffff' }} />}
+      </div>
+      <span style={{ marginLeft: '10px', fontSize: '14px', color: checked ? '#ffffff' : '#a1a1aa', fontWeight: checked ? '600' : '400' }}>{label}</span>
+    </div>
+  );
+}
+
+// Loading(loading-default) — 처리 중 인디케이터. Anatomy(Track/Indicator/Label) + Interactive(circular/linear · status · scope).
+function LoadingPlayground({ activeSubTab }) {
+  const [variant, setVariant] = useState('circular');
+  const [status, setStatus] = useState('default');
+  const [scope, setScope] = useState('region');
+  const [showLabel, setShowLabel] = useState(true);
+  const [waveValue, setWaveValue] = useState(0);
+  const [elapsed, setElapsed] = useState(1);
+
+  // wave 변형: 0→100% 자동 채움 루프(인터랙션 시연)
+  useEffect(() => {
+    if (variant !== 'wave') return undefined;
+    const id = setInterval(() => setWaveValue((v) => (v >= 100 ? 0 : v + 1)), 55);
+    return () => clearInterval(id);
+  }, [variant]);
+
+  // circular 변형: 스피너 가운데 경과 시간(초, 숫자만) 카운트
+  useEffect(() => {
+    if (variant !== 'circular') return undefined;
+    setElapsed(1);
+    const id = setInterval(() => setElapsed((e) => (e >= 30 ? 1 : e + 1)), 1000);
+    return () => clearInterval(id);
+  }, [variant]);
+
+  if (activeSubTab === 'anatomy') {
+    const C = 36, R = 30, CIRC = 2 * Math.PI * R; // 둘레 ≈ 188.5
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
+          width: '720px', height: '340px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box',
+        }}>
+          {/* 원형 스피너(정적) — 트랙 + 인디케이터 호 */}
+          <div style={{ position: 'absolute', left: '324px', top: '114px', zIndex: 3 }}>
+            <svg width="72" height="72" viewBox="0 0 72 72">
+              <circle cx={C} cy={C} r={R} fill="none" stroke="#e4e4e7" strokeWidth="6" />
+              <circle cx={C} cy={C} r={R} fill="none" stroke={T.primaryStrong} strokeWidth="6" strokeLinecap="round"
+                strokeDasharray={`${CIRC * 0.25} ${CIRC * 0.75}`} transform={`rotate(-90 ${C} ${C})`} />
+            </svg>
+          </div>
+          {/* Label */}
+          <div style={{ position: 'absolute', left: 0, right: 0, top: '206px', textAlign: 'center', zIndex: 3, fontSize: TYPE.label1.fontSize, fontWeight: W.regular, color: '#888' }}>불러오는 중…</div>
+
+          {/* SVG 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 1. Track -> 좌측 */}
+            <line x1="250" y1="150" x2="326" y2="150" stroke="#999" strokeWidth="1.2" />
+            {/* 2. Indicator -> 위 */}
+            <line x1="360" y1="86" x2="360" y2="116" stroke="#999" strokeWidth="1.2" />
+            {/* 3. Label -> 아래 */}
+            <line x1="360" y1="262" x2="360" y2="224" stroke="#999" strokeWidth="1.2" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '235px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '360px', top: '72px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '360px', top: '262px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Track (배경 트랙)' },
+            { num: 2, label: 'Indicator (활성 호)' },
+            { num: 3, label: 'Label (보조 안내)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Interactive ──
+  const statusColor = { default: T.primaryStrong, cautionary: T.cautionary, negative: T.error, positive: T.positive }[status];
+  const linearFill = { default: T.primary, cautionary: T.cautionary, negative: T.error, positive: T.positive }[status];
+  const labelText = '데이터를 불러오는 중…';
+
+  // 미리보기 구성
+  let preview;
+  if (variant === 'wave') {
+    preview = (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: SP[16] }}>
+        <WaterCircle value={waveValue} color={linearFill} />
+        {showLabel && <span style={{ fontSize: TYPE.body2.fontSize, fontWeight: W.regular, color: '#888' }}>{labelText}</span>}
+      </div>
+    );
+  } else if (variant === 'linear') {
+    preview = (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: SP[12], width: '100%' }}>
+        <LinearBar color={linearFill} />
+        {showLabel && <span style={{ fontSize: TYPE.body2.fontSize, fontWeight: W.regular, color: '#888' }}>{labelText}</span>}
+      </div>
+    );
+  } else if (scope === 'inline') {
+    preview = (
+      <button type="button" disabled style={{
+        display: 'inline-flex', alignItems: 'center', gap: SP[8], padding: '10px 18px', borderRadius: '8px',
+        background: T.primary, color: '#fff', border: 'none', fontSize: TYPE.label1.fontSize, fontWeight: W.semibold,
+        opacity: 0.7, cursor: 'not-allowed',
+      }}>
+        <Spinner size={16} color="#fff" thickness={2} />
+        검지 데이터 조회
+      </button>
+    );
+  } else if (scope === 'fullscreen') {
+    preview = (
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(18,18,18,0.7)', backdropFilter: 'blur(1px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: SP[16] }}>
+        <Spinner size={48} color={statusColor} thickness={4} center={elapsed} />
+        {showLabel && <span style={{ fontSize: TYPE.body1.fontSize, fontWeight: W.regular, color: '#e8e8ec' }}>보고서 생성 중…</span>}
+      </div>
+    );
+  } else { // region
+    preview = (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: SP[16], width: '280px', height: '160px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '12px' }}>
+        <Spinner size={40} color={statusColor} thickness={4} center={elapsed} />
+        {showLabel && <span style={{ fontSize: TYPE.body2.fontSize, fontWeight: W.regular, color: '#888' }}>{labelText}</span>}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
+        {/* Left: Preview */}
+        <div style={{ flex: 1.8, background: '#121214', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative', overflow: 'hidden' }}>
+          {preview}
+        </div>
+
+        {/* Right: Controls */}
+        <div className="ds-playground-controls" style={{ flex: 1, background: '#141414', borderLeft: '1px solid #2a2a2a', padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px', maxHeight: '360px', overflowY: 'auto', boxSizing: 'border-box' }}>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Variant</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <LoadingRadio label="Circular (스피너)" checked={variant === 'circular'} onChange={() => setVariant('circular')} />
+              <LoadingRadio label="Linear (진행 바)" checked={variant === 'linear'} onChange={() => setVariant('linear')} />
+              <LoadingRadio label="Wave (물 채움)" checked={variant === 'wave'} onChange={() => setVariant('wave')} />
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Status</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <LoadingRadio label="Default (Primary)" checked={status === 'default'} onChange={() => setStatus('default')} />
+              <LoadingRadio label="Cautionary (지연)" checked={status === 'cautionary'} onChange={() => setStatus('cautionary')} />
+              <LoadingRadio label="Negative (재시도)" checked={status === 'negative'} onChange={() => setStatus('negative')} />
+              <LoadingRadio label="Positive (완료 직전)" checked={status === 'positive'} onChange={() => setStatus('positive')} />
+            </div>
+          </div>
+          <div style={{ opacity: variant === 'circular' ? 1 : 0.4 }}>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Scope (circular)</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <LoadingRadio label="Region (영역)" checked={scope === 'region'} onChange={() => setScope('region')} disabled={variant !== 'circular'} />
+              <LoadingRadio label="Inline (버튼)" checked={scope === 'inline'} onChange={() => setScope('inline')} disabled={variant !== 'circular'} />
+              <LoadingRadio label="Fullscreen (오버레이)" checked={scope === 'fullscreen'} onChange={() => setScope('fullscreen')} disabled={variant !== 'circular'} />
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Label</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <LoadingRadio label="True" checked={showLabel} onChange={() => setShowLabel(true)} />
+              <LoadingRadio label="False" checked={!showLabel} onChange={() => setShowLabel(false)} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AlertPlayground({ activeSubTab }) {
+  const [alertType, setAlertType] = useState('warning');
+  const [showTitle, setShowTitle] = useState(true);
+  const [showClose, setShowClose] = useState(true);
+  const [showAction, setShowAction] = useState(true);
+  const [actionLayout, setActionLayout] = useState('bottom'); // 'bottom' | 'inline'
+  const [customTitle, setCustomTitle] = useState('장비 상태 통신 감지 경고');
+  const [customMsg, setCustomMsg] = useState('지점 C의 보행자 감지 카메라에 10초 이상의 레이턴시 지연이 발생하고 있습니다.');
+
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{
+          position: 'relative',
+          background: '#f4f4f5',
+          borderRadius: '16px',
+          width: '720px',
+          height: '340px',
+          margin: '0 auto 24px',
+          overflow: 'hidden',
           boxSizing: 'border-box'
         }}>
-          {/* 얼럿 컴포넌트 — 중앙 */}
+          {/* 얼럿 컴포넌트 — 중앙 (구조 스켈레톤, 액션 = 하단 footer) */}
           <div style={{
             position: 'absolute',
             left: '150px',
-            top: '100px',
+            top: '113px',
             width: '420px',
-            height: '120px',
             backgroundColor: '#ffffff',
             borderRadius: '8px',
-            border: '1.5px solid #e4e4e7',
-            borderLeft: '4px solid #F59E0B',
+            border: '1px solid #e4e4e7',
+            borderLeft: '4px solid #d4d4d8',
             boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
-            padding: '16px 20px',
+            padding: '12px 16px', /* 스펙: 상하 12 / 좌우 16 */
             boxSizing: 'border-box',
             display: 'flex',
+            flexDirection: 'column',
             gap: '12px',
             zIndex: 3,
           }}>
-            {/* Status Icon (1) */}
-            <div style={{ color: '#F59E0B', flexShrink: 0, display: 'flex', alignItems: 'flex-start', marginTop: '2px' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-            </div>
-            {/* Content 영역 */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'left' }}>
-              {/* Title (2) */}
-              <div style={{ color: '#18181b', fontWeight: 700, fontSize: '14px' }}>교통 정체 감지 알림</div>
-              {/* Message (3) */}
-              <div style={{ color: '#71717a', fontSize: '12px', lineHeight: '1.4' }}>
-                시흥대로 하행 방향 신천역 인근 교차로에서 200m 대기 차량 정체가 감지되었습니다.
+            {/* 상단 행 — 아이콘 + 콘텐츠 */}
+            <div style={{ display: 'flex', gap: '12px' }}>
+              {/* Status Icon (1) */}
+              <div style={{ color: '#a1a1aa', flexShrink: 0, display: 'flex', alignItems: 'flex-start', marginTop: '1px' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
               </div>
+              {/* Content 영역 — 제목 + 본문 플레이스홀더 */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: SP[8], textAlign: 'left' }}>
+                {/* Title (2) */}
+                <div style={{ color: '#18181b', fontWeight: W.bold, fontSize: TYPE.label1.fontSize }}>Title</div>
+                {/* Message (3) — 본문 플레이스홀더 바 */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div style={{ height: '8px', width: '100%', borderRadius: '4px', background: '#e4e4e7' }} />
+                  <div style={{ height: '8px', width: '62%', borderRadius: '4px', background: '#e4e4e7' }} />
+                </div>
+              </div>
+            </div>
+            {/* 하단 footer 행 — [Close][Action] 우측 정렬 (5, 4) */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '8px' }}>
+              {/* Close (5) — 보조 위계: 테두리만 있는 ghost */}
+              <span style={{
+                display: 'inline-block', padding: '5px 12px', fontSize: TYPE.caption1.fontSize, fontWeight: W.semibold,
+                background: 'transparent', border: '1px solid #d4d4d8', color: '#71717a', borderRadius: '4px', whiteSpace: 'nowrap',
+              }}>Close</span>
               {/* Action (4) */}
-              <div style={{ marginTop: '4px' }}>
-                <button style={{
-                  padding: '4px 10px',
-                  fontSize: '11px',
-                  backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                  border: '1px solid #F59E0B',
-                  color: '#b45309',
-                  borderRadius: '4px',
-                  cursor: 'default',
-                  fontWeight: 600
-                }}>CCTV 실시간 확인</button>
-              </div>
+              <span style={{
+                display: 'inline-block', padding: '5px 12px', fontSize: TYPE.caption1.fontSize, fontWeight: W.semibold,
+                backgroundColor: '#f4f4f5', border: '1px solid #d4d4d8', color: '#71717a', borderRadius: '4px', whiteSpace: 'nowrap',
+              }}>Action</span>
             </div>
-            {/* Close Button (5) */}
-            <div style={{ color: '#a1a1aa', cursor: 'default', fontSize: '18px', lineHeight: 1, flexShrink: 0 }}>×</div>
           </div>
 
           {/* SVG 직선 */}
@@ -2901,35 +4985,35 @@ function AlertPlayground({ activeSubTab }) {
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}
           >
             {/* 1. Status Icon -> 수평선 좌측으로 */}
-            <line x1="100" y1="130" x2="174" y2="130" stroke="#999" strokeWidth="1.2" />
+            <line x1="100" y1="134" x2="176" y2="134" stroke="#999" strokeWidth="1.2" />
             {/* 2. Title Text -> 수직선 위로 */}
-            <line x1="270" y1="50" x2="270" y2="116" stroke="#999" strokeWidth="1.2" />
+            <line x1="230" y1="56" x2="230" y2="128" stroke="#999" strokeWidth="1.2" />
             {/* 3. Message Content -> 수직선 위로 */}
-            <line x1="380" y1="50" x2="380" y2="136" stroke="#999" strokeWidth="1.2" />
-            {/* 4. Action Button -> 수직선 아래로 */}
-            <line x1="260" y1="290" x2="260" y2="206" stroke="#999" strokeWidth="1.2" />
-            {/* 5. Close Button -> 수평선 우측으로 */}
-            <line x1="620" y1="130" x2="552" y2="130" stroke="#999" strokeWidth="1.2" />
+            <line x1="400" y1="56" x2="400" y2="152" stroke="#999" strokeWidth="1.2" />
+            {/* 5. Close Button(하단 footer, Action 좌측) -> 수직선 아래로 */}
+            <line x1="454" y1="292" x2="454" y2="216" stroke="#999" strokeWidth="1.2" />
+            {/* 4. Action Button(하단 footer, 우측) -> 수직선 아래로 */}
+            <line x1="524" y1="292" x2="524" y2="216" stroke="#999" strokeWidth="1.2" />
           </svg>
 
           {/* Callouts */}
-          <div style={{ position: 'absolute', left: '100px', top: '130px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '270px', top: '50px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '380px', top: '50px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
-          <div style={{ position: 'absolute', left: '260px', top: '290px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
-          <div style={{ position: 'absolute', left: '620px', top: '130px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>5</div>
+          <div style={{ position: 'absolute', left: '100px', top: '134px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '230px', top: '56px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '400px', top: '56px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '454px', top: '292px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>5</div>
+          <div style={{ position: 'absolute', left: '524px', top: '292px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
         </div>
 
         {/* Legend */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
           {[
             { num: 1, label: 'Status Icon (상태 아이콘)' },
-            { num: 2, label: 'Title Text (알림 제목)' },
-            { num: 3, label: 'Message Content (본문 설명)' },
-            { num: 4, label: 'Action Button (행동 유도 버튼)' },
-            { num: 5, label: 'Close Button (닫기 버튼)' }
+            { num: 2, label: 'Title (알림 제목)' },
+            { num: 3, label: 'Message (본문 설명)' },
+            { num: 4, label: 'Action (하단 footer 버튼)' },
+            { num: 5, label: 'Close (Action 좌측 닫기 버튼)' },
           ].map(item => (
-            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
               {item.num}. {item.label}
             </div>
           ))}
@@ -2957,68 +5041,99 @@ function AlertPlayground({ activeSubTab }) {
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '380px' }}>
         {/* Left: Preview Panel */}
         <div style={{ flex: 1.8, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative' }}>
-          <div className={`ds-alert-simulated ${alertType}`} style={{ 
-            display: 'flex', 
-            width: '100%', 
-            maxWidth: '480px', 
-            background: alertType === 'success' ? 'rgba(16, 185, 129, 0.08)' : 
-                        alertType === 'error' ? 'rgba(239, 68, 68, 0.08)' : 
-                        alertType === 'warning' ? 'rgba(245, 158, 11, 0.08)' : 'rgba(59, 130, 246, 0.08)',
-            border: '1px solid',
-            borderColor: alertType === 'success' ? '#10B981' : 
-                         alertType === 'error' ? '#EF4444' : 
-                         alertType === 'warning' ? '#F59E0B' : '#3B82F6',
-            borderLeftWidth: '4px',
-            borderRadius: '6px',
-            padding: '12px 16px',
-            color: '#fff'
-          }}>
-            <div className="ds-alert-icon" style={{ 
-              marginRight: '12px', 
-              color: alertType === 'success' ? '#10B981' : 
-                     alertType === 'error' ? '#EF4444' : 
-                     alertType === 'warning' ? '#F59E0B' : '#3B82F6' 
-            }}>
-              {getIcon(alertType)}
-            </div>
-            <div className="ds-alert-content" style={{ flex: 1 }}>
-              {showTitle && <div className="ds-alert-title" style={{ fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>{customTitle}</div>}
-              <div className="ds-alert-message" style={{ fontSize: '12px', color: '#ccc', lineHeight: '1.5' }}>{customMsg}</div>
-              {showAction && (
-                <div style={{ marginTop: '10px' }}>
-                  <button className="ds-alert-action-btn" style={{ 
-                    padding: '4px 10px', 
-                    fontSize: '11px', 
-                    backgroundColor: alertType === 'success' ? 'rgba(16, 185, 129, 0.2)' : 
-                                      alertType === 'error' ? 'rgba(239, 68, 68, 0.2)' : 
-                                      alertType === 'warning' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(59, 130, 246, 0.2)',
-                    border: '1px solid',
-                    borderColor: alertType === 'success' ? '#10B981' : 
-                                 alertType === 'error' ? '#EF4444' : 
-                                 alertType === 'warning' ? '#F59E0B' : '#3B82F6',
-                    color: alertType === 'success' ? '#A7F3D0' : 
-                           alertType === 'error' ? '#FECACA' : 
-                           alertType === 'warning' ? '#FDE68A' : '#BFDBFE',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }} onClick={() => alert(`${alertType.toUpperCase()} action clicked!`)}>
-                    실행 동작 (Action)
-                  </button>
-                </div>
-              )}
-            </div>
-            {showClose && (
-              <div className="ds-alert-close-btn" style={{ 
-                color: '#888', 
-                fontSize: '18px', 
-                cursor: 'pointer', 
-                lineHeight: '1', 
-                marginLeft: '12px' 
-              }} onClick={() => alert('Alert closed!')}>
+          {(() => {
+            const accent = alertType === 'success' ? '#10B981' :
+                           alertType === 'error' ? '#EF4444' :
+                           alertType === 'warning' ? '#F59E0B' : '#3B82F6';
+            // 공통 버튼 베이스 — 두 버튼 동일 규격(패딩/타이포/라운드/높이). Button 정본: SemiBold 600.
+            const footerBtnBase = {
+              padding: '6px 14px',
+              fontSize: TYPE.label2.fontSize,      // 13px
+              lineHeight: TYPE.label2.lineHeight,  // 18px
+              fontWeight: W.semibold,              // 600
+              borderRadius: '6px',
+              border: '1px solid',
+              whiteSpace: 'nowrap',
+              cursor: 'pointer',
+              boxSizing: 'border-box',
+            };
+            const actionTint = alertType === 'success' ? 'rgba(16, 185, 129, 0.2)' :
+                               alertType === 'error' ? 'rgba(239, 68, 68, 0.2)' :
+                               alertType === 'warning' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(59, 130, 246, 0.2)';
+            const actionTextColor = alertType === 'success' ? '#A7F3D0' :
+                                    alertType === 'error' ? '#FECACA' :
+                                    alertType === 'warning' ? '#FDE68A' : '#BFDBFE';
+            // 실행 동작 — 강조(채움+테두리)
+            const actionBtn = showAction && (
+              <button className="ds-alert-action-btn" style={{
+                ...footerBtnBase,
+                backgroundColor: actionTint,
+                borderColor: accent,
+                color: actionTextColor,
+              }} onClick={() => alert(`${alertType.toUpperCase()} action clicked!`)}>
+                실행 동작 (Action)
+              </button>
+            );
+            // 우측 상단 × (inline 레이아웃 전용)
+            const closeBtn = showClose && (
+              <div className="ds-alert-close-btn" style={{ color: '#888', fontSize: '18px', cursor: 'pointer', lineHeight: '1' }} onClick={() => alert('Alert closed!')}>
                 ×
               </div>
-            )}
-          </div>
+            );
+            // 하단 footer '닫기' — Action과 동일 규격, Secondary Outline 위계(테두리만)
+            const closeFooterBtn = showClose && (
+              <button className="ds-alert-action-btn" style={{
+                ...footerBtnBase,
+                background: 'transparent',
+                borderColor: 'rgba(255,255,255,0.24)',
+                color: '#d4d4d8',
+              }} onClick={() => alert('Alert closed!')}>
+                닫기
+              </button>
+            );
+            return (
+              <div className={`ds-alert-simulated ${alertType}`} style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+                maxWidth: '480px',
+                background: alertType === 'success' ? 'rgba(16, 185, 129, 0.08)' :
+                            alertType === 'error' ? 'rgba(239, 68, 68, 0.08)' :
+                            alertType === 'warning' ? 'rgba(245, 158, 11, 0.08)' : 'rgba(59, 130, 246, 0.08)',
+                border: '1px solid',
+                borderColor: accent,
+                borderLeftWidth: '4px',
+                borderRadius: '6px',
+                padding: '12px 16px',
+                color: '#fff'
+              }}>
+                {/* 상단 행 — 아이콘 + 본문 + (닫기, inline일 땐 액션) */}
+                <div style={{ display: 'flex' }}>
+                  <div className="ds-alert-icon" style={{ marginRight: '12px', color: accent, flexShrink: 0 }}>
+                    {getIcon(alertType)}
+                  </div>
+                  <div className="ds-alert-content" style={{ flex: 1 }}>
+                    {showTitle && <div className="ds-alert-title" style={{ fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>{customTitle}</div>}
+                    <div className="ds-alert-message" style={{ fontSize: '12px', color: '#ccc', lineHeight: '1.5' }}>{customMsg}</div>
+                  </div>
+                  {/* inline 레이아웃: 우측 상단 × + 액션 */}
+                  {actionLayout === 'inline' && (showClose || showAction) && (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-between', marginLeft: '12px', flexShrink: 0, gap: '8px' }}>
+                      {closeBtn}
+                      {actionBtn}
+                    </div>
+                  )}
+                </div>
+                {/* 하단 footer 행 — [닫기] [실행 동작] 우측 정렬 (기본) */}
+                {actionLayout === 'bottom' && (showClose || showAction) && (
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '8px', marginTop: '12px' }}>
+                    {closeFooterBtn}
+                    {actionBtn}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
 
         {/* Right: Control Panel */}
@@ -3110,10 +5225,27 @@ function AlertPlayground({ activeSubTab }) {
                 checked={showAction} 
                 onChange={() => setShowAction(true)} 
               />
-              <PlaygroundRadioOption 
-                label="False" 
-                checked={!showAction} 
-                onChange={() => setShowAction(false)} 
+              <PlaygroundRadioOption
+                label="False"
+                checked={!showAction}
+                onChange={() => setShowAction(false)}
+              />
+            </div>
+          </div>
+
+          {/* Action Layout Option */}
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Action layout</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <PlaygroundRadioOption
+                label="Bottom (하단 footer)"
+                checked={actionLayout === 'bottom'}
+                onChange={() => setActionLayout('bottom')}
+              />
+              <PlaygroundRadioOption
+                label="Inline (우측 정렬)"
+                checked={actionLayout === 'inline'}
+                onChange={() => setActionLayout('inline')}
               />
             </div>
           </div>
@@ -3285,7 +5417,7 @@ function AccordionPlayground({ componentId, activeSubTab }) {
       {/* ── 헤더 ── */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '16px' }}>
         <span style={{ fontSize: '17px', fontWeight: 700, color: '#FF4D4D' }}>보행신호 연장</span>
-        <span style={{ fontSize: '13px', fontWeight: 600, color: '#3471FF' }}>17개 지점</span>
+        <span style={{ fontSize: '13px', fontWeight: 600, color: '#3385FF' }}>17개 지점</span>
       </div>
 
       {/* ── 검색 ── */}
@@ -3336,9 +5468,9 @@ function AccordionPlayground({ componentId, activeSubTab }) {
       <div style={{
         display: 'flex', padding: '8px 4px', borderBottom: '1px solid #333', marginBottom: '2px',
       }}>
-        <span style={{ ...cellName, fontSize: '12px', fontWeight: 600, color: '#3471FF' }}>지점명</span>
-        <span style={{ ...cellUsage, fontSize: '12px', fontWeight: 600, color: '#3471FF' }}>연장 활용도</span>
-        <span style={{ ...cellTime, fontSize: '12px', fontWeight: 600, color: '#3471FF' }}>평균 연장 시간</span>
+        <span style={{ ...cellName, fontSize: '12px', fontWeight: 600, color: '#3385FF' }}>지점명</span>
+        <span style={{ ...cellUsage, fontSize: '12px', fontWeight: 600, color: '#3385FF' }}>연장 활용도</span>
+        <span style={{ ...cellTime, fontSize: '12px', fontWeight: 600, color: '#3385FF' }}>평균 연장 시간</span>
       </div>
 
       {/* ── 행 목록 ── */}
@@ -3352,10 +5484,10 @@ function AccordionPlayground({ componentId, activeSubTab }) {
           <div key={row.id} style={{ position: 'relative', zIndex: isAnatomyTarget ? 100 : 'auto', overflow: isAnatomyTarget ? 'visible' : undefined }}>
             {isAnatomyTarget && (
               <div style={{
-                position: 'absolute', inset: '-4px -6px', border: '2px dashed #3471FF', borderRadius: '8px',
+                position: 'absolute', inset: '-4px -6px', border: '2px dashed #3385FF', borderRadius: '8px',
                 pointerEvents: 'none', zIndex: 1010,
               }}>
-                <span className="anatomy-badge" style={{ position: 'absolute', left: '-10px', top: '-10px', zIndex: 1020, backgroundColor: '#3471FF', fontSize: '10px', padding: '2px 6px' }}>Item</span>
+                <span className="anatomy-badge" style={{ position: 'absolute', left: '-10px', top: '-10px', zIndex: 1020, backgroundColor: '#3385FF', fontSize: '10px', padding: '2px 6px' }}>Item</span>
               </div>
             )}
 
@@ -3544,7 +5676,7 @@ function PlaygroundRadioOption({ label, checked, onChange }) {
           height: '20px',
           borderRadius: '50%',
           border: checked ? '2px solid #111' : '2px solid #3e3e42',
-          backgroundColor: checked ? '#3471FF' : '#1b1b1d',
+          backgroundColor: checked ? '#3385FF' : '#1b1b1d',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -4071,9 +6203,9 @@ function PlayControl({ label, value, onChange, options }) {
               padding: '6px 10px',
               borderRadius: '6px',
               border: '1px solid',
-              borderColor: value === opt.value ? '#3471FF' : '#2a2a2a',
+              borderColor: value === opt.value ? '#3385FF' : '#2a2a2a',
               background: 'transparent',
-              color: value === opt.value ? '#3471FF' : '#666',
+              color: value === opt.value ? '#3385FF' : '#666',
               fontSize: '12px',
               fontWeight: value === opt.value ? '600' : '400',
               cursor: 'pointer',
@@ -4101,9 +6233,9 @@ function PlayToggle({ label, value, onChange }) {
           padding: '7px 10px',
           borderRadius: '6px',
           border: '1px solid',
-          borderColor: value ? '#3471FF' : '#2a2a2a',
+          borderColor: value ? '#3385FF' : '#2a2a2a',
           background: 'transparent',
-          color: value ? '#3471FF' : '#666',
+          color: value ? '#3385FF' : '#666',
           fontSize: '12px',
           fontWeight: value ? '600' : '400',
           cursor: 'pointer',
@@ -4120,9 +6252,9 @@ function PlayToggle({ label, value, onChange }) {
           width: '14px',
           height: '14px',
           borderRadius: '50%',
-          background: value ? '#3471FF' : '#333',
+          background: value ? '#3385FF' : '#333',
           border: '1px solid',
-          borderColor: value ? '#3471FF' : '#444',
+          borderColor: value ? '#3385FF' : '#444',
           flexShrink: 0,
           transition: 'all 0.15s',
         }} />
@@ -4150,6 +6282,140 @@ const calloutStyle = {
   cursor: 'default',
 };
 
+/**
+ * Tooltip(present-tooltip) — Anatomy + Interactive.
+ * 정본 토큰: 본문 #1a1a1a · 보더 #2e2e2e · radius 8 · 패딩 8/12 · 대상과 8px 간격 · 화살표 8px(본문 동일 배경) · 본문 14px.
+ * 구성: 1 Container · 2 Arrow · 3 Label · 4 Shortcut.
+ */
+function TooltipPlayground({ activeSubTab }) {
+  const [show, setShow] = useState(true);
+  const [size, setSize] = useState('M'); // 툴팁 사이즈: S(컴팩트) / M(정본 기본)
+
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{ position: 'relative', background: '#efefef', borderRadius: '16px', width: '720px', height: '340px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
+          {/* Tooltip 컴포넌트 — 중앙(정본 토큰) */}
+          <div style={{
+            position: 'absolute', left: '50%', top: '154px', transform: 'translateX(-50%)',
+            display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 12px',
+            borderRadius: '8px', background: '#1a1a1a', border: '1px solid #2e2e2e',
+            color: '#fff', fontSize: '14px', fontWeight: 600, whiteSpace: 'nowrap', zIndex: 3,
+            boxShadow: '0 6px 16px rgba(0,0,0,0.28)',
+          }}>
+            <span>Label</span>
+            <span style={{ fontSize: '12px', color: '#9a9aa2', fontWeight: 500 }}>Ctrl+C</span>
+            {/* 화살표: 본문과 동일 배경 8px, 위쪽 대상을 향함 */}
+            <span style={{ position: 'absolute', left: '50%', top: '-5px', marginLeft: '-4px', width: '8px', height: '8px', background: '#1a1a1a', borderLeft: '1px solid #2e2e2e', borderTop: '1px solid #2e2e2e', transform: 'rotate(45deg)' }} />
+          </div>
+
+          {/* SVG 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 2. Arrow -> 수직선 위로 */}
+            <line x1="360" y1="108" x2="360" y2="146" stroke="#999" strokeWidth="1.2" />
+            <circle cx="360" cy="146" r="1.5" fill="#999" />
+            {/* 1. Container -> 수직선 아래로 */}
+            <line x1="360" y1="232" x2="360" y2="188" stroke="#999" strokeWidth="1.2" />
+            <circle cx="360" cy="188" r="1.5" fill="#999" />
+            {/* 3. Label -> 수평선 좌측으로 */}
+            <line x1="243" y1="170" x2="322" y2="170" stroke="#999" strokeWidth="1.2" />
+            <circle cx="322" cy="170" r="1.5" fill="#999" />
+            {/* 4. Shortcut -> 수평선 우측으로 */}
+            <line x1="477" y1="170" x2="398" y2="170" stroke="#999" strokeWidth="1.2" />
+            <circle cx="398" cy="170" r="1.5" fill="#999" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '360px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '360px', top: '90px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '230px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '490px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Container' },
+            { num: 2, label: 'Arrow' },
+            { num: 3, label: 'Label' },
+            { num: 4, label: 'Shortcut' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 사이즈(S/M) 토글 + 정본 양식 툴팁(위쪽, 아래로 향한 화살표)
+  // 툴팁이 일반적으로 쓰이는 두 사이즈: M = 정본 기본(Body 14px · 패딩 8×12 · radius 8),
+  // S = 컴팩트 변형(12px · 패딩 5×9 · radius 6) — 좁은 공간의 짧은 라벨용.
+  const SIZES = {
+    S: { name: 'Small', pad: '5px 9px', font: '12px', gap: '6px', sc: '11px', radius: '6px' },
+    M: { name: 'Medium', pad: '8px 12px', font: '14px', gap: '8px', sc: '12px', radius: '8px' },
+  };
+  const sz = SIZES[size];
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      {/* 사이즈 토글 (S / M) */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+        <span style={{ fontSize: '12px', color: '#9a9aa2' }}>Size</span>
+        {['S', 'M'].map((k) => (
+          <button
+            key={k}
+            type="button"
+            onClick={() => setSize(k)}
+            style={{
+              minWidth: '34px', height: '26px', padding: '0 10px', borderRadius: '6px', cursor: 'pointer',
+              fontSize: '12px', fontWeight: 600, fontFamily: 'inherit',
+              color: size === k ? '#fff' : '#c9c9cf',
+              background: size === k ? T.primary : '#2a2a30',
+              border: `1px solid ${size === k ? T.primary : '#3a3a42'}`,
+            }}
+          >{k}</button>
+        ))}
+        <span style={{ fontSize: '11px', color: '#7a7a7a', marginLeft: '4px' }}>{sz.name} · {sz.font}</span>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', height: '320px', background: '#1e1e1e', position: 'relative' }}>
+        <div
+          style={{ position: 'relative', display: 'inline-flex' }}
+          onMouseEnter={() => setShow(true)}
+          onMouseLeave={() => setShow(false)}
+        >
+          {show && (
+            <div style={{
+              position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%', transform: 'translateX(-50%)',
+              display: 'inline-flex', alignItems: 'center', gap: sz.gap, padding: sz.pad,
+              borderRadius: sz.radius, background: '#1a1a1a', border: '1px solid #2e2e2e',
+              color: '#fff', fontSize: sz.font, fontWeight: 600, whiteSpace: 'nowrap',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+            }}>
+              복사 <span style={{ fontSize: sz.sc, color: '#9a9aa2', fontWeight: 500 }}>Ctrl+C</span>
+              <span style={{ position: 'absolute', left: '50%', bottom: '-5px', marginLeft: '-4px', width: '8px', height: '8px', background: '#1a1a1a', borderRight: '1px solid #2e2e2e', borderBottom: '1px solid #2e2e2e', transform: 'rotate(45deg)' }} />
+            </div>
+          )}
+          <button
+            type="button"
+            aria-label="복사"
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '8px', background: '#2a2a30', border: '1px solid #3a3a42', color: '#e8e8ec', cursor: 'pointer' }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V5a2 2 0 012-2h10" />
+            </svg>
+          </button>
+        </div>
+        <span style={{ position: 'absolute', bottom: '14px', left: 0, right: 0, textAlign: 'center', fontSize: '12px', color: '#7a7a7a' }}>
+          버튼에 호버하면 Tooltip이 표시됩니다 (placement: top · size: {size})
+        </span>
+      </div>
+    </div>
+  );
+}
+
 const calloutStyleSm = {
   ...calloutStyle,
   width: '22px',
@@ -4157,6 +6423,194 @@ const calloutStyleSm = {
   fontSize: '10px',
   flexShrink: 0,
 };
+
+// Popup(present-popup) — 모달 대화상자. Anatomy(구조 도식) + Interactive(열기/닫기).
+function PopupPlayground({ activeSubTab }) {
+  const [open, setOpen] = useState(true);
+
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{ position: 'relative', background: '#efefef', borderRadius: '16px', width: '720px', height: '360px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
+          {/* 3. Scrim (딤 배경) */}
+          <div style={{ position: 'absolute', inset: '28px', borderRadius: '12px', background: '#8a8a90' }} />
+
+          {/* 모달 본체 */}
+          <div style={{
+            position: 'absolute', left: '210px', top: '64px', width: '300px',
+            background: '#ffffff', borderRadius: '12px', boxShadow: '0 12px 32px rgba(0,0,0,0.22)',
+            display: 'flex', flexDirection: 'column', overflow: 'hidden', zIndex: 3, boxSizing: 'border-box',
+          }}>
+            {/* 1. Navigation (헤더: 타이틀 + 닫기) */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 16px', borderBottom: '1px solid #ececef' }}>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: '#18181b' }}>snap shot pop up</span>
+              <Icon name="cancel" size={16} color="#18181b" />
+            </div>
+            {/* 2. Contents area */}
+            <div style={{ margin: '14px 16px', height: '96px', background: '#eef0fb', borderRadius: '8px' }} />
+            {/* 4. Action area */}
+            <div style={{ padding: '0 16px 16px' }}>
+              <div style={{ height: '40px', borderRadius: '8px', background: '#0066FF', color: '#fff', fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Action</div>
+            </div>
+          </div>
+
+          {/* 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            <line x1="184" y1="88" x2="208" y2="88" stroke="#999" strokeWidth="1.2" /><circle cx="208" cy="88" r="1.6" fill="#999" />
+            <line x1="184" y1="172" x2="208" y2="172" stroke="#999" strokeWidth="1.2" /><circle cx="208" cy="172" r="1.6" fill="#999" />
+            <line x1="120" y1="300" x2="120" y2="286" stroke="#999" strokeWidth="1.2" /><circle cx="120" cy="286" r="1.6" fill="#999" />
+            <line x1="538" y1="254" x2="512" y2="254" stroke="#999" strokeWidth="1.2" /><circle cx="512" cy="254" r="1.6" fill="#999" />
+          </svg>
+
+          {/* 콜아웃 */}
+          <div style={{ position: 'absolute', left: '168px', top: '88px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '168px', top: '172px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '120px', top: '314px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '552px', top: '254px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Navigation' },
+            { num: 2, label: 'Contents area' },
+            { num: 3, label: 'Scrim' },
+            { num: 4, label: 'Action area' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 트리거로 모달 열기/닫기(정본 다크 룩: 딤 배경 + 패널 #1a1a1a)
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', height: '360px', background: '#1e1e1e', position: 'relative', overflow: 'hidden' }}>
+        {!open && (
+          <button type="button" onClick={() => setOpen(true)}
+            style={{ height: '36px', padding: '0 16px', borderRadius: '8px', background: '#2a2a30', border: '1px solid #3a3a42', color: '#e8e8ec', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+            팝업 열기
+          </button>
+        )}
+        {open && (
+          <>
+            <div onClick={() => setOpen(false)} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)' }} />
+            <div style={{ position: 'relative', zIndex: 2, width: '320px', background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: '8px', boxShadow: '0 16px 48px rgba(0,0,0,0.6)', overflow: 'hidden' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #2e2e2e' }}>
+                <span style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>snap shot pop up</span>
+                <span onClick={() => setOpen(false)} style={{ display: 'inline-flex', cursor: 'pointer' }}><Icon name="cancel" size={16} color="#9a9aa2" /></span>
+              </div>
+              <div style={{ padding: '16px', fontSize: '14px', lineHeight: 1.6, color: '#888' }}>현재 화면을 스냅샷으로 저장할까요?</div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', padding: '0 16px 16px' }}>
+                <button type="button" onClick={() => setOpen(false)} style={{ height: '36px', padding: '0 14px', borderRadius: '8px', background: 'transparent', border: '1px solid #2e2e2e', color: '#888', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>취소</button>
+                <button type="button" onClick={() => setOpen(false)} style={{ height: '36px', padding: '0 14px', borderRadius: '8px', background: T.primary, border: `1px solid ${T.primary}`, color: '#fff', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>확인</button>
+              </div>
+            </div>
+          </>
+        )}
+        <span style={{ position: 'absolute', bottom: '14px', left: 0, right: 0, textAlign: 'center', fontSize: '12px', color: '#7a7a7a' }}>
+          딤 영역 클릭 또는 취소/확인으로 닫힙니다
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// 우클릭 컨텍스트 메뉴(Menu) — PREVAX 실시간 영상 videoContext 정본.
+// 아이콘·순서는 Figma "Component 24"(783:1750) 세트를 따른다(keep → settings → …).
+const CTX_MENU_ITEMS = [
+  { label: '영상 분석 설정', icon: 'settings' },
+  { label: '카메라 연동 분석 설정', sepAfter: true, icon: 'settings_video_camera' },
+  { label: '선택 영상 재연결', icon: 'replace_video' },
+  { label: '카메라 연결 테스트', sepBefore: true, icon: 'automation' },
+  { label: '카메라 웹 연결', icon: 'language' },
+  { label: '카메라 점검모드로 전환', icon: 'flip_camera_ios' },
+];
+const ctxMenuItemStyle = (extra) => ({ display: 'flex', alignItems: 'center', gap: SP[8], padding: `7px ${SP[12]}`, ...TYPE.caption1, color: '#d4d4d8', cursor: 'pointer', whiteSpace: 'nowrap', ...extra });
+
+function ContextMenuBody({ pinned = false, onPin, onPick }) {
+  return (
+    <div onClick={(e) => e.stopPropagation()} style={{ width: '216px', background: '#1E2229', border: '1px solid #2c3540', borderRadius: '8px', boxShadow: '0 18px 48px rgba(0,0,0,0.72)', padding: `${SP[4]} 0`, overflow: 'hidden' }}>
+      <div onClick={onPin} style={ctxMenuItemStyle({ color: '#ffd699', fontWeight: W.bold, borderBottom: '1px solid #2c3540' })}>
+        <span style={{ width: '14px', height: '14px', flexShrink: 0, display: 'inline-flex' }}><Icon name="keep" size={14} color={T.cautionary} /></span>
+        {pinned ? '고정 해제' : '고정'}
+      </div>
+      {CTX_MENU_ITEMS.map((m) => (
+        <div key={m.label} onClick={onPick} style={ctxMenuItemStyle({ ...(m.sepBefore ? { borderTop: '1px solid #2c3540' } : {}), ...(m.sepAfter ? { borderBottom: '1px solid #2c3540' } : {}) })}>
+          <span style={{ width: '14px', height: '14px', flexShrink: 0, display: 'inline-flex' }}><Icon name={m.icon} size={14} color="#8a8a92" /></span>
+          {m.label}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ContextMenuPlayground({ activeSubTab }) {
+  const [menu, setMenu] = useState(null); // {x,y}
+  const [pinned, setPinned] = useState(false);
+
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{ position: 'relative', background: '#efefef', borderRadius: '16px', width: '720px', height: '360px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
+          <div style={{ position: 'absolute', left: '250px', top: '46px' }}>
+            <ContextMenuBody />
+          </div>
+          {/* 연결선 + 콜아웃 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            <line x1="238" y1="66" x2="250" y2="66" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="66" r="1.6" fill="#999" />
+            <line x1="238" y1="96" x2="250" y2="96" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="96" r="1.6" fill="#999" />
+            <line x1="478" y1="126" x2="466" y2="126" stroke="#999" strokeWidth="1.2" /><circle cx="466" cy="126" r="1.6" fill="#999" />
+            <line x1="478" y1="88" x2="466" y2="88" stroke="#999" strokeWidth="1.2" /><circle cx="466" cy="88" r="1.6" fill="#999" />
+          </svg>
+          <div style={{ position: 'absolute', left: '222px', top: '66px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '222px', top: '96px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '494px', top: '88px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '494px', top: '126px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
+        </div>
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: '고정(핀) 항목' },
+            { num: 2, label: '아이콘' },
+            { num: 3, label: '라벨' },
+            { num: 4, label: '구분선' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 캔버스 우클릭으로 메뉴 열기
+  const openAt = (e) => {
+    e.preventDefault();
+    const r = e.currentTarget.getBoundingClientRect();
+    setMenu({ x: Math.min(e.clientX - r.left, r.width - 224), y: Math.min(e.clientY - r.top, r.height - 250) });
+  };
+  return (
+    <div style={{ width: '100%' }}>
+      <div onContextMenu={openAt} onClick={() => setMenu(null)}
+        style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', height: '360px', background: '#0e0e10', overflow: 'hidden', cursor: 'context-menu' }}>
+        <span style={{ fontSize: '13px', color: '#7a7a7a' }}>영상 영역에서 마우스 오른쪽 버튼을 클릭하세요{pinned ? ' · 현재 고정됨' : ''}</span>
+        {menu && (
+          <div style={{ position: 'absolute', left: `${menu.x}px`, top: `${menu.y}px`, zIndex: 40 }}>
+            <ContextMenuBody pinned={pinned} onPin={() => { setPinned((v) => !v); setMenu(null); }} onPick={() => setMenu(null)} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 function CategoryPlayground({ activeSubTab }) {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -4283,7 +6737,7 @@ function CategoryPlayground({ activeSubTab }) {
               borderRadius: '8px',
               fontSize: '14px',
               border: idx === activeIdx ? 'none' : '1px solid #3a3a3a',
-              backgroundColor: idx === activeIdx ? '#1751D9' : 'transparent',
+              backgroundColor: idx === activeIdx ? '#0066FF' : 'transparent',
               color: idx === activeIdx ? '#fff' : '#aaa',
               fontWeight: idx === activeIdx ? 700 : 500,
               cursor: 'pointer',
@@ -4433,7 +6887,7 @@ function ListCellPlayground({ activeSubTab }) {
         return (
           <div style={{
             padding: '3px 8px',
-            backgroundColor: '#3471FF',
+            backgroundColor: '#3385FF',
             color: '#ffffff',
             fontSize: '10px',
             fontWeight: 'bold',
@@ -4448,8 +6902,8 @@ function ListCellPlayground({ activeSubTab }) {
           <div style={{
             width: '18px',
             height: '18px',
-            backgroundColor: '#3471FF',
-            border: '1.5px solid #3471FF',
+            backgroundColor: '#3385FF',
+            border: '1.5px solid #3385FF',
             borderRadius: '4px',
             display: 'flex',
             alignItems: 'center',
@@ -4504,7 +6958,7 @@ function ListCellPlayground({ activeSubTab }) {
       case 'Text button':
         return (
           <span style={{
-            color: '#3471FF',
+            color: '#3385FF',
             fontSize: '12px',
             fontWeight: 'bold',
             cursor: 'pointer'
@@ -4709,18 +7163,718 @@ function ListCellPlayground({ activeSubTab }) {
 /* ─────────────────────────────────────────────────────────────────
    TablePlayground — Content(Normal/Input) · Pagination(None/Extended/Compact/Minimize)
    ───────────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────
+   CheckboxPlayground — Library 화면(Event Search·권한 설정 등)에서 쓰는
+   check_on/check_off 아이콘 기반 체크박스. 상태(기본/체크/비활성) + 전체선택 트리.
+   ───────────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────
+   FilterButtonPlayground — 필터 버튼 → 팝오버 패널 UX
+   트리거(기본/활성+카운트) + 칩 다중선택 / 라디오 단일선택 + 검색 + 초기화·보기
+   ───────────────────────────────────────────────────────────────── */
+function FilterButtonPlayground({ activeSubTab }) {
+  const PRIMARY = '#0066FF';
+  const PANEL = '#16161a';
+  const BORDER = '#2a2a30';
+  const FONT = "'Inter','Pretendard','맑은 고딕',sans-serif";
+
+  // ── Anatomy: 라이트 카드 + 번호 콜아웃(1 Label · 2 Count badge · 3 Dropdown caret · 4 Container) ──
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '720px', height: '300px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
+          {/* 필터 트리거(활성) — 중앙 */}
+          <div style={{ position: 'absolute', left: '286px', top: '132px', width: '148px', height: '36px', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0 14px', borderRadius: '8px', background: 'rgba(0,102,255,0.10)', border: '1px solid #0066FF', color: '#0066FF', fontSize: '13px', fontWeight: 600, boxSizing: 'border-box', whiteSpace: 'nowrap', zIndex: 3 }}>
+            이벤트 종류
+            <span style={{ minWidth: '16px', height: '16px', padding: '0 4px', borderRadius: '8px', background: '#0066FF', color: '#fff', fontSize: '10px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>2</span>
+            <span style={{ fontSize: '9px' }}>▾</span>
+          </div>
+
+          {/* 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 1. Label -> 좌측 */}
+            <line x1="258" y1="150" x2="284" y2="150" stroke="#999" strokeWidth="1.2" />
+            {/* 2. Count badge -> 위 */}
+            <line x1="379" y1="86" x2="379" y2="132" stroke="#999" strokeWidth="1.2" />
+            <circle cx="379" cy="132" r="2.6" fill="#999" />
+            {/* 3. Dropdown caret -> 우측 */}
+            <line x1="500" y1="150" x2="436" y2="150" stroke="#999" strokeWidth="1.2" />
+            {/* 4. Container -> 아래 */}
+            <line x1="360" y1="250" x2="360" y2="170" stroke="#999" strokeWidth="1.2" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '240px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '379px', top: '70px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '510px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '360px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Label' },
+            { num: 2, label: 'Count badge' },
+            { num: 3, label: 'Dropdown caret' },
+            { num: 4, label: 'Container' },
+          ].map((item) => (
+            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const [variant, setVariant] = useState('event'); // 'event'(칩·다중선택) | 'device'(라디오·단일선택)
+  const [stateMode, setStateMode] = useState('active'); // 'default' | 'active'
+  const [popover, setPopover] = useState('open'); // 'open' | 'closed'
+  const [cats, setCats] = useState({ 침입: true, 배회: true });
+  const [cap, setCap] = useState('전체');
+  const catCount = Object.values(cats).filter(Boolean).length;
+  const toggleCat = (k) => setCats((s) => ({ ...s, [k]: !s[k] }));
+
+  // 이벤트 종류 — 위험도 밴드별 그룹(다중선택) / 장비 종류(단일선택)
+  const GROUPS = [
+    { name: '위험', items: ['화재', '싸움', '무단횡단(공간적)'] },
+    { name: '경고', items: ['침입', '침입경고', '쓰러짐', '불법 주정차'] },
+    { name: '주의', items: ['배회', '횡단대기'] },
+  ];
+  const CAPS = ['전체', '분석기', '카메라', 'ITS 검지기'];
+
+  // 트리거 — Default(테두리 #3a3a3a·글자 #cccccc) / Active(#0066FF·rgba(0,102,255,.1)) + 카운트 배지
+  const Trigger = ({ label, active, count, onClick }) => {
+    const on = active;
+    return (
+      <button type="button" onClick={onClick} style={{
+        display: 'inline-flex', alignItems: 'center', gap: '6px', height: '34px', padding: '0 12px',
+        borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontFamily: FONT,
+        background: on ? 'rgba(0,102,255,0.1)' : '#1a1a1f',
+        border: `1px solid ${on ? PRIMARY : '#3a3a3a'}`,
+        color: on ? PRIMARY : '#cccccc', fontWeight: on ? 600 : 500,
+      }}>
+        {label}
+        {count > 0 && (
+          <span style={{ minWidth: '16px', height: '16px', padding: '0 4px', borderRadius: '8px', background: PRIMARY, color: '#fff', fontSize: '10px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>{count}</span>
+        )}
+        <span style={{ fontSize: '9px' }}>▾</span>
+      </button>
+    );
+  };
+
+  const Chip = ({ label }) => {
+    const on = cats[label];
+    return (
+      <button type="button" onClick={() => toggleCat(label)} style={{
+        height: '30px', padding: '0 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontFamily: FONT,
+        background: on ? 'rgba(0,102,255,0.14)' : '#23232a', border: `1px solid ${on ? PRIMARY : '#3a3a42'}`,
+        color: on ? '#3385FF' : '#bdbdc4', fontWeight: on ? 600 : 400, whiteSpace: 'nowrap',
+      }}>{label}</button>
+    );
+  };
+
+  const Radio = ({ label }) => {
+    const on = cap === label;
+    return (
+      <div onClick={() => setCap(label)} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 4px', cursor: 'pointer' }}>
+        <span style={{ width: '18px', height: '18px', borderRadius: '50%', border: `2px solid ${on ? PRIMARY : '#4a4a52'}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxSizing: 'border-box' }}>
+          {on && <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: PRIMARY }} />}
+        </span>
+        <span style={{ fontSize: '13px', color: on ? '#fff' : '#bdbdc4', fontWeight: on ? 600 : 400 }}>{label}</span>
+      </div>
+    );
+  };
+
+  const Footer = () => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px', padding: '12px 14px', borderTop: `1px solid ${BORDER}` }}>
+      <button type="button" style={{ height: '30px', padding: '0 12px', borderRadius: '6px', border: 'none', background: 'transparent', color: '#9a9aa2', fontSize: '12px', cursor: 'pointer', fontFamily: FONT }}>초기화</button>
+      <button type="button" style={{ height: '30px', padding: '0 18px', borderRadius: '6px', border: 'none', background: PRIMARY, color: '#fff', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: FONT }}>보기</button>
+    </div>
+  );
+
+  const panelWrap = { width: '300px', background: PANEL, border: `1px solid ${BORDER}`, borderRadius: '12px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)', overflow: 'hidden' };
+  const panelHead = { padding: '14px 14px 4px', fontSize: '14px', fontWeight: 700, color: '#fff' };
+  const popPos = { position: 'absolute', top: 'calc(100% + 8px)', left: 0, zIndex: 20 }; // 클릭한 버튼의 왼쪽 끝에 맞춰 아래로
+
+  const categoryPanel = (
+    <div style={panelWrap}>
+      <div style={panelHead}>이벤트 종류</div>
+      <div style={{ padding: '10px 14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '36px', padding: '0 10px', background: '#141417', border: '1px solid #2e2e35', borderRadius: '8px' }}>
+          <Icon name="search" size={15} color="#6f6f77" />
+          <span style={{ fontSize: '13px', color: '#6f6f77' }}>이벤트 이름으로 검색</span>
+        </div>
+      </div>
+      <div style={{ maxHeight: '210px', overflowY: 'auto', padding: '0 14px 8px' }} className="ds-playground-controls">
+        {GROUPS.map((g) => (
+          <div key={g.name} style={{ marginBottom: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+              <span style={{ width: '16px', height: '16px', borderRadius: '4px', background: '#2a2a30' }} />
+              <span style={{ fontSize: '13px', fontWeight: 600, color: '#e8e8ec' }}>{g.name}</span>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px' }}>
+              {g.items.map((it) => <Chip key={it} label={it} />)}
+            </div>
+          </div>
+        ))}
+      </div>
+      <Footer />
+    </div>
+  );
+
+  const capPanel = (
+    <div style={panelWrap}>
+      <div style={panelHead}>장비 종류 <span style={{ fontSize: '11px', fontWeight: 400, color: '#6a6a72' }}>· 현장 설치 장비</span></div>
+      <div style={{ padding: '8px 14px' }}>
+        {CAPS.map((c) => <Radio key={c} label={c} />)}
+      </div>
+      <Footer />
+    </div>
+  );
+
+  // 상태/구성에 따른 트리거 표기 + 활성 팝오버
+  const isActive = stateMode === 'active';
+  const isEvent = variant === 'event';
+  const triggerLabel = isEvent
+    ? (isActive ? `이벤트 종류 · ${catCount}개` : '이벤트 종류')
+    : (isActive ? `장비 종류 · ${cap}` : '장비 종류');
+  const triggerCount = isEvent && !isActive ? catCount : 0;
+  const activePanel = isEvent ? categoryPanel : capPanel;
+
+  const RadioOption = ({ label, checked, onChange }) => (
+    <div onClick={onChange} className="ds-radio-option" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', userSelect: 'none', padding: '2px 0' }}>
+      <div className="ds-radio-circle" style={{ width: '20px', height: '20px', borderRadius: '50%', border: checked ? '2px solid #111' : '2px solid #3e3e42', backgroundColor: checked ? '#3385FF' : '#1b1b1d', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', transition: 'all 0.15s' }}>
+        {checked && <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ffffff' }} />}
+      </div>
+      <span style={{ marginLeft: '10px', fontSize: '14px', color: checked ? '#ffffff' : '#a1a1aa', fontWeight: checked ? 600 : 400, transition: 'color 0.15s' }}>{label}</span>
+    </div>
+  );
+  const GroupTitle = ({ children }) => <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>{children}</div>;
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: FONT }}>
+      <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '480px' }}>
+        {/* Left: Preview */}
+        <div style={{ flex: 1.8, background: '#121214', display: 'flex', alignItems: popover === 'open' ? 'flex-start' : 'center', justifyContent: 'center', position: 'relative', padding: '40px 24px', boxSizing: 'border-box', overflow: 'auto' }}>
+          <div style={{ position: 'relative' }}>
+            <Trigger label={triggerLabel} active={isActive} count={triggerCount} onClick={() => setPopover((p) => (p === 'open' ? 'closed' : 'open'))} />
+            {popover === 'open' && <div style={popPos}>{activePanel}</div>}
+          </div>
+        </div>
+        {/* Right: Controls */}
+        <div className="ds-playground-controls" style={{ flex: 1, background: '#1e1e20', borderLeft: '1px solid #2a2a2c', padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px', maxHeight: '480px', overflowY: 'auto', boxSizing: 'border-box' }}>
+          <div>
+            <GroupTitle>구성 (Selection)</GroupTitle>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <RadioOption label="이벤트 종류 (다중 · 칩)" checked={isEvent} onChange={() => setVariant('event')} />
+              <RadioOption label="장비 종류 (단일 · 라디오)" checked={!isEvent} onChange={() => setVariant('device')} />
+            </div>
+          </div>
+          <div>
+            <GroupTitle>상태 (State)</GroupTitle>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <RadioOption label="Default" checked={stateMode === 'default'} onChange={() => setStateMode('default')} />
+              <RadioOption label="Active (적용됨)" checked={stateMode === 'active'} onChange={() => setStateMode('active')} />
+            </div>
+          </div>
+          <div>
+            <GroupTitle>팝오버 (Popover)</GroupTitle>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <RadioOption label="열림" checked={popover === 'open'} onChange={() => setPopover('open')} />
+              <RadioOption label="닫힘" checked={popover === 'closed'} onChange={() => setPopover('closed')} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CheckboxPlayground({ activeSubTab }) {
+  const PRIMARY = T.primary;
+  const CARD = '#16161a';
+  const BORDER = '#2a2a30';
+
+  // ── Anatomy: 라이트 카드 + 번호 콜아웃(1 Control · 2 Label) ──
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '720px', height: '300px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
+          {/* 체크박스 컴포넌트 — 중앙 */}
+          <div style={{ position: 'absolute', left: '345px', top: '139px', display: 'inline-flex', alignItems: 'center', gap: '10px', zIndex: 3 }}>
+            <Icon name="check_on" size={22} />
+            <span style={{ fontSize: '15px', fontWeight: 600, color: '#18181b', whiteSpace: 'nowrap' }}>Checkbox</span>
+          </div>
+
+          {/* 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 1. Control(박스) -> 좌측 */}
+            <line x1="284" y1="150" x2="345" y2="150" stroke="#999" strokeWidth="1.2" />
+            <circle cx="345" cy="150" r="2.6" fill="#999" />
+            {/* 2. Label(텍스트) -> 우측 */}
+            <line x1="448" y1="150" x2="502" y2="150" stroke="#999" strokeWidth="1.2" />
+            <circle cx="448" cy="150" r="2.6" fill="#999" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '266px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '520px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Control' },
+            { num: 2, label: 'Label' },
+          ].map((item) => (
+            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Library 표준 체크박스 — Icon check_on/check_off + 라벨 (Event Search Chk 패턴)
+  const Chk = ({ on, onClick, disabled, children }) => (
+    <span
+      onClick={disabled ? undefined : onClick}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: '8px',
+        cursor: disabled ? 'not-allowed' : 'pointer', userSelect: 'none',
+        opacity: disabled ? 0.4 : 1,
+        fontSize: '14px', color: on ? '#e8e8ec' : '#9a9aa2',
+      }}
+    >
+      <Icon name={on ? 'check_on' : 'check_off'} size={18} />
+      {children}
+    </span>
+  );
+
+  // 인터랙티브: 전체 선택 + 하위 항목 (Event Search 이벤트 필터 패턴)
+  const ITEMS = ['침입', '무단횡단(공간적)', '침입경고', '배회'];
+  const [checked, setChecked] = useState({ 침입: true, '무단횡단(공간적)': true, 침입경고: false, 배회: true });
+  const allOn = ITEMS.every((k) => checked[k]);
+  const toggle = (k) => setChecked((s) => ({ ...s, [k]: !s[k] }));
+  const toggleAll = () => { const v = !allOn; const next = {}; ITEMS.forEach((k) => { next[k] = v; }); setChecked(next); };
+
+  const panel = { background: CARD, border: `1px solid ${BORDER}`, borderRadius: '10px', padding: '20px' };
+  const sectionLabel = { fontSize: '12px', color: '#6a6a72', marginBottom: '14px', letterSpacing: '0.04em' };
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter','Pretendard',sans-serif" }}>
+      <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>Checkbox</div>
+      <div style={{ fontSize: '13px', color: '#999', marginBottom: '20px' }}>Library 화면에서 쓰는 표준 체크박스입니다. 디자인 시스템 아이콘 <code style={{ color: '#bdbdc4' }}>check_on / check_off</code>(18px)와 라벨로 구성합니다.</div>
+
+      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', background: '#0f0f12', border: `1px solid ${BORDER}`, borderRadius: '12px', padding: '32px' }}>
+        {/* 상태 */}
+        <div style={{ ...panel, flex: '1 1 260px' }}>
+          <div style={sectionLabel}>상태 (States)</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <Chk on={false}>미선택 (Default)</Chk>
+            <Chk on>선택됨 (Checked)</Chk>
+            <Chk on={false} disabled>비활성 — 미선택</Chk>
+            <Chk on disabled>비활성 — 선택</Chk>
+          </div>
+        </div>
+
+        {/* 인터랙티브 — 전체 선택 트리 */}
+        <div style={{ ...panel, flex: '1 1 260px' }}>
+          <div style={sectionLabel}>전체 선택 + 하위 항목 (인터랙티브)</div>
+          <Chk on={allOn} onClick={toggleAll}><span style={{ fontWeight: 600 }}>전체</span></Chk>
+          <div style={{ height: '1px', background: '#232329', margin: '12px 0' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '6px' }}>
+            {ITEMS.map((k) => <Chk key={k} on={checked[k]} onClick={() => toggle(k)}>{k}</Chk>)}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '16px', fontSize: '12px', color: '#6a6a72' }}>
+        ※ 그리드/표 안의 일괄 선택 헤더에도 동일한 <code style={{ color: '#9a9aa2' }}>check_on/check_off</code>를 씁니다(권한 설정 매트릭스·이벤트 목록). 라벨 없는 단독 사용 시 16px, 라벨과 함께면 18px 권장.
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   DatePickerPlayground — 달력(기간 선택) + 시간 입력 행 + 적용
+   날짜·시간을 한 팝오버에서 함께 지정하는 Date+Time 결합 피커.
+   ───────────────────────────────────────────────────────────────── */
+function DatePickerPlayground({ activeSubTab }) {
+  // 다크 팔레트 — Library 화면 계열에 맞춤
+  const PRIMARY = T.primary;
+  const PRIMARY_L = T.primaryStrong;
+  const CARD = '#16161a';
+  const BORDER = '#2a2a30';
+  const DIVIDER = '#232329';
+  const CTRL = '#141417';
+  const CTRL_BORDER = '#2e2e35';
+  const TEXT = '#e8e8ec';
+  const MUTED = '#9a9aa2';
+  const FAINT = '#5a5a62';
+  const RANGE_BG = 'rgba(0, 102, 255,0.20)';
+  const TODAY_BG = 'rgba(0, 102, 255,0.28)';
+
+  // ── Anatomy: 라이트 카드 + 번호 콜아웃(1 Value · 2 Label · 3 Calendar icon · 4 Container) ──
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '720px', height: '300px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
+          {/* 라벨 캡션 */}
+          <div style={{ position: 'absolute', left: '242px', top: '110px', fontSize: '12px', fontWeight: 500, color: '#6b6b6b', zIndex: 3 }}>날짜</div>
+          {/* 트리거 입력 필드 — 중앙 */}
+          <div style={{ position: 'absolute', left: '242px', top: '134px', width: '236px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 14px', borderRadius: '8px', background: '#ffffff', border: '1px solid #d4d4d8', boxSizing: 'border-box', zIndex: 3 }}>
+            <span style={{ fontSize: '15px', color: '#18181b', fontVariantNumeric: 'tabular-nums' }}>2026.09.22</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a8a92" strokeWidth="1.8">
+              <rect x="3" y="4.5" width="18" height="16" rx="2" /><line x1="3" y1="9" x2="21" y2="9" />
+              <line x1="8" y1="2.5" x2="8" y2="6" /><line x1="16" y1="2.5" x2="16" y2="6" />
+            </svg>
+          </div>
+
+          {/* 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 1. Value -> 좌측 */}
+            <line x1="200" y1="156" x2="242" y2="156" stroke="#999" strokeWidth="1.2" />
+            {/* 2. Label -> 위 */}
+            <line x1="257" y1="90" x2="257" y2="108" stroke="#999" strokeWidth="1.2" />
+            <circle cx="257" cy="108" r="2.6" fill="#999" />
+            {/* 3. Calendar icon -> 우측 */}
+            <line x1="520" y1="156" x2="480" y2="156" stroke="#999" strokeWidth="1.2" />
+            {/* 4. Container -> 아래 */}
+            <line x1="360" y1="250" x2="360" y2="180" stroke="#999" strokeWidth="1.2" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '186px', top: '156px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '257px', top: '74px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '534px', top: '156px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '360px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Value' },
+            { num: 2, label: 'Label' },
+            { num: 3, label: 'Calendar icon' },
+            { num: 4, label: 'Container' },
+          ].map((item) => (
+            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const [view, setView] = useState({ y: 2026, m: 8 }); // 2026년 9월 (m: 0-indexed)
+  const [range, setRange] = useState({ start: 22, end: 29 }); // 같은 달 기준 일(day)
+  const [startTime, setStartTime] = useState('09:00');
+  const [endTime, setEndTime] = useState('18:00');
+  const [open, setOpen] = useState(true); // 트리거 클릭 → 팝오버 펼침
+  const [withTime, setWithTime] = useState(true); // 시간 포함 / 날짜만
+
+  const WD = ['월', '화', '수', '목', '금', '토', '일'];
+  const monthLabel = `${view.y}년 ${view.m + 1}월`;
+
+  // 월 그리드(월요일 시작, 6주 42칸)
+  const buildGrid = (y, m) => {
+    const first = new Date(y, m, 1);
+    const startDow = (first.getDay() + 6) % 7; // 0=월
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    const daysInPrev = new Date(y, m, 0).getDate();
+    const cells = [];
+    for (let i = 0; i < startDow; i++) cells.push({ day: daysInPrev - startDow + 1 + i, cur: false });
+    for (let d = 1; d <= daysInMonth; d++) cells.push({ day: d, cur: true });
+    let n = 1;
+    while (cells.length < 42) cells.push({ day: n++, cur: false });
+    return cells;
+  };
+  const cells = buildGrid(view.y, view.m);
+
+  const shiftMonth = (delta) => {
+    setView((v) => {
+      const d = new Date(v.y, v.m + delta, 1);
+      return { y: d.getFullYear(), m: d.getMonth() };
+    });
+    setRange({ start: null, end: null });
+  };
+
+  const pickDay = (day) => {
+    setRange((r) => {
+      if (r.start == null || r.end != null) return { start: day, end: null };
+      if (day < r.start) return { start: day, end: null };
+      return { start: r.start, end: day };
+    });
+  };
+
+  const today = 9; // 시안 기준 '오늘' 표기 샘플 (2026년 9월 9일)
+  const inRange = (day, cur) => cur && range.start != null && range.end != null && day > range.start && day < range.end;
+  const isEnd = (day, cur) => cur && (day === range.start || day === range.end);
+
+  const Clock = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6f6f77" strokeWidth="2">
+      <circle cx="12" cy="12" r="9" /><polyline points="12 7 12 12 15 14" />
+    </svg>
+  );
+  // 24시간제 시·분 드롭다운 (네이티브 type=time의 오전/오후 잘림·중복 아이콘 회피)
+  const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
+  const MINS = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+  const selStyle = { appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none', border: 'none', outline: 'none', background: 'transparent', color: TEXT, fontSize: '14px', fontFamily: 'inherit', cursor: 'pointer', textAlign: 'center', padding: '0 2px', colorScheme: 'dark', fontVariantNumeric: 'tabular-nums' };
+  const TimeField = ({ label, value, onChange }) => {
+    const [h, m] = (value || '00:00').split(':');
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+        <span style={{ fontSize: '13px', color: MUTED }}>{label}</span>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', height: '32px', padding: '0 10px', background: CTRL, border: `1px solid ${CTRL_BORDER}`, borderRadius: '6px' }}>
+          <Clock />
+          <select value={h} onChange={(e) => onChange(`${e.target.value}:${m}`)} style={selStyle}>
+            {HOURS.map((hh) => <option key={hh} value={hh}>{hh}</option>)}
+          </select>
+          <span style={{ color: MUTED, fontSize: '14px' }}>:</span>
+          <select value={m} onChange={(e) => onChange(`${h}:${e.target.value}`)} style={selStyle}>
+            {MINS.map((mm) => <option key={mm} value={mm}>{mm}</option>)}
+          </select>
+        </div>
+      </div>
+    );
+  };
+
+  // 트리거(닫힘) 필드 — 이미지처럼 다크 라운드 입력. 클릭 시 팝오버 펼침.
+  const Cal = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a8a92" strokeWidth="1.8">
+      <rect x="3" y="4.5" width="18" height="16" rx="2" /><line x1="3" y1="9" x2="21" y2="9" />
+      <line x1="8" y1="2.5" x2="8" y2="6" /><line x1="16" y1="2.5" x2="16" y2="6" />
+    </svg>
+  );
+  const Trigger = ({ label, placeholder, value, icon, onClick, active }) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <span style={{ fontSize: '12px', color: MUTED }}>{label}</span>
+      <div
+        onClick={onClick}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          width: '260px', height: '42px', padding: '0 14px', boxSizing: 'border-box',
+          background: CTRL, border: `1px solid ${active ? PRIMARY : CTRL_BORDER}`, borderRadius: '8px',
+          cursor: onClick ? 'pointer' : 'default',
+        }}
+      >
+        <span style={{ fontSize: '15px', color: value ? TEXT : '#6f6f77', fontVariantNumeric: 'tabular-nums' }}>
+          {value || placeholder}
+        </span>
+        {icon === 'clock' ? <Clock /> : <Cal />}
+      </div>
+    </div>
+  );
+
+  const triggers = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <Trigger label="날짜 (시간 없음)" placeholder="YYYY.MM.DD" value="2026.09.22"
+        active={open && !withTime} onClick={() => { setWithTime(false); setOpen(true); }} />
+      <Trigger label="연·월" placeholder="YYYY.MM" value="2026.09" />
+      <Trigger label="날짜 + 시간" placeholder="YYYY.MM.DD HH:mm" value="2026.09.22 14:30"
+        active={open && withTime} onClick={() => { setWithTime(true); setOpen(true); }} />
+      <Trigger label="시간" placeholder="HH:mm" value="14:30" icon="clock" />
+    </div>
+  );
+
+  const picker = (
+    <div style={{ width: '300px', background: CARD, borderRadius: '12px', border: `1px solid ${BORDER}`, boxShadow: '0 16px 40px rgba(0,0,0,0.5)', overflow: 'hidden', fontFamily: "'Inter','Pretendard','맑은 고딕',sans-serif" }}>
+      {/* 헤더 */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px 8px' }}>
+        <button type="button" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '15px', fontWeight: 700, color: '#fff' }}>
+          {monthLabel}<span style={{ fontSize: '9px', color: '#7f7f87' }}>▾</span>
+        </button>
+        <div style={{ display: 'flex', gap: '4px' }}>
+          {['‹', '›'].map((c, i) => (
+            <button key={c} type="button" onClick={() => shiftMonth(i === 0 ? -1 : 1)}
+              style={{ width: '28px', height: '28px', border: 'none', background: 'transparent', cursor: 'pointer', borderRadius: '6px', color: '#c4c4cc', fontSize: '16px' }}>{c}</button>
+          ))}
+        </div>
+      </div>
+      {/* 요일 */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', padding: '4px 10px' }}>
+        {WD.map((w) => <div key={w} style={{ textAlign: 'center', fontSize: '12px', color: '#8a8a92', padding: '4px 0' }}>{w}</div>)}
+      </div>
+      {/* 날짜 그리드 */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', padding: '0 10px 8px' }}>
+        {cells.map((c, i) => {
+          const end = isEnd(c.day, c.cur);
+          const mid = inRange(c.day, c.cur);
+          const isToday = c.cur && c.day === today && !end;
+          return (
+            <div key={i} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '38px', background: mid ? RANGE_BG : 'transparent' }}>
+              <div
+                onClick={() => c.cur && pickDay(c.day)}
+                style={{
+                  width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  borderRadius: '50%', fontSize: '14px', cursor: c.cur ? 'pointer' : 'default',
+                  background: end ? PRIMARY : isToday ? TODAY_BG : 'transparent',
+                  color: end ? '#fff' : !c.cur ? FAINT : isToday ? PRIMARY_L : '#d4d4d8',
+                  fontWeight: end || isToday ? 700 : 400,
+                }}
+              >{c.day}</div>
+            </div>
+          );
+        })}
+      </div>
+      {/* 시간 입력 행 (시작·종료 세로 2줄) — 시간 없는 버전(withTime=false)에서는 숨김 */}
+      {withTime && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '12px 16px', borderTop: `1px solid ${DIVIDER}` }}>
+          <TimeField label="시작 시간" value={startTime} onChange={setStartTime} />
+          <TimeField label="종료 시간" value={endTime} onChange={setEndTime} />
+        </div>
+      )}
+      {/* 푸터 */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderTop: `1px solid ${DIVIDER}` }}>
+        <button type="button" onClick={() => { const d = new Date(); setView({ y: d.getFullYear(), m: d.getMonth() }); setRange({ start: d.getDate(), end: null }); }}
+          style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '14px', color: '#8a8a92' }}>오늘</button>
+        <button type="button"
+          style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '14px', fontWeight: 700, color: PRIMARY_L }}>적용</button>
+      </div>
+    </div>
+  );
+
+  // 선택 요약
+  const fmt = (day) => day == null ? '—' : `${view.y}-${String(view.m + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const summary = withTime
+    ? `${fmt(range.start)} ${startTime}  ~  ${fmt(range.end)} ${endTime}`
+    : `${fmt(range.start)}  ~  ${fmt(range.end)}`;
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter','Pretendard',sans-serif" }}>
+      <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>Date + Time Picker</div>
+      <div style={{ fontSize: '13px', color: '#999', marginBottom: '20px' }}>트리거 필드(닫힘)에서 형식을 보여주고, 클릭하면 달력+시간 팝오버(펼침)가 열립니다. 시간 표기는 24시간제 <code style={{ color: '#bdbdc4' }}>YYYY.MM.DD HH:mm</code>(초 필요 시 :ss).</div>
+      <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start', justifyContent: 'center', flexWrap: 'wrap', background: '#0f0f12', border: '1px solid #2a2a30', borderRadius: '12px', padding: '32px' }}>
+        {/* 닫힘 — 트리거 필드 4종 */}
+        <div>
+          <div style={{ fontSize: '12px', color: '#6a6a72', marginBottom: '14px', letterSpacing: '0.04em' }}>닫힘 — 트리거 필드</div>
+          {triggers}
+        </div>
+        {/* 펼침 — 팝오버 (시간 포함 / 날짜만) */}
+        <div>
+          <div style={{ fontSize: '12px', color: '#6a6a72', marginBottom: '14px', letterSpacing: '0.04em' }}>
+            펼침 — {withTime ? '달력 + 시간 팝오버' : '달력 팝오버 (시간 없음)'}
+          </div>
+          {open ? picker : (
+            <div style={{ width: '300px', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed #2e2e35', borderRadius: '12px', color: '#5a5a62', fontSize: '13px' }}>
+              좌측 트리거를 클릭하세요
+            </div>
+          )}
+        </div>
+      </div>
+      <div style={{ marginTop: '16px', textAlign: 'center' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: '#141414', border: '1px solid #2a2a2a', borderRadius: '8px' }}>
+          <span style={{ fontSize: '12px', color: '#888' }}>선택된 일시</span>
+          <span style={{ fontSize: '14px', color: '#fff', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{summary}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function TablePlayground({ activeSubTab }) {
+  // ── Anatomy: 라이트 카드 + 번호 콜아웃(1 Header · 2 Cell · 3 Pagination · 4 Container) ──
+  if (activeSubTab === 'anatomy') {
+    const thS = { padding: '8px 10px', textAlign: 'left', whiteSpace: 'nowrap' };
+    const tdS = { padding: '8px 10px', color: '#18181b', borderTop: '1px solid #f0f0f2', whiteSpace: 'nowrap' };
+    const ckS = { width: '12px', height: '12px', border: '1.5px solid #b8b8c0', borderRadius: '3px', boxSizing: 'border-box', display: 'inline-block' };
+    const cols = '28px 1fr 64px';
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '720px', height: '300px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
+          {/* 미니 테이블 — 중앙 */}
+          <div style={{ position: 'absolute', left: '190px', top: '72px', width: '340px', background: '#fff', border: '1px solid #d9d9de', borderRadius: '8px', overflow: 'hidden', fontSize: '11px', zIndex: 3 }}>
+            {/* 헤더 */}
+            <div style={{ display: 'grid', gridTemplateColumns: cols, background: '#f0f0f2', borderBottom: '1px solid #e2e2e6', color: '#6b6b72', fontWeight: 600 }}>
+              <div style={thS}><span style={ckS} /></div>
+              <div style={thS}>이름</div>
+              <div style={{ ...thS, textAlign: 'right' }}>상태</div>
+            </div>
+            {/* 행 */}
+            {[['SH0019C001', '정상'], ['SH0019C003', '점검']].map(([nm, st]) => (
+              <div key={nm} style={{ display: 'grid', gridTemplateColumns: cols, alignItems: 'center' }}>
+                <div style={tdS}><span style={ckS} /></div>
+                <div style={tdS}>{nm}</div>
+                <div style={{ ...tdS, textAlign: 'right', color: '#6b6b72' }}>{st}</div>
+              </div>
+            ))}
+            {/* 푸터 — 페이지네이션 */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px', padding: '7px 10px', borderTop: '1px solid #eee', color: '#9a9aa2' }}>
+              <span>‹</span>
+              <span style={{ color: '#0066FF', fontWeight: 700 }}>1</span>
+              <span>2</span><span>3</span>
+              <span>›</span>
+            </div>
+          </div>
+
+          {/* 연결선 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
+            {/* 1. Header -> 위 */}
+            <line x1="255" y1="46" x2="255" y2="73" stroke="#999" strokeWidth="1.2" />
+            {/* 2. Cell -> 좌측 */}
+            <line x1="168" y1="119" x2="190" y2="119" stroke="#999" strokeWidth="1.2" />
+            {/* 3. Pagination -> 아래 */}
+            <line x1="440" y1="232" x2="440" y2="198" stroke="#999" strokeWidth="1.2" />
+            <circle cx="440" cy="198" r="2.6" fill="#999" />
+            {/* 4. Container -> 우측 */}
+            <line x1="554" y1="135" x2="530" y2="135" stroke="#999" strokeWidth="1.2" />
+          </svg>
+
+          {/* Callouts */}
+          <div style={{ position: 'absolute', left: '255px', top: '42px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '152px', top: '119px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+          <div style={{ position: 'absolute', left: '440px', top: '248px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '572px', top: '135px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px 0' }}>
+          {[
+            { num: 1, label: 'Header' },
+            { num: 2, label: 'Cell' },
+            { num: 3, label: 'Pagination' },
+            { num: 4, label: 'Container' },
+          ].map((item) => (
+            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
+              {item.num}. {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   const [contentType, setContentType] = useState('Input'); // 'Normal' | 'Input'
   const [pagination, setPagination] = useState('Compact');  // 'None' | 'Extended' | 'Compact' | 'Minimize'
   const [page, setPage] = useState(1);
   const totalPages = 10;
   const rows = [1, 2, 3];
+  const [checkedRows, setCheckedRows] = useState(() => new Set());
+  const allChecked = checkedRows.size === rows.length;
+  const toggleRow = (i) => setCheckedRows((s) => { const n = new Set(s); n.has(i) ? n.delete(i) : n.add(i); return n; });
+  const toggleAll = () => setCheckedRows((s) => (s.size === rows.length ? new Set() : new Set(rows.map((_, i) => i))));
 
   const thStyle = { textAlign: 'left', padding: '12px 16px', fontSize: '13px', fontWeight: 600, color: '#8a8a8f' };
   const tdStyle = { textAlign: 'left', padding: '14px 16px', fontSize: '14px', color: '#ffffff' };
 
-  const Checkbox = () => (
-    <div style={{ width: '18px', height: '18px', border: '1.5px solid #4a4a4e', borderRadius: '4px', flexShrink: 0, boxSizing: 'border-box' }} />
+  const Checkbox = ({ checked, onClick }) => (
+    <div
+      onClick={onClick}
+      style={{
+        width: '18px', height: '18px', borderRadius: '4px', flexShrink: 0, boxSizing: 'border-box', cursor: 'pointer',
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        border: `1.5px solid ${checked ? '#0066FF' : '#4a4a4e'}`, background: checked ? '#0066FF' : 'transparent',
+      }}
+    >
+      {checked && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>}
+    </div>
   );
 
   const Pager = () => {
@@ -4791,7 +7945,7 @@ function TablePlayground({ activeSubTab }) {
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ borderBottom: '1px solid #2a2a2a' }}>
-            {contentType === 'Input' && <th style={{ width: '44px', padding: '12px 0 12px 16px' }} />}
+            {contentType === 'Input' && <th style={{ width: '44px', padding: '12px 0 12px 16px' }}><Checkbox checked={allChecked} onClick={toggleAll} /></th>}
             <th style={thStyle}>Head</th>
             <th style={thStyle}>Head</th>
           </tr>
@@ -4800,7 +7954,7 @@ function TablePlayground({ activeSubTab }) {
           {rows.map((r, idx) => (
             <tr key={r} style={{ borderBottom: idx < rows.length - 1 ? '1px solid #232325' : 'none' }}>
               {contentType === 'Input' && (
-                <td style={{ padding: '14px 0 14px 16px' }}><Checkbox /></td>
+                <td style={{ padding: '14px 0 14px 16px' }}><Checkbox checked={checkedRows.has(idx)} onClick={() => toggleRow(idx)} /></td>
               )}
               <td style={tdStyle}>Cell</td>
               <td style={tdStyle}>Cell</td>
@@ -4856,6 +8010,33 @@ function TablePlayground({ activeSubTab }) {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function ListCheckablePlayground() {
+  // 사이트(지점) 리스트 — 행 클릭 시 체크 토글(채운 체크써클 ↔ 빈 원)
+  const ITEMS = [{ name: '지점 B', count: 13 }, { name: '지점 C', count: 13 }];
+  const [checked, setChecked] = useState(() => new Set([0])); // 지점 B 기본 체크
+  const toggle = (i) => setChecked((s) => { const n = new Set(s); n.has(i) ? n.delete(i) : n.add(i); return n; });
+  return (
+    <div style={{ padding: '24px', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ backgroundColor: '#1a1a1a', width: '250px', padding: '16px', borderRadius: '8px' }}>
+        {ITEMS.map((it, i) => {
+          const on = checked.has(i);
+          return (
+            <div key={it.name} onClick={() => toggle(i)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', color: on ? '#0066FF' : '#fff', cursor: 'pointer', userSelect: 'none' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                {on
+                  ? <svg width="18" height="18" viewBox="0 0 24 24" fill="#0066FF"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                  : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2"><circle cx="12" cy="12" r="10"/></svg>}
+                <span style={{ fontSize: '14px' }}>{it.name}</span>
+              </div>
+              <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{it.count}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -5410,8 +8591,8 @@ function CardPlayground({ activeSubTab }) {
         };
       case 'info':
         return {
-          borderColor: '#3471FF',
-          color: '#3471FF',
+          borderColor: '#3385FF',
+          color: '#3385FF',
           defaultTitle: '신규 보행신호 연장 알고리즘이 적용되었습니다.',
           defaultBadge: '안내 정보',
           icon: (
@@ -6475,8 +9656,8 @@ function IntersectionOverviewPlayground() {
             <rect x="155" y="65" width="10" height="50" fill="#555" />
             <rect x="95" y="45" width="50" height="10" fill="#555" />
             <rect x="95" y="125" width="50" height="10" fill="#555" />
-            <circle cx="90" cy="55" r="7" fill={activeArea === 'cctv' ? '#3471FF' : '#1751D9'} style={{ cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => setActiveArea('cctv')} />
-            <circle cx="150" cy="125" r="7" fill={activeArea === 'cctv' ? '#3471FF' : '#1751D9'} style={{ cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => setActiveArea('cctv')} />
+            <circle cx="90" cy="55" r="7" fill={activeArea === 'cctv' ? '#3385FF' : '#0066FF'} style={{ cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => setActiveArea('cctv')} />
+            <circle cx="150" cy="125" r="7" fill={activeArea === 'cctv' ? '#3385FF' : '#0066FF'} style={{ cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => setActiveArea('cctv')} />
             <rect x="145" y="50" width="12" height="12" rx="2" fill={activeArea === 'controller' ? '#1ED45A' : '#15803d'} style={{ cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => setActiveArea('controller')} />
             <polygon points="90,120 96,132 84,132" fill={activeArea === 'center' ? '#c084fc' : '#6d28d9'} style={{ cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => setActiveArea('center')} />
           </svg>
@@ -6488,8 +9669,8 @@ function IntersectionOverviewPlayground() {
           style={{ flex: 1, background: '#161618', borderLeft: '1px solid #2a2a2e', padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '360px', overflowY: 'auto', boxSizing: 'border-box' }}
         >
           {areas.map(a => (
-            <div key={a.id} onClick={() => setActiveArea(a.id)} style={{ padding: '12px 16px', borderRadius: '8px', cursor: 'pointer', border: '1px solid', backgroundColor: activeArea === a.id ? 'rgba(23,81,217,0.1)' : '#1e1e1e', borderColor: activeArea === a.id ? '#1751D9' : '#2e2e2e', transition: 'all 0.2s' }}>
-              <h4 style={{ color: activeArea === a.id ? '#3471FF' : '#fff', fontSize: '14px', fontWeight: 600, margin: '0 0 4px 0' }}>{a.title}</h4>
+            <div key={a.id} onClick={() => setActiveArea(a.id)} style={{ padding: '12px 16px', borderRadius: '8px', cursor: 'pointer', border: '1px solid', backgroundColor: activeArea === a.id ? 'rgba(0, 102, 255,0.1)' : '#1e1e1e', borderColor: activeArea === a.id ? '#0066FF' : '#2e2e2e', transition: 'all 0.2s' }}>
+              <h4 style={{ color: activeArea === a.id ? '#3385FF' : '#fff', fontSize: '14px', fontWeight: 600, margin: '0 0 4px 0' }}>{a.title}</h4>
               <p style={{ color: '#aaa', fontSize: '12px', margin: 0, lineHeight: 1.4 }}>{a.desc}</p>
             </div>
           ))}
@@ -6521,10 +9702,10 @@ function IntersectionOverlayPlayground() {
               <>
                 {showCar && (
                   <>
-                    <rect x="80" y="165" width="50" height="30" rx="3" fill="none" stroke="#1751D9" strokeWidth="2" />
-                    <text x="80" y="160" fill="#1751D9" fontSize="10" fontWeight="bold">승용차 98%</text>
-                    <rect x="180" y="155" width="45" height="28" rx="3" fill="none" stroke="#1751D9" strokeWidth="2" />
-                    <text x="180" y="150" fill="#1751D9" fontSize="10" fontWeight="bold">승용차 94%</text>
+                    <rect x="80" y="165" width="50" height="30" rx="3" fill="none" stroke="#0066FF" strokeWidth="2" />
+                    <text x="80" y="160" fill="#0066FF" fontSize="10" fontWeight="bold">승용차 98%</text>
+                    <rect x="180" y="155" width="45" height="28" rx="3" fill="none" stroke="#0066FF" strokeWidth="2" />
+                    <text x="180" y="150" fill="#0066FF" fontSize="10" fontWeight="bold">승용차 94%</text>
                   </>
                 )}
                 {showBus && (
@@ -6612,7 +9793,7 @@ function SignalQueuePlayground() {
           {lanes.map(lane => {
             const isDanger = lane.queue > 50;
             const isWarning = lane.queue > 30 && lane.queue <= 50;
-            const barColor = isDanger ? '#FF6363' : isWarning ? '#FFA938' : '#1751D9';
+            const barColor = isDanger ? '#FF6363' : isWarning ? '#FFA938' : '#0066FF';
             return (
               <div key={lane.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#1e1e1e', padding: '10px 14px', borderRadius: '6px', border: '1px solid #2e2e2e' }}>
                 <div style={{ width: '100px', color: '#fff', fontSize: '12px', fontWeight: 600 }}>{lane.name}</div>
@@ -6637,7 +9818,7 @@ function SignalQueuePlayground() {
         >
           <div>
             <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Simulation Controls</div>
-            <button onClick={simulateTraffic} style={{ width: '100%', padding: '10px 14px', border: '1px solid #1751D9', background: 'transparent', color: '#3471FF', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', transition: 'all 0.2s' }}>
+            <button onClick={simulateTraffic} style={{ width: '100%', padding: '10px 14px', border: '1px solid #0066FF', background: 'transparent', color: '#3385FF', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', transition: 'all 0.2s' }}>
               🔄 교통상황 업데이트
             </button>
           </div>
@@ -6694,7 +9875,7 @@ function TrafficFlowChartPlayground() {
                   style={{ width: '14%', display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', position: 'relative' }}
                 >
                   {isHovered && (
-                    <div style={{ position: 'absolute', top: '-60px', backgroundColor: '#000', border: '1px solid #1751D9', color: '#fff', borderRadius: '4px', padding: '6px 8px', fontSize: '11px', whiteSpace: 'nowrap', zIndex: 10, boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>
+                    <div style={{ position: 'absolute', top: '-60px', backgroundColor: '#000', border: '1px solid #0066FF', color: '#fff', borderRadius: '4px', padding: '6px 8px', fontSize: '11px', whiteSpace: 'nowrap', zIndex: 10, boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>
                       🚗 차량: {item.vehicles}대<br />
                       🚶 보행자: {item.pedestrians}명
                     </div>
@@ -6718,8 +9899,8 @@ function TrafficFlowChartPlayground() {
                       width: '100%',
                       height: `${barHeight}px`,
                       background: isHovered 
-                        ? 'linear-gradient(to top, #3471FF, #1751D9)'
-                        : 'linear-gradient(to top, rgba(23,81,217,0.8), rgba(23,81,217,0.3))',
+                        ? 'linear-gradient(to top, #3385FF, #0066FF)'
+                        : 'linear-gradient(to top, rgba(0, 102, 255,0.8), rgba(0, 102, 255,0.3))',
                       borderRadius: '4px 4px 0 0',
                       transition: 'all 0.2s'
                     }} />
@@ -6755,7 +9936,7 @@ function TrafficFlowChartPlayground() {
             <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Legend</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#ccc' }}>
-                <div style={{ width: '12px', height: '12px', borderRadius: '2px', backgroundColor: '#1751D9' }} />
+                <div style={{ width: '12px', height: '12px', borderRadius: '2px', backgroundColor: '#0066FF' }} />
                 차량 통행량 (바)
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#ccc' }}>
@@ -6847,7 +10028,7 @@ function DetectedTargetsPlayground() {
           <h3 style={{ color: '#fff', fontSize: '15px', margin: '0 0 8px 0', fontWeight: 700 }}>관심 객체 실시간 디텍션 피드</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '240px', overflowY: 'auto', paddingRight: '4px' }}>
             {feed.map(item => (
-              <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#1e1e1e', padding: '10px 14px', borderRadius: '8px', border: '1px solid #2e2e2e', borderLeft: `4px solid ${item.severity === 'danger' ? '#FF6363' : item.severity === 'warning' ? '#FFA938' : '#3471FF'}` }}>
+              <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#1e1e1e', padding: '10px 14px', borderRadius: '8px', border: '1px solid #2e2e2e', borderLeft: `4px solid ${item.severity === 'danger' ? '#FF6363' : item.severity === 'warning' ? '#FFA938' : '#3385FF'}` }}>
                 <span style={{ fontSize: '20px' }}>{item.icon}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -6867,7 +10048,7 @@ function DetectedTargetsPlayground() {
         >
           <div>
             <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Feed Actions</div>
-            <button onClick={addDetection} style={{ width: '100%', padding: '10px 14px', border: 'none', background: '#1751D9', color: '#fff', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
+            <button onClick={addDetection} style={{ width: '100%', padding: '10px 14px', border: 'none', background: '#0066FF', color: '#fff', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
               ⚡ 가상 이벤트 발생
             </button>
           </div>
@@ -6890,7 +10071,7 @@ function CameraRadiusPlayground() {
           <div style={{ position: 'absolute', width: '100px', height: '100px', borderRadius: '50%', border: '1px dashed #222' }} />
           <div style={{ position: 'absolute', width: '160px', height: '160px', borderRadius: '50%', border: '1px dashed #222' }} />
 
-          <div style={{ zIndex: 3, width: '18px', height: '18px', borderRadius: '50%', backgroundColor: '#1751D9', border: '2px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 10px #1751D9' }}>
+          <div style={{ zIndex: 3, width: '18px', height: '18px', borderRadius: '50%', backgroundColor: '#0066FF', border: '2px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 10px #0066FF' }}>
             <span style={{ fontSize: '9px', color: '#fff' }}>📹</span>
           </div>
 
@@ -6983,7 +10164,7 @@ function EventGridPlayground() {
                   </td>
                   <td style={{ padding: '10px 8px', textAlign: 'center' }}>
                     {!ev.resolved ? (
-                      <button onClick={() => resolveEvent(ev.id)} style={{ padding: '2px 6px', border: '1px solid #1751D9', background: 'transparent', color: '#3471FF', borderRadius: '4px', fontSize: '10px', cursor: 'pointer', fontWeight: 'bold' }}>
+                      <button onClick={() => resolveEvent(ev.id)} style={{ padding: '2px 6px', border: '1px solid #0066FF', background: 'transparent', color: '#3385FF', borderRadius: '4px', fontSize: '10px', cursor: 'pointer', fontWeight: 'bold' }}>
                         확인
                       </button>
                     ) : (
@@ -7028,7 +10209,7 @@ function PedestrianOverviewPlayground() {
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
         {/* Left: Visual simulation */}
         <div style={{ flex: 1.5, background: '#121214', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' }}>
-          <div style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#1751D9', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 'bold', marginBottom: '16px', boxShadow: '0 0 16px rgba(23,81,217,0.4)' }}>
+          <div style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#0066FF', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 'bold', marginBottom: '16px', boxShadow: '0 0 16px rgba(0, 102, 255,0.4)' }}>
             {activeStep + 1}
           </div>
           <h4 style={{ color: '#fff', fontSize: '15px', fontWeight: 700, margin: '0 0 8px 0', textAlign: 'center' }}>{steps[activeStep].title}</h4>
@@ -7172,7 +10353,7 @@ function ActuatedCountdownPlayground() {
             <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Simulator Trigger</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {state === 'idle' ? (
-                <button onClick={triggerActuation} style={{ width: '100%', padding: '10px 14px', border: 'none', background: '#1751D9', color: '#fff', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
+                <button onClick={triggerActuation} style={{ width: '100%', padding: '10px 14px', border: 'none', background: '#0066FF', color: '#fff', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
                   🚶 보행자 접근 시뮬레이션
                 </button>
               ) : (
@@ -7218,7 +10399,7 @@ function AudioControlPlayground() {
                   <div key={bar} style={{
                     width: '3px',
                     height: `${activeHeight}px`,
-                    backgroundColor: broadcastState ? '#3471FF' : '#555',
+                    backgroundColor: broadcastState ? '#3385FF' : '#555',
                     borderRadius: '2.5px',
                     transition: 'height 0.15s ease'
                   }} />
@@ -7228,7 +10409,7 @@ function AudioControlPlayground() {
           </div>
 
           {broadcastState && (
-            <div style={{ backgroundColor: 'rgba(23,81,217,0.1)', border: '1px solid #1751D9', borderRadius: '4px', padding: '10px', textAlign: 'center', color: '#3471FF', fontSize: '12px', fontWeight: 'bold' }}>
+            <div style={{ backgroundColor: 'rgba(0, 102, 255,0.1)', border: '1px solid #0066FF', borderRadius: '4px', padding: '10px', textAlign: 'center', color: '#3385FF', fontSize: '12px', fontWeight: 'bold' }}>
               {broadcastState === 'curb' ? '📢 "위험하오니 차도로 들어가지 마세요"' : '📢 "신호가 켜졌습니다. 좌우를 살핀 후 건너세요"'}
             </div>
           )}
@@ -7240,7 +10421,7 @@ function AudioControlPlayground() {
         >
           <div>
             <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '8px' }}>음량 크기 조절</div>
-            <input type="range" min="30" max="95" value={volume} onChange={e => setVolume(parseInt(e.target.value))} style={{ width: '100%', accentColor: '#1751D9', cursor: 'pointer' }} />
+            <input type="range" min="30" max="95" value={volume} onChange={e => setVolume(parseInt(e.target.value))} style={{ width: '100%', accentColor: '#0066FF', cursor: 'pointer' }} />
           </div>
 
           <div>
@@ -7610,8 +10791,8 @@ function CheckmarkPlayground({ activeSubTab }) {
             zIndex: 3,
             userSelect: 'none'
           }}>
-            <FigCheckCircle size={18} color="#00A9FF" />
-            <span>Checkmark</span>
+            <Icon name="check" size={18} color="#00A9FF" />
+            <span>체크된 콘텐츠</span>
           </div>
 
           {/* SVG 직선 */}
@@ -7634,8 +10815,8 @@ function CheckmarkPlayground({ activeSubTab }) {
         {/* Legend */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 0' }}>
           {[
-            { num: 1, label: 'Control (선택 컨트롤)' },
-            { num: 2, label: 'Label (텍스트 라벨)' },
+            { num: 1, label: 'Check mark (체크 표시 — Checkbox 상태 연동)' },
+            { num: 2, label: 'Content (체크된 콘텐츠 / 라벨)' },
           ].map(item => (
             <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
               {item.num}. {item.label}
@@ -7649,10 +10830,10 @@ function CheckmarkPlayground({ activeSubTab }) {
   // Interactive Tab Content
   return (
     <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
-      <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
+      <div style={{ display: 'flex', gap: '14px', background: '#202024', borderRadius: '20px', overflow: 'hidden', height: '360px', padding: '14px', boxSizing: 'border-box' }}>
         {/* Left: Preview Panel */}
-        <div style={{ flex: 1.8, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-          <div 
+        <div style={{ flex: 1.8, background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+          <div
             onClick={() => !disabled && setChecked(!checked)}
             style={{
               display: 'inline-flex',
@@ -7662,8 +10843,8 @@ function CheckmarkPlayground({ activeSubTab }) {
               userSelect: 'none',
               padding: '12px 24px',
               borderRadius: '8px',
-              backgroundColor: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.05)',
+              backgroundColor: 'transparent',
+              border: 'none',
               opacity: disabled ? 0.4 : 1,
               transition: 'all 0.15s'
             }}
@@ -7680,7 +10861,8 @@ function CheckmarkPlayground({ activeSubTab }) {
               height: size === 'small' ? '16px' : size === 'medium' ? '20px' : '24px',
               visibility: checked ? 'visible' : 'hidden'
             }}>
-              <FigCheckCircle
+              <Icon
+                name="check"
                 size={size === 'small' ? 16 : size === 'medium' ? 20 : 24}
                 color={checked ? (color === 'accent' ? '#00A9FF' : '#ffffff') : '#4e4e52'}
               />
@@ -7701,13 +10883,13 @@ function CheckmarkPlayground({ activeSubTab }) {
           className="ds-playground-controls"
           style={{ 
             flex: 1, 
-            background: '#141414', 
-            borderLeft: '1px solid #2a2a2a', 
-            padding: '24px', 
-            display: 'flex', 
-            flexDirection: 'column', 
+            background: '#2a2a30',
+            borderRadius: '16px',
+            padding: '24px',
+            display: 'flex',
+            flexDirection: 'column',
             gap: '24px',
-            maxHeight: '360px',
+            maxHeight: '332px',
             overflowY: 'auto',
             boxSizing: 'border-box'
           }}
@@ -7795,7 +10977,7 @@ function TextButtonPlayground({ activeSubTab }) {
   const [leadingIcon, setLeadingIcon] = useState(true);
   const [trailingIcon, setTrailingIcon] = useState(true);
 
-  const buttonColor = color === 'primary' ? '#3471FF' : '#8e8e93';
+  const buttonColor = color === 'primary' ? '#3385FF' : '#8e8e93';
 
   return (
     <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>

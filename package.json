@@ -5,12 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "lint": "eslint src",
+    "check:contrast": "node scripts/check-contrast.mjs",
     "gen:template-code": "node mcp/gen-template-code.mjs",
-    "prebuild": "node mcp/gen-template-code.mjs",
+    "gen:component-code": "node mcp/gen-component-code.mjs",
+    "prebuild": "node mcp/gen-component-code.mjs && node mcp/gen-template-code.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0",
     "typescript": "~6.0.2",
     "vite": "^8.0.12"
   },
@@ -20,6 +25,8 @@
     "@react-three/fiber": "^9.6.1",
     "@react-three/postprocessing": "^3.0.4",
     "@types/three": "^0.184.1",
+    "discord.js": "^14.26.4",
+    "dotenv": "^17.4.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "three": "^0.184.0"

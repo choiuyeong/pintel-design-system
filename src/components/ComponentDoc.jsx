@@ -1810,6 +1810,12 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
   if (componentId === 'nav-page-counter') {
     return <PageCounterPlayground activeSubTab={activeSubTab} />;
   }
+  if (componentId === 'nav-pagination') {
+    return <PaginationPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'nav-progress-indicator') {
+    return <ProgressIndicatorPlayground activeSubTab={activeSubTab} />;
+  }
   if (componentId === 'present-autocomplete') {
     return <AutocompletePlayground activeSubTab={activeSubTab} />;
   }
@@ -6671,43 +6677,46 @@ function ContextMenuPlayground({ activeSubTab }) {
   );
 }
 
-// Page counter(nav-page-counter) — 현재/전체 페이지를 (3 / 12)로 표시하는 위치 인디케이터.
-//  구성: 현재 페이지(강조) · 구분자 · 전체 페이지(보조) · 컨테이너.
-function PageCounterPlayground({ activeSubTab }) {
+// Progress indicator(nav-progress-indicator) — 진행률(0~100%)을 선형/원형으로 시각화.
+//  구성: 트랙 · 채움 · 퍼센트 라벨 · 원형 변형.
+function ProgressIndicatorPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
+    const R = 18, C = 2 * Math.PI * R;
     return (
       <div style={{ width: '100%' }}>
-        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '260px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
-          {/* 4. 컨테이너 — 보더 pill */}
-          <div style={{ position: 'absolute', left: '300px', top: '112px', width: '160px', height: '44px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
-          {/* 1. 현재 페이지 (강조) */}
-          <div style={{ position: 'absolute', left: '348px', top: '123px', zIndex: 3, fontSize: '18px', fontWeight: W.bold, color: T.primaryStrong }}>3</div>
-          {/* 2. 구분자 */}
-          <div style={{ position: 'absolute', left: '372px', top: '123px', zIndex: 3, fontSize: '18px', color: '#a1a1aa' }}>/</div>
-          {/* 3. 전체 페이지 (보조) */}
-          <div style={{ position: 'absolute', left: '390px', top: '123px', zIndex: 3, fontSize: '18px', color: '#a1a1aa' }}>12</div>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '300px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 선형: 1. 트랙 + 2. 채움 (top 128, height 8) */}
+          <div style={{ position: 'absolute', left: '210px', top: '128px', width: '320px', height: '8px', borderRadius: '4px', background: '#e4e4e7', zIndex: 2 }} />
+          <div style={{ position: 'absolute', left: '210px', top: '128px', width: '192px', height: '8px', borderRadius: '4px', background: T.primary, zIndex: 3 }} />
+          {/* 3. 퍼센트 라벨 */}
+          <div style={{ position: 'absolute', left: '548px', top: '121px', zIndex: 3, fontSize: TYPE.label1.fontSize, color: '#6a6a6a' }}>60%</div>
+          {/* 4. 원형 변형 (center 320,208) */}
+          <svg width="40" height="40" viewBox="0 0 40 40" style={{ position: 'absolute', left: '300px', top: '188px', zIndex: 3 }}>
+            <circle cx="20" cy="20" r={R} fill="none" stroke="#e4e4e7" strokeWidth="4" />
+            <circle cx="20" cy="20" r={R} fill="none" stroke={T.primary} strokeWidth="4" strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C * 0.4} transform="rotate(-90 20 20)" />
+          </svg>
 
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            {/* 1. 현재 상단(y=120) x=354 */}
-            <line x1="354" y1="70" x2="354" y2="120" stroke="#999" strokeWidth="1.2" /><circle cx="354" cy="120" r="1.6" fill="#999" />
-            {/* 3. 전체 상단(y=120) x=400 */}
-            <line x1="400" y1="70" x2="400" y2="120" stroke="#999" strokeWidth="1.2" /><circle cx="400" cy="120" r="1.6" fill="#999" />
-            {/* 2. 구분자 하단(y=150) x=376 */}
-            <line x1="376" y1="200" x2="376" y2="150" stroke="#999" strokeWidth="1.2" /><circle cx="376" cy="150" r="1.6" fill="#999" />
-            {/* 4. 컨테이너 좌측 경계(x=300) y=134 */}
-            <line x1="266" y1="134" x2="300" y2="134" stroke="#999" strokeWidth="1.2" /><circle cx="300" cy="134" r="1.6" fill="#999" />
+            {/* 2. 채움 상단(y=128) x=300 */}
+            <line x1="300" y1="80" x2="300" y2="128" stroke="#999" strokeWidth="1.2" /><circle cx="300" cy="128" r="1.6" fill="#999" />
+            {/* 1. 트랙 상단(y=128) x=470 (미채움부) */}
+            <line x1="470" y1="80" x2="470" y2="128" stroke="#999" strokeWidth="1.2" /><circle cx="470" cy="128" r="1.6" fill="#999" />
+            {/* 3. 퍼센트 상단(y=118) x=562 */}
+            <line x1="562" y1="80" x2="562" y2="118" stroke="#999" strokeWidth="1.2" /><circle cx="562" cy="118" r="1.6" fill="#999" />
+            {/* 4. 원형 하단(y=228) x=320 */}
+            <line x1="320" y1="262" x2="320" y2="228" stroke="#999" strokeWidth="1.2" /><circle cx="320" cy="228" r="1.6" fill="#999" />
           </svg>
-          <div style={{ position: 'absolute', left: '354px', top: '58px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
-          <div style={{ position: 'absolute', left: '400px', top: '58px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
-          <div style={{ position: 'absolute', left: '376px', top: '212px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
-          <div style={{ position: 'absolute', left: '252px', top: '134px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '300px', top: '68px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '470px', top: '68px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '562px', top: '68px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '320px', top: '274px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
           {[
-            { num: 1, label: '현재 페이지 (Current)' },
-            { num: 2, label: '구분자 (Separator)' },
-            { num: 3, label: '전체 페이지 (Total)' },
-            { num: 4, label: '컨테이너 (Container)' },
+            { num: 1, label: '트랙 (Track)' },
+            { num: 2, label: '채움 (Fill)' },
+            { num: 3, label: '퍼센트 라벨 (Percent)' },
+            { num: 4, label: '원형 변형 (Circular)' },
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
@@ -6716,39 +6725,242 @@ function PageCounterPlayground({ activeSubTab }) {
     );
   }
 
-  // Interactive — 이전/다음으로 현재 페이지 이동 + 크기(size) 전환
-  const TOTAL = 12;
-  const [cur, setCur] = useState(3);
-  const [size, setSize] = useState('md');
-  const fs = size === 'sm' ? 12 : size === 'lg' ? 16 : 14;
-  const seg = (val) => (
-    <button key={val} type="button" onClick={() => setSize(val)} style={{
+  // Interactive — variant(선형/원형) × mode(determinate/indeterminate) × value
+  const [variant, setVariant] = useState('linear');
+  const [indet, setIndet] = useState(false);
+  const [value, setValue] = useState(60);
+  const R = 18, C = 2 * Math.PI * R;
+  const fillColor = value >= 100 ? T.positive : T.primary;
+  const seg = (val, cur, set, label) => (
+    <button key={label} type="button" onClick={() => set(val)} style={{
       height: 30, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: 'pointer', fontFamily: T.font,
-      fontSize: TYPE.caption1.fontSize, fontWeight: size === val ? W.semibold : W.regular,
-      background: size === val ? 'rgba(0,102,255,0.12)' : '#2a2a30',
-      border: `1px solid ${size === val ? T.primary : '#3a3a42'}`, color: size === val ? T.primaryStrong : '#d4d4d8',
-    }}>{val}</button>
-  );
-  const navBtn = (label, onClick, disabled) => (
-    <button type="button" onClick={onClick} disabled={disabled} style={{
-      width: 32, height: 32, borderRadius: 6, cursor: disabled ? 'default' : 'pointer', fontFamily: T.font,
-      fontSize: TYPE.label1.fontSize, background: '#2a2a30', border: '1px solid #3a3a42', color: disabled ? '#5a5a62' : '#d4d4d8',
+      fontSize: TYPE.caption1.fontSize, fontWeight: cur === val ? W.semibold : W.regular,
+      background: cur === val ? 'rgba(0,102,255,0.12)' : '#2a2a30',
+      border: `1px solid ${cur === val ? T.primary : '#3a3a42'}`, color: cur === val ? T.primaryStrong : '#d4d4d8',
     }}>{label}</button>
   );
   return (
     <div style={{ width: '100%' }}>
-      <div style={{ display: 'flex', gap: SP[4], alignItems: 'center', marginBottom: SP[16] }}>
-        <span style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', marginRight: SP[4] }}>size</span>
-        {['sm', 'md', 'lg'].map(seg)}
+      <style>{'@keyframes piBar{0%{left:-40%}100%{left:100%}}@keyframes piSpin{to{transform:rotate(360deg)}}'}</style>
+      <div style={{ display: 'flex', gap: SP[16], flexWrap: 'wrap', alignItems: 'center', marginBottom: SP[16] }}>
+        <div style={{ display: 'flex', gap: SP[4], alignItems: 'center' }}>
+          <span style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', marginRight: SP[4] }}>variant</span>
+          {seg('linear', variant, setVariant, 'linear')}{seg('circular', variant, setVariant, 'circular')}
+        </div>
+        <button type="button" onClick={() => setIndet((v) => !v)} style={{
+          height: 30, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: 'pointer', fontFamily: T.font,
+          fontSize: TYPE.caption1.fontSize, background: indet ? 'rgba(0,102,255,0.12)' : '#2a2a30',
+          border: `1px solid ${indet ? T.primary : '#3a3a42'}`, color: indet ? T.primaryStrong : '#d4d4d8',
+        }}>{indet ? '✓ indeterminate' : '○ determinate'}</button>
+        {!indet && (
+          <input type="range" min={0} max={100} value={value} onChange={(e) => setValue(Number(e.target.value))} style={{ width: 160, accentColor: T.primary }} />
+        )}
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: SP[16], minHeight: '160px', border: '1px solid #2a2a2a', borderRadius: '12px', background: '#1a1a1a', padding: SP[24] }}>
-        {navBtn('‹', () => setCur((v) => Math.max(1, v - 1)), cur === 1)}
-        <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: '4px', padding: `0 ${SP[8]}`, fontVariantNumeric: 'tabular-nums' }}>
-          <span style={{ fontSize: fs, fontWeight: W.bold, color: T.primaryStrong }}>{cur}</span>
-          <span style={{ fontSize: fs, color: '#888' }}>/</span>
-          <span style={{ fontSize: fs, color: '#888' }}>{TOTAL}</span>
-        </span>
-        {navBtn('›', () => setCur((v) => Math.min(TOTAL, v + 1)), cur === TOTAL)}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '160px', border: '1px solid #2a2a2a', borderRadius: '12px', background: '#1a1a1a', padding: SP[24] }}>
+        {variant === 'linear' ? (
+          <div style={{ width: '320px', display: 'flex', alignItems: 'center', gap: SP[12] }}>
+            <div style={{ position: 'relative', flex: 1, height: 6, borderRadius: 4, background: '#2e2e2e', overflow: 'hidden' }}>
+              {indet
+                ? <div style={{ position: 'absolute', top: 0, width: '40%', height: '100%', borderRadius: 4, background: T.primary, animation: 'piBar 1.4s linear infinite' }} />
+                : <div style={{ width: `${value}%`, height: '100%', borderRadius: 4, background: fillColor, transition: 'width 0.2s' }} />}
+            </div>
+            {!indet && <span style={{ fontSize: TYPE.label1.fontSize, color: '#888', minWidth: 40, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{value}%</span>}
+          </div>
+        ) : (
+          <div style={{ position: 'relative', width: 40, height: 40 }}>
+            <svg width="40" height="40" viewBox="0 0 40 40" style={indet ? { animation: 'piSpin 0.9s linear infinite' } : undefined}>
+              <circle cx="20" cy="20" r={R} fill="none" stroke="#2e2e2e" strokeWidth="4" />
+              <circle cx="20" cy="20" r={R} fill="none" stroke={fillColor} strokeWidth="4" strokeLinecap="round"
+                strokeDasharray={C} strokeDashoffset={indet ? C * 0.75 : C * (1 - value / 100)} transform="rotate(-90 20 20)" />
+            </svg>
+            {!indet && <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: W.bold, color: '#e8e8ec' }}>{value}</span>}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Pagination(nav-pagination) — 번호 버튼 + 이전/다음으로 페이지 이동, 현재 페이지 강조.
+//  구성: 이전 화살표 · 활성 페이지 · 비활성 번호 · 생략 표시 · 다음 화살표.
+function paginationRange(cur, total, sib = 1) {
+  const set = new Set([1, total]);
+  for (let i = cur - sib; i <= cur + sib; i++) if (i >= 1 && i <= total) set.add(i);
+  const arr = [...set].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b);
+  const out = [];
+  let prev = 0;
+  for (const p of arr) { if (p - prev > 1) out.push('...'); out.push(p); prev = p; }
+  return out;
+}
+function PaginationPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    // 버튼 top 124(32px) · 중심 y=140
+    const cellBase = { position: 'absolute', top: '124px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.label1.fontSize };
+    const inactive = { ...cellBase, width: '32px', background: '#fff', border: '1px solid #e4e4e7', color: '#a1a1aa' };
+    const arrow = { ...inactive };
+    return (
+      <div style={{ width: '100%' }}>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '280px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 1. 이전 화살표 */}
+          <div style={{ ...arrow, left: '248px' }}>‹</div>
+          {/* 3. 비활성 번호 */}
+          <div style={{ ...inactive, left: '288px' }}>1</div>
+          {/* 2. 활성 페이지 */}
+          <div style={{ ...cellBase, left: '328px', width: '32px', background: T.primary, color: '#fff', fontWeight: W.bold }}>2</div>
+          <div style={{ ...inactive, left: '368px' }}>3</div>
+          {/* 4. 생략 표시 */}
+          <div style={{ ...cellBase, left: '408px', width: '24px', color: '#a1a1aa' }}>…</div>
+          <div style={{ ...inactive, left: '440px' }}>12</div>
+          {/* 5. 다음 화살표 */}
+          <div style={{ ...arrow, left: '480px' }}>›</div>
+
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 2. 활성 상단(y=124) x=344 */}
+            <line x1="344" y1="72" x2="344" y2="124" stroke="#999" strokeWidth="1.2" /><circle cx="344" cy="124" r="1.6" fill="#999" />
+            {/* 4. 생략 상단(y=124) x=420 */}
+            <line x1="420" y1="72" x2="420" y2="124" stroke="#999" strokeWidth="1.2" /><circle cx="420" cy="124" r="1.6" fill="#999" />
+            {/* 5. 다음 상단(y=124) x=496 */}
+            <line x1="496" y1="72" x2="496" y2="124" stroke="#999" strokeWidth="1.2" /><circle cx="496" cy="124" r="1.6" fill="#999" />
+            {/* 1. 이전 하단(y=156) x=264 */}
+            <line x1="264" y1="208" x2="264" y2="156" stroke="#999" strokeWidth="1.2" /><circle cx="264" cy="156" r="1.6" fill="#999" />
+            {/* 3. 비활성 하단(y=156) x=384 */}
+            <line x1="384" y1="208" x2="384" y2="156" stroke="#999" strokeWidth="1.2" /><circle cx="384" cy="156" r="1.6" fill="#999" />
+          </svg>
+          <div style={{ position: 'absolute', left: '344px', top: '60px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '420px', top: '60px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '496px', top: '60px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
+          <div style={{ position: 'absolute', left: '264px', top: '220px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '384px', top: '220px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '이전 화살표 (Prev)' },
+            { num: 2, label: '활성 페이지 (Active)' },
+            { num: 3, label: '비활성 번호 (Inactive)' },
+            { num: 4, label: '생략 표시 (Ellipsis)' },
+            { num: 5, label: '다음 화살표 (Next)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 번호/화살표로 페이지 이동(생략 표시 포함)
+  const TOTAL = 12;
+  const [cur, setCur] = useState(1);
+  const cell = (content, { active = false, disabled = false, onClick } = {}) => (
+    <button type="button" onClick={onClick} disabled={disabled} style={{
+      width: 32, height: 32, borderRadius: 8, cursor: disabled ? 'default' : onClick ? 'pointer' : 'default', fontFamily: T.font,
+      fontSize: TYPE.label1.fontSize, fontWeight: active ? W.bold : W.regular,
+      background: active ? T.primary : 'transparent',
+      border: `1px solid ${active ? T.primary : disabled ? '#2a2a2a' : '#2e2e2e'}`,
+      color: active ? '#fff' : disabled ? '#5a5a62' : '#8a8a92',
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box',
+    }}>{content}</button>
+  );
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: SP[4], minHeight: '160px', border: '1px solid #2a2a2a', borderRadius: '12px', background: '#1a1a1a', padding: SP[24] }}>
+        {cell('‹', { disabled: cur === 1, onClick: cur === 1 ? undefined : () => setCur((v) => v - 1) })}
+        {paginationRange(cur, TOTAL).map((p, i) => (
+          p === '...'
+            ? <span key={`e${i}`} style={{ width: 32, height: 32, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#8a8a92', fontSize: TYPE.label1.fontSize }}>…</span>
+            : <span key={p}>{cell(p, { active: p === cur, onClick: () => setCur(p) })}</span>
+        ))}
+        {cell('›', { disabled: cur === TOTAL, onClick: cur === TOTAL ? undefined : () => setCur((v) => v + 1) })}
+      </div>
+    </div>
+  );
+}
+
+// Page counter(nav-page-counter) — 현재 페이지 입력 · "of N pages" · 이전/다음 · 페이지당 항목 수.
+//  구성: 현재 페이지 입력 · 전체 페이지(of N) · 이전/다음 화살표 · 페이지당 항목 수 선택.
+function PageCounterPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    const grayBox = { position: 'absolute', top: '96px', height: '40px', borderRadius: '8px', background: '#e9e9ec', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: '18px', fontWeight: W.bold, color: '#2a2a2a' };
+    const arrowBox = { position: 'absolute', top: '96px', width: '40px', height: '40px', borderRadius: '8px', background: '#fff', border: '1px solid #e4e4e7', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: '18px', color: '#4a4a4a' };
+    return (
+      <div style={{ width: '100%' }}>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '320px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* Row1: [현재] of N pages  ‹ › */}
+          {/* 1. 현재 페이지 입력 */}
+          <div style={{ ...grayBox, left: '250px', width: '48px' }}>6</div>
+          {/* 2. of N pages */}
+          <div style={{ position: 'absolute', left: '312px', top: '104px', zIndex: 3, fontSize: '18px', fontWeight: W.semibold, color: '#18181b' }}>of 32 pages</div>
+          {/* 3. 이전/다음 화살표 */}
+          <div style={{ ...arrowBox, left: '470px' }}>‹</div>
+          <div style={{ ...arrowBox, left: '518px' }}>›</div>
+          {/* Row2: [20 ▾] items per page */}
+          {/* 4. 페이지당 항목 수 */}
+          <div style={{ ...grayBox, left: '250px', top: '168px', width: '72px', fontSize: '16px', gap: '6px' }}>20 <span style={{ fontSize: '10px', color: '#6a6a6a' }}>▾</span></div>
+          <div style={{ position: 'absolute', left: '336px', top: '176px', zIndex: 3, fontSize: '18px', fontWeight: W.semibold, color: '#18181b' }}>items per page</div>
+
+          {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. 현재 입력 좌측(x=250) y=116 */}
+            <line x1="206" y1="116" x2="250" y2="116" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="116" r="1.6" fill="#999" />
+            {/* 2. of N pages 상단(y=96) x=380 */}
+            <line x1="380" y1="60" x2="380" y2="96" stroke="#999" strokeWidth="1.2" /><circle cx="380" cy="96" r="1.6" fill="#999" />
+            {/* 3. 화살표 상단(y=96) x=514 */}
+            <line x1="514" y1="60" x2="514" y2="96" stroke="#999" strokeWidth="1.2" /><circle cx="514" cy="96" r="1.6" fill="#999" />
+            {/* 4. 페이지당 항목 수 좌측(x=250) y=188 */}
+            <line x1="206" y1="188" x2="250" y2="188" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="188" r="1.6" fill="#999" />
+          </svg>
+          <div style={{ position: 'absolute', left: '192px', top: '116px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '380px', top: '48px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '514px', top: '48px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '192px', top: '188px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '현재 페이지 입력 (Current)' },
+            { num: 2, label: '전체 페이지 (of N pages)' },
+            { num: 3, label: '이전 / 다음 (Prev / Next)' },
+            { num: 4, label: '페이지당 항목 수 (Items per page)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 현재 페이지 입력/이동 + 페이지당 항목 수 변경
+  const TOTAL_ITEMS = 632;
+  const SIZES = [10, 20, 50];
+  const [pageSize, setPageSize] = useState(20);
+  const [cur, setCur] = useState(6);
+  const totalPages = Math.max(1, Math.ceil(TOTAL_ITEMS / pageSize));
+  const page = Math.min(Math.max(1, cur), totalPages);
+  const grayBox = { height: 40, borderRadius: 8, background: '#2a2a30', color: '#e8e8ec', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', fontFamily: T.font };
+  const arrowBtn = (label, disabled, onClick) => (
+    <button type="button" onClick={onClick} disabled={disabled} style={{
+      width: 40, height: 40, borderRadius: 8, cursor: disabled ? 'default' : 'pointer', fontFamily: T.font, fontSize: 16,
+      background: 'transparent', border: '1px solid #2e2e2e', color: disabled ? '#5a5a62' : '#d4d4d8',
+    }}>{label}</button>
+  );
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ border: '1px solid #2a2a2a', borderRadius: '12px', background: '#1a1a1a', padding: `${SP[32]} ${SP[24]}` }}>
+        {/* Row1 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: SP[12] }}>
+          <input type="number" min={1} max={totalPages} value={page}
+            onChange={(e) => setCur(Math.min(Math.max(1, Number(e.target.value) || 1), totalPages))}
+            style={{ ...grayBox, width: 56, textAlign: 'center', border: 'none', outline: 'none', fontSize: TYPE.label1.fontSize, fontWeight: W.bold, MozAppearance: 'textfield' }} />
+          <span style={{ fontSize: TYPE.label1.fontSize, color: '#d4d4d8', fontWeight: W.semibold }}>of {totalPages} pages</span>
+          {arrowBtn('‹', page === 1, () => setCur(page - 1))}
+          {arrowBtn('›', page === totalPages, () => setCur(page + 1))}
+        </div>
+        {/* Row2 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: SP[12], marginTop: SP[16] }}>
+          <button type="button" onClick={() => { const i = SIZES.indexOf(pageSize); setPageSize(SIZES[(i + 1) % SIZES.length]); setCur(1); }}
+            style={{ ...grayBox, gap: SP[8], padding: `0 ${SP[12]}`, cursor: 'pointer', border: 'none', fontSize: TYPE.label1.fontSize, fontWeight: W.semibold }}>
+            {pageSize} <span style={{ fontSize: 10, color: '#9a9aa2' }}>▾</span>
+          </button>
+          <span style={{ fontSize: TYPE.label1.fontSize, color: '#d4d4d8', fontWeight: W.semibold }}>items per page</span>
+        </div>
       </div>
     </div>
   );

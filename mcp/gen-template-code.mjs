@@ -29,7 +29,13 @@ const SCREENS = {
   'library-stats':        { file: 'src/components/Library.jsx', fn: 'PrevaxStatsScreen' },
   'library-ux-agent':     { file: 'src/components/Library.jsx', fn: 'UxAgentReportScreen' },
   'library-event-search': { file: 'src/components/Library.jsx', fn: 'PrevaxEventSearchScreen' },
+  'library-camera-form':  { file: 'src/components/Library.jsx', fn: 'PrevaxCameraFormScreen' },
+  'library-camera-form2': { file: 'src/components/Library.jsx', fn: 'PrevaxCameraFormScreen2' },
+  'library-event-def-add': { file: 'src/components/Library.jsx', fn: 'PrevaxEventDefAddScreen' },
+  'library-camera-group': { file: 'src/components/Library.jsx', fn: 'PrevaxCameraGroupScreen' },
+  'library-event-activation': { file: 'src/components/Library.jsx', fn: 'PrevaxEventActivationScreen' },
   'library-permission':   { file: 'src/components/PermissionSettings.jsx', fn: 'PrevaxPermissionScreen' },
+  'library-permission2':  { file: 'src/components/PermissionSettings.jsx', fn: 'PrevaxPermissionScreen2' },
 };
 
 function extractFn(src, fn) {

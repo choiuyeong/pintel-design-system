@@ -35,9 +35,9 @@
 
 | 토큰 | 값 | 용도 |
 |------|-----|------|
-| `primary` | `#1751D9` | 기본 액션 |
-| `primaryStrong` | `#3471FF` | hover |
-| `primaryHeavy` | `#004DFF` | pressed |
+| `primary` | `#0066FF` | 기본 액션 |
+| `primaryStrong` | `#3385FF` | hover |
+| `primaryHeavy` | `#0052CC` | pressed |
 | `positive` | `#1ED45A` | 긍정/성공 |
 | `cautionary` | `#FFA938` | 경고 |
 | `error` | `#FF6363` | 위험/오류 |

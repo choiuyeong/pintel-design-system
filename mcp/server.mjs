@@ -19,7 +19,15 @@ if (process.argv.includes('--selftest')) {
   console.error('[selftest] component count:', comps.length, '(documented:', comps.filter((c) => c.documented).length + ')');
   console.error('[selftest] get Button     :', JSON.stringify(callTool('get_component', { name: 'Button' })).slice(0, 100), '...');
   console.error('[selftest] search "tab"   :', JSON.parse(callTool('search_components', { query: 'tab' }).content[0].text).count, 'matches');
-  console.error('[selftest] token colors   :', designTokens().colors.length);
+  const tk = designTokens();
+  const colorCount = Object.values(tk.colors).reduce((n, arr) => n + (Array.isArray(arr) ? arr.length : 0), 0);
+  console.error('[selftest] token colors   :', colorCount, '(primary:', tk.colors.primary.length,
+    'status:', tk.colors.status.length, 'accent:', tk.colors.accent.length, 'neutral:', tk.colors.neutral.length + ')');
+  console.error('[selftest] token primary  :', tk.colors.primary[0].value, '(expect #0066FF)');
+  console.error('[selftest] typography     :', tk.typography.length, 'styles; spacing foundation:', tk.spacing.foundation.length);
+  const semSlots = Object.keys(tk.semantic);
+  const semCount = Object.values(tk.semantic).reduce((n, arr) => n + (Array.isArray(arr) ? arr.length : 0), 0);
+  console.error('[selftest] semantic tokens :', semCount, 'in', semSlots.length, 'slots (' + semSlots.join('/') + '); primary[0]:', tk.semantic.primary[0].value, '(expect #0066FF)');
   process.exit(0);
 }
 

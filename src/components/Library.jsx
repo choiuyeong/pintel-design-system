@@ -925,7 +925,7 @@ function CamEventBadge({ ev, sz }) {
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: SP[4],
       ...TYPE.label2, fontSize: sz.name, fontWeight: W.bold,
-      padding: `${SP[2]} ${sz.namePad}`,
+      padding: `${sz.padY || SP[2]} ${sz.namePad}`,
       background: 'rgba(0,0,0,0.62)', border: `1px solid ${ev.color}`,
       borderRadius: '40px', color: '#fff',
       whiteSpace: 'nowrap', boxShadow: '0 1px 4px rgba(0,0,0,0.5)',
@@ -2498,10 +2498,10 @@ function PrevaxLiveScreen() {
   const spin = cols >= 4 ? 22 : cols === 3 ? 30 : 40;
   // 셀 오버레이(카메라명·PTZ·타임스탬프·이벤트 배지) 타이포/여백 — 분할이 커질수록 축소
   const ov = cols >= 4
-    ? { name: '10px', ptz: '9px', stamp: '11px', ptzPad: '3px', namePad: SP[4], edge: '5px', gap: SP[2], evFont: '8.5px', evH: '16px', dot: '4px' }
+    ? { name: '10px', ptz: '9px', stamp: '11px', padY: SP[4], ptzPad: SP[4], namePad: SP[8], edge: '5px', gap: SP[2], evFont: '8.5px', evH: '16px', dot: '4px' }
     : cols === 3
-    ? { name: '11.5px', ptz: '10.5px', stamp: '13px', ptzPad: SP[4], namePad: SP[8], edge: '6px', gap: SP[4], evFont: '10px', evH: '18px', dot: '5px' }
-    : { name: '13px', ptz: '12px', stamp: '15px', ptzPad: SP[8], namePad: SP[12], edge: '8px', gap: SP[4], evFont: '11px', evH: '20px', dot: '6px' };
+    ? { name: '11.5px', ptz: '10.5px', stamp: '13px', padY: SP[4], ptzPad: SP[8], namePad: SP[12], edge: '6px', gap: SP[4], evFont: '10px', evH: '18px', dot: '5px' }
+    : { name: '13px', ptz: '12px', stamp: '15px', padY: SP[8], ptzPad: SP[8], namePad: SP[12], edge: '8px', gap: SP[4], evFont: '11px', evH: '20px', dot: '6px' };
 
   return (
     <div style={{
@@ -2581,8 +2581,8 @@ function PrevaxLiveScreen() {
                 )}
                 {/* 카메라 명 + PTZ (우상단) — 분할 수에 맞춰 축소 */}
                 <div style={{ position: 'absolute', top: ov.edge, right: `calc(${ov.edge} + 2px)`, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: ov.gap }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.55)', color: '#1FC8E6', fontSize: ov.ptz, fontWeight: W.medium, fontFamily: T.font, letterSpacing: '-0.24px', lineHeight: 1.5, padding: `${SP[2]} ${ov.ptzPad}`, borderRadius: '40px', whiteSpace: 'nowrap' }}>PTZ</span>
-                  <span style={{ ...TYPE.label2, fontSize: ov.name, fontWeight: W.semibold, color: '#fff', background: 'rgba(10,10,12,0.72)', padding: `${SP[2]} ${ov.namePad}`, borderRadius: '40px', textShadow: '0 1px 2px rgba(0,0,0,0.6)' }}>{c.name}</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.55)', color: '#1FC8E6', fontSize: ov.ptz, fontWeight: W.medium, fontFamily: T.font, letterSpacing: '-0.24px', lineHeight: 1.5, padding: `${ov.padY} ${ov.ptzPad}`, borderRadius: '40px', whiteSpace: 'nowrap' }}>PTZ</span>
+                  <span style={{ ...TYPE.label2, fontSize: ov.name, fontWeight: W.semibold, color: '#fff', background: 'rgba(10,10,12,0.72)', padding: `${ov.padY} ${ov.namePad}`, borderRadius: '40px', textShadow: '0 1px 2px rgba(0,0,0,0.6)' }}>{c.name}</span>
                 </div>
                 {/* 타임스탬프 (라이브, 하단 중앙) — 분할 수에 맞춰 축소 */}
                 {c.time && (
@@ -5310,7 +5310,7 @@ function PrevaxLiveFocusScreen() {
   const ctxItem = (extra) => ({ display: 'flex', alignItems: 'center', gap: SP[8], padding: `7px ${SP[12]}`, ...TYPE.caption1, color: '#d4d4d8', cursor: 'pointer', whiteSpace: 'nowrap', ...extra });
   const allPinned = realIdx.every((i) => focus.has(i));
   // 셀 오버레이 타이포/여백 — 고정 화면은 3×3 고정이므로 기본(Live)의 3×3 티어와 동일
-  const ov = { name: '11.5px', ptz: '10.5px', stamp: '13px', ptzPad: SP[4], namePad: SP[8], edge: '6px', gap: SP[4], evFont: '10px', evH: '18px', dot: '5px' };
+  const ov = { name: '11.5px', ptz: '10.5px', stamp: '13px', padY: SP[4], ptzPad: SP[8], namePad: SP[12], edge: '6px', gap: SP[4], evFont: '10px', evH: '18px', dot: '5px' };
 
   // 고정 아이콘 = Foundation 아이콘 세트의 keep(피그마 "keep" 777:1847). currentColor 상속.
   const PinGlyph = ({ size = 11 }) => <Icon name="keep" size={size} color="currentColor" />;
@@ -5413,8 +5413,8 @@ function PrevaxLiveFocusScreen() {
                     {!c.connecting && <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(0,0,0,0.28) 100%)' }} />}
                     {/* 카메라 명 + PTZ (우상단) — 실시간영상(기본) 3×3 티어와 동일 크기 */}
                     <div style={{ position: 'absolute', top: ov.edge, right: `calc(${ov.edge} + 2px)`, zIndex: 3, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: ov.gap }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.55)', color: '#1FC8E6', fontSize: ov.ptz, fontWeight: W.medium, fontFamily: T.font, letterSpacing: '-0.24px', lineHeight: 1.5, padding: `${SP[2]} ${ov.ptzPad}`, borderRadius: '40px', whiteSpace: 'nowrap' }}>PTZ</span>
-                      <span style={{ ...TYPE.label2, fontSize: ov.name, fontWeight: W.semibold, color: '#fff', background: 'rgba(10,10,12,0.72)', padding: `${SP[2]} ${ov.namePad}`, borderRadius: '40px', textShadow: '0 1px 2px rgba(0,0,0,0.6)' }}>{c.no}</span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.55)', color: '#1FC8E6', fontSize: ov.ptz, fontWeight: W.medium, fontFamily: T.font, letterSpacing: '-0.24px', lineHeight: 1.5, padding: `${ov.padY} ${ov.ptzPad}`, borderRadius: '40px', whiteSpace: 'nowrap' }}>PTZ</span>
+                      <span style={{ ...TYPE.label2, fontSize: ov.name, fontWeight: W.semibold, color: '#fff', background: 'rgba(10,10,12,0.72)', padding: `${ov.padY} ${ov.namePad}`, borderRadius: '40px', textShadow: '0 1px 2px rgba(0,0,0,0.6)' }}>{c.no}</span>
                     </div>
                     {/* 연결중 — Loading 정본(region 스피너 + 보조문구) */}
                     {c.connecting && (
@@ -5496,6 +5496,146 @@ function PrevaxLiveFocusScreen() {
   );
 }
 
+// 이벤트 자동 팝업 카드 — 디자인 시스템 컴포넌트/토큰으로 재설계.
+//  헤더(등급 dot + 이벤트명 + Content badge + 시각 + 닫기) · 미디어(neutral 영상 surface + 카메라칩 + BBox)
+//  · 상태 푸터(준비=Loading 스피너 / 재생=Progress indicator + 발생 마커 / 폴백=Section message / 정리).
+//  8:5(840×525 정본 비율). 시맨틱 색 전부 T.*, 아이콘은 Foundation <Icon>.
+function EventPopupWindow({ state }) {
+  const cleared = state === 'cleanup';
+  const isVideo = state === 'video';
+  const W_ = 480, H_ = 300;
+  return (
+    <div style={{ width: W_, background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 20px 55px rgba(0,0,0,0.55)', fontFamily: T.font }}>
+      {/* 헤더 — 등급 dot + 이벤트명 + 등급 배지 + 시각 + 닫기 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #2e2e2e' }}>
+        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: T.error, flexShrink: 0, boxShadow: `0 0 6px ${T.error}` }} />
+        <span style={{ ...TYPE.label1, fontWeight: W.bold, color: '#fff' }}>불법 주정차</span>
+        <span style={{ ...TYPE.caption2, fontWeight: W.bold, color: '#fff', background: T.error, borderRadius: '4px', padding: `1px ${SP[8]}` }}>위험</span>
+        <span style={{ marginLeft: 'auto', display: 'inline-flex', cursor: 'pointer' }}><Icon name="cancel" size={16} color="#8a8a92" /></span>
+      </div>
+
+      {/* 미디어 영역 — neutral 영상 surface(8:5) */}
+      <div style={{ position: 'relative', width: W_, height: H_, background: '#0e0e10', overflow: 'hidden', filter: cleared ? 'brightness(.45) saturate(.6)' : 'none' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(120% 90% at 50% 30%, #1c1f26 0%, #14161c 55%, #0d0f13 100%)' }} />
+        {/* 영상 피드 placeholder(중앙 카메라 글리프) */}
+        {!cleared && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: isVideo ? 0.14 : 0.10 }}>
+            <Icon name="nest_cam_outdoor" size={76} color="#ffffff" />
+          </div>
+        )}
+        {/* 상단 정보 바 — 미디어 상단 전체 폭, 반투명 그라디언트 바(좌:상태 · 우:카메라명) */}
+        {!cleared && (
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: SP[8], padding: `${SP[8]} ${SP[12]} ${SP[16]}`, background: 'linear-gradient(180deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.42) 55%, rgba(0,0,0,0) 100%)', pointerEvents: 'none' }}>
+            {/* 좌: 상태(스냅샷/발생영상) */}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[4] }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: isVideo ? T.primaryStrong : '#c4c4c8', flexShrink: 0, boxShadow: isVideo ? `0 0 6px ${T.primaryStrong}` : 'none' }} />
+              <span style={{ ...TYPE.caption1, fontWeight: W.bold, color: isVideo ? T.primaryStrong : '#e8e8ec', textShadow: '0 1px 2px rgba(0,0,0,0.6)' }}>{isVideo ? '발생영상' : '스냅샷'}</span>
+            </span>
+            {/* 우: 카메라명 */}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[4] }}>
+              <Icon name="nest_cam_outdoor" size={14} color="#fff" />
+              <span style={{ ...TYPE.label2, fontWeight: W.semibold, color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.6)', whiteSpace: 'nowrap' }}>재거리-북측-보행신호 07</span>
+            </span>
+          </div>
+        )}
+        {/* 타임스탬프(하단 중앙) — 실시간 영상 기본 양식 */}
+        {!cleared && (
+          <span style={{ position: 'absolute', bottom: SP[8], left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', ...TYPE.label2, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)' }}>2026-07-07 14:22:31</span>
+        )}
+        {/* BBox(DrawObjects) — 위험 등급색 */}
+        {!cleared && (
+          <div style={{ position: 'absolute', left: isVideo ? '44%' : '40%', top: '46%', width: '86px', height: '52px', border: `1.6px solid ${T.error}`, borderRadius: '2px', boxShadow: '0 0 0 1px rgba(0,0,0,.35)', transition: 'all .4s' }}>
+            <span style={{ position: 'absolute', top: '-16px', left: '-1.6px', ...TYPE.caption2, fontWeight: W.bold, background: T.error, color: '#fff', padding: `0 ${SP[4]}`, borderRadius: '2px', whiteSpace: 'nowrap' }}>정차 감지</span>
+          </div>
+        )}
+        {/* 정리 베일 */}
+        {cleared && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: SP[8] }}>
+            <Icon name="check_circle" size={22} color="#8a8a92" />
+            <span style={{ ...TYPE.label2, fontWeight: W.semibold, color: '#c4c4c8' }}>발생영상 정리 완료</span>
+          </div>
+        )}
+      </div>
+
+      {/* 상태 푸터 — 상태별 디자인 시스템 피드백 */}
+      <div style={{ padding: `${SP[8]} ${SP[12]}`, borderTop: '1px solid #2e2e2e', minHeight: '46px', display: 'flex', alignItems: 'center', boxSizing: 'border-box' }}>
+        {state === 'appear' && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], ...TYPE.caption1, color: '#c4c4c8' }}>
+            <span style={{ width: '14px', height: '14px', border: '2px solid rgba(255,255,255,.16)', borderTopColor: T.cautionary, borderRadius: '50%', animation: 'epSpin .8s linear infinite' }} />
+            발생영상 준비 중…
+            <span style={{ color: '#6f6f77' }}>· 준비되면 같은 자리에서 자동 재생</span>
+          </div>
+        )}
+        {isVideo && (
+          <div style={{ width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], marginBottom: SP[8] }}>
+              <span style={{ width: 0, height: 0, borderLeft: `7px solid ${T.primaryStrong}`, borderTop: '4.5px solid transparent', borderBottom: '4.5px solid transparent' }} />
+              <span style={{ ...TYPE.caption1, fontWeight: W.semibold, color: T.primaryStrong }}>발생영상 재생</span>
+              <span style={{ marginLeft: 'auto', ...TYPE.caption1, color: '#8a8a92', fontVariantNumeric: 'tabular-nums' }}>00:05 / 00:08</span>
+            </div>
+            {/* Progress indicator(linear) + 발생시점 마커(occur_time 근사 37.5%) */}
+            <div style={{ position: 'relative', height: '6px', borderRadius: '3px', background: '#2e2e2e' }}>
+              <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '62%', borderRadius: '3px', background: T.primary }} />
+              <div style={{ position: 'absolute', left: '37.5%', top: '-3px', bottom: '-3px', width: '2px', background: T.error, boxShadow: `0 0 6px ${T.error}` }} />
+              <div style={{ position: 'absolute', left: '37.5%', top: '-13px', transform: 'translateX(-50%)', ...TYPE.caption2, fontWeight: W.bold, color: '#ffd0d0', whiteSpace: 'nowrap' }}>발생</div>
+            </div>
+          </div>
+        )}
+        {state === 'fallback' && (
+          <div style={{ display: 'flex', gap: SP[8], alignItems: 'flex-start', width: '100%' }}>
+            <span style={{ flexShrink: 0, marginTop: '1px' }}><Icon name="warning" size={16} color={T.cautionary} /></span>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ ...TYPE.caption1, fontWeight: W.semibold, color: T.cautionary }}>발생영상 없음 · 스냅샷 유지</div>
+              <div style={{ ...TYPE.caption2, color: '#9a9aa2' }}>클립 미도착 — 상세·발생영상은 이벤트 목록에서 확인하세요.</div>
+            </div>
+          </div>
+        )}
+        {cleared && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], ...TYPE.caption2, color: '#8a8a92' }}>
+            <Icon name="check_circle" size={14} color="#8a8a92" />디코더 정지 · 정리 (Stop + Dispose · Content = null)
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+function PrevaxEventPopupScreen() {
+  const CUTS = [
+    { n: 1, tone: T.primaryStrong, tc: '#04222a', title: '팝업 등장 (t0 · 검지 순간)', state: 'appear', chip: '스냅샷',
+      cap: '실시간 영상(기본) 양식 준수 — 상단 정보 바(좌:"스냅샷" 상태 · 우:카메라명) · 하단 중앙 타임스탬프 · BBox. 헤더는 등급 배지·이벤트명, 푸터에 Loading 스피너로 "발생영상 준비 중"(과한 강조 없이).' },
+    { n: 2, tone: T.positive, tc: '#04210f', title: '영상 전환 (클립 준비됨)', state: 'video', chip: '발생영상',
+      cap: '같은 자리에서 스냅샷 → 발생영상 전환·1회 재생. 상단 정보 바 상태가 "발생영상"(primary)으로, 푸터는 Progress indicator(채움=Primary) + 발생시점 마커(위험색, occur_time 근사 37.5%) · 재생 시간.' },
+    { n: 3, tone: T.cautionary, tc: '#3a2400', title: '폴백 (클립 미도착 / 없음)', state: 'fallback', chip: '폴백',
+      cap: 'video_path NULL/미도착 → 스냅샷만 유지. 푸터에 Section message(cautionary)로 "발생영상 없음 · 스냅샷 유지 — 상세는 이벤트 목록에서". 별도 큰 배지 없음.' },
+    { n: 4, tone: '#666', tc: '#fff', title: '정리 (Hide / 창 닫힘)', state: 'cleanup', chip: '정리',
+      cap: '지속시간 만료 → 디코더 명시 정지·정리(Stop()+Dispose(), Content=null). 미디어 딤 + 완료 표시, 화면은 팝업이 닫힐 뿐(누수 방지 패턴).' },
+  ];
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: SP[32] }}>
+      <style>{'@keyframes epSpin{to{transform:rotate(360deg)}}'}</style>
+      <div style={{ ...TYPE.body2, color: '#9a9aa2', lineHeight: 1.6, maxWidth: 720 }}>
+        라이브 검지 순간 뜨는 <b style={{ color: '#e8e8ec' }}>이벤트 자동 팝업(ShowEventPopup)</b>이 발생영상(비디오 클립)을 <b style={{ color: '#e8e8ec' }}>베스트에포트</b>로 자동 추출합니다.
+        스냅샷 즉시 표시 → 팝업 지속시간 내 클립이 준비되면 <b style={{ color: '#e8e8ec' }}>같은 자리에서 영상으로 전환·1회 재생</b> → 못 오면 스냅샷만 유지(폴백). 조작 컨트롤은 미노출(<code style={{ color: '#9dbbff' }}>SetPlaybackOnly</code>).
+      </div>
+      {CUTS.map((c) => (
+        <div key={c.n}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: SP[8], marginBottom: SP[8], flexWrap: 'wrap' }}>
+            <span style={{ ...TYPE.caption1, fontWeight: W.extrabold, color: c.tc, background: c.tone, borderRadius: '5px', padding: `${SP[2]} ${SP[8]}` }}>컷 {c.n}</span>
+            <span style={{ ...TYPE.label1, fontWeight: W.bold, color: '#fff' }}>{c.title}</span>
+          </div>
+          <EventPopupWindow state={c.state} />
+          <div style={{ maxWidth: 480, marginTop: SP[8], ...TYPE.caption1, color: '#9a9aa2', lineHeight: 1.6 }}>
+            <span style={{ ...TYPE.caption2, fontWeight: W.bold, color: '#c4c4cc', border: '1px solid #3a3a42', borderRadius: '4px', padding: `1px ${SP[4]}`, marginRight: SP[4] }}>{c.chip}</span>
+            {c.cap}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // MCP 서버도 LIBRARY_TEMPLATES를 읽어 동일 페이지를 "문서"로 노출합니다.
 const RENDERERS = {
   'library-dashboard': { render: () => <PrevaxDashboardScreen /> },
@@ -5505,6 +5645,7 @@ const RENDERERS = {
   'library-selective-away': { render: () => <PrevaxAwayReceiverScreen /> },
   'library-live': { render: () => <PrevaxLiveScreen /> },
   'library-live-focus': { render: () => <PrevaxLiveFocusScreen /> },
+  'library-event-popup': { render: () => <PrevaxEventPopupScreen />, doc: true },
   'library-gis-monitor': { render: () => <PrevaxGisScreen /> },
   'library-settings': { render: () => <PrevaxSettingsScreen /> },
   'library-events': { render: () => <PrevaxSettingsScreen initialNav="이벤트 관리" /> },

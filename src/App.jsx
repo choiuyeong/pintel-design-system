@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import './index.css';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -38,10 +38,22 @@ function CustomCursor() {
   );
 }
 
+// URL 해시(#<tab>/<id>) → 현재 탭·선택 항목 복원(새로고침/딥링크 유지)
+function readRoute() {
+  const h = (window.location.hash || '').replace(/^#/, '');
+  if (!h) return null;
+  const i = h.indexOf('/');
+  return i === -1 ? { tab: h, id: null } : { tab: h.slice(0, i), id: h.slice(i + 1) || null };
+}
+
 function App() {
-  const [activeTab, setActiveTab] = useState('get-started');
-  const [selectedComponentId, setSelectedComponentId] = useState(null);
+  const initialRoute = readRoute();
+  const [activeTab, setActiveTab] = useState(initialRoute?.tab || 'get-started');
+  const [selectedComponentId, setSelectedComponentId] = useState(initialRoute?.id || null);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  // 무거운 화면 마운트를 비긴급 transition으로 처리 → 클릭이 즉시 반응(메인 스레드 블로킹 완화)
+  const [, startTransition] = useTransition();
+  const selectComponent = (id) => startTransition(() => setSelectedComponentId(id));
 
   useEffect(() => {
     const handleScroll = (e) => {
@@ -56,6 +68,22 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll, true);
   }, []);
 
+  // 현재 위치를 URL 해시에 기록 → 새로고침해도 같은 페이지 유지
+  useEffect(() => {
+    const route = `#${activeTab}${selectedComponentId ? '/' + selectedComponentId : ''}`;
+    if (window.location.hash !== route) window.history.replaceState(null, '', route);
+  }, [activeTab, selectedComponentId]);
+
+  // 뒤로/앞으로·해시 직접 변경 시 상태 동기화
+  useEffect(() => {
+    const onHash = () => {
+      const r = readRoute();
+      if (r) { setActiveTab(r.tab); setSelectedComponentId(r.id); }
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
   const scrollToTop = () => {
     const container = document.querySelector('.ds-main');
     if (container) {
@@ -64,16 +92,20 @@ function App() {
   };
 
   const handleTabChange = (tabId) => {
-    setActiveTab(tabId);
-    if (tabId === 'foundation') {
-      setSelectedComponentId('foundation-overview-default');
-    } else if (tabId === 'service-domain') {
-      setSelectedComponentId('intersection-overview-default');
-    } else if (tabId === 'library') {
-      setSelectedComponentId('library-login');
-    } else {
-      setSelectedComponentId(null);
-    }
+    startTransition(() => {
+      setActiveTab(tabId);
+      if (tabId === 'foundation') {
+        setSelectedComponentId('foundation-overview-default');
+      } else if (tabId === 'service-domain') {
+        setSelectedComponentId('intersection-overview-default');
+      } else if (tabId === 'library') {
+        setSelectedComponentId('library-login');
+      } else if (tabId === 'ai-agent') {
+        setSelectedComponentId('library-ux-agent');
+      } else {
+        setSelectedComponentId(null);
+      }
+    });
   };
 
   const isGetStarted = activeTab === 'get-started';
@@ -87,15 +119,15 @@ function App() {
           <Sidebar
             activeTier={activeTab}
             selectedId={selectedComponentId}
-            onSelect={setSelectedComponentId}
+            onSelect={selectComponent}
           />
         )}
         {isGetStarted ? (
           <GetStarted />
-        ) : activeTab === 'library' ? (
+        ) : activeTab === 'library' || activeTab === 'ai-agent' ? (
           <Library componentId={selectedComponentId} />
         ) : (
-          <ComponentDoc componentId={selectedComponentId} activeTier={activeTab} onNavigate={setSelectedComponentId} />
+          <ComponentDoc componentId={selectedComponentId} activeTier={activeTab} onNavigate={selectComponent} />
         )}
       </div>
 

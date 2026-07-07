@@ -14,11 +14,14 @@ html, body, #root {
 
 body {
   font-family: 'Pretendard GOV', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: #121212;
+  background-color: #0e0e11;
   color: #eeeeee;
   font-size: 16px;
   line-height: 1.7;
   font-weight: 400;
+  /* 줄바꿈 정본(WRAP 토큰) — 상속되어 전역 적용. 한글 어절 단위 + 긴 토큰 오버플로 방지 */
+  word-break: keep-all;
+  overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -40,7 +43,7 @@ body {
 /* ========== Header ========== */
 .ds-header {
   height: 72px;
-  background: #1e1e1e;
+  background: #0a0b10;
   border-bottom: 1px solid #2e2e2e;
   display: flex;
   align-items: center;
@@ -50,6 +53,109 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
+}
+/* 탭 영역 딥스페이스 배경 — 성운 글로우 + 별, 살짝 투명하게 */
+.ds-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+  background-color: #05060a;
+  background-repeat: no-repeat;
+  background-image:
+    radial-gradient(900px 220px at 68% -40%, rgba(120,140,220,0.22), transparent 70%),
+    radial-gradient(640px 200px at 26% 150%, rgba(150,120,200,0.18), transparent 70%),
+    radial-gradient(420px 160px at 50% 60%, rgba(200,210,255,0.12), transparent 70%),
+    radial-gradient(520px 200px at 12% 20%, rgba(90,130,210,0.18), transparent 72%),
+    radial-gradient(480px 180px at 88% 120%, rgba(170,110,200,0.16), transparent 72%),
+    radial-gradient(560px 200px at 82% 10%, rgba(110,160,230,0.15), transparent 72%),
+    radial-gradient(380px 150px at 40% 130%, rgba(120,180,220,0.13), transparent 72%),
+    radial-gradient(340px 140px at 60% -20%, rgba(190,150,230,0.13), transparent 72%),
+    radial-gradient(300px 130px at 5% 90%, rgba(140,120,210,0.12), transparent 72%),
+    /* 별 — 크기·밝기 다양 (밝은 별) */
+    radial-gradient(2.6px 2.6px at 41% 50%, rgba(255,255,255,1), transparent),
+    radial-gradient(2.4px 2.4px at 71% 78%, rgba(255,255,255,0.95), transparent),
+    radial-gradient(2.2px 2.2px at 9% 28%, rgba(230,240,255,0.95), transparent),
+    radial-gradient(2px 2px at 56% 24%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(2px 2px at 88% 66%, rgba(207,224,255,0.9), transparent),
+    /* 중간 밝기 */
+    radial-gradient(1.6px 1.6px at 17% 72%, rgba(207,224,255,0.8), transparent),
+    radial-gradient(1.6px 1.6px at 33% 84%, rgba(255,255,255,0.75), transparent),
+    radial-gradient(1.5px 1.5px at 49% 68%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 63% 40%, rgba(219,230,255,0.7), transparent),
+    radial-gradient(1.6px 1.6px at 78% 30%, rgba(255,255,255,0.78), transparent),
+    radial-gradient(1.5px 1.5px at 85% 60%, rgba(255,255,255,0.72), transparent),
+    radial-gradient(1.5px 1.5px at 96% 80%, rgba(219,230,255,0.7), transparent),
+    radial-gradient(1.6px 1.6px at 23% 18%, rgba(255,255,255,0.74), transparent),
+    radial-gradient(1.5px 1.5px at 67% 88%, rgba(255,255,255,0.7), transparent),
+    /* 흐릿한 작은 별 */
+    radial-gradient(1px 1px at 24% 40%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 48% 22%, rgba(219,230,255,0.45), transparent),
+    radial-gradient(1px 1px at 91% 44%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 13% 54%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 29% 62%, rgba(207,224,255,0.42), transparent),
+    radial-gradient(1px 1px at 37% 33%, rgba(255,255,255,0.46), transparent),
+    radial-gradient(0.8px 0.8px at 44% 86%, rgba(255,255,255,0.38), transparent),
+    radial-gradient(1px 1px at 53% 52%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(0.8px 0.8px at 59% 14%, rgba(219,230,255,0.36), transparent),
+    radial-gradient(1px 1px at 74% 56%, rgba(255,255,255,0.44), transparent),
+    radial-gradient(0.8px 0.8px at 81% 84%, rgba(255,255,255,0.34), transparent),
+    radial-gradient(1px 1px at 94% 22%, rgba(255,255,255,0.42), transparent),
+    radial-gradient(0.8px 0.8px at 6% 76%, rgba(207,224,255,0.36), transparent),
+    radial-gradient(0.8px 0.8px at 19% 90%, rgba(255,255,255,0.32), transparent),
+    radial-gradient(1px 1px at 69% 26%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(0.8px 0.8px at 35% 70%, rgba(255,255,255,0.3), transparent),
+    /* 추가 별 — 밀도 증가 */
+    radial-gradient(1.6px 1.6px at 3% 44%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1.5px 1.5px at 46% 12%, rgba(219,230,255,0.68), transparent),
+    radial-gradient(1.5px 1.5px at 58% 80%, rgba(255,255,255,0.66), transparent),
+    radial-gradient(1.6px 1.6px at 72% 14%, rgba(255,255,255,0.72), transparent),
+    radial-gradient(1.5px 1.5px at 83% 38%, rgba(207,224,255,0.64), transparent),
+    radial-gradient(1px 1px at 11% 36%, rgba(255,255,255,0.46), transparent),
+    radial-gradient(1px 1px at 21% 48%, rgba(255,255,255,0.42), transparent),
+    radial-gradient(1px 1px at 31% 26%, rgba(219,230,255,0.4), transparent),
+    radial-gradient(1px 1px at 39% 60%, rgba(255,255,255,0.44), transparent),
+    radial-gradient(1px 1px at 51% 36%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 61% 64%, rgba(255,255,255,0.42), transparent),
+    radial-gradient(1px 1px at 76% 70%, rgba(207,224,255,0.4), transparent),
+    radial-gradient(1px 1px at 86% 50%, rgba(255,255,255,0.44), transparent),
+    radial-gradient(1px 1px at 98% 58%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(0.8px 0.8px at 8% 64%, rgba(255,255,255,0.32), transparent),
+    radial-gradient(0.8px 0.8px at 16% 16%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(0.8px 0.8px at 27% 80%, rgba(219,230,255,0.32), transparent),
+    radial-gradient(0.8px 0.8px at 43% 42%, rgba(255,255,255,0.28), transparent),
+    radial-gradient(0.8px 0.8px at 55% 60%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(0.8px 0.8px at 64% 18%, rgba(255,255,255,0.28), transparent),
+    radial-gradient(0.8px 0.8px at 73% 44%, rgba(207,224,255,0.3), transparent),
+    radial-gradient(0.8px 0.8px at 89% 32%, rgba(255,255,255,0.32), transparent),
+    radial-gradient(0.8px 0.8px at 92% 72%, rgba(255,255,255,0.28), transparent),
+    radial-gradient(0.8px 0.8px at 47% 92%, rgba(255,255,255,0.3), transparent);
+}
+/* 촘촘한 잔별 — 타일 반복으로 별 밀도 대폭 증가(서로 다른 두 타일 크기로 규칙성 완화) */
+.ds-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background-repeat: repeat;
+  background-size: 137px 71px, 137px 71px, 137px 71px, 137px 71px, 191px 89px, 191px 89px, 191px 89px, 191px 89px;
+  background-image:
+    radial-gradient(1.4px 1.4px at 14px 11px, rgba(255,255,255,0.75), transparent),
+    radial-gradient(1px 1px at 58px 31px, rgba(207,224,255,0.55), transparent),
+    radial-gradient(0.8px 0.8px at 92px 17px, rgba(255,255,255,0.45), transparent),
+    radial-gradient(1px 1px at 36px 56px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1.2px 1.2px at 120px 44px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(0.8px 0.8px at 76px 63px, rgba(219,230,255,0.42), transparent),
+    radial-gradient(1px 1px at 20px 40px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(0.8px 0.8px at 160px 75px, rgba(255,255,255,0.4), transparent);
+}
+.ds-header > * {
+  position: relative;
+  z-index: 1;
 }
 
 .ds-header-logo {
@@ -70,7 +176,7 @@ body {
   display: inline-block;
   width: 24px;
   height: 24px;
-  background: linear-gradient(135deg, #1751D9 0%, #3471FF 100%);
+  background: linear-gradient(135deg, #0066FF 0%, #3385FF 100%);
   border-radius: 6px;
 }
 
@@ -79,6 +185,7 @@ body {
   gap: 4px;
   height: 100%;
   align-items: stretch;
+  position: relative;
 }
 
 .ds-header-tab {
@@ -98,13 +205,19 @@ body {
 }
 .ds-header-tab.active {
   color: #ffffff;
-  text-decoration: underline;
-  text-underline-offset: 8px;
-  text-decoration-color: #1751D9;
-  text-decoration-thickness: 3px;
 }
-.ds-header-tab.active::after {
-  display: none;
+/* 공유 인디케이터: 활성 탭 아래로 부드럽게 슬라이드하는 직사각형 3D 바 */
+.ds-header-tab-indicator {
+  position: absolute;
+  bottom: -6px;
+  height: 18px;
+  display: flex;
+  line-height: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 7px rgba(0, 102, 255, 0.5));
+  transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s ease;
 }
 
 /* ========== Sidebar ========== */
@@ -115,6 +228,20 @@ body {
   overflow-y: auto;
   padding: 32px 0;
   flex-shrink: 0;
+  position: relative;
+}
+/* 활성 항목으로 세로 슬라이드하는 브랜드 다각형 포커스 마커 */
+.ds-sidebar-gem {
+  position: absolute;
+  display: flex;
+  line-height: 0;
+  pointer-events: none;
+  z-index: 1;
+  transform: translateY(-50%);
+  filter: drop-shadow(0 2px 6px rgba(0, 102, 255, 0.45));
+  transition: top 0.3s cubic-bezier(0.34, 1.3, 0.64, 1),
+              left 0.26s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.18s ease;
 }
 .ds-sidebar-tier-label {
   font-size: 13px;
@@ -165,9 +292,10 @@ body {
   align-items: center;
   justify-content: space-between;
   font-size: 14px;
+  line-height: 20px;
   font-weight: 400;
   color: #888888;
-  padding: 8px 32px 8px 58px;
+  padding: 8px 32px 8px 68px;
   cursor: pointer;
   user-select: none;
   transition: all 0.2s;
@@ -195,7 +323,9 @@ body {
   flex: 1;
   overflow-y: auto;
   padding: 80px 100px;
-  background: #121212;
+  /* 고급스러운 다크 그라데이션 — 상단 중앙이 은은히 들리고 가장자리로 깊어짐(저채도 쿨 그레이) */
+  background:
+    radial-gradient(135% 85% at 50% 0%, #1a1a21 0%, #131317 44%, #0e0e11 100%);
 }
 .ds-main::-webkit-scrollbar {
   width: 6px;
@@ -209,20 +339,23 @@ body {
 }
 
 /* ========== Component Doc ========== */
+/* Typography.Style · Display 3 (36/48/-0.027em) */
 .doc-title {
   font-size: 36px;
   font-weight: 700;
   color: #ffffff;
   margin-bottom: 16px;
-  letter-spacing: -1px;
-  line-height: 1.2;
+  letter-spacing: -0.027em;
+  line-height: 1.333;
 }
 
+/* Typography.Style · Body 2/Reading (15/24/0.0096em) */
 .doc-description {
   font-size: 15px;
   color: #aaaaaa;
   margin-bottom: 64px;
-  line-height: 1.7;
+  line-height: 1.6;
+  letter-spacing: 0.0096em;
   max-width: 800px;
 }
 
@@ -333,7 +466,7 @@ body {
 }
 .doc-inner-tab.active {
   color: #ffffff;
-  border-bottom-color: #1751D9;
+  border-bottom-color: #0066FF;
   font-weight: 600;
 }
 
@@ -493,7 +626,7 @@ body {
   border-radius: 4px;
   font-family: 'Pretendard GOV', monospace;
   font-size: 13px;
-  color: #1751D9;
+  color: #0066FF;
   font-weight: 500;
 }
 .doc-code-link {
@@ -503,7 +636,7 @@ body {
   transition: text-decoration-color 0.2s, background 0.2s;
 }
 .doc-code-link:hover {
-  text-decoration-color: #1751D9;
+  text-decoration-color: #0066FF;
   background: #1e3a8a;
 }
 
@@ -557,7 +690,7 @@ body {
   line-height: 1.5;
 }
 .doc-condition:hover {
-  border-left-color: #1751D9;
+  border-left-color: #0066FF;
   background: #262626;
 }
 
@@ -634,7 +767,7 @@ body {
 .doc-welcome-title {
   font-size: 64px;
   font-weight: 550;
-  color: #1751D9;
+  color: #0066FF;
   letter-spacing: -1px;
   font-family: 'Nanum Pen Script', cursive;
 }
@@ -660,7 +793,7 @@ body {
   margin-bottom: 48px;
 }
 .anim-play-btn {
-  background-color: #1751D9;
+  background-color: #0066FF;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -676,7 +809,7 @@ body {
   transition: background-color 0.2s;
 }
 .anim-play-btn:hover {
-  background-color: #004DFF;
+  background-color: #0052CC;
 }
 .anim-track {
   display: flex;
@@ -702,7 +835,7 @@ body {
 .anim-box {
   width: 40px;
   height: 40px;
-  background-color: #1751D9;
+  background-color: #0066FF;
   border-radius: 20px;
   z-index: 2;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -723,6 +856,25 @@ body {
 }
 
 /* ========== Animations ========== */
+/* Loading — 원형 스피너 회전 / 선형 바 무한 진행(indeterminate) */
+@keyframes pds-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pds-bar {
+  0%   { left: -40%; width: 40%; }
+  100% { left: 100%;  width: 40%; }
+}
+/* Loading — 물 채움(wave) 수면이 가로로 흐름(seamless loop) */
+@keyframes pds-wave-x {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+/* Loading — 물 채움(wave) 수위가 위아래로 출렁임(슬로싱) */
+@keyframes pds-bob {
+  0%, 100% { transform: translateY(2.5px); }
+  50%      { transform: translateY(-2.5px); }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -753,8 +905,8 @@ a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
   width: 27px;
   height: 27px;
   border-radius: 50%;
-  border: 2px solid rgba(23, 81, 217, 0.8);
-  background-color: rgba(23, 81, 217, 0.1);
+  border: 2px solid rgba(0, 102, 255, 0.8);
+  background-color: rgba(0, 102, 255, 0.1);
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
@@ -764,8 +916,8 @@ a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
 .custom-cursor.hover {
   width: 43px;
   height: 43px;
-  background-color: rgba(23, 81, 217, 0.2);
-  border-color: rgba(23, 81, 217, 0.4);
+  background-color: rgba(0, 102, 255, 0.2);
+  border-color: rgba(0, 102, 255, 0.4);
 }
 /* Unified Document Section */
 .doc-unified-content {
@@ -826,14 +978,14 @@ a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
   right: 32px;
   width: 48px;
   height: 48px;
-  background-color: #1751D9;
+  background-color: #0066FF;
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(23, 81, 217, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1000;
   opacity: 0;
@@ -849,8 +1001,8 @@ a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
 }
 
 .back-to-top:hover {
-  background-color: #3471FF;
-  box-shadow: 0 6px 16px rgba(23, 81, 217, 0.4);
+  background-color: #3385FF;
+  box-shadow: 0 6px 16px rgba(0, 102, 255, 0.4);
   transform: translateY(-4px);
 }
 
@@ -915,15 +1067,15 @@ a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
 
 /* 1. Primary Solid (Blue) */
 .ds-btn-demo.primary-solid.state-normal {
-  background-color: #1751D9;
+  background-color: #0066FF;
   color: #FFFFFF;
 }
 .ds-btn-demo.primary-solid.state-hovered {
-  background-color: #3471FF;
+  background-color: #3385FF;
   color: #FFFFFF;
 }
 .ds-btn-demo.primary-solid.state-pressed {
-  background-color: #004DFF;
+  background-color: #0052CC;
   color: #FFFFFF;
 }
 .ds-btn-demo.primary-solid.state-disabled {
@@ -1047,16 +1199,16 @@ a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
 
 /* Interactive hover & active animations */
 .ds-btn-interactive.primary-solid {
-  background-color: #1751D9;
+  background-color: #0066FF;
   color: #FFFFFF;
 }
 .ds-btn-interactive.primary-solid:hover {
-  background-color: #3471FF;
+  background-color: #3385FF;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(23, 81, 217, 0.25);
+  box-shadow: 0 6px 16px rgba(0, 102, 255, 0.25);
 }
 .ds-btn-interactive.primary-solid:active {
-  background-color: #004DFF;
+  background-color: #0052CC;
   transform: translateY(0);
 }
 
@@ -1167,7 +1319,7 @@ a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
 }
 .ds-main.ds-dark-theme .doc-inner-tab.active {
   color: #ffffff;
-  border-bottom-color: #1751D9;
+  border-bottom-color: #0066FF;
 }
 
 /* Simulated Alert Styling */
@@ -1188,7 +1340,7 @@ a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
 }
 .ds-alert-simulated.info {
   background: rgba(52, 113, 255, 0.08);
-  border: 1px solid #3471ff;
+  border: 1px solid #3385FF;
   border-left-width: 4px;
 }
 .ds-alert-simulated.warning {
@@ -1272,7 +1424,7 @@ a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background-color: #1751D9;
+  background-color: #0066FF;
   color: #ffffff;
   font-size: 11px;
   font-weight: bold;
@@ -1335,7 +1487,7 @@ a, button, .doc-inner-tab, .ds-sidebar-category-title, .header-tab {
 .ds-accordion-trigger.expanded .ds-accordion-chevron,
 .ds-accordion-item.expanded .ds-accordion-chevron {
   transform: rotate(90deg);
-  color: #3471ff;
+  color: #3385FF;
 }
 
 .ds-accordion-content-wrapper {

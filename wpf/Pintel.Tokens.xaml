@@ -19,9 +19,9 @@
          COLOR  (Foundation > Color)
          ============================================================ -->
     <!-- Brand -->
-    <Color x:Key="Pintel.Color.Primary">#FF1751D9</Color>        <!-- Primary / Normal -->
-    <Color x:Key="Pintel.Color.PrimaryStrong">#FF3471FF</Color>  <!-- Primary / Strong (hover) -->
-    <Color x:Key="Pintel.Color.PrimaryHeavy">#FF004DFF</Color>   <!-- Primary / Heavy (pressed) -->
+    <Color x:Key="Pintel.Color.Primary">#FF0066FF</Color>        <!-- Primary / Normal -->
+    <Color x:Key="Pintel.Color.PrimaryStrong">#FF3385FF</Color>  <!-- Primary / Strong (hover) -->
+    <Color x:Key="Pintel.Color.PrimaryHeavy">#FF0052CC</Color>   <!-- Primary / Heavy (pressed) -->
     <!-- Status -->
     <Color x:Key="Pintel.Color.Positive">#FF1ED45A</Color>
     <Color x:Key="Pintel.Color.Cautionary">#FFFFA938</Color>
@@ -101,12 +101,18 @@
     <!-- ============================================================
          SPACING  (4 / 8 pt 시스템)
          ============================================================ -->
+    <sys:Double x:Key="Pintel.Space.02">2</sys:Double>
     <sys:Double x:Key="Pintel.Space.04">4</sys:Double>
     <sys:Double x:Key="Pintel.Space.08">8</sys:Double>
+    <sys:Double x:Key="Pintel.Space.12">12</sys:Double>
     <sys:Double x:Key="Pintel.Space.16">16</sys:Double>
     <sys:Double x:Key="Pintel.Space.24">24</sys:Double>
     <sys:Double x:Key="Pintel.Space.32">32</sys:Double>
+    <sys:Double x:Key="Pintel.Space.40">40</sys:Double>
+    <sys:Double x:Key="Pintel.Space.48">48</sys:Double>
+    <sys:Double x:Key="Pintel.Space.64">64</sys:Double>
     <Thickness x:Key="Pintel.Pad.08">8</Thickness>
+    <Thickness x:Key="Pintel.Pad.12">12</Thickness>
     <Thickness x:Key="Pintel.Pad.16">16</Thickness>
     <Thickness x:Key="Pintel.Pad.24">24</Thickness>
 

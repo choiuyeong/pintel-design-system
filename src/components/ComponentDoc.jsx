@@ -1792,11 +1792,35 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
   if (componentId === 'present-menu') {
     return <ContextMenuPlayground activeSubTab={activeSubTab} />;
   }
+  if (componentId === 'present-popover') {
+    return <PopoverPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'nav-progress-tracker') {
+    return <ProgressTrackerPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'nav-top') {
+    return <TopNavigationPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'nav-pagination-dots') {
+    return <PaginationDotsPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'nav-tab') {
+    return <TabPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'nav-page-counter') {
+    return <PageCounterPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'present-autocomplete') {
+    return <AutocompletePlayground activeSubTab={activeSubTab} />;
+  }
   if (componentId === 'feedback-fallback') {
     return <FallbackViewPlayground activeSubTab={activeSubTab} />;
   }
   if (componentId === 'loading-skeleton') {
     return <SkeletonPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'feedback-section-message') {
+    return <SectionMessagePlayground activeSubTab={activeSubTab} />;
   }
   if (componentId === 'alert-default') {
     return <AlertPlayground activeSubTab={activeSubTab} />;
@@ -6572,34 +6596,54 @@ function ContextMenuPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
-        {/* 라이트 카드 */}
-        <div style={{ position: 'relative', background: '#efefef', borderRadius: '16px', width: '720px', height: '360px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
-          <div style={{ position: 'absolute', left: '250px', top: '46px' }}>
-            <ContextMenuBody />
-          </div>
-          {/* 연결선 + 콜아웃 */}
+        {/* 라이트 카드 — Text field anatomy와 동일 시각 언어(흰 패널 + 흰 콜아웃) */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '340px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 5. 컨테이너 — 메뉴 패널(흰 패널), center x=380 */}
+          <div style={{ position: 'absolute', left: '260px', top: '52px', width: '240px', height: '232px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
+          {/* 1. 강조 항목 — 강조 색상으로 부각된 행(미세 하이라이트) */}
+          <div style={{ position: 'absolute', left: '261px', top: '60px', width: '238px', height: '40px', background: 'rgba(255,169,56,0.08)', borderRadius: '7px 7px 0 0', zIndex: 2 }} />
+          <div style={{ position: 'absolute', left: '284px', top: '72px', width: '16px', height: '16px', borderRadius: '4px', background: 'rgba(255,169,56,0.5)', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '308px', top: '71px', zIndex: 3, fontSize: TYPE.label2.fontSize, fontWeight: W.bold, color: '#8a6d3b' }}>강조</div>
+          {/* 4. 구분선 */}
+          <div style={{ position: 'absolute', left: '260px', top: '100px', width: '240px', height: '1px', background: '#e4e4e7', zIndex: 3 }} />
+          {/* 일반 행 — 아이콘(점선 placeholder) + 라벨(스켈레톤 바) */}
+          <div style={{ position: 'absolute', left: '284px', top: '118px', width: '16px', height: '16px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '308px', top: '122px', width: '140px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '284px', top: '158px', width: '16px', height: '16px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '308px', top: '162px', width: '120px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '284px', top: '198px', width: '16px', height: '16px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '308px', top: '202px', width: '150px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+
+          {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            <line x1="238" y1="66" x2="250" y2="66" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="66" r="1.6" fill="#999" />
-            <line x1="238" y1="96" x2="250" y2="96" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="96" r="1.6" fill="#999" />
-            <line x1="478" y1="126" x2="466" y2="126" stroke="#999" strokeWidth="1.2" /><circle cx="466" cy="126" r="1.6" fill="#999" />
-            <line x1="478" y1="88" x2="466" y2="88" stroke="#999" strokeWidth="1.2" /><circle cx="466" cy="88" r="1.6" fill="#999" />
+            {/* 1. 고정 항목 좌측 경계(x=260) y=80 */}
+            <line x1="240" y1="80" x2="260" y2="80" stroke="#999" strokeWidth="1.2" /><circle cx="260" cy="80" r="1.6" fill="#999" />
+            {/* 2. 아이콘 좌측 경계(x=284) y=126 */}
+            <line x1="240" y1="126" x2="284" y2="126" stroke="#999" strokeWidth="1.2" /><circle cx="284" cy="126" r="1.6" fill="#999" />
+            {/* 3. 라벨 우측 경계(x=428) y=166 */}
+            <line x1="520" y1="166" x2="428" y2="166" stroke="#999" strokeWidth="1.2" /><circle cx="428" cy="166" r="1.6" fill="#999" />
+            {/* 4. 구분선 우측 경계(x=500) y=100 */}
+            <line x1="520" y1="100" x2="500" y2="100" stroke="#999" strokeWidth="1.2" /><circle cx="500" cy="100" r="1.6" fill="#999" />
+            {/* 5. 컨테이너 상단 경계(y=52) x=380 */}
+            <line x1="380" y1="36" x2="380" y2="52" stroke="#999" strokeWidth="1.2" /><circle cx="380" cy="52" r="1.6" fill="#999" />
           </svg>
-          <div style={{ position: 'absolute', left: '222px', top: '66px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '222px', top: '96px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '494px', top: '88px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
-          <div style={{ position: 'absolute', left: '494px', top: '126px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
+          {/* Callouts — 흰 원 + 검정 텍스트 */}
+          <div style={{ position: 'absolute', left: '226px', top: '80px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '226px', top: '126px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '534px', top: '166px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '534px', top: '100px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '380px', top: '28px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
         </div>
         {/* Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px 0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
           {[
-            { num: 1, label: '고정(핀) 항목' },
-            { num: 2, label: '아이콘' },
-            { num: 3, label: '라벨' },
-            { num: 4, label: '구분선' },
+            { num: 1, label: '강조 기능 (Emphasis)' },
+            { num: 2, label: '아이콘 (Icon)' },
+            { num: 3, label: '라벨 (Label)' },
+            { num: 4, label: '구분선 (Divider)' },
+            { num: 5, label: '컨테이너 (메뉴 패널)' },
           ].map(item => (
-            <div key={item.num} style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
         </div>
       </div>
@@ -6627,38 +6671,780 @@ function ContextMenuPlayground({ activeSubTab }) {
   );
 }
 
+// Page counter(nav-page-counter) — 현재/전체 페이지를 (3 / 12)로 표시하는 위치 인디케이터.
+//  구성: 현재 페이지(강조) · 구분자 · 전체 페이지(보조) · 컨테이너.
+function PageCounterPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '260px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 4. 컨테이너 — 보더 pill */}
+          <div style={{ position: 'absolute', left: '300px', top: '112px', width: '160px', height: '44px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
+          {/* 1. 현재 페이지 (강조) */}
+          <div style={{ position: 'absolute', left: '348px', top: '123px', zIndex: 3, fontSize: '18px', fontWeight: W.bold, color: T.primaryStrong }}>3</div>
+          {/* 2. 구분자 */}
+          <div style={{ position: 'absolute', left: '372px', top: '123px', zIndex: 3, fontSize: '18px', color: '#a1a1aa' }}>/</div>
+          {/* 3. 전체 페이지 (보조) */}
+          <div style={{ position: 'absolute', left: '390px', top: '123px', zIndex: 3, fontSize: '18px', color: '#a1a1aa' }}>12</div>
+
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. 현재 상단(y=120) x=354 */}
+            <line x1="354" y1="70" x2="354" y2="120" stroke="#999" strokeWidth="1.2" /><circle cx="354" cy="120" r="1.6" fill="#999" />
+            {/* 3. 전체 상단(y=120) x=400 */}
+            <line x1="400" y1="70" x2="400" y2="120" stroke="#999" strokeWidth="1.2" /><circle cx="400" cy="120" r="1.6" fill="#999" />
+            {/* 2. 구분자 하단(y=150) x=376 */}
+            <line x1="376" y1="200" x2="376" y2="150" stroke="#999" strokeWidth="1.2" /><circle cx="376" cy="150" r="1.6" fill="#999" />
+            {/* 4. 컨테이너 좌측 경계(x=300) y=134 */}
+            <line x1="266" y1="134" x2="300" y2="134" stroke="#999" strokeWidth="1.2" /><circle cx="300" cy="134" r="1.6" fill="#999" />
+          </svg>
+          <div style={{ position: 'absolute', left: '354px', top: '58px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '400px', top: '58px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '376px', top: '212px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '252px', top: '134px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '현재 페이지 (Current)' },
+            { num: 2, label: '구분자 (Separator)' },
+            { num: 3, label: '전체 페이지 (Total)' },
+            { num: 4, label: '컨테이너 (Container)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 이전/다음으로 현재 페이지 이동 + 크기(size) 전환
+  const TOTAL = 12;
+  const [cur, setCur] = useState(3);
+  const [size, setSize] = useState('md');
+  const fs = size === 'sm' ? 12 : size === 'lg' ? 16 : 14;
+  const seg = (val) => (
+    <button key={val} type="button" onClick={() => setSize(val)} style={{
+      height: 30, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: 'pointer', fontFamily: T.font,
+      fontSize: TYPE.caption1.fontSize, fontWeight: size === val ? W.semibold : W.regular,
+      background: size === val ? 'rgba(0,102,255,0.12)' : '#2a2a30',
+      border: `1px solid ${size === val ? T.primary : '#3a3a42'}`, color: size === val ? T.primaryStrong : '#d4d4d8',
+    }}>{val}</button>
+  );
+  const navBtn = (label, onClick, disabled) => (
+    <button type="button" onClick={onClick} disabled={disabled} style={{
+      width: 32, height: 32, borderRadius: 6, cursor: disabled ? 'default' : 'pointer', fontFamily: T.font,
+      fontSize: TYPE.label1.fontSize, background: '#2a2a30', border: '1px solid #3a3a42', color: disabled ? '#5a5a62' : '#d4d4d8',
+    }}>{label}</button>
+  );
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', gap: SP[4], alignItems: 'center', marginBottom: SP[16] }}>
+        <span style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', marginRight: SP[4] }}>size</span>
+        {['sm', 'md', 'lg'].map(seg)}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: SP[16], minHeight: '160px', border: '1px solid #2a2a2a', borderRadius: '12px', background: '#1a1a1a', padding: SP[24] }}>
+        {navBtn('‹', () => setCur((v) => Math.max(1, v - 1)), cur === 1)}
+        <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: '4px', padding: `0 ${SP[8]}`, fontVariantNumeric: 'tabular-nums' }}>
+          <span style={{ fontSize: fs, fontWeight: W.bold, color: T.primaryStrong }}>{cur}</span>
+          <span style={{ fontSize: fs, color: '#888' }}>/</span>
+          <span style={{ fontSize: fs, color: '#888' }}>{TOTAL}</span>
+        </span>
+        {navBtn('›', () => setCur((v) => Math.min(TOTAL, v + 1)), cur === TOTAL)}
+      </div>
+    </div>
+  );
+}
+
+// Tab(nav-tab) — 같은 화면 안에서 콘텐츠 섹션 전환. 활성 탭 하단 브랜드 언더라인.
+//  구성: 활성 탭 · 비활성 탭 · 언더라인 · 카운트 배지 · 기준선.
+const TAB_ITEMS = [
+  { label: '실시간', badge: 0 },
+  { label: '이벤트', badge: 3 },
+  { label: '통계', badge: 0 },
+  { label: '설정', badge: 0 },
+];
+function TabPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '280px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 컨테이너 패널 */}
+          <div style={{ position: 'absolute', left: '130px', top: '100px', width: '500px', height: '100px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
+          {/* 5. 기준선 (Baseline) */}
+          <div style={{ position: 'absolute', left: '150px', top: '156px', width: '460px', height: '1px', background: '#d4d4d8', zIndex: 3 }} />
+          {/* 1. 활성 탭 라벨 + 3. 언더라인 */}
+          <div style={{ position: 'absolute', left: '162px', top: '128px', zIndex: 3, fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: '#18181b' }}>실시간</div>
+          <div style={{ position: 'absolute', left: '162px', top: '154px', width: '48px', height: '2px', background: T.primaryStrong, zIndex: 4 }} />
+          {/* 2. 비활성 탭 + 4. 카운트 배지 */}
+          <div style={{ position: 'absolute', left: '244px', top: '128px', zIndex: 3, fontSize: TYPE.label1.fontSize, color: '#a1a1aa' }}>이벤트</div>
+          <div style={{ position: 'absolute', left: '294px', top: '126px', minWidth: '18px', height: '18px', padding: '0 5px', borderRadius: '9px', background: T.error, color: '#fff', fontSize: '11px', fontWeight: W.bold, display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 4 }}>3</div>
+          <div style={{ position: 'absolute', left: '340px', top: '128px', zIndex: 3, fontSize: TYPE.label1.fontSize, color: '#a1a1aa' }}>통계</div>
+          <div style={{ position: 'absolute', left: '404px', top: '128px', zIndex: 3, fontSize: TYPE.label1.fontSize, color: '#a1a1aa' }}>설정</div>
+
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 5 }}>
+            {/* 1. 활성 탭 상단(y=126) x=186 */}
+            <line x1="186" y1="66" x2="186" y2="126" stroke="#999" strokeWidth="1.2" /><circle cx="186" cy="126" r="1.6" fill="#999" />
+            {/* 4. 배지 상단(y=124) x=303 */}
+            <line x1="303" y1="66" x2="303" y2="124" stroke="#999" strokeWidth="1.2" /><circle cx="303" cy="124" r="1.6" fill="#999" />
+            {/* 2. 비활성 탭 상단(y=126) x=358 (통계) */}
+            <line x1="358" y1="66" x2="358" y2="126" stroke="#999" strokeWidth="1.2" /><circle cx="358" cy="126" r="1.6" fill="#999" />
+            {/* 3. 언더라인 하단(y=156) x=186 — 아래에서 위로 */}
+            <line x1="186" y1="222" x2="186" y2="156" stroke="#999" strokeWidth="1.2" /><circle cx="186" cy="156" r="1.6" fill="#999" />
+            {/* 5. 기준선 하단(y=156) x=520 */}
+            <line x1="520" y1="222" x2="520" y2="156" stroke="#999" strokeWidth="1.2" /><circle cx="520" cy="156" r="1.6" fill="#999" />
+          </svg>
+          <div style={{ position: 'absolute', left: '186px', top: '58px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '303px', top: '58px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '358px', top: '58px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '186px', top: '234px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '520px', top: '234px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '활성 탭 (Active)' },
+            { num: 2, label: '비활성 탭 (Inactive)' },
+            { num: 3, label: '언더라인 (Underline)' },
+            { num: 4, label: '카운트 배지 (Badge)' },
+            { num: 5, label: '기준선 (Baseline)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 탭 클릭으로 섹션 전환 (언더라인 + 배지)
+  const [active, setActive] = useState(0);
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ border: '1px solid #2a2a2a', borderRadius: '12px', background: '#121212', overflow: 'hidden' }}>
+        {/* 탭 바 */}
+        <div style={{ display: 'flex', gap: SP[4], padding: `0 ${SP[8]}`, borderBottom: '1px solid #2e2e2e' }}>
+          {TAB_ITEMS.map((t, i) => {
+            const on = i === active;
+            return (
+              <button key={t.label} type="button" onClick={() => setActive(i)} style={{
+                position: 'relative', display: 'inline-flex', alignItems: 'center', gap: SP[8],
+                padding: `${SP[8]} ${SP[16]}`, background: 'none', border: 'none', cursor: 'pointer', fontFamily: T.font,
+                fontSize: TYPE.label1.fontSize, fontWeight: on ? W.semibold : W.regular, color: on ? '#fff' : '#8a8a92',
+              }}>
+                {t.label}
+                {t.badge > 0 && (
+                  <span style={{ minWidth: 18, height: 18, padding: '0 5px', borderRadius: 9, background: T.error, color: '#fff', fontSize: 11, fontWeight: W.bold, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' }}>{t.badge}</span>
+                )}
+                {on && <span style={{ position: 'absolute', left: SP[16], right: SP[16], bottom: -1, height: 2, background: T.primaryStrong }} />}
+              </button>
+            );
+          })}
+        </div>
+        {/* 콘텐츠 영역 */}
+        <div style={{ padding: SP[24], minHeight: '120px', fontSize: TYPE.label1.fontSize, color: '#d4d4d8' }}>
+          <span style={{ color: '#8a8a92' }}>선택된 섹션: </span>{TAB_ITEMS[active].label}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Pagination dots(nav-pagination-dots) — 캐러셀/온보딩 현재 위치 점 인디케이터.
+//  구성: 활성 점(브랜드색 확장 pill) · 비활성 점 · 점 묶음(컨테이너).
+function PaginationDotsPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '260px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 3. 점 묶음 (컨테이너) */}
+          <div style={{ position: 'absolute', left: '230px', top: '108px', width: '300px', height: '64px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
+          {/* 점들 — 중앙 정렬, y center 140 (top 136) */}
+          <div style={{ position: 'absolute', left: '338px', top: '136px', width: '8px', height: '8px', borderRadius: '50%', background: '#d4d4d8', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '354px', top: '136px', width: '8px', height: '8px', borderRadius: '50%', background: '#d4d4d8', zIndex: 3 }} />
+          {/* 1. 활성 점 — 브랜드색 확장 pill */}
+          <div style={{ position: 'absolute', left: '370px', top: '136px', width: '20px', height: '8px', borderRadius: '4px', background: T.primary, zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '398px', top: '136px', width: '8px', height: '8px', borderRadius: '50%', background: '#d4d4d8', zIndex: 3 }} />
+          {/* 2. 비활성 점 (우측 끝) */}
+          <div style={{ position: 'absolute', left: '414px', top: '136px', width: '8px', height: '8px', borderRadius: '50%', background: '#d4d4d8', zIndex: 3 }} />
+
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. 활성 점 상단(y=136) x=380 */}
+            <line x1="380" y1="94" x2="380" y2="136" stroke="#999" strokeWidth="1.2" /><circle cx="380" cy="136" r="1.6" fill="#999" />
+            {/* 2. 비활성 점 하단(y=144) x=418 */}
+            <line x1="418" y1="196" x2="418" y2="144" stroke="#999" strokeWidth="1.2" /><circle cx="418" cy="144" r="1.6" fill="#999" />
+            {/* 3. 점 묶음 좌측 경계(x=230) y=140 */}
+            <line x1="196" y1="140" x2="230" y2="140" stroke="#999" strokeWidth="1.2" /><circle cx="230" cy="140" r="1.6" fill="#999" />
+          </svg>
+          <div style={{ position: 'absolute', left: '380px', top: '82px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '418px', top: '208px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '182px', top: '140px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '활성 점 (Active dot)' },
+            { num: 2, label: '비활성 점 (Inactive dot)' },
+            { num: 3, label: '점 묶음 (Container)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 점 클릭/이전·다음으로 활성 인덱스 전환
+  const COUNT = 5;
+  const [active, setActive] = useState(2);
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', gap: SP[8], marginBottom: SP[16] }}>
+        <button type="button" onClick={() => setActive((v) => Math.max(0, v - 1))} disabled={active === 0} style={{
+          height: 32, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: active === 0 ? 'default' : 'pointer', fontFamily: T.font,
+          fontSize: TYPE.caption1.fontSize, background: '#2a2a30', border: '1px solid #3a3a42', color: active === 0 ? '#5a5a62' : '#d4d4d8',
+        }}>이전</button>
+        <button type="button" onClick={() => setActive((v) => Math.min(COUNT - 1, v + 1))} disabled={active === COUNT - 1} style={{
+          height: 32, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: active === COUNT - 1 ? 'default' : 'pointer', fontFamily: T.font,
+          fontSize: TYPE.caption1.fontSize, fontWeight: W.semibold, background: active === COUNT - 1 ? '#2a2a30' : T.primary, border: `1px solid ${active === COUNT - 1 ? '#3a3a42' : T.primary}`, color: active === COUNT - 1 ? '#5a5a62' : '#fff',
+        }}>다음</button>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '160px', border: '1px solid #2a2a2a', borderRadius: '12px', background: '#1a1a1a', padding: SP[24] }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: SP[8] }}>
+          {Array.from({ length: COUNT }, (_, i) => (
+            <span key={i} onClick={() => setActive(i)} style={{
+              width: i === active ? 20 : 8, height: 8, borderRadius: i === active ? 4 : '50%',
+              background: i === active ? T.primary : '#3a3a42', cursor: 'pointer', transition: 'width 0.2s, background 0.2s',
+            }} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Top navigation(nav-top) — PREVAX 전 화면 공유 상단 크롬. 정본: Library의 PrevaxTitleBar.
+//  구성: 브랜드·권한(좌) · 경고 배너(중앙) · 상태·시각·언어·계정·창 컨트롤(우).
+function TopNavigationPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '300px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 타이틀바 스트립(흰 패널) — 실제 PrevaxTitleBar 구조 */}
+          <div style={{ position: 'absolute', left: '100px', top: '118px', width: '560px', height: '44px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
+          {/* 1. 브랜드·권한(좌) */}
+          <div style={{ position: 'absolute', left: '116px', top: '132px', width: '16px', height: '16px', borderRadius: '50%', background: `linear-gradient(135deg, ${T.primary}, ${T.primaryStrong})`, zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '140px', top: '131px', zIndex: 3, fontSize: '13px', fontWeight: W.bold, color: '#18181b' }}>PREVAX 4</div>
+          <div style={{ position: 'absolute', left: '210px', top: '135px', width: '72px', height: '8px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          {/* 2. 경고 배너(중앙) */}
+          <div style={{ position: 'absolute', left: '320px', top: '128px', height: '24px', display: 'inline-flex', alignItems: 'center', gap: SP[4], padding: `0 ${SP[8]}`, background: 'rgba(255,169,56,0.12)', border: `1px solid ${T.cautionary}`, borderRadius: '6px', zIndex: 3 }}>
+            <Icon name="error" size={12} color={T.cautionary} />
+            <span style={{ fontSize: '11px', fontWeight: W.semibold, color: T.cautionary }}>경고 배너</span>
+          </div>
+          {/* 3. 상태·시각·언어(우) */}
+          <div style={{ position: 'absolute', left: '452px', top: '137px', display: 'inline-flex', gap: SP[4], zIndex: 3 }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: T.positive }} />
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: T.positive }} />
+          </div>
+          <div style={{ position: 'absolute', left: '478px', top: '135px', width: '58px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '546px', top: '131px', zIndex: 3, fontSize: '12px', color: '#6f6f77' }}>한 ▾</div>
+          {/* 4. 계정·창 컨트롤(우) */}
+          <div style={{ position: 'absolute', left: '580px', top: '130px', width: '18px', height: '18px', borderRadius: '50%', border: '1.5px solid #a1a1aa', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '608px', top: '131px', zIndex: 3, fontSize: '12px', color: '#a1a1aa', letterSpacing: '2px' }}>— ▢ ✕</div>
+
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. 브랜드 하단(y=162) x=150 */}
+            <line x1="150" y1="196" x2="150" y2="162" stroke="#999" strokeWidth="1.2" /><circle cx="150" cy="162" r="1.6" fill="#999" />
+            {/* 2. 경고 배너 상단(y=118) x=372 */}
+            <line x1="372" y1="88" x2="372" y2="118" stroke="#999" strokeWidth="1.2" /><circle cx="372" cy="118" r="1.6" fill="#999" />
+            {/* 3. 상태·시각·언어 하단(y=162) x=500 */}
+            <line x1="500" y1="196" x2="500" y2="162" stroke="#999" strokeWidth="1.2" /><circle cx="500" cy="162" r="1.6" fill="#999" />
+            {/* 4. 계정·창 컨트롤 상단(y=118) x=615 */}
+            <line x1="615" y1="88" x2="615" y2="118" stroke="#999" strokeWidth="1.2" /><circle cx="615" cy="118" r="1.6" fill="#999" />
+          </svg>
+          <div style={{ position: 'absolute', left: '150px', top: '208px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '372px', top: '76px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '500px', top: '208px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '615px', top: '76px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '브랜드 · 권한 (좌측)' },
+            { num: 2, label: '경고 배너 (중앙)' },
+            { num: 3, label: '상태 · 시각 · 언어 (우측)' },
+            { num: 4, label: '계정 · 창 컨트롤' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+        <div style={{ marginTop: SP[16], fontSize: TYPE.caption1.fontSize, color: '#9a9aa2' }}>정본: <span style={{ color: '#d4d4d8' }}>PrevaxTitleBar</span> (Library.jsx 공통 크롬) — 새 화면에서 재사용하세요.</div>
+      </div>
+    );
+  }
+
+  // Interactive — 실제 PrevaxTitleBar 크롬 재현(경고 배너 토글)
+  const [warn, setWarn] = useState(true);
+  const winBtn = { width: 22, height: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#8a8a92', fontSize: 11, cursor: 'pointer' };
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ marginBottom: SP[16] }}>
+        <button type="button" onClick={() => setWarn((v) => !v)} style={{
+          height: 30, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: 'pointer', fontFamily: T.font,
+          fontSize: TYPE.caption1.fontSize, fontWeight: W.regular,
+          background: warn ? 'rgba(0,102,255,0.12)' : '#2a2a30', border: `1px solid ${warn ? T.primary : '#3a3a42'}`, color: warn ? T.primaryStrong : '#d4d4d8',
+        }}>{warn ? '✓ 경고 배너' : '○ 경고 배너'}</button>
+      </div>
+      <div style={{ border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', background: '#0e0e10' }}>
+        {/* PrevaxTitleBar 재현 */}
+        <div style={{ height: 40, background: '#141417', borderBottom: '1px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `0 ${SP[12]}` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], flex: 1, minWidth: 0 }}>
+            <span style={{ width: 16, height: 16, borderRadius: '50%', background: `linear-gradient(135deg, ${T.primary}, ${T.primaryStrong})`, flexShrink: 0 }} />
+            <span style={{ fontSize: 13, fontWeight: W.bold, color: '#fff' }}>PREVAX 4</span>
+            <span style={{ fontSize: 12, color: '#6f6f77', whiteSpace: 'nowrap' }}>| 마스터 ( 최고 관리자 )</span>
+          </div>
+          {warn ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], background: 'rgba(255,169,56,0.14)', border: `1px solid ${T.cautionary}`, borderRadius: 6, padding: `3px 5px 3px ${SP[8]}`, flexShrink: 0 }}>
+              <Icon name="error" size={14} color={T.cautionary} />
+              <span style={{ fontSize: 12, fontWeight: W.semibold, color: T.cautionary }}>영상 분석 서버 지연</span>
+              <span style={{ fontSize: 11, color: '#e8e8ec', background: '#33333a', borderRadius: 4, padding: `${SP[2]} ${SP[8]}` }}>관리</span>
+            </div>
+          ) : <span />}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: SP[12], fontSize: 12, color: '#bdbdc4', flex: 1 }}>
+            <span style={{ display: 'inline-flex', gap: SP[4] }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: T.positive }} />
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: T.positive }} />
+            </span>
+            <span style={{ fontVariantNumeric: 'tabular-nums' }}>2026-07-07 14:30:00</span>
+            <span style={{ cursor: 'pointer' }}>한국어 ▾</span>
+            <span style={{ display: 'inline-flex', color: T.primaryStrong }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6.5 8-6.5s8 2.5 8 6.5" /></svg>
+            </span>
+            <span style={{ display: 'inline-flex', gap: SP[8], marginLeft: SP[4] }}>
+              <span style={winBtn}>—</span><span style={winBtn}>▢</span><span style={winBtn}>✕</span>
+            </span>
+          </div>
+        </div>
+        {/* 본문 자리(크롬 구분용 더미) */}
+        <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: TYPE.caption1.fontSize, color: '#5a5a62' }}>본문 영역</div>
+      </div>
+    </div>
+  );
+}
+
+// Progress tracker(nav-progress-tracker) — 다단계 절차 진행 상태 스텝퍼.
+//  구성: 완료/현재/대기 노드 · 연결선 · 라벨/보조설명.
+const PT_STEPS = [
+  { label: '감지', desc: '이상 감지' },
+  { label: '확인', desc: '이벤트 검증' },
+  { label: '출동', desc: '인원 배치' },
+  { label: '종료', desc: '상황 종료' },
+];
+function ProgressTrackerPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    // 노드 중심 x좌표(4단계) · 노드 중심 y=150
+    const NX = [200, 320, 440, 560];
+    const node = (cx, kind, num) => {
+      const base = { position: 'absolute', left: `${cx - 14}px`, top: '136px', width: '28px', height: '28px', borderRadius: '50%', zIndex: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' };
+      if (kind === 'done') return <div style={{ ...base, background: T.positive }}><Icon name="check" size={14} color="#fff" /></div>;
+      if (kind === 'current') return <div style={{ ...base, background: T.primaryStrong, boxShadow: '0 0 0 4px rgba(0,102,255,0.25)', color: '#fff', fontSize: TYPE.caption1.fontSize, fontWeight: W.bold }}>{num}</div>;
+      return <div style={{ ...base, background: '#fff', border: '1px solid #d4d4d8', color: '#a1a1aa', fontSize: TYPE.caption1.fontSize, fontWeight: W.semibold }}>{num}</div>;
+    };
+    return (
+      <div style={{ width: '100%' }}>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '320px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 컨테이너 패널 */}
+          <div style={{ position: 'absolute', left: '110px', top: '104px', width: '540px', height: '116px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 1 }} />
+          {/* 연결선 — 완료 구간(positive)/미완료(회색) */}
+          <div style={{ position: 'absolute', left: '200px', top: '149px', width: '120px', height: '2px', background: T.positive, zIndex: 2 }} />
+          <div style={{ position: 'absolute', left: '320px', top: '149px', width: '120px', height: '2px', background: T.positive, zIndex: 2 }} />
+          <div style={{ position: 'absolute', left: '440px', top: '149px', width: '120px', height: '2px', background: '#d4d4d8', zIndex: 2 }} />
+          {/* 노드: 완료·완료·현재·대기 */}
+          {node(NX[0], 'done')}
+          {node(NX[1], 'done')}
+          {node(NX[2], 'current', '3')}
+          {node(NX[3], 'pending', '4')}
+          {/* 라벨 + 보조설명 */}
+          {NX.map((cx, i) => (
+            <div key={i} style={{ position: 'absolute', left: `${cx - 40}px`, top: '176px', width: '80px', textAlign: 'center', zIndex: 3 }}>
+              <div style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#18181b' }}>{PT_STEPS[i].label}</div>
+              <div style={{ fontSize: '11px', color: '#a1a1aa', marginTop: '2px' }}>{PT_STEPS[i].desc}</div>
+            </div>
+          ))}
+
+          {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. 완료 노드 상단(y=136) x=200 */}
+            <line x1="200" y1="84" x2="200" y2="136" stroke="#999" strokeWidth="1.2" /><circle cx="200" cy="136" r="1.6" fill="#999" />
+            {/* 2. 현재 노드 상단(y=136) x=440 */}
+            <line x1="440" y1="84" x2="440" y2="136" stroke="#999" strokeWidth="1.2" /><circle cx="440" cy="136" r="1.6" fill="#999" />
+            {/* 3. 대기 노드 상단(y=136) x=560 */}
+            <line x1="560" y1="84" x2="560" y2="136" stroke="#999" strokeWidth="1.2" /><circle cx="560" cy="136" r="1.6" fill="#999" />
+            {/* 4. 연결선(y=150) 중간 x=260 — 아래에서 위로 */}
+            <line x1="260" y1="252" x2="260" y2="150" stroke="#999" strokeWidth="1.2" /><circle cx="260" cy="150" r="1.6" fill="#999" />
+            {/* 5. 라벨/보조설명(x=320) y=192 */}
+            <line x1="320" y1="252" x2="320" y2="192" stroke="#999" strokeWidth="1.2" /><circle cx="320" cy="192" r="1.6" fill="#999" />
+          </svg>
+          <div style={{ position: 'absolute', left: '200px', top: '72px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '440px', top: '72px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '560px', top: '72px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '260px', top: '264px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '320px', top: '264px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '완료 노드 (Completed)' },
+            { num: 2, label: '현재 노드 (Current)' },
+            { num: 3, label: '대기 노드 (Pending)' },
+            { num: 4, label: '연결선 (Connector)' },
+            { num: 5, label: '라벨 / 보조설명' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 단계 진행/후퇴로 상태 전환 시연
+  const [active, setActive] = useState(1);
+  const nodeEl = (i) => {
+    const state = i < active ? 'done' : i === active ? 'current' : 'pending';
+    const base = { width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxSizing: 'border-box', fontSize: TYPE.caption1.fontSize, fontWeight: W.bold };
+    if (state === 'done') return <div style={{ ...base, background: T.positive, color: '#fff' }}><Icon name="check" size={14} color="#fff" /></div>;
+    if (state === 'current') return <div style={{ ...base, background: T.primaryStrong, color: '#fff', boxShadow: '0 0 0 4px rgba(0,102,255,0.25)' }}>{i + 1}</div>;
+    return <div style={{ ...base, background: '#1e1e1e', border: '1px solid #2e2e2e', color: '#8a8a92' }}>{i + 1}</div>;
+  };
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', gap: SP[8], marginBottom: SP[16] }}>
+        <button type="button" onClick={() => setActive((v) => Math.max(0, v - 1))} disabled={active === 0} style={{
+          height: 32, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: active === 0 ? 'default' : 'pointer', fontFamily: T.font,
+          fontSize: TYPE.caption1.fontSize, background: '#2a2a30', border: '1px solid #3a3a42', color: active === 0 ? '#5a5a62' : '#d4d4d8',
+        }}>이전</button>
+        <button type="button" onClick={() => setActive((v) => Math.min(PT_STEPS.length - 1, v + 1))} disabled={active === PT_STEPS.length - 1} style={{
+          height: 32, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: active === PT_STEPS.length - 1 ? 'default' : 'pointer', fontFamily: T.font,
+          fontSize: TYPE.caption1.fontSize, fontWeight: W.semibold, background: active === PT_STEPS.length - 1 ? '#2a2a30' : T.primary, border: `1px solid ${active === PT_STEPS.length - 1 ? '#3a3a42' : T.primary}`, color: active === PT_STEPS.length - 1 ? '#5a5a62' : '#fff',
+        }}>다음 단계</button>
+      </div>
+      <div style={{ border: '1px solid #2a2a2a', borderRadius: '12px', background: '#1a1a1a', padding: `${SP[32]} ${SP[24]} 56px` }}>
+        {/* Anatomy와 동일: 연결선이 노드에 붙고, 라벨/설명은 노드 아래 중앙 정렬 */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {PT_STEPS.map((s, i) => (
+            <Fragment key={s.label}>
+              <div style={{ position: 'relative', flexShrink: 0 }}>
+                {nodeEl(i)}
+                <div style={{ position: 'absolute', top: '34px', left: '50%', transform: 'translateX(-50%)', width: '96px', textAlign: 'center' }}>
+                  <div style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: i <= active ? '#e8e8ec' : '#8a8a92' }}>{s.label}</div>
+                  <div style={{ marginTop: '2px', fontSize: '11px', color: '#8a8a92' }}>{s.desc}</div>
+                </div>
+              </div>
+              {i < PT_STEPS.length - 1 && (
+                <div style={{ flex: 1, height: 2, background: i < active ? T.positive : '#2e2e2e' }} />
+              )}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Popover(present-popover) — 앵커에 붙어 뜨는 기반 오버레이 프리미티브.
+//  구성: 앵커 · 화살표(arrow) · 콘텐츠 · 컨테이너.
+function PopoverPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '320px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 1. 앵커 (Anchor) — 트리거 요소 */}
+          <div style={{ position: 'absolute', left: '330px', top: '58px', width: '100px', height: '34px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#18181b' }}>앵커</div>
+          {/* 2. 화살표 (Arrow) — 앵커를 가리키는 삼각형 (회전 사각형) */}
+          <div style={{ position: 'absolute', left: '372px', top: '106px', width: '12px', height: '12px', background: '#fff', borderLeft: '1px solid #e4e4e7', borderTop: '1px solid #e4e4e7', transform: 'rotate(45deg)', zIndex: 4 }} />
+          {/* 4. 컨테이너 (Popover 패널) */}
+          <div style={{ position: 'absolute', left: '300px', top: '112px', width: '160px', height: '128px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
+          {/* 3. 콘텐츠 — 스켈레톤 바 */}
+          <div style={{ position: 'absolute', left: '320px', top: '132px', width: '120px', height: '11px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '320px', top: '156px', width: '100px', height: '9px', background: '#e4e4e7', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '320px', top: '176px', width: '110px', height: '9px', background: '#e4e4e7', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '320px', top: '196px', width: '80px', height: '9px', background: '#e4e4e7', borderRadius: '4px', zIndex: 3 }} />
+
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 5 }}>
+            {/* 1. 앵커 상단(y=58) x=380 */}
+            <line x1="380" y1="36" x2="380" y2="58" stroke="#999" strokeWidth="1.2" /><circle cx="380" cy="58" r="1.6" fill="#999" />
+            {/* 2. 화살표 좌측(x=372) y=112 */}
+            <line x1="244" y1="112" x2="372" y2="112" stroke="#999" strokeWidth="1.2" /><circle cx="372" cy="112" r="1.6" fill="#999" />
+            {/* 3. 콘텐츠 좌측 경계(x=320) y=180 */}
+            <line x1="244" y1="180" x2="320" y2="180" stroke="#999" strokeWidth="1.2" /><circle cx="320" cy="180" r="1.6" fill="#999" />
+            {/* 4. 컨테이너 우측 경계(x=460) y=200 */}
+            <line x1="520" y1="200" x2="460" y2="200" stroke="#999" strokeWidth="1.2" /><circle cx="460" cy="200" r="1.6" fill="#999" />
+          </svg>
+          <div style={{ position: 'absolute', left: '380px', top: '28px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '230px', top: '112px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '230px', top: '180px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '534px', top: '200px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '앵커 (Anchor)' },
+            { num: 2, label: '화살표 (Arrow)' },
+            { num: 3, label: '콘텐츠 (Content)' },
+            { num: 4, label: '컨테이너 (Popover 패널)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 앵커 클릭 → 팝오버, 외부 클릭 시 닫힘
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ width: '100%' }}>
+      <div onClick={() => setOpen(false)} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', border: '1px solid #2a2a2a', borderRadius: '12px', background: '#121212', padding: SP[24] }}>
+        <div style={{ position: 'relative' }}>
+          <button type="button" onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }} style={{
+            height: 36, padding: `0 ${SP[16]}`, borderRadius: 8, cursor: 'pointer', fontFamily: T.font,
+            fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: '#fff',
+            background: open ? T.primaryHeavy : T.primary, border: 'none',
+          }}>이벤트 상세</button>
+          {open && (
+            <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 'calc(100% + 10px)', left: '50%', transform: 'translateX(-50%)', zIndex: 20 }}>
+              <div style={{ position: 'absolute', top: '-6px', left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 12, height: 12, background: '#1a1a1a', borderLeft: '1px solid #2e2e2e', borderTop: '1px solid #2e2e2e' }} />
+              <div style={{ width: 240, background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 8, boxShadow: '0 16px 40px rgba(0,0,0,0.5)', padding: SP[16] }}>
+                <div style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: '#e8e8ec', marginBottom: SP[8] }}>교차로 A-12</div>
+                <div style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', lineHeight: 1.6 }}>혼잡도 78% · 최근 이벤트 3건<br />신호 제어기 정상</div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Autocomplete(present-autocomplete) — 입력 중 일치 항목을 드롭다운으로 추천.
+//  구성: 입력 필드 · 추천 목록 · 추천 항목 · 일치 강조. (Popover 특수형)
+const AC_ITEMS = ['강변북로', '강남대로', '경부고속도로', '올림픽대로', '내부순환로', '동부간선도로'];
+function AutocompletePlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '360px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 1. 입력 필드 (Input field) */}
+          <div style={{ position: 'absolute', left: '260px', top: '60px', width: '240px', height: '40px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 3, display: 'flex', alignItems: 'center', padding: `0 ${SP[12]}`, fontSize: TYPE.label1.fontSize, color: '#18181b' }}>강변</div>
+          {/* 2. 추천 목록 패널 (Suggestion list) */}
+          <div style={{ position: 'absolute', left: '260px', top: '104px', width: '240px', height: '168px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
+          {/* 4. 일치 강조 항목(첫 행) — 하이라이트 배경 + 일치 텍스트 */}
+          <div style={{ position: 'absolute', left: '261px', top: '110px', width: '238px', height: '36px', background: 'rgba(0,102,255,0.08)', borderRadius: '7px 7px 0 0', zIndex: 2 }} />
+          <div style={{ position: 'absolute', left: '284px', top: '120px', zIndex: 3, fontSize: TYPE.label2.fontSize, color: '#18181b' }}><span style={{ color: T.primary, fontWeight: W.bold }}>강변</span>북로</div>
+          {/* 3. 추천 항목(일반 행) — 스켈레톤 바 */}
+          <div style={{ position: 'absolute', left: '284px', top: '160px', width: '130px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '284px', top: '196px', width: '150px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '284px', top: '232px', width: '110px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. 입력 필드 좌측(x=260) y=80 */}
+            <line x1="240" y1="80" x2="260" y2="80" stroke="#999" strokeWidth="1.2" /><circle cx="260" cy="80" r="1.6" fill="#999" />
+            {/* 3. 추천 항목 좌측(x=284) y=164 */}
+            <line x1="240" y1="164" x2="284" y2="164" stroke="#999" strokeWidth="1.2" /><circle cx="284" cy="164" r="1.6" fill="#999" />
+            {/* 4. 일치 강조 우측(x=340) y=128 */}
+            <line x1="520" y1="128" x2="340" y2="128" stroke="#999" strokeWidth="1.2" /><circle cx="340" cy="128" r="1.6" fill="#999" />
+            {/* 2. 추천 목록 우측(x=500) y=210 */}
+            <line x1="520" y1="210" x2="500" y2="210" stroke="#999" strokeWidth="1.2" /><circle cx="500" cy="210" r="1.6" fill="#999" />
+          </svg>
+          <div style={{ position: 'absolute', left: '226px', top: '80px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '226px', top: '164px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '534px', top: '128px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '534px', top: '210px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '입력 필드 (Input)' },
+            { num: 2, label: '추천 목록 (Dropdown)' },
+            { num: 3, label: '추천 항목 (Item)' },
+            { num: 4, label: '일치 강조 (Match)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — 입력에 따라 실시간 필터 + 일치 강조
+  const [q, setQ] = useState('강');
+  const [picked, setPicked] = useState('');
+  const matches = q ? AC_ITEMS.filter((x) => x.includes(q)) : [];
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ border: '1px solid #2a2a2a', borderRadius: '12px', background: '#121212', padding: SP[24], minHeight: '280px' }}>
+        <div style={{ maxWidth: '320px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], height: 40, padding: `0 ${SP[12]}`, background: '#161618', border: `1px solid ${T.primary}`, borderRadius: 8 }}>
+            <Icon name="search" size={16} color="#8a8a92" />
+            <input value={q} onChange={(e) => { setQ(e.target.value); setPicked(''); }} placeholder="도로명 검색"
+              style={{ flex: 1, background: 'none', border: 'none', outline: 'none', color: '#e8e8ec', fontSize: TYPE.label1.fontSize, fontFamily: T.font }} />
+          </div>
+          {matches.length > 0 && !picked && (
+            <div style={{ marginTop: SP[4], background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 8, overflow: 'hidden' }}>
+              {matches.map((m) => {
+                const i = m.indexOf(q);
+                return (
+                  <div key={m} onClick={() => { setPicked(m); setQ(m); }} style={{ padding: `${SP[8]} ${SP[12]}`, cursor: 'pointer', fontSize: TYPE.label1.fontSize, color: '#d4d4d8' }}>
+                    {i >= 0 ? (<>{m.slice(0, i)}<span style={{ color: T.primaryStrong, fontWeight: W.bold }}>{m.slice(i, i + q.length)}</span>{m.slice(i + q.length)}</>) : m}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {picked && <div style={{ marginTop: SP[12], fontSize: TYPE.caption1.fontSize, color: '#9a9aa2' }}>선택됨: <span style={{ color: '#e8e8ec' }}>{picked}</span></div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+// Section message(feedback-section-message) — 영역 내부 인라인 메시지 박스.
+//  variant(info/caution/error/success) × 좌측 보더 + 아이콘 + 제목 + 본문.
+// Foundation 아이콘 세트 기준 매핑(info 전용 글리프 부재 → error 원형 심볼을 Primary 색으로 사용).
+const SECTIONMSG_VARIANTS = {
+  info:    { icon: 'error',        color: T.primaryStrong, title: '정보 안내', body: '참고할 정보를 전달하는 메시지입니다.' },
+  caution: { icon: 'warning',      color: T.cautionary,    title: '주의 필요', body: '주의가 필요한 상황을 안내합니다.' },
+  error:   { icon: 'error',        color: T.error,         title: '오류 발생', body: '장애 또는 실패 상황을 알립니다.' },
+  success: { icon: 'check_circle', color: T.positive,      title: '처리 완료', body: '정상적으로 처리되었습니다.' },
+};
+
+function SectionMessageContent({ variant = 'info', title, body }) {
+  const v = SECTIONMSG_VARIANTS[variant];
+  return (
+    <div style={{
+      display: 'flex', gap: SP[12], padding: `${SP[12]} ${SP[16]}`, width: '100%', boxSizing: 'border-box',
+      background: '#1e1e1e', border: '1px solid #2e2e2e', borderLeft: `3px solid ${v.color}`, borderRadius: 8,
+    }}>
+      <span style={{ flexShrink: 0, marginTop: 1 }}><Icon name={v.icon} size={18} color={v.color} /></span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: SP[4], minWidth: 0 }}>
+        {(title ?? v.title) && <div style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: v.color }}>{title ?? v.title}</div>}
+        <div style={{ fontSize: TYPE.caption1.fontSize, color: '#c4c4c8', lineHeight: 1.5 }}>{body ?? v.body}</div>
+      </div>
+    </div>
+  );
+}
+
+function SectionMessagePlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <div style={{ width: '100%' }}>
+        {/* 라이트 카드 — Text field anatomy와 동일 시각 언어 */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '320px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 5. 컨테이너 — 메시지 박스. 좌측 강조 보더(4)를 컨테이너 자체 borderLeft로 통합(모서리 8px에 맞게 클립) */}
+          <div style={{ position: 'absolute', left: '230px', top: '108px', width: '340px', height: '96px', background: '#fff', border: '1px solid #e4e4e7', borderLeft: `3px solid ${T.primaryStrong}`, borderRadius: '8px', zIndex: 2 }} />
+          {/* 1. 아이콘 — 점선 placeholder (20×20, center y=140) */}
+          <div style={{ position: 'absolute', left: '254px', top: '130px', width: '20px', height: '20px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
+          {/* 2. 제목(Title) — 굵은 다크 텍스트 */}
+          <div style={{ position: 'absolute', left: '290px', top: '128px', zIndex: 3, fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: '#18181b' }}>제목</div>
+          {/* 3. 본문(Content) — 회색 텍스트 */}
+          <div style={{ position: 'absolute', left: '290px', top: '156px', width: '260px', zIndex: 3, fontSize: TYPE.label2.fontSize, color: '#a1a1aa' }}>본문 텍스트 영역입니다.</div>
+
+          {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. 아이콘 좌측 경계(x=254) */}
+            <line x1="182" y1="140" x2="254" y2="140" stroke="#999" strokeWidth="1.2" /><circle cx="254" cy="140" r="1.6" fill="#999" />
+            {/* 2. 제목 상단(y=128) — 위에서 아래로 */}
+            <line x1="310" y1="88" x2="310" y2="128" stroke="#999" strokeWidth="1.2" /><circle cx="310" cy="128" r="1.6" fill="#999" />
+            {/* 3. 본문 우측 경계(x=550) */}
+            <line x1="632" y1="160" x2="550" y2="160" stroke="#999" strokeWidth="1.2" /><circle cx="550" cy="160" r="1.6" fill="#999" />
+            {/* 4. 좌측 강조 보더(x=230) — 하단부(모서리 회피) */}
+            <line x1="182" y1="184" x2="230" y2="184" stroke="#999" strokeWidth="1.2" /><circle cx="230" cy="184" r="1.6" fill="#999" />
+            {/* 5. 컨테이너 하단 경계(y=204) — 아래에서 위로 */}
+            <line x1="400" y1="240" x2="400" y2="204" stroke="#999" strokeWidth="1.2" /><circle cx="400" cy="204" r="1.6" fill="#999" />
+          </svg>
+          {/* Callouts — 흰 원 + 검정 텍스트 */}
+          <div style={{ position: 'absolute', left: '172px', top: '140px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '310px', top: '78px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '642px', top: '160px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '172px', top: '184px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '400px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
+        </div>
+        {/* Legend */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
+          {[
+            { num: 1, label: '상태 아이콘 (Icon)' },
+            { num: 2, label: '제목 (Title)' },
+            { num: 3, label: '본문 (Content)' },
+            { num: 4, label: '좌측 강조 보더' },
+            { num: 5, label: '컨테이너 (메시지 박스)' },
+          ].map(item => (
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Interactive — variant 토글
+  const [variant, setVariant] = useState('info');
+  const seg = (val) => (
+    <button key={val} type="button" onClick={() => setVariant(val)} style={{
+      height: 30, padding: `0 ${SP[12]}`, borderRadius: 6, cursor: 'pointer', fontFamily: T.font,
+      fontSize: TYPE.caption1.fontSize, fontWeight: variant === val ? W.semibold : W.regular,
+      background: variant === val ? 'rgba(0,102,255,0.12)' : '#2a2a30',
+      border: `1px solid ${variant === val ? T.primary : '#3a3a42'}`, color: variant === val ? T.primaryStrong : '#d4d4d8',
+    }}>{val}</button>
+  );
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ display: 'flex', gap: SP[4], alignItems: 'center', marginBottom: SP[16] }}>
+        <span style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', marginRight: SP[4] }}>variant</span>
+        {['info', 'caution', 'error', 'success'].map(seg)}
+      </div>
+      <div style={{ border: '1px solid #2a2a2a', borderRadius: '12px', background: '#121212', padding: SP[24] }}>
+        <div style={{ maxWidth: '460px' }}>
+          <SectionMessageContent variant={variant} />
+        </div>
+        {/* 전체 변형 미리보기 */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SP[8], marginTop: SP[24], maxWidth: '460px' }}>
+          {['info', 'caution', 'error', 'success'].filter(v => v !== variant).map(v => (
+            <div key={v} style={{ opacity: 0.5 }}><SectionMessageContent variant={v} /></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Skeleton(Loading) — 콘텐츠 로드 전 실제 레이아웃 형태의 회색 플레이스홀더 + shimmer.
 //  variant(text/circle/card) × loading(true/false), shimmer 애니메이션.
 function SkeletonPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
-        {/* 라이트 카드(스켈레톤) */}
-        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '720px', height: '340px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
-          {/* 흰 패널 */}
-          <div style={{ position: 'absolute', left: '200px', top: '44px', width: '320px', height: '272px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
+        {/* 라이트 카드 — Text field anatomy와 동일 시각 언어(레이어드 흰 패널 + 흰 콜아웃) */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '360px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 흰 패널(레이어드 룩) */}
+          <div style={{ position: 'absolute', left: '220px', top: '56px', width: '360px', height: '250px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
 
-          {/* 1. text 변형 — 가로 막대(높이 14px, 모서리 4px) */}
-          <div style={{ position: 'absolute', left: '240px', top: '88px', width: '240px', height: '14px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
-          {/* 2. circle 변형 — 정원(60×60, 아바타) */}
-          <div style={{ position: 'absolute', left: '324px', top: '130px', width: '72px', height: '72px', background: '#d4d4d8', borderRadius: '50%', zIndex: 3 }} />
-          {/* 3. card 변형 — 둥근 사각형(모서리 8px) */}
-          <div style={{ position: 'absolute', left: '280px', top: '220px', width: '160px', height: '80px', background: '#e4e4e7', borderRadius: '8px', zIndex: 3 }} />
-          {/* 4. shimmer 표시 — 연한 하이라이트 바 */}
-          <div style={{ position: 'absolute', left: '240px', top: '88px', width: '60px', height: '14px', background: 'rgba(136, 136, 150, 0.3)', borderRadius: '4px', zIndex: 3, opacity: 0.6 }} />
+          {/* 1. Text 변형 — 가로 막대 2줄(제목+본문) */}
+          <div style={{ position: 'absolute', left: '250px', top: '84px', width: '280px', height: '14px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '250px', top: '106px', width: '190px', height: '14px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          {/* 4. Shimmer — 제목 막대 위 좌→우 하이라이트 광원 */}
+          <div style={{ position: 'absolute', left: '380px', top: '84px', width: '64px', height: '14px', background: 'linear-gradient(90deg, rgba(244,244,246,0), #f4f4f6, rgba(244,244,246,0))', borderRadius: '4px', zIndex: 3 }} />
+          {/* 2. Circle 변형 — 정원(아바타) */}
+          <div style={{ position: 'absolute', left: '250px', top: '140px', width: '60px', height: '60px', background: '#d4d4d8', borderRadius: '50%', zIndex: 3 }} />
+          {/* 3. Card 변형 — 둥근 사각형(썸네일) */}
+          <div style={{ position: 'absolute', left: '250px', top: '222px', width: '240px', height: '72px', background: '#e4e4e7', borderRadius: '8px', zIndex: 3 }} />
 
           {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            <line x1="200" y1="95" x2="240" y2="95" stroke="#999" strokeWidth="1.2" /><circle cx="240" cy="95" r="1.6" fill="#999" />
-            <line x1="200" y1="166" x2="324" y2="166" stroke="#999" strokeWidth="1.2" /><circle cx="324" cy="166" r="1.6" fill="#999" />
-            <line x1="200" y1="260" x2="280" y2="260" stroke="#999" strokeWidth="1.2" /><circle cx="280" cy="260" r="1.6" fill="#999" />
-            <line x1="520" y1="95" x2="560" y2="95" stroke="#999" strokeWidth="1.2" /><circle cx="560" cy="95" r="1.6" fill="#999" />
+            {/* 1. 텍스트 막대 좌측 경계(x=250) */}
+            <line x1="195" y1="95" x2="250" y2="95" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="95" r="1.6" fill="#999" />
+            {/* 2. 원 좌측 경계(x=250) */}
+            <line x1="195" y1="170" x2="250" y2="170" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="170" r="1.6" fill="#999" />
+            {/* 3. 카드 좌측 경계(x=250) */}
+            <line x1="195" y1="258" x2="250" y2="258" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="258" r="1.6" fill="#999" />
+            {/* 4. Shimmer 상단 경계(y=84) — 위에서 아래로 */}
+            <line x1="412" y1="52" x2="412" y2="84" stroke="#999" strokeWidth="1.2" /><circle cx="412" cy="84" r="1.6" fill="#999" />
           </svg>
           {/* Callouts — 흰 원 + 검정 텍스트 */}
-          <div style={{ position: 'absolute', left: '150px', top: '95px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
-          <div style={{ position: 'absolute', left: '150px', top: '166px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
-          <div style={{ position: 'absolute', left: '150px', top: '260px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
-          <div style={{ position: 'absolute', left: '570px', top: '95px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '185px', top: '95px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '185px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '185px', top: '258px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '412px', top: '42px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
         </div>
         {/* Legend */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
@@ -6706,11 +7492,30 @@ function SkeletonPlayground({ activeSubTab }) {
         <div style={{ width: '100%', height: '120px', background: '#2e2e2e', borderRadius: '8px' }} />
       )}
     </div>
+  ) : variant === 'text' ? (
+    <div>
+      <div style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: '#e8e8ec', marginBottom: SP[8] }}>교차로 12번 카메라</div>
+      <div style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2', lineHeight: 1.6 }}>정상 작동 중 · 최근 이벤트 3건 · 마지막 갱신 방금 전</div>
+    </div>
+  ) : variant === 'circle' ? (
+    <div style={{ display: 'flex', alignItems: 'center', gap: SP[12] }}>
+      <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: T.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Icon name="nest_cam_outdoor" size={28} color="#fff" />
+      </div>
+      <div>
+        <div style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: '#e8e8ec' }}>관제 카메라</div>
+        <div style={{ fontSize: TYPE.caption1.fontSize, color: '#9a9aa2' }}>온라인</div>
+      </div>
+    </div>
   ) : (
-    <div style={{ fontSize: TYPE.label1.fontSize, color: '#9a9aa2' }}>
-      {variant === 'text' && '콘텐츠가 로드되었습니다'}
-      {variant === 'circle' && '👤 Avatar'}
-      {variant === 'card' && '🖼️ Card Content'}
+    <div style={{ background: '#1e1e1e', border: '1px solid #2e2e2e', borderRadius: '8px', overflow: 'hidden' }}>
+      <div style={{ height: '72px', background: 'linear-gradient(135deg, #1f2a44, #12203f)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name="nest_cam_outdoor" size={28} color={T.primaryStrong} />
+      </div>
+      <div style={{ padding: SP[12] }}>
+        <div style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: '#e8e8ec' }}>강변북로 CCTV</div>
+        <div style={{ marginTop: SP[4], fontSize: TYPE.caption1.fontSize, color: '#9a9aa2' }}>실시간 영상 스트리밍 중</div>
+      </div>
     </div>
   );
 
@@ -6726,7 +7531,7 @@ function SkeletonPlayground({ activeSubTab }) {
           fontSize: TYPE.caption1.fontSize, fontWeight: W.regular,
           background: '#2a2a30', border: '1px solid #3a3a42', color: '#d4d4d8',
         }}>
-          {loading ? '✓ loading' : '○ loaded'}
+          {loading ? 'loading (스켈레톤)' : 'loaded (콘텐츠)'}
         </button>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '240px', border: '1px solid #2a2a2a', borderRadius: '12px', background: '#121212', padding: SP[24] }}>
@@ -6785,44 +7590,50 @@ function FallbackViewPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
-        {/* 라이트 카드(스켈레톤) — Text field anatomy와 동일 시각 언어 */}
-        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '720px', height: '360px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
-          {/* 흰 패널(레이어드 룩), center x=360 */}
-          <div style={{ position: 'absolute', left: '200px', top: '44px', width: '320px', height: '272px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
+        {/* 라이트 카드 — Text field anatomy와 동일 시각 언어(레이어드 흰 패널 + 실제 요소 + 흰 콜아웃) */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '400px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 5. 컨테이너 — Fallback 영역 흰 패널(레이어드 룩), center x=410 */}
+          <div style={{ position: 'absolute', left: '240px', top: '56px', width: '340px', height: '288px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
 
-          {/* 1. 일러스트/아이콘 — 점선 placeholder (center y≈110) */}
-          <div style={{ position: 'absolute', left: '324px', top: '74px', width: '72px', height: '72px', border: '1.5px dashed #a1a1aa', borderRadius: '12px', zIndex: 3 }} />
-          {/* 2. 제목(Title) — 스켈레톤 바 (center y≈180) */}
-          <div style={{ position: 'absolute', left: '280px', top: '172px', width: '160px', height: '16px', background: '#d4d4d8', borderRadius: '6px', zIndex: 3 }} />
-          {/* 3. 보조 설명(Description) — 스켈레톤 바 (center y≈208) */}
-          <div style={{ position: 'absolute', left: '255px', top: '203px', width: '210px', height: '10px', background: '#e4e4e7', borderRadius: '5px', zIndex: 3 }} />
-          {/* 4. 액션 버튼(Action) — Button (center y≈254) */}
-          <div style={{ position: 'absolute', left: '312px', top: '236px', width: '96px', height: '36px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: T.primary }}>Button</div>
+          {/* 1. 일러스트/아이콘 — 점선 placeholder (76×76, center x=410, center y=130) */}
+          <div style={{ position: 'absolute', left: '372px', top: '92px', width: '76px', height: '76px', border: '1.5px dashed #a1a1aa', borderRadius: '12px', zIndex: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c4c4c8" strokeWidth="1.6"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.6" /><path d="M21 15l-5-5L5 21" /></svg>
+          </div>
+          {/* 2. 제목(Title) — 실제 텍스트(굵게) */}
+          <div style={{ position: 'absolute', left: '340px', top: '190px', width: '140px', textAlign: 'center', zIndex: 3, fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: '#18181b' }}>제목</div>
+          {/* 3. 보조 설명(Description) — 실제 텍스트(회색) */}
+          <div style={{ position: 'absolute', left: '300px', top: '220px', width: '220px', textAlign: 'center', zIndex: 3, fontSize: TYPE.label2.fontSize, color: '#a1a1aa' }}>보조 설명 텍스트</div>
+          {/* 4. 액션 버튼(Action) — Button (96×36, center x=410, center y=280) */}
+          <div style={{ position: 'absolute', left: '362px', top: '262px', width: '96px', height: '36px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: T.primary }}>Button</div>
 
           {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            {/* 1. 아이콘 좌측 경계(x=324)까지 */}
-            <line x1="200" y1="110" x2="324" y2="110" stroke="#999" strokeWidth="1.2" /><circle cx="324" cy="110" r="1.6" fill="#999" />
-            {/* 2. 제목 좌측 경계(x=280)까지 */}
-            <line x1="200" y1="180" x2="280" y2="180" stroke="#999" strokeWidth="1.2" /><circle cx="280" cy="180" r="1.6" fill="#999" />
-            {/* 3. 설명 좌측 경계(x=255)까지 */}
-            <line x1="200" y1="208" x2="255" y2="208" stroke="#999" strokeWidth="1.2" /><circle cx="255" cy="208" r="1.6" fill="#999" />
-            {/* 4. 버튼 우측 경계(x=408)까지 */}
-            <line x1="520" y1="254" x2="408" y2="254" stroke="#999" strokeWidth="1.2" /><circle cx="408" cy="254" r="1.6" fill="#999" />
+            {/* 1. 아이콘 좌측 경계(x=372) */}
+            <line x1="185" y1="130" x2="372" y2="130" stroke="#999" strokeWidth="1.2" /><circle cx="372" cy="130" r="1.6" fill="#999" />
+            {/* 2. 제목 좌측 경계(x=340) */}
+            <line x1="185" y1="200" x2="340" y2="200" stroke="#999" strokeWidth="1.2" /><circle cx="340" cy="200" r="1.6" fill="#999" />
+            {/* 3. 설명 좌측 경계(x=300) */}
+            <line x1="185" y1="230" x2="300" y2="230" stroke="#999" strokeWidth="1.2" /><circle cx="300" cy="230" r="1.6" fill="#999" />
+            {/* 4. 버튼 우측 경계(x=458) */}
+            <line x1="630" y1="280" x2="458" y2="280" stroke="#999" strokeWidth="1.2" /><circle cx="458" cy="280" r="1.6" fill="#999" />
+            {/* 5. 컨테이너 상단 경계(y=56) */}
+            <line x1="410" y1="40" x2="410" y2="56" stroke="#999" strokeWidth="1.2" /><circle cx="410" cy="56" r="1.6" fill="#999" />
           </svg>
           {/* Callouts — 흰 원 + 검정 텍스트 */}
-          <div style={{ position: 'absolute', left: '150px', top: '110px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
-          <div style={{ position: 'absolute', left: '150px', top: '180px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
-          <div style={{ position: 'absolute', left: '150px', top: '208px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
-          <div style={{ position: 'absolute', left: '570px', top: '254px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '175px', top: '130px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '175px', top: '200px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '175px', top: '230px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '640px', top: '280px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '410px', top: '30px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
         </div>
         {/* Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
           {[
             { num: 1, label: '일러스트 / 아이콘' },
             { num: 2, label: '제목 (Title)' },
             { num: 3, label: '보조 설명 (Description)' },
             { num: 4, label: '액션 버튼 (Action)' },
+            { num: 5, label: '컨테이너 (Fallback 영역)' },
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
@@ -9612,76 +10423,37 @@ function ToastPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative',
-          background: '#efefef',
-          borderRadius: '16px',
-          width: '720px',
-          height: '340px',
-          margin: '0 auto 24px',
-          overflow: 'hidden',
-          boxSizing: 'border-box'
-        }}>
-          {/* 토스트 컴포넌트 — 중앙 */}
-          <div style={{
-            position: 'absolute',
-            left: '220px',
-            top: '146px',
-            width: '280px',
-            height: '48px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '10px',
-            padding: '10px 16px',
-            borderRadius: '12px',
-            background: '#707580',
-            color: '#ffffff',
-            boxSizing: 'border-box',
-            zIndex: 3,
-          }}>
-            {/* Leading Icon Slot (Dotted box) */}
-            <div style={{
-              width: '18px',
-              height: '18px',
-              border: '1.5px dashed rgba(255, 255, 255, 0.7)',
-              borderRadius: '3px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0
-            }} />
-            <span style={{ fontSize: '14px', fontWeight: 500, lineHeight: 1 }}>Message</span>
-          </div>
+        {/* 라이트 카드 — Section message anatomy와 동일 시각 언어 */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '320px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 1. 컨테이너 — 토스트 pill(흰 패널), center x=380 · center y=160 */}
+          <div style={{ position: 'absolute', left: '240px', top: '134px', width: '280px', height: '52px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '12px', zIndex: 2 }} />
+          {/* 2. 좌측 아이콘 — 점선 placeholder */}
+          <div style={{ position: 'absolute', left: '264px', top: '151px', width: '18px', height: '18px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
+          {/* 3. 메시지 — 스켈레톤 바 */}
+          <div style={{ position: 'absolute', left: '296px', top: '155px', width: '148px', height: '10px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
 
-          {/* SVG 직선 */}
-          <svg
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}
-          >
-            {/* 1. Container -> 수직선 위로 */}
-            <line x1="360" y1="70" x2="360" y2="144" stroke="#999" strokeWidth="1.2" />
-            {/* 2. Leading icon -> 수평선 좌측으로 */}
-            <line x1="150" y1="170" x2="235" y2="170" stroke="#999" strokeWidth="1.2" />
-            {/* 3. Message -> 수직선 아래로 */}
-            <line x1="295" y1="270" x2="295" y2="182" stroke="#999" strokeWidth="1.2" />
+          {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
+            {/* 1. 컨테이너 상단 경계(y=134) x=380 */}
+            <line x1="380" y1="114" x2="380" y2="134" stroke="#999" strokeWidth="1.2" /><circle cx="380" cy="134" r="1.6" fill="#999" />
+            {/* 2. 좌측 아이콘 좌측 경계(x=264) y=160 */}
+            <line x1="214" y1="160" x2="264" y2="160" stroke="#999" strokeWidth="1.2" /><circle cx="264" cy="160" r="1.6" fill="#999" />
+            {/* 3. 메시지 우측 경계(x=444) y=160 */}
+            <line x1="546" y1="160" x2="444" y2="160" stroke="#999" strokeWidth="1.2" /><circle cx="444" cy="160" r="1.6" fill="#999" />
           </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '360px', top: '70px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '150px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '295px', top: '270px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+          {/* Callouts — 흰 원 + 검정 텍스트 */}
+          <div style={{ position: 'absolute', left: '380px', top: '98px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '200px', top: '160px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '560px', top: '160px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
         </div>
-
         {/* Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
           {[
-            { num: 1, label: 'Container (컨테이너)' },
-            { num: 2, label: 'Leading icon (좌측 아이콘)' },
-            { num: 3, label: 'Message (메시지)' }
+            { num: 1, label: '컨테이너 (Container)' },
+            { num: 2, label: '좌측 아이콘 (Leading icon)' },
+            { num: 3, label: '메시지 (Message)' },
           ].map(item => (
-            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
+            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
         </div>
       </div>

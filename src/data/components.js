@@ -184,7 +184,6 @@ export const TIERS = {
           { id: 'fallback-view', name: 'Fallback view', children: [{ id: 'feedback-fallback', name: 'Fallback view' }] },
           { id: 'push-badge', name: 'Push badge', children: [{ id: 'feedback-pushbadge', name: 'Push badge' }] },
           { id: 'section-message', name: 'Section message', children: [{ id: 'feedback-section-message', name: 'Section message' }] },
-          { id: 'snackbar', name: 'Snackbar', children: [{ id: 'feedback-snackbar', name: 'Snackbar' }] },
           { id: 'toast', name: 'Toast', children: [{ id: 'toast-default', name: 'Toast' }] },
         ]
       },
@@ -200,7 +199,6 @@ export const TIERS = {
         id: 'navigations',
         label: 'Navigations',
         categories: [
-          { id: 'bottom-navigation', name: 'Bottom navigation', children: [{ id: 'nav-bottom', name: 'Bottom navigation' }] },
           { id: 'category', name: 'Category', children: [{ id: 'category-default', name: 'Category' }] },
           { id: 'page-counter', name: 'Page counter', children: [{ id: 'nav-page-counter', name: 'Page counter' }] },
           { id: 'pagination', name: 'Pagination', children: [{ id: 'nav-pagination', name: 'Pagination' }] },
@@ -216,7 +214,6 @@ export const TIERS = {
         label: 'Presentation',
         categories: [
           { id: 'autocomplete', name: 'Autocomplete', children: [{ id: 'present-autocomplete', name: 'Autocomplete' }] },
-          { id: 'bottom-sheet', name: 'Bottom sheet', children: [{ id: 'present-bottom-sheet', name: 'Bottom sheet' }] },
           { id: 'menu', name: 'Menu', children: [{ id: 'present-menu', name: 'Menu' }] },
           { id: 'popover', name: 'Popover', children: [{ id: 'present-popover', name: 'Popover' }] },
           { id: 'popup', name: 'Popup', children: [{ id: 'present-popup', name: 'Popup' }] },
@@ -600,70 +597,9 @@ export const COMPONENT_DOCS = {
     "usage": "신호 연동 실패나 CCTV 연결 끊김 같은 장애 상황에는 error 변형을, 차량 정체 임계치 접근 등 주의가 필요한 상황에는 caution 변형을 사용하세요. 폼 영역 내 입력 안내에는 info를, 설정 저장 완료 알림에는 success를 활용하면 관제 흐름에서 상태를 일관되게 전달할 수 있습니다.",
     "tokensUsed": ["variant 색: info #3385FF · caution #FFA938 · error #FF6363 · success #1ED45A", "컨테이너 배경 #1e1e1e · 보더 #2e2e2e · radius 8", "좌측 상태색 accent 보더", "본문 Body 14px · 보조 #888"],
     "aliases": ["영역 경고", "인라인 알림", "상태 메시지", "주의 배너", "오류 안내", "정보 안내", "section message", "inline alert", "banner"],
-    "antiPatterns": ["타이틀바·탭 위 전역 경고 배너로 사용 금지(영역 내부 인라인 전용)", "작은 인라인 칩/배지를 즉흥 제작하지 말 것 → 이 컴포넌트 사용", "잠깐 떴다 사라지는 알림에는 Snackbar/Toast 사용"],
+    "antiPatterns": ["타이틀바·탭 위 전역 경고 배너로 사용 금지(영역 내부 인라인 전용)", "작은 인라인 칩/배지를 즉흥 제작하지 말 것 → 이 컴포넌트 사용", "잠깐 떴다 사라지는 일시 알림용으로 사용하지 말 것(인라인 지속 메시지 전용)"],
     "examples": ["<SectionMessage variant='caution' title='정체 임계치 접근'>강변북로 평균 속도가 기준치 이하입니다.</SectionMessage>", "<SectionMessage variant='error' title='신호 연동 실패'>제어기 연결이 끊어졌습니다. 네트워크를 확인하세요.</SectionMessage>"],
     "code": "import { SectionMessage } from '@pintel/ui';\n\nfunction SignalPanel() {\n  return (\n    <div>\n      <SectionMessage variant='error' title='신호 연동 실패'>\n        교차로 12번 신호 제어기와의 연결이 끊어졌습니다. 네트워크 상태를 확인하세요.\n      </SectionMessage>\n\n      <SectionMessage variant='caution' title='정체 임계치 접근'>\n        강변북로 구간의 평균 속도가 기준치 이하로 떨어지고 있습니다.\n      </SectionMessage>\n\n      <SectionMessage variant='success' title='설정 저장 완료'>\n        관제 구역 설정이 정상적으로 반영되었습니다.\n      </SectionMessage>\n    </div>\n  );\n}"
-  },
-  "feedback-snackbar": {
-    "name": "Snackbar",
-    "description": "화면 하단에 짧게 떠올랐다 사라지며 작업 결과를 알리고 선택적으로 단일 액션(실행 취소 등)을 제공하는 피드백 컴포넌트입니다.",
-    "overview": "Snackbar는 메시지 텍스트와 선택적 액션 버튼, 닫기 아이콘으로 구성되며 관제 화면 하단 중앙 또는 좌하단에 잠시 노출됩니다. 상태에 따라 기본(Default), 긍정(Positive), 주의(Cautionary), 위험(Native) 변형을 제공하고, 액션 유무에 따라 메시지 전용형과 액션 포함형으로 나뉩니다. Toast보다 액션 지향적이어서 사용자가 직전 작업을 즉시 되돌리거나 후속 동작으로 이어갈 수 있게 합니다.",
-    "properties": [
-      {
-        "name": "variant",
-        "title": "상태 변형 (Variant)",
-        "type": "enum",
-        "conditions": [
-          {
-            "condition": "default는 패널 배경 #1a1a1a 위에 본문 텍스트, 액션 텍스트는 Primary Strong #3385FF 사용"
-          },
-          {
-            "condition": "positive는 좌측 4px 강조선과 아이콘에 Status Positive #1ED45A 적용(작업 저장/등록 완료 알림)"
-          },
-          {
-            "condition": "cautionary는 좌측 강조선과 아이콘에 Cautionary #FFA938 적용(임계치 근접 경고)"
-          },
-          {
-            "condition": "native는 좌측 강조선과 아이콘에 Native(위험) #FF6363 적용(연동 실패/장애 알림)"
-          }
-        ]
-      },
-      {
-        "name": "action",
-        "title": "액션 버튼 (Action)",
-        "type": "ReactNode",
-        "conditions": [
-          {
-            "condition": "단일 텍스트 버튼만 허용하며 메시지 우측에 배치(실행 취소, 다시 시도 등)"
-          },
-          {
-            "condition": "액션 라벨 색상은 Primary Strong #3385FF, hover 시 Primary Heavy #0052CC"
-          },
-          {
-            "condition": "액션이 없으면 우측에 보조텍스트 #888 색상의 닫기 아이콘만 노출"
-          }
-        ]
-      },
-      {
-        "name": "duration",
-        "title": "노출 시간 (Duration)",
-        "type": "number",
-        "conditions": [
-          {
-            "condition": "기본 4000ms 후 자동 소멸, 액션 포함형은 6000ms 권장"
-          },
-          {
-            "condition": "마우스 hover 또는 포커스 진입 시 타이머 일시정지"
-          },
-          {
-            "condition": "컨테이너 모서리 둥글기 8px, 본문 글자 14px, 보조 정보는 보조텍스트 #888"
-          }
-        ]
-      }
-    ],
-    "behavior": "호출 시 하단에서 페이드 및 슬라이드업으로 등장해 지정된 duration 동안 머문 뒤 자동으로 사라지며, 동일 영역에 새 메시지가 들어오면 기존 항목을 교체합니다. 액션 버튼 클릭 시 콜백을 실행하고 즉시 닫히며, hover나 키보드 포커스 동안에는 자동 소멸 타이머가 멈춥니다.",
-    "usage": "교통 관제에서 신호 패턴 적용을 취소할 수 있는 실행 취소 피드백이나 카메라 설정 저장 완료처럼 한 번의 즉각 동작이 필요한 짧은 알림에 사용합니다. 장애 상세나 다중 액션이 필요한 경우에는 Snackbar 대신 다이얼로그나 알림 패널을 사용하세요.",
-    "code": "import { Snackbar } from '@pintel/ui';\n\nfunction SignalControlBar() {\n  const [open, setOpen] = useState(false);\n\n  return (\n    <Snackbar\n      open={open}\n      variant='positive'\n      message={'신호 패턴이 적용되었습니다 (교차로 A-12)'}\n      duration={6000}\n      action={\n        <Snackbar.Action onClick={() => revertPattern()}>\n          실행 취소\n        </Snackbar.Action>\n      }\n      onClose={() => setOpen(false)}\n    />\n  );\n}"
   },
   "loading-default": {
     "name": "Loading",
@@ -791,73 +727,6 @@ export const COMPONENT_DOCS = {
     "behavior": "loading이 true인 동안 회색 플레이스홀더 위로 shimmer가 반복 재생되며, 데이터가 도착해 loading이 false로 바뀌면 동일한 박스 위치에 실제 콘텐츠가 즉시 교체되어 레이아웃 이동(레이아웃 시프트)을 막습니다.",
     "usage": "관제 대시보드 진입 직후 교통량 차트, CCTV 썸네일, 이벤트 로그 테이블처럼 비동기로 채워지는 영역에 실제 위젯과 같은 크기로 배치해 빈 화면 깜빡임을 줄이세요. 데이터 지연이 길어질 수 있는 영상 스트림 패널에는 card 변형, 운영자 목록에는 circle과 text 조합을 권장합니다.",
     "code": "import { Skeleton } from '@pintel/ui';\n\nfunction TrafficPanel({ loading, data }) {\n  if (loading) {\n    return (\n      <div style={{ padding: 16 }}>\n        <Skeleton variant='card' width='100%' height={180} />\n        <Skeleton variant='text' width='70%' />\n        <Skeleton variant='text' width='40%' />\n      </div>\n    );\n  }\n  return <TrafficChart data={data} />;\n}\n\nfunction OperatorRow({ loading }) {\n  return (\n    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>\n      <Skeleton variant='circle' width={32} height={32} loading={loading} />\n      <Skeleton variant='text' width={120} loading={loading} />\n    </div>\n  );\n}"
-  },
-  "nav-bottom": {
-    "name": "Bottom navigation",
-    "description": "모바일과 태블릿 화면 하단에 고정되어 최상위 화면을 전환하는 아이콘과 라벨 기반의 주요 메뉴 탭바입니다.",
-    "overview": "Bottom navigation은 화면 하단에 고정된 탭바로, 아이콘과 라벨로 구성된 3개에서 5개의 항목을 제공합니다. 각 항목은 기본(비활성), 활성, 비활성화(disabled), 배지 알림의 상태를 가지며, 활성 항목은 핀텔 브랜드 컬러로 강조됩니다. 관제 대시보드의 실시간 모니터링, 교통 현황, 알림, 설정 등 최상위 영역 간 빠른 이동을 담당합니다.",
-    "properties": [
-      {
-        "name": "items",
-        "title": "메뉴 항목 (Items)",
-        "type": "Array",
-        "conditions": [
-          {
-            "condition": "최소 3개에서 최대 5개의 탭으로 구성하며 각 항목은 아이콘과 라벨을 포함"
-          },
-          {
-            "condition": "아이콘 크기 24px, 라벨 12px, 항목 간 균등 분할 배치"
-          },
-          {
-            "condition": "탭바 배경은 패널 색 (1a1a1a), 상단 보더는 보더 색 (2e2e2e) 1px"
-          },
-          {
-            "condition": "탭바 높이 56px, 좌우 안전 영역(safe-area) 패딩 적용"
-          }
-        ]
-      },
-      {
-        "name": "active",
-        "title": "활성 상태 (Active)",
-        "type": "boolean",
-        "conditions": [
-          {
-            "condition": "활성 항목의 아이콘과 라벨은 프라이머리 강조 색 (3385FF)으로 표시"
-          },
-          {
-            "condition": "비활성 항목은 보조 텍스트 색 (888)로 표시"
-          },
-          {
-            "condition": "활성 표시가 필요하면 상단에 프라이머리 색 (0066FF) 인디케이터 라인 노출"
-          },
-          {
-            "condition": "한 번에 하나의 항목만 활성 상태를 가짐"
-          }
-        ]
-      },
-      {
-        "name": "badge",
-        "title": "배지 (Badge)",
-        "type": "ReactNode",
-        "conditions": [
-          {
-            "condition": "미확인 이벤트 알림 시 아이콘 우측 상단에 배지 표시"
-          },
-          {
-            "condition": "위험(돌발) 알림 배지는 네이티브 색 (FF6363), 주의 알림은 코셔너리 색 (FFA938)"
-          },
-          {
-            "condition": "배지 모서리 둥글기 8px, 숫자 글자 12px, 흰색 텍스트"
-          },
-          {
-            "condition": "값이 99를 초과하면 99 플러스 형태로 축약 표기"
-          }
-        ]
-      }
-    ],
-    "behavior": "항목을 탭하면 해당 최상위 화면으로 즉시 전환되며 활성 항목만 브랜드 컬러로 강조되고 나머지는 보조 텍스트 색으로 표시됩니다. 위험 알림이 발생한 항목에는 배지가 노출되어 미확인 이벤트 수를 표기합니다.",
-    "usage": "교통 관제 대시보드의 모바일 또는 태블릿 뷰에서 실시간 관제, CCTV, 돌발 알림, 통계, 설정 같은 최상위 화면 간 이동에 사용합니다. 항목은 3개에서 5개로 제한하고 라벨은 한두 단어로 짧게 유지해 좁은 화면에서도 가독성을 확보합니다.",
-    "code": "import { BottomNavigation, NavItem } from '@pintel/ui';\n\nfunction MobileShell() {\n  const [tab, setTab] = useState('monitor');\n\n  return (\n    <BottomNavigation value={tab} onChange={setTab}>\n      <NavItem value='monitor' icon={<MonitorIcon />} label='실시간 관제' />\n      <NavItem value='cctv' icon={<CctvIcon />} label='CCTV' />\n      <NavItem value='alert' icon={<AlertIcon />} label='돌발 알림' badge={3} badgeTone='native' />\n      <NavItem value='stats' icon={<StatsIcon />} label='통계' />\n      <NavItem value='settings' icon={<SettingsIcon />} label='설정' />\n    </BottomNavigation>\n  );\n}"
   },
   "nav-page-counter": {
     "name": "Page counter",
@@ -1236,8 +1105,8 @@ export const COMPONENT_DOCS = {
   },
   "nav-top": {
     "name": "Top navigation",
-    "description": "화면 상단에 고정되어 현재 위치(타이틀)와 화면 단위 액션을 제공하는 다크 테마 앱바(App bar)입니다.",
-    "overview": "Top navigation은 좌측의 뒤로가기 버튼과 화면 타이틀, 우측의 액션 아이콘 그룹으로 구성되는 상단 앱바입니다. 패널 배경(#1a1a1a)과 하단 보더(#2e2e2e)로 본문 영역과 구분되며, 좌측 영역은 현재 위치 표시, 우측 영역은 새로고침이나 알림 등 화면 단위 액션을 담당합니다. 뒤로가기 버튼 유무, 우측 액션 개수에 따라 변형되고 호버 및 활성 상태를 가집니다.",
+    "description": "PREVAX 전 화면이 공유하는 상단 크롬(앱바)입니다. 정본은 Library의 PrevaxTitleBar 컴포넌트이며, 브랜드·권한(좌) · 경고 배너(중앙) · 상태·시각·언어·계정·창 컨트롤(우)로 구성됩니다.",
+    "overview": "Top navigation은 PREVAX의 모든 화면이 공유하는 상단 타이틀바 크롬으로, 정본은 Library.jsx의 PrevaxTitleBar 컴포넌트입니다(타이틀바·탭바 공통 크롬). 구성은 ① 좌측 브랜드 로고·'PREVAX 4'·현재 권한(예: 마스터) ② 중앙 경고 배너(Cautionary, 선택) ③ 우측 상태 표시등·현재 시각·언어 선택·계정 메뉴(자리비움/사용자정보/로그아웃)·창 컨트롤(— ▢ ✕)입니다. 높이 40px, 배경 #141417, 하단 보더로 본문과 구분됩니다. 새 화면을 만들 때는 이 앱바를 새로 그리지 말고 PrevaxTitleBar를 그대로 가져와 시각 일관성을 유지하세요.",
     "properties": [
       {
         "name": "title",
@@ -1298,7 +1167,8 @@ export const COMPONENT_DOCS = {
       }
     ],
     "behavior": "뒤로가기 버튼을 누르면 이전 화면으로 이동하고, 우측 액션 아이콘은 호버 시 보조 텍스트(#888)에서 Primary Strong(#3385FF)으로 전환되며 클릭 시 화면 단위 동작(새로고침, 알림 열기 등)을 실행합니다. 화면 스크롤과 무관하게 상단에 고정되어 항상 현재 위치를 노출합니다.",
-    "usage": "교차로 관제 상세나 CCTV 영상 화면처럼 별도 화면으로 진입하는 경우 좌측에 뒤로가기와 위치 타이틀(예: 강남대로 12번 교차로)을 두고, 우측에는 실시간 새로고침과 위험 알림(Native 색상 배지) 액션을 배치합니다. 액션 아이콘은 3개 이내로 제한해 관제 화면에서 시선 분산을 줄이세요.",
+    "usage": "모든 PREVAX 화면의 최상단에 PrevaxTitleBar를 배치해 통일된 크롬을 유지합니다. 좌측은 브랜드·권한 표시, 중앙은 서버 지연·미조치 등 전역 경고(Cautionary 배너), 우측은 접속 상태·시각·언어·계정 메뉴·창 컨트롤을 담당합니다. 새 화면에서 상단 바를 임의로 다시 만들지 말고 PrevaxTitleBar를 가져와 재사용하세요. 화면 안 콘텐츠 전환은 Top navigation이 아니라 탭(Tab)·Category를 사용합니다.",
+    "antiPatterns": ["상단 바를 화면마다 새로 그리지 말 것 → PrevaxTitleBar 재사용", "화면 내 콘텐츠 섹션 전환에는 사용 금지 → Tab/Category 사용", "우측 계정·창 컨트롤 영역을 임의 커스텀하지 말 것(전 화면 통일 유지)"],
     "code": "import { TopNavigation } from '@pintel/ui';\n\nfunction IntersectionDetailHeader() {\n  return (\n    <TopNavigation\n      showBack\n      title='강남대로 12번 교차로'\n      onBack={() => history.back()}\n      actions={[\n        <IconButton key='refresh' icon='refresh' onClick={handleRefresh} />,\n        <IconButton key='alert' icon='alert' badge='danger' onClick={openAlerts} />,\n      ]}\n    />\n  );\n}"
   },
   "present-autocomplete": {
@@ -1365,77 +1235,10 @@ export const COMPONENT_DOCS = {
     "usage": "교통 관제 대시보드에서 교차로명이나 CCTV 지점명을 빠르게 찾을 때 사용하며(예: 강남대로 입력 시 일치 지점 추천), 항목 수가 많아 일일이 스크롤하기 어려운 검색 입력에 권장합니다.",
     "code": "import { Autocomplete } from '@pintel/ui';\n\nfunction IntersectionSearch() {\n  const options = ['강남대로 교차로', '강남역 사거리', '강변북로 IC'];\n\n  return (\n    <Autocomplete\n      placeholder='교차로 또는 CCTV 지점 검색'\n      options={options}\n      debounce={250}\n      highlightMatch\n      onSelect={(value) => focusOnMap(value)}\n    />\n  );\n}"
   },
-  "present-bottom-sheet": {
-    "name": "Bottom sheet",
-    "description": "화면 하단에서 위로 슬라이드되어 올라오는 모달 시트로, 모바일 관제 화면에서 액션과 옵션을 표시하는 컴포넌트입니다.",
-    "overview": "Bottom sheet는 드래그 핸들, 시트 본문, 딤(dim) 배경으로 구성되며 화면 하단에서 위로 슬라이드되어 올라옵니다. 부분 높이(peek)와 전체 높이(full) 두 가지 변형을 제공하고, 열림/닫힘/드래그 중 상태에 따라 위치와 딤 농도가 전환됩니다. 좁은 모바일 관제 환경에서 지도 위에 겹쳐 액션 메뉴나 상세 옵션을 노출하는 데 사용합니다.",
-    "properties": [
-      {
-        "name": "height-variant",
-        "title": "높이 변형 (Height variant)",
-        "type": "enum",
-        "conditions": [
-          {
-            "condition": "부분 높이(peek)는 뷰포트의 약 40퍼센트 높이로 핵심 액션만 노출"
-          },
-          {
-            "condition": "전체 높이(full)는 상단 안전영역을 제외한 최대 높이로 상세 옵션 표시"
-          },
-          {
-            "condition": "시트 패널 배경은 1a1a1a, 상단 좌우 모서리만 8px 둥글림 적용"
-          },
-          {
-            "condition": "상단 보더 1px 2e2e2e로 지도 배경과 분리"
-          }
-        ]
-      },
-      {
-        "name": "drag-handle",
-        "title": "드래그 핸들 (Drag handle)",
-        "type": "ReactNode",
-        "conditions": [
-          {
-            "condition": "시트 최상단 중앙에 폭 36px 높이 4px 둥근 막대 배치"
-          },
-          {
-            "condition": "핸들 색상은 보조텍스트 888, 둥글기 8px"
-          },
-          {
-            "condition": "위로 드래그 시 full로 확장, 아래로 드래그 시 peek 또는 닫힘으로 전환"
-          },
-          {
-            "condition": "드래그 중에는 핸들 색상이 Primary Strong 3385FF로 강조"
-          }
-        ]
-      },
-      {
-        "name": "dim-state",
-        "title": "딤 배경 상태 (Dim backdrop)",
-        "type": "boolean",
-        "conditions": [
-          {
-            "condition": "배경 딤은 121212 기반에 투명도 약 60퍼센트 오버레이"
-          },
-          {
-            "condition": "딤 영역 탭 시 시트 닫힘 동작 실행"
-          },
-          {
-            "condition": "열림 시 딤 페이드 인, 닫힘 시 페이드 아웃 전환"
-          },
-          {
-            "condition": "본문 텍스트는 Body 14px, 보조 설명은 888 사용"
-          }
-        ]
-      }
-    ],
-    "behavior": "하단에서 위로 슬라이드되며 열리고 드래그 핸들 또는 딤 영역 탭으로 닫힙니다. 드래그 방향과 속도에 따라 peek와 full 높이 사이를 부드럽게 스냅 전환합니다.",
-    "usage": "모바일 관제 화면에서 지도 위 특정 교차로나 CCTV 마커를 탭했을 때 상세 정보와 액션(영상 보기, 신고 접수 등)을 하단 시트로 노출하는 데 사용합니다. 위험 상태(Native FF6363) 알림 처리처럼 즉시 확인이 필요한 액션은 peek 높이로 먼저 띄워 시야 차단을 최소화하는 것을 권장합니다.",
-    "code": "import { BottomSheet } from '@pintel/ui';\n\nfunction IntersectionActions({ open, onClose }) {\n  return (\n    <BottomSheet\n      open={open}\n      onClose={onClose}\n      heightVariant='peek'\n      dim\n    >\n      <BottomSheet.Handle />\n      <BottomSheet.Body>\n        <h3>강남대로 교차로</h3>\n        <p>실시간 혼잡도 및 CCTV 액션</p>\n        <button onClick={onClose}>영상 보기</button>\n      </BottomSheet.Body>\n    </BottomSheet>\n  );\n}"
-  },
   "present-popover": {
     "name": "Popover",
-    "description": "앵커 요소에 위치를 맞춰 떠오르며 임의 콘텐츠를 담고 외부 클릭 시 닫히는 소형 오버레이 컴포넌트입니다.",
-    "overview": "Popover는 앵커(기준 요소), 본문 콘텐츠 영역, 방향을 가리키는 화살표(arrow)로 구성됩니다. 열림(open)과 닫힘(closed) 상태를 가지며 상하좌우 배치(placement) 변형을 지원해 관제 화면의 좁은 공간에서도 부가 정보를 겹쳐 보여줍니다. 다크 패널 배경(1a1a1a)과 보더(2e2e2e) 위에 떠올라 지도나 차트 위의 교통 이벤트 상세를 가리지 않고 보조합니다.",
+    "description": "여러 오버레이 컴포넌트(Menu·Select·Autocomplete·Filter 패널)가 공유하는 기반 오버레이 프리미티브입니다. 앵커 요소에 위치를 맞춰 떠오르고 임의 콘텐츠를 담으며 외부 클릭 시 닫힙니다.",
+    "overview": "Popover는 '앵커에 붙어 뜨는 소형 오버레이'라는 기반 패턴이며, 이 디자인 시스템의 Menu(우클릭 액션 목록)·Select(선택 드롭다운)·Autocomplete(추천 드롭다운)·Filter button(필터 패널)이 모두 이 패턴의 특수형입니다. 구성은 앵커(기준 요소)·본문 콘텐츠·방향 화살표(arrow)이며, 열림/닫힘 상태와 상하좌우 배치(placement)를 지원합니다. 위 특수형에 해당하지 않는 '클릭 시 뜨는 임의 콘텐츠'(빠른 상세 카드·설정 팝 등)가 필요할 때 Popover를 직접 사용하고, 목적이 분명하면 해당 전용 컴포넌트를 우선 사용하세요. 다크 패널(1a1a1a)·보더(2e2e2e)·8px 둥글기로 다른 패널과 시각적 일관성을 맞춥니다.",
     "properties": [
       {
         "name": "placement",
@@ -1487,7 +1290,8 @@ export const COMPONENT_DOCS = {
       }
     ],
     "behavior": "앵커를 클릭하거나 호버하면 지정된 placement 방향으로 부드럽게 페이드인되며, 화살표가 앵커를 가리키도록 자동 정렬됩니다. 오버레이 외부를 클릭하거나 Esc 키를 누르면 닫히고, 화면 경계에 닿으면 반대 방향으로 위치가 자동 보정됩니다.",
-    "usage": "교차로 CCTV 마커나 신호 제어기 아이콘 옆에서 상세 상태(혼잡도, 최근 이벤트)를 빠르게 띄울 때 사용하며, 넓은 정보나 입력 폼이 필요한 경우에는 Popover 대신 모달(Modal)을 사용합니다. 본문은 14px Body 텍스트와 8px 둥글기 기준을 유지해 다른 패널과 시각적 일관성을 맞춥니다.",
+    "usage": "전용 컴포넌트가 없는 범용 오버레이에 직접 사용합니다 — 예: 지도/차트 마커 클릭 시 뜨는 교통 이벤트 상세 카드, 빠른 설정 팝. 목적이 분명한 경우에는 전용 컴포넌트를 쓰세요: 목록 선택=Select, 입력 추천=Autocomplete, 필터 조건 패널=Filter button, 우클릭 액션=Menu. 넓은 정보나 입력 폼이 필요하면 Popover 대신 모달(Popup)을 사용합니다. 본문은 14px Body 텍스트와 8px 둥글기 기준을 유지해 다른 패널과 시각적 일관성을 맞춥니다.",
+    "antiPatterns": ["드롭다운 선택을 raw Popover로 다시 만들지 말 것 → Select 사용", "추천 드롭다운은 Autocomplete · 필터 패널은 Filter button · 우클릭 메뉴는 Menu 사용", "넓은 콘텐츠·입력 폼에는 Popover 대신 모달(Popup) 사용"],
     "code": "import { Popover } from '@pintel/ui';\n\nfunction IntersectionMarker() {\n  return (\n    <Popover\n      placement='top'\n      variant='info'\n      anchor={<CctvIcon id='C-204' />}\n    >\n      <Popover.Header>교차로 C-204 상태</Popover.Header>\n      <Popover.Body>\n        <p>혼잡도: 높음</p>\n        <p>최근 이벤트: 신호 위반 감지</p>\n      </Popover.Body>\n    </Popover>\n  );\n}"
   },
   "present-popup": {

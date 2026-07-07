@@ -6875,50 +6875,50 @@ function PaginationPlayground({ activeSubTab }) {
   );
 }
 
-// Page counter(nav-page-counter) — 현재 페이지 입력 · "of N pages" · 이전/다음 · 페이지당 항목 수.
-//  구성: 현재 페이지 입력 · 전체 페이지(of N) · 이전/다음 화살표 · 페이지당 항목 수 선택.
+// Page counter(nav-page-counter) — 현재/전체 페이지를 숫자(6 / 32)로 표시 + 페이지당 개수 선택.
+//  구성: 현재 페이지 · 전체 페이지 · 이전/다음 화살표 · 페이지당 개수.
 function PageCounterPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
-    const grayBox = { position: 'absolute', top: '96px', height: '40px', borderRadius: '8px', background: '#e9e9ec', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: '18px', fontWeight: W.bold, color: '#2a2a2a' };
-    const arrowBox = { position: 'absolute', top: '96px', width: '40px', height: '40px', borderRadius: '8px', background: '#fff', border: '1px solid #e4e4e7', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: '18px', color: '#4a4a4a' };
+    const grayBox = { position: 'absolute', top: '100px', height: '36px', borderRadius: '8px', background: '#e9e9ec', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.headline1.fontSize, fontWeight: W.bold, color: '#2a2a2a' };
+    const arrowBox = { position: 'absolute', top: '100px', width: '36px', height: '36px', borderRadius: '8px', background: '#fff', border: '1px solid #e4e4e7', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.body1.fontSize, color: '#4a4a4a' };
     return (
       <div style={{ width: '100%' }}>
-        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '320px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
-          {/* Row1: [현재] of N pages  ‹ › */}
-          {/* 1. 현재 페이지 입력 */}
-          <div style={{ ...grayBox, left: '250px', width: '48px' }}>6</div>
-          {/* 2. of N pages */}
-          <div style={{ position: 'absolute', left: '312px', top: '104px', zIndex: 3, fontSize: '18px', fontWeight: W.semibold, color: '#18181b' }}>of 32 pages</div>
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '280px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* Row1: [6] / 32  ‹ › */}
+          {/* 1. 현재 페이지 */}
+          <div style={{ ...grayBox, left: '260px', width: '44px' }}>6</div>
+          {/* 2. 전체 페이지 */}
+          <div style={{ position: 'absolute', left: '320px', top: '105px', zIndex: 3, fontSize: TYPE.headline1.fontSize, color: '#a1a1aa' }}>/ 32</div>
           {/* 3. 이전/다음 화살표 */}
-          <div style={{ ...arrowBox, left: '470px' }}>‹</div>
-          <div style={{ ...arrowBox, left: '518px' }}>›</div>
-          {/* Row2: [20 ▾] items per page */}
-          {/* 4. 페이지당 항목 수 */}
-          <div style={{ ...grayBox, left: '250px', top: '168px', width: '72px', fontSize: '16px', gap: '6px' }}>20 <span style={{ fontSize: '10px', color: '#6a6a6a' }}>▾</span></div>
-          <div style={{ position: 'absolute', left: '336px', top: '176px', zIndex: 3, fontSize: '18px', fontWeight: W.semibold, color: '#18181b' }}>items per page</div>
+          <div style={{ ...arrowBox, left: '402px' }}>‹</div>
+          <div style={{ ...arrowBox, left: '446px' }}>›</div>
+          {/* Row2: [20 ▾] 개씩 */}
+          {/* 4. 페이지당 개수 */}
+          <div style={{ ...grayBox, top: '166px', left: '260px', width: '62px', fontSize: TYPE.body1.fontSize, gap: '6px' }}>20 <span style={{ fontSize: TYPE.caption2.fontSize, color: '#6a6a6a' }}>▾</span></div>
+          <div style={{ position: 'absolute', left: '334px', top: '174px', zIndex: 3, fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: '#18181b' }}>개씩</div>
 
           {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            {/* 1. 현재 입력 좌측(x=250) y=116 */}
-            <line x1="206" y1="116" x2="250" y2="116" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="116" r="1.6" fill="#999" />
-            {/* 2. of N pages 상단(y=96) x=380 */}
-            <line x1="380" y1="60" x2="380" y2="96" stroke="#999" strokeWidth="1.2" /><circle cx="380" cy="96" r="1.6" fill="#999" />
-            {/* 3. 화살표 상단(y=96) x=514 */}
-            <line x1="514" y1="60" x2="514" y2="96" stroke="#999" strokeWidth="1.2" /><circle cx="514" cy="96" r="1.6" fill="#999" />
-            {/* 4. 페이지당 항목 수 좌측(x=250) y=188 */}
-            <line x1="206" y1="188" x2="250" y2="188" stroke="#999" strokeWidth="1.2" /><circle cx="250" cy="188" r="1.6" fill="#999" />
+            {/* 1. 현재 좌측(x=260) y=118 */}
+            <line x1="238" y1="118" x2="260" y2="118" stroke="#999" strokeWidth="1.2" /><circle cx="260" cy="118" r="1.6" fill="#999" />
+            {/* 2. 전체 상단(y=100) x=341 */}
+            <line x1="341" y1="78" x2="341" y2="100" stroke="#999" strokeWidth="1.2" /><circle cx="341" cy="100" r="1.6" fill="#999" />
+            {/* 3. 화살표 상단(y=100) x=442 */}
+            <line x1="442" y1="78" x2="442" y2="100" stroke="#999" strokeWidth="1.2" /><circle cx="442" cy="100" r="1.6" fill="#999" />
+            {/* 4. 페이지당 개수 좌측(x=260) y=184 */}
+            <line x1="238" y1="184" x2="260" y2="184" stroke="#999" strokeWidth="1.2" /><circle cx="260" cy="184" r="1.6" fill="#999" />
           </svg>
-          <div style={{ position: 'absolute', left: '192px', top: '116px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
-          <div style={{ position: 'absolute', left: '380px', top: '48px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
-          <div style={{ position: 'absolute', left: '514px', top: '48px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
-          <div style={{ position: 'absolute', left: '192px', top: '188px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '224px', top: '118px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '341px', top: '66px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '442px', top: '66px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '224px', top: '184px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
           {[
-            { num: 1, label: '현재 페이지 입력 (Current)' },
-            { num: 2, label: '전체 페이지 (of N pages)' },
+            { num: 1, label: '현재 페이지 (Current)' },
+            { num: 2, label: '전체 페이지 (Total)' },
             { num: 3, label: '이전 / 다음 (Prev / Next)' },
-            { num: 4, label: '페이지당 항목 수 (Items per page)' },
+            { num: 4, label: '페이지당 개수 (Per page)' },
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
@@ -6927,39 +6927,58 @@ function PageCounterPlayground({ activeSubTab }) {
     );
   }
 
-  // Interactive — 현재 페이지 입력/이동 + 페이지당 항목 수 변경
+  // Interactive — 현재 페이지 입력/이동 + 페이지당 개수 변경 (숫자 표기)
   const TOTAL_ITEMS = 632;
   const SIZES = [10, 20, 50];
   const [pageSize, setPageSize] = useState(20);
+  const [sizeOpen, setSizeOpen] = useState(false);
   const [cur, setCur] = useState(6);
   const totalPages = Math.max(1, Math.ceil(TOTAL_ITEMS / pageSize));
   const page = Math.min(Math.max(1, cur), totalPages);
-  const grayBox = { height: 40, borderRadius: 8, background: '#2a2a30', color: '#e8e8ec', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', fontFamily: T.font };
+  const grayBox = { height: 30, borderRadius: 6, background: '#2a2a30', color: '#e8e8ec', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', fontFamily: T.font };
   const arrowBtn = (label, disabled, onClick) => (
     <button type="button" onClick={onClick} disabled={disabled} style={{
-      width: 40, height: 40, borderRadius: 8, cursor: disabled ? 'default' : 'pointer', fontFamily: T.font, fontSize: 16,
+      width: 30, height: 30, borderRadius: 6, cursor: disabled ? 'default' : 'pointer', fontFamily: T.font, fontSize: TYPE.label1.fontSize,
       background: 'transparent', border: '1px solid #2e2e2e', color: disabled ? '#5a5a62' : '#d4d4d8',
     }}>{label}</button>
   );
   return (
     <div style={{ width: '100%' }}>
-      <div style={{ border: '1px solid #2a2a2a', borderRadius: '12px', background: '#1a1a1a', padding: `${SP[32]} ${SP[24]}` }}>
-        {/* Row1 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: SP[12] }}>
+      <div style={{ border: '1px solid #2a2a2a', borderRadius: '12px', background: '#1a1a1a', padding: `${SP[24]} ${SP[24]}` }}>
+        {/* Row1: [현재] / 전체  ‹ › */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: SP[8] }}>
           <input type="number" min={1} max={totalPages} value={page}
             onChange={(e) => setCur(Math.min(Math.max(1, Number(e.target.value) || 1), totalPages))}
-            style={{ ...grayBox, width: 56, textAlign: 'center', border: 'none', outline: 'none', fontSize: TYPE.label1.fontSize, fontWeight: W.bold, MozAppearance: 'textfield' }} />
-          <span style={{ fontSize: TYPE.label1.fontSize, color: '#d4d4d8', fontWeight: W.semibold }}>of {totalPages} pages</span>
+            style={{ ...grayBox, width: 44, textAlign: 'center', border: 'none', outline: 'none', fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: T.primaryStrong, MozAppearance: 'textfield' }} />
+          <span style={{ fontSize: TYPE.label1.fontSize, color: '#888', fontWeight: W.medium }}>/ {totalPages}</span>
           {arrowBtn('‹', page === 1, () => setCur(page - 1))}
           {arrowBtn('›', page === totalPages, () => setCur(page + 1))}
         </div>
-        {/* Row2 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: SP[12], marginTop: SP[16] }}>
-          <button type="button" onClick={() => { const i = SIZES.indexOf(pageSize); setPageSize(SIZES[(i + 1) % SIZES.length]); setCur(1); }}
-            style={{ ...grayBox, gap: SP[8], padding: `0 ${SP[12]}`, cursor: 'pointer', border: 'none', fontSize: TYPE.label1.fontSize, fontWeight: W.semibold }}>
-            {pageSize} <span style={{ fontSize: 10, color: '#9a9aa2' }}>▾</span>
-          </button>
-          <span style={{ fontSize: TYPE.label1.fontSize, color: '#d4d4d8', fontWeight: W.semibold }}>items per page</span>
+        {/* Row2: [20 ▾] 개씩 — 드롭다운 목록 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], marginTop: SP[12] }}>
+          <div style={{ position: 'relative' }}>
+            <button type="button" onClick={() => setSizeOpen((v) => !v)}
+              style={{ ...grayBox, gap: SP[4], padding: `0 ${SP[8]}`, cursor: 'pointer', border: `1px solid ${sizeOpen ? T.primary : 'transparent'}`, fontSize: TYPE.label1.fontSize, fontWeight: W.semibold }}>
+              {pageSize} <span style={{ fontSize: TYPE.caption2.fontSize, color: '#9a9aa2', transform: sizeOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>▾</span>
+            </button>
+            {sizeOpen && (
+              <>
+                <div onClick={() => setSizeOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 30 }} />
+                <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, zIndex: 31, minWidth: 72, background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: 8, boxShadow: '0 12px 32px rgba(0,0,0,0.5)', padding: `${SP[4]} 0`, overflow: 'hidden' }}>
+                  {SIZES.map((s) => (
+                    <div key={s} onClick={() => { setPageSize(s); setCur(1); setSizeOpen(false); }}
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, cursor: 'pointer', fontSize: TYPE.label1.fontSize, fontWeight: s === pageSize ? W.semibold : W.regular, color: s === pageSize ? T.primaryStrong : '#d4d4d8' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
+                      {s}
+                      {s === pageSize && <Icon name="check" size={14} color={T.primaryStrong} />}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+          <span style={{ fontSize: TYPE.label2.fontSize, color: '#888', fontWeight: W.medium }}>개씩</span>
         </div>
       </div>
     </div>

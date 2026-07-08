@@ -26,6 +26,11 @@ export const LIBRARY_TEMPLATES = {
     description: 'PREVAX 4 선별관제 모니터링 화면을 디자인 시스템 토큰으로 재현한 예시입니다. 기존 화면과 동일한 타이틀바·탭 크롬을 공유하며, 좌측 검색 조건 패널(등급·이벤트 드롭다운, 조치 여부 체크박스, 초기화/일괄처리, 최근 이벤트 리스트)과 우측 위험도 3밴드(위험·경고·주의)로 구성됩니다. 각 밴드는 상태 색상 사이드바·이벤트 유형 칩 헤더·이벤트 카드 영역을 가집니다.',
     uses: ['Tab', 'Dropdown', 'Check ON/OFF', 'Content badge', 'Status Color', 'Button'],
   },
+  'library-unassigned': {
+    title: '선별관제 — 미배치 채널 실시간 확인 (F-2)',
+    description: 'PREVAX 4 선별관제의 "미배치 채널 실시간 확인(F-2)" 전용 뷰를 디자인 시스템 토큰으로 재현한 예시입니다. 그룹에 배치되지 않은(group_camera_info 미부여) 카메라를 실시간 영상 + 연결상태로 모아 보는 별도 점검 창으로, 실시간영상 좌측 장비 패널 하단 [미배치 확인] 버튼으로 열립니다(메인 관제 그리드와 별개 창, 읽기 전용). 별도 창 크롬(타이틀바 + 명칭·새로고침·닫기 헤더) + 인지 보장 요약(미배치 N대·미처리 이벤트 M건) + 4열 카메라 그리드 + 하단 페이지 바로 구성됩니다. 각 셀은 영상(정상=실제 스트림 맥락 / 오류·응답없음·스트림없음=실제 상태 화면) + 하단 정보 바(카메라명·번호 + 연결상태 칩) + [배치하기] 버튼을 가집니다. 연결상태 4종은 색+아이콘+글자로 병기해 색만으로 가르지 않으며(정상=positive·오류=error·응답없음=cautionary·스트림없음=neutral), 신규·방치 카메라(스트림 미설정·연결 오류)는 숨기지 않고 테두리·글로우로 강조합니다. 빈 상태(미배치 0건)도 포함합니다.',
+    uses: ['Status Color', 'Content badge', 'Button', 'Video grid', 'Pagination', 'Typography tokens'],
+  },
   'library-selective-away': {
     title: '선별관제 — 자리비움 수신자',
     description: 'PREVAX 4 선별관제의 "자리비움 대리 수신" 화면 예시입니다. 특정 관제사(김서연)가 자리를 비우면, 그 담당 이벤트를 대리 수신자(박민지)가 대신 처리합니다. 선별관제 크롬(타이틀바·탭)을 공유하며, 상단에 부재 대리 수신 안내 배너(부재 대신 미조치 건수 pill), 좌측 장비·영역 트리, 우측 위험/경고/주의 3밴드에 이벤트 카드(시간 배지·썸네일·검지 박스·이벤트명·위치·시각·정탐/오탐 버튼)를 배치합니다. 부재 관제사에게서 넘어온 이벤트에는 "대신 받음 · 김서연 부재" Primary 배지를 표기합니다.',
@@ -45,6 +50,11 @@ export const LIBRARY_TEMPLATES = {
     title: '이벤트 자동 팝업 — 발생영상 자동 추출 (D-3)',
     description: 'PREVAX 4 라이브 검지 순간 뜨는 이벤트 자동 팝업(ShowEventPopup)이 발생영상(비디오 클립)을 베스트에포트로 자동 추출하는 흐름을 디자인 시스템 토큰으로 재현한 예시입니다. 4컷 라이프사이클: ① 팝업 등장(스냅샷 즉시 표시 + BBox·이벤트명·카메라명, 우하단 "영상 준비 중" 미세 표시) ② 영상 전환(같은 자리에서 스냅샷→발생영상 in-place 전환·1회 재생, 하단에 조작 불가 발생시점 인지 오버레이 — 전·발생 구간(band)·후) ③ 폴백(video_path NULL/미도착 시 스냅샷만 유지) ④ 정리(지속시간 만료 시 디코더 Stop+Dispose 명시 정리). 팝업 패널은 정본 Popup 토큰(배경 #1a1a1a·보더 #2e2e2e·radius 8), 이벤트 등급색은 위험(native) 계열, 재생 표시는 positive를 사용합니다. 조작 컨트롤은 미노출(SetPlaybackOnly)이며 비모달 자동 알림이라 딤·모달·확인 버튼은 두지 않습니다.',
     uses: ['Popover', 'Status Color', 'Content badge', 'Progress indicator', 'Loading', 'Typography tokens'],
+  },
+  'library-event-popup-live': {
+    title: '이벤트 자동 팝업 — 화면 표시 (D-3)',
+    description: '이벤트 자동 팝업(D-3, ShowEventPopup)이 실시간 영상 기본 화면 위에 실제로 뜬 한 장면입니다. 라이브 검지 순간 발생영상(비디오 클립)을 자동 추출해 같은 자리에서 재생하는 팝업이 비모달(딤·모달 없음)로 등장한 상태를 보여줍니다. 배경은 실시간 영상 기본 화면(타이틀바·탭·좌 지역 트리·영상 그리드), 그 위에 이벤트 자동 팝업(상단 정보 바: 상태·카메라명 / 미디어: BBox·발생시점 / 푸터: Progress indicator 재생·발생 마커)이 얹혀 있습니다. 팝업 자체의 4컷 라이프사이클(등장·전환·폴백·정리)은 별도 페이지 "이벤트 자동 팝업 — 발생영상 자동 추출"을 참고하세요.',
+    uses: ['Popover', 'Status Color', 'Progress indicator', 'Video grid', 'Typography tokens'],
   },
   'library-gis-monitor': {
     title: 'GIS 관제',

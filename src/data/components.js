@@ -338,7 +338,9 @@ export const TIERS = {
             children: [
               { id: 'library-live', name: '기본' },
               { id: 'library-live-focus', name: 'Focus (고정)' },
+              { id: 'library-unassigned', name: '미배치 채널 확인 (F-2)' },
               { id: 'library-event-popup', name: '이벤트 자동 팝업 (D-3)' },
+              { id: 'library-event-popup-live', name: '이벤트 자동 팝업 (화면)' },
             ]
           },
           { id: 'tpl-selective', name: '선별관제 모니터링', children: [

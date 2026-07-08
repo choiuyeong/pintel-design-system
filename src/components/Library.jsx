@@ -2588,6 +2588,19 @@ function PrevaxLiveScreen() {
               );
             })}
           </div>
+          {/* 장비 패널 하단 버튼군 — 새로고침 · 카메라 표시 설정 · 미배치 확인(F-2 진입, 신규) */}
+          <div style={{ flexShrink: 0, borderTop: '1px solid #232329', padding: SP[8], display: 'flex', flexDirection: 'column', gap: SP[8] }}>
+            {[{ label: '새로고침', icon: 'cycle' }, { label: '카메라 표시 설정', icon: 'settings' }].map((b) => (
+              <span key={b.label} style={{ display: 'inline-flex', alignItems: 'center', gap: SP[8], height: '30px', padding: `0 ${SP[8]}`, borderRadius: '6px', border: '1px solid #2e2e35', background: '#202024', color: '#d4d4d8', ...TYPE.caption1, fontWeight: W.semibold, whiteSpace: 'nowrap', cursor: 'default' }}>
+                <Icon name={b.icon} size={14} color="#9a9aa2" />{b.label}
+              </span>
+            ))}
+            {/* 미배치 확인 — 신규 진입 버튼(Secondary + 연한 Primary 테두리, 과한 강조 회피) → 별도 창(F-2) */}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[8], height: '30px', padding: `0 ${SP[8]}`, borderRadius: '6px', border: '1px solid rgba(51,133,255,0.45)', background: 'rgba(0,102,255,0.12)', color: '#bcd0ff', ...TYPE.caption1, fontWeight: W.semibold, whiteSpace: 'nowrap', cursor: 'pointer' }}>
+              <Icon name="nest_cam_outdoor" size={14} color={T.primaryStrong} />미배치 확인
+              <span style={{ marginLeft: 'auto', ...TYPE.caption2, fontWeight: W.bold, color: '#9dbbff', background: 'rgba(0,102,255,0.28)', borderRadius: '20px', padding: `0 ${SP[8]}`, fontVariantNumeric: 'tabular-nums' }}>12</span>
+            </span>
+          </div>
         </div>
 
         {/* 우: 툴바 + 영상 그리드 + 하단 바 */}
@@ -5411,6 +5424,19 @@ function PrevaxLiveFocusScreen() {
                 </div>
               );
             })}
+          </div>
+          {/* 장비 패널 하단 버튼군 — 새로고침 · 카메라 표시 설정 · 미배치 확인(F-2 진입, 신규) */}
+          <div style={{ flexShrink: 0, borderTop: '1px solid #232329', padding: SP[8], display: 'flex', flexDirection: 'column', gap: SP[8] }}>
+            {[{ label: '새로고침', icon: 'cycle' }, { label: '카메라 표시 설정', icon: 'settings' }].map((b) => (
+              <span key={b.label} style={{ display: 'inline-flex', alignItems: 'center', gap: SP[8], height: '30px', padding: `0 ${SP[8]}`, borderRadius: '6px', border: '1px solid #2e2e35', background: '#202024', color: '#d4d4d8', ...TYPE.caption1, fontWeight: W.semibold, whiteSpace: 'nowrap', cursor: 'default' }}>
+                <Icon name={b.icon} size={14} color="#9a9aa2" />{b.label}
+              </span>
+            ))}
+            {/* 미배치 확인 — 신규 진입 버튼(Secondary + 연한 Primary 테두리, 과한 강조 회피) → 별도 창(F-2) */}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[8], height: '30px', padding: `0 ${SP[8]}`, borderRadius: '6px', border: '1px solid rgba(51,133,255,0.45)', background: 'rgba(0,102,255,0.12)', color: '#bcd0ff', ...TYPE.caption1, fontWeight: W.semibold, whiteSpace: 'nowrap', cursor: 'pointer' }}>
+              <Icon name="nest_cam_outdoor" size={14} color={T.primaryStrong} />미배치 확인
+              <span style={{ marginLeft: 'auto', ...TYPE.caption2, fontWeight: W.bold, color: '#9dbbff', background: 'rgba(0,102,255,0.28)', borderRadius: '20px', padding: `0 ${SP[8]}`, fontVariantNumeric: 'tabular-nums' }}>12</span>
+            </span>
           </div>
         </div>
 

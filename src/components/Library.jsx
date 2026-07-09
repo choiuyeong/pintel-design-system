@@ -2367,8 +2367,8 @@ function PrevaxAwayReceiverScreen() {
         <span style={{ ...TYPE.caption1, color: '#bdbdc4' }}>{c.loc}</span>
         <span style={{ ...TYPE.caption2, color: '#8a8a92', fontVariantNumeric: 'tabular-nums' }}>{c.ts}</span>
         {c.proxy && (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[4], alignSelf: 'flex-start', marginTop: SP[4], padding: `2px ${SP[8]}`, borderRadius: '4px', background: 'rgba(0,102,255,0.14)', border: `1px solid ${T.primary}66`, ...TYPE.caption2, fontWeight: W.semibold, color: '#9dbbff', whiteSpace: 'nowrap' }}>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: T.primary }} />김서연 부재
+          <span style={{ display: 'inline-flex', alignSelf: 'flex-start', marginTop: SP[4] }}>
+            <DsBadge tone="accent" size="xs" dot>김서연 부재</DsBadge>
           </span>
         )}
         <div style={{ display: 'flex', gap: SP[4], marginTop: SP[8] }}>
@@ -2429,10 +2429,10 @@ function PrevaxAwayReceiverScreen() {
             {allEvents.map((e, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #202027', cursor: 'pointer' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: e.bandColor, flexShrink: 0 }} />
-                <span style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: SP[4] }}>
+                <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: SP[16] }}>
                     <span style={{ ...TYPE.caption1, fontWeight: W.semibold, color: '#e4e4e8' }}>{e.evt}</span>
-                    {e.proxy && <span style={{ ...TYPE.caption2, fontWeight: W.semibold, color: '#9dbbff', background: 'rgba(0,102,255,0.14)', border: `1px solid ${T.primary}66`, borderRadius: '4px', padding: '0 5px', whiteSpace: 'nowrap' }}>부재</span>}
+                    {e.proxy && <DsBadge tone="accent" size="xs">부재</DsBadge>}
                   </div>
                   <div style={{ ...TYPE.caption2, color: '#8a8a92' }}>{e.loc} · {e.ts}</div>
                 </span>

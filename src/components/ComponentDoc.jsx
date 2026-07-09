@@ -7793,28 +7793,35 @@ function SectionMessageContent({ variant = 'info', title, body }) {
 }
 
 function SectionMessagePlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 — Text field anatomy와 동일 시각 언어 */}
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '320px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 5. 컨테이너 — 메시지 박스. 좌측 강조 보더(4)를 컨테이너 자체 borderLeft로 통합(모서리 8px에 맞게 클립) */}
           <div style={{ position: 'absolute', left: '230px', top: '108px', width: '340px', height: '96px', background: '#fff', border: '1px solid #e4e4e7', borderLeft: `3px solid ${T.primaryStrong}`, borderRadius: '8px', zIndex: 2 }} />
-          {/* 1. 아이콘 — 점선 placeholder (20×20, center y=143) */}
-          <div style={{ position: 'absolute', left: '254px', top: '133px', width: '20px', height: '20px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
-          {/* 2. 제목(Title) — 굵은 다크 텍스트 (컨테이너 수직 중앙 기준 상·하 여백 25px 균형) */}
-          <div style={{ position: 'absolute', left: '290px', top: '133px', zIndex: 3, fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: '#18181b' }}>제목</div>
+          {/* 1. 아이콘 — 점선 placeholder (20×20, center y=143 · 좌측 패딩 SP[16]) */}
+          <div style={{ position: 'absolute', left: '246px', top: '133px', width: '20px', height: '20px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
+          {/* 2. 제목(Title) — 굵은 다크 텍스트 (아이콘↔텍스트 SP[12]) */}
+          <div style={{ position: 'absolute', left: '278px', top: '133px', zIndex: 3, fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: '#18181b' }}>제목</div>
           {/* 3. 본문(Content) — 회색 텍스트 */}
-          <div style={{ position: 'absolute', left: '290px', top: '161px', width: '260px', zIndex: 3, fontSize: TYPE.label2.fontSize, color: '#a1a1aa' }}>본문 텍스트 영역입니다.</div>
+          <div style={{ position: 'absolute', left: '278px', top: '161px', width: '260px', zIndex: 3, fontSize: TYPE.label2.fontSize, color: '#a1a1aa' }}>본문 텍스트 영역입니다.</div>
 
           {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            {/* 1. 아이콘 좌측 경계(x=254, y=143) */}
-            <line x1="182" y1="143" x2="254" y2="143" stroke="#999" strokeWidth="1.2" /><circle cx="254" cy="143" r="1.6" fill="#999" />
+            {/* 1. 아이콘 좌측 경계(x=246, y=143) */}
+            <line x1="182" y1="143" x2="246" y2="143" stroke="#999" strokeWidth="1.2" /><circle cx="246" cy="143" r="1.6" fill="#999" />
             {/* 2. 제목 상단(y=133) — 위에서 아래로 */}
-            <line x1="310" y1="88" x2="310" y2="133" stroke="#999" strokeWidth="1.2" /><circle cx="310" cy="133" r="1.6" fill="#999" />
-            {/* 3. 본문 우측 경계(x=550, y=170) */}
-            <line x1="632" y1="170" x2="550" y2="170" stroke="#999" strokeWidth="1.2" /><circle cx="550" cy="170" r="1.6" fill="#999" />
+            <line x1="298" y1="88" x2="298" y2="133" stroke="#999" strokeWidth="1.2" /><circle cx="298" cy="133" r="1.6" fill="#999" />
+            {/* 3. 본문 우측 경계(x=538, y=170) */}
+            <line x1="632" y1="170" x2="538" y2="170" stroke="#999" strokeWidth="1.2" /><circle cx="538" cy="170" r="1.6" fill="#999" />
             {/* 4. 좌측 강조 보더(x=230) — 하단부(모서리 회피) */}
             <line x1="182" y1="184" x2="230" y2="184" stroke="#999" strokeWidth="1.2" /><circle cx="230" cy="184" r="1.6" fill="#999" />
             {/* 5. 컨테이너 하단 경계(y=204) — 아래에서 위로 */}
@@ -7822,10 +7829,18 @@ function SectionMessagePlayground({ activeSubTab }) {
           </svg>
           {/* Callouts — 흰 원 + 검정 텍스트 */}
           <div style={{ position: 'absolute', left: '172px', top: '143px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
-          <div style={{ position: 'absolute', left: '310px', top: '78px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '298px', top: '78px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
           <div style={{ position: 'absolute', left: '642px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
           <div style={{ position: 'absolute', left: '172px', top: '184px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
           <div style={{ position: 'absolute', left: '400px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 실제 스펙(가로 SP[16]·아이콘↔텍스트 SP[12]) */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={230} y={143} length={16} label="SP[16]" />{/* 컨테이너 좌측 패딩 */}
+              <DimLine dir="h" x={266} y={186} length={12} label="SP[12]" />{/* 아이콘↔텍스트 */}
+            </>
+          )}
         </div>
         {/* Legend */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
@@ -7838,6 +7853,27 @@ function SectionMessagePlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — 실제 Section message 기준(이미 SP 준수). anatomy 들여쓰기/gap을 실제에 맞춤 */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['가로 패딩', 'SP[16]', '16', '컨테이너 좌우'],
+              ['세로 패딩', 'SP[12]', '12', '컨테이너 상하'],
+              ['아이콘 ↔ 텍스트', 'SP[12]', '12', '내부 요소 간격'],
+              ['제목 ↔ 본문', 'SP[4]', '4', '텍스트 줄 간격'],
+              ['좌측 강조 보더', '—', '3', 'variant 색 강조'],
+              ['모서리 반경', 'radius', '8', 'border-radius'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 Section message는 이미 SP 준수(gap 12·padding 12/16). anatomy 들여쓰기·gap을 실제(SP[16]/SP[12])에 맞춰 일치.</div>
         </div>
       </div>
     );

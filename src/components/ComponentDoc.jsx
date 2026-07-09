@@ -7148,11 +7148,18 @@ function PaginationPlayground({ activeSubTab }) {
 // Page counter(nav-page-counter) — 현재/전체 페이지를 숫자(6 / 32)로 표시 + 페이지당 개수 선택.
 //  구성: 현재 페이지 · 전체 페이지 · 이전/다음 화살표 · 페이지당 개수.
 function PageCounterPlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     const grayBox = { position: 'absolute', top: '100px', height: '36px', borderRadius: '8px', background: '#e9e9ec', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.headline1.fontSize, fontWeight: W.bold, color: '#2a2a2a' };
     const arrowBox = { position: 'absolute', top: '100px', width: '36px', height: '36px', borderRadius: '8px', background: '#fff', border: '1px solid #e4e4e7', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.body1.fontSize, color: '#4a4a4a' };
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '280px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* Row1: [6] / 32  ‹ › */}
           {/* 1. 현재 페이지 */}
@@ -7182,6 +7189,11 @@ function PageCounterPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '341px', top: '66px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
           <div style={{ position: 'absolute', left: '442px', top: '66px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
           <div style={{ position: 'absolute', left: '224px', top: '184px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 화살표 간격 SP[8] */}
+          {showSpacing && (
+            <DimLine dir="h" x={438} y={118} length={8} label="SP[8]" />
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
           {[
@@ -7192,6 +7204,25 @@ function PageCounterPlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — Page counter (요소 간격 SP[8] 준수) */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['요소 간격', 'SP[8]', '8', '입력·화살표·개수 사이'],
+              ['박스 높이', '—', '30', '입력·개수 컨트롤'],
+              ['화살표', '—', '30', '이전/다음 버튼'],
+              ['모서리 반경', 'radius', '6', 'border-radius'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 요소 간격 SP[8] 준수. anatomy는 컨트롤 크게(36) 그린 도식.</div>
         </div>
       </div>
     );
@@ -7484,9 +7515,16 @@ function PaginationDotsPlayground({ activeSubTab }) {
 // Top navigation(nav-top) — PREVAX 전 화면 공유 상단 크롬. 정본: Library의 PrevaxTitleBar.
 //  구성: 브랜드·권한(좌) · 경고 배너(중앙) · 상태·시각·언어·계정·창 컨트롤(우).
 function TopNavigationPlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '300px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 타이틀바 스트립(흰 패널) — 실제 PrevaxTitleBar 구조 */}
           <div style={{ position: 'absolute', left: '100px', top: '118px', width: '560px', height: '44px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
@@ -7524,6 +7562,11 @@ function TopNavigationPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '372px', top: '76px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
           <div style={{ position: 'absolute', left: '500px', top: '208px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
           <div style={{ position: 'absolute', left: '615px', top: '76px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 경고 배너 좌측 패딩 SP[8] */}
+          {showSpacing && (
+            <DimLine dir="h" x={320} y={140} length={8} label="SP[8]" />
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
           {[
@@ -7536,6 +7579,26 @@ function TopNavigationPlayground({ activeSubTab }) {
           ))}
         </div>
         <div style={{ marginTop: SP[16], fontSize: TYPE.caption1.fontSize, color: '#9a9aa2' }}>정본: <span style={{ color: '#d4d4d8' }}>PrevaxTitleBar</span> (Library.jsx 공통 크롬) — 새 화면에서 재사용하세요.</div>
+
+        {/* 간격 스펙 표 — 정본 PrevaxTitleBar 기준 */}
+        <div style={{ maxWidth: '760px', margin: '16px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['타이틀바 높이', '—', '40', '상단 크롬 높이'],
+              ['가로 패딩', 'SP[12]', '12', '좌우 여백'],
+              ['요소 간격', 'SP[8]', '8', '브랜드·상태·계정 사이'],
+              ['경고 배너 패딩', 'SP[8]', '8', '배너 좌우'],
+              ['모서리 반경', 'radius', '6', '배너·버튼'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 정본 PrevaxTitleBar(padding SP[12]·gap SP[8]) 기준. anatomy는 요소 배치 도식.</div>
+        </div>
       </div>
     );
   }

@@ -6294,6 +6294,7 @@ function AvatarPlayground({ activeSubTab }) {
   const [shape, setShape] = useState('circle');
   const [status, setStatus] = useState('online');
   const [showImage, setShowImage] = useState(false);
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
 
   const sizes = { sm: 32, md: 40, lg: 48, xl: 56 };
   const px = sizes[size];
@@ -6303,6 +6304,12 @@ function AvatarPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 */}
         <div style={{
           position: 'relative',
@@ -6370,6 +6377,14 @@ function AvatarPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '360px', top: '70px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
           <div style={{ position: 'absolute', left: '490px', top: '130px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
           <div style={{ position: 'absolute', left: '382px', top: '270px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
+
+          {/* 간격 치수선 — 컨테이너 지름 + 상태 점 모서리 여백 SP[4](3→4) */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={328} y={170} length={64} label="64px" />{/* Container 지름 */}
+              <DimLine dir="h" x={389} y={192} length={3} label="SP[4]" />{/* 상태 점 우측 여백 */}
+            </>
+          )}
         </div>
 
         {/* Legend */}
@@ -6384,6 +6399,20 @@ function AvatarPlayground({ activeSubTab }) {
               {item.num}. {item.label}
             </div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 */}
+        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
+            {[
+              ['상태 표시 여백', 'SP[4]', '3', '상태 점 모서리 오프셋'],
+              ['Container 지름', '—', '64', 'anatomy 아바타 크기'],
+              ['상태 점 지름', '—', '14', 'Status indicator'],
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 3→SP[4] 정규화. 실동작 사이즈 sm32 · md40 · lg48 · xl56.</div>
         </div>
       </div>
     );
@@ -6528,6 +6557,7 @@ function AvatarGroupPlayground({ activeSubTab }) {
   const [count, setCount] = useState(5);
   const [max, setMax] = useState(4);
   const [overlap, setOverlap] = useState('md');
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
 
   const overlapPx = { sm: 8, md: 14, lg: 20 };
   const gap = -overlapPx[overlap];
@@ -6546,6 +6576,12 @@ function AvatarGroupPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 */}
         <div style={{
           position: 'relative',
@@ -6625,6 +6661,11 @@ function AvatarGroupPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '296px', top: '70px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
           <div style={{ position: 'absolute', left: '338px', top: '270px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
           <div style={{ position: 'absolute', left: '540px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
+
+          {/* 간격 치수선 — 아바타 중첩 간격 SP[12](anatomy 기준) */}
+          {showSpacing && (
+            <DimLine dir="h" x={338} y={192} length={12} label="SP[12]" />
+          )}
         </div>
 
         {/* Legend */}
@@ -6639,6 +6680,20 @@ function AvatarGroupPlayground({ activeSubTab }) {
               {item.num}. {item.label}
             </div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 */}
+        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
+            {[
+              ['중첩 간격', 'SP[12]', '12', '아바타 겹침(anatomy 기준)'],
+              ['아바타 지름', '—', '44', '개별 아바타'],
+              ['테두리', '—', '2', '링 border'],
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실동작 overlap sm8 · md14 · lg20 · 아바타 40. anatomy는 겹침 12 · 지름 44.</div>
         </div>
       </div>
     );
@@ -7090,10 +7145,17 @@ const calloutStyleSm = {
 // Popup(present-popup) — 모달 대화상자. Anatomy(구조 도식) + Interactive(열기/닫기).
 function PopupPlayground({ activeSubTab }) {
   const [open, setOpen] = useState(true);
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
 
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 */}
         <div style={{ position: 'relative', background: '#efefef', borderRadius: '16px', width: '720px', height: '360px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
           {/* 3. Scrim (딤 배경) */}
@@ -7131,6 +7193,15 @@ function PopupPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '168px', top: '172px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
           <div style={{ position: 'absolute', left: '120px', top: '314px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
           <div style={{ position: 'absolute', left: '552px', top: '254px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
+
+          {/* 간격 치수선 — 모든 섹션 좌우 패딩 SP[16] · 헤더 상하 패딩 SP[12](13→12) */}
+          {showSpacing && (
+            <>
+              <PaddingFill x={210} y={64} w={300} h={226} t={0} l={16} r={16} b={0} />
+              <DimLine dir="h" x={210} y={200} length={16} label="SP[16]" />{/* 좌우 패딩 */}
+              <DimLine dir="v" x={250} y={64} length={13} label="SP[12]" />{/* 헤더 상단 패딩 */}
+            </>
+          )}
         </div>
 
         {/* Legend */}
@@ -7145,6 +7216,23 @@ function PopupPlayground({ activeSubTab }) {
               {item.num}. {item.label}
             </div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 */}
+        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
+            {[
+              ['좌우 패딩', 'SP[16]', '16', '모든 섹션 좌우 여백'],
+              ['헤더 상하 패딩', 'SP[12]', '13', 'Navigation 상하'],
+              ['콘텐츠 여백', 'SP[12]', '14', 'Contents 상하 margin'],
+              ['하단 여백', 'SP[16]', '16', 'Action area 하단'],
+              ['버튼 간 간격', 'SP[8]', '8', '액션 버튼 간격(실동작)'],
+              ['모서리 반경', 'radius', '12', 'border-radius'],
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 헤더 13→SP[12] · 콘텐츠 14→SP[12] 정규화. 좌우 16 = SP[16] 준수.</div>
         </div>
       </div>
     );
@@ -8831,11 +8919,18 @@ function FallbackViewPlayground({ activeSubTab }) {
   const [variant, setVariant] = useState('error');
   const [size, setSize] = useState('compact');
   const [loading, setLoading] = useState(false);
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   const retry = () => { setLoading(true); };
 
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 — Text field anatomy와 동일 시각 언어(레이어드 흰 패널 + 실제 요소 + 흰 콜아웃) */}
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '400px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 5. 컨테이너 — Fallback 영역 흰 패널(레이어드 룩), center x=410 */}
@@ -8871,6 +8966,14 @@ function FallbackViewPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '175px', top: '230px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
           <div style={{ position: 'absolute', left: '640px', top: '280px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
           <div style={{ position: 'absolute', left: '410px', top: '30px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
+
+          {/* 간격 치수선 — 세로 리듬(아이콘↔제목 SP[24] · 설명↔버튼 SP[24]), x=490 오른쪽 여백열 */}
+          {showSpacing && (
+            <>
+              <DimLine dir="v" x={490} y={168} length={22} label="SP[24]" />{/* 아이콘 ↔ 제목 */}
+              <DimLine dir="v" x={490} y={238} length={24} label="SP[24]" />{/* 설명 ↔ 버튼 */}
+            </>
+          )}
         </div>
         {/* Legend */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
@@ -8883,6 +8986,22 @@ function FallbackViewPlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
+            {[
+              ['아이콘 ↔ 제목', 'SP[24]', '24', '일러스트와 제목 간격'],
+              ['제목 ↔ 설명', 'SP[8]', '8', '제목과 보조 설명 간격'],
+              ['설명 ↔ 버튼', 'SP[24]', '24', '설명과 액션 버튼 간격'],
+              ['아이콘 크기', '—', '76', '일러스트 placeholder'],
+              ['버튼 크기', '—', '96×36', '액션 버튼'],
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 22→SP[24] 정규화. 세로 리듬 SP[8]/SP[24] 기준.</div>
         </div>
       </div>
     );

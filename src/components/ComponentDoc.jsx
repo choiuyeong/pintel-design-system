@@ -4531,7 +4531,7 @@ function SectionHeaderPlayground({ activeSubTab }) {
             left: '210px',
             top: '128px',
             width: '360px',
-            height: '56px',
+            height: '44px',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
@@ -4541,25 +4541,25 @@ function SectionHeaderPlayground({ activeSubTab }) {
             boxSizing: 'border-box',
             zIndex: 3,
           }}>
-            <span style={{ fontSize: '22px', fontWeight: 700, color: '#111111', whiteSpace: 'nowrap', letterSpacing: '-0.02em' }}>Heading</span>
+            <span style={{ fontSize: '18px', fontWeight: 700, color: '#111111', whiteSpace: 'nowrap', letterSpacing: '-0.02em' }}>Heading</span>
             <MiniChip />
-            <span style={{ marginLeft: 'auto', fontSize: '15px', fontWeight: 500, color: '#9a9aa2', whiteSpace: 'nowrap' }}>Text</span>
+            <span style={{ marginLeft: 'auto', fontSize: '14px', fontWeight: 500, color: '#9a9aa2', whiteSpace: 'nowrap' }}>Text</span>
           </div>
 
           {/* SVG 직선 */}
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
             {/* 1. Heading -> 좌측 수평선 */}
-            <line x1="170" y1="156" x2="226" y2="156" stroke="#999" strokeWidth="1.2" />
+            <line x1="170" y1="150" x2="226" y2="150" stroke="#999" strokeWidth="1.2" />
             {/* 2. Heading content(Chip) -> 하단 수직선 */}
-            <line x1="364" y1="250" x2="364" y2="188" stroke="#999" strokeWidth="1.2" />
+            <line x1="364" y1="250" x2="364" y2="172" stroke="#999" strokeWidth="1.2" />
             {/* 3. Trailing content(Text) -> 우측 수평선 */}
-            <line x1="610" y1="156" x2="556" y2="156" stroke="#999" strokeWidth="1.2" />
+            <line x1="610" y1="150" x2="556" y2="150" stroke="#999" strokeWidth="1.2" />
           </svg>
 
           {/* Callouts */}
-          <div style={{ position: 'absolute', left: '170px', top: '156px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
+          <div style={{ position: 'absolute', left: '170px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
           <div style={{ position: 'absolute', left: '364px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '610px', top: '156px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+          <div style={{ position: 'absolute', left: '610px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
         </div>
 
         {/* Legend */}

@@ -10958,32 +10958,47 @@ function ToastPlayground({ activeSubTab }) {
   const [toastType, setToastType] = useState('neutral');
   const [message, setMessage] = useState('장비 정상 가동 중: 정상 연결 상태가 복구되었습니다.');
   const [showIcon, setShowIcon] = useState(true);
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
 
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 — Section message anatomy와 동일 시각 언어 */}
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '320px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 1. 컨테이너 — 토스트 pill(흰 패널), center x=380 · center y=160 */}
           <div style={{ position: 'absolute', left: '240px', top: '134px', width: '280px', height: '52px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '12px', zIndex: 2 }} />
-          {/* 2. 좌측 아이콘 — 점선 placeholder */}
-          <div style={{ position: 'absolute', left: '264px', top: '151px', width: '18px', height: '18px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
-          {/* 3. 메시지 — 스켈레톤 바 */}
-          <div style={{ position: 'absolute', left: '296px', top: '155px', width: '148px', height: '10px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          {/* 2. 좌측 아이콘 — 점선 placeholder (좌측 패딩 SP[16]) */}
+          <div style={{ position: 'absolute', left: '256px', top: '151px', width: '18px', height: '18px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
+          {/* 3. 메시지 — 스켈레톤 바 (아이콘↔메시지 SP[8]) */}
+          <div style={{ position: 'absolute', left: '282px', top: '155px', width: '148px', height: '10px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
 
           {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
             {/* 1. 컨테이너 상단 경계(y=134) x=380 */}
             <line x1="380" y1="114" x2="380" y2="134" stroke="#999" strokeWidth="1.2" /><circle cx="380" cy="134" r="1.6" fill="#999" />
-            {/* 2. 좌측 아이콘 좌측 경계(x=264) y=160 */}
-            <line x1="214" y1="160" x2="264" y2="160" stroke="#999" strokeWidth="1.2" /><circle cx="264" cy="160" r="1.6" fill="#999" />
-            {/* 3. 메시지 우측 경계(x=444) y=160 */}
-            <line x1="546" y1="160" x2="444" y2="160" stroke="#999" strokeWidth="1.2" /><circle cx="444" cy="160" r="1.6" fill="#999" />
+            {/* 2. 좌측 아이콘 좌측 경계(x=256) y=160 */}
+            <line x1="214" y1="160" x2="256" y2="160" stroke="#999" strokeWidth="1.2" /><circle cx="256" cy="160" r="1.6" fill="#999" />
+            {/* 3. 메시지 우측 경계(x=430) y=160 */}
+            <line x1="546" y1="160" x2="430" y2="160" stroke="#999" strokeWidth="1.2" /><circle cx="430" cy="160" r="1.6" fill="#999" />
           </svg>
           {/* Callouts — 흰 원 + 검정 텍스트 */}
           <div style={{ position: 'absolute', left: '380px', top: '98px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
           <div style={{ position: 'absolute', left: '200px', top: '160px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
           <div style={{ position: 'absolute', left: '560px', top: '160px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 실제 토스트 스펙(가로 SP[16]·아이콘↔메시지 SP[8]) */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={240} y={160} length={16} label="SP[16]" />{/* 컨테이너 좌측 패딩 */}
+              <DimLine dir="h" x={274} y={175} length={8} label="SP[8]" />{/* 아이콘↔메시지 */}
+            </>
+          )}
         </div>
         {/* Legend */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
@@ -10994,6 +11009,25 @@ function ToastPlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — 실제 토스트 기준. gap 10→SP[8]·세로 패딩 10→SP[8] 정규화 */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['가로 패딩', 'SP[16]', '16', '토스트 좌우'],
+              ['세로 패딩', 'SP[8]', '8', '토스트 상하(10→8 정규화)'],
+              ['아이콘 ↔ 메시지', 'SP[8]', '8', '내부 요소 간격(10/14→8 정규화)'],
+              ['모서리 반경', 'radius', '8', 'border-radius'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 토스트 gap 10·세로 패딩 10 → SP[8] 정규화, anatomy 들여쓰기·gap도 실제(SP[16]/SP[8])에 맞춤.</div>
         </div>
       </div>
     );
@@ -11079,11 +11113,11 @@ function ToastPlayground({ activeSubTab }) {
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '10px',
+            gap: SP[8],
             backgroundColor: colors.bg,
             border: `1px solid ${colors.border}`,
             borderRadius: '8px',
-            padding: '10px 16px',
+            padding: `${SP[8]} ${SP[16]}`,
             color: colors.text,
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
             maxWidth: '480px',

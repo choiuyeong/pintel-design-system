@@ -9903,6 +9903,8 @@ function ListCardPlayground({ activeSubTab }) {
               <DimLine dir="h" x={173} y={226} length={16} label="SP[16]" />{/* leading↔썸네일 */}
               <DimLine dir="h" x={269} y={226} length={16} label="SP[16]" />{/* 썸네일↔텍스트 */}
               <DimLine dir="v" x={341} y={178} length={4} label="SP[4]" />{/* 텍스트 줄 간격 */}
+              <DimLine dir="v" x={252} y={128} length={32} label="space-between" />{/* 상단 콘텐츠↔본문 세로 간격(자동 분배) */}
+              <DimLine dir="v" x={252} y={220} length={26} label="space-between" />{/* 본문↔하단 콘텐츠 세로 간격(자동 분배) */}
             </>
           )}
         </div>
@@ -9942,7 +9944,7 @@ function ListCardPlayground({ activeSubTab }) {
               <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
             )))}
           </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화 완료(카드 여백 SP[16]).</div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화(카드 여백 SP[16]). 상·하 콘텐츠(보라 바)의 세로 간격은 <b style={{ color: '#c4b5fd' }}>space-between</b>(자동 분배)이라 고정 토큰 없음 — 치수선에 "space-between"으로 표기.</div>
         </div>
       </div>
     );

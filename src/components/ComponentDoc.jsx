@@ -7688,9 +7688,16 @@ function PopoverPlayground({ activeSubTab }) {
 //  구성: 입력 필드 · 추천 목록 · 추천 항목 · 일치 강조. (Popover 특수형)
 const AC_ITEMS = ['강변북로', '강남대로', '경부고속도로', '올림픽대로', '내부순환로', '동부간선도로'];
 function AutocompletePlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '360px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 1. 입력 필드 (Input field) */}
           <div style={{ position: 'absolute', left: '260px', top: '60px', width: '240px', height: '40px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 3, display: 'flex', alignItems: 'center', padding: `0 ${SP[12]}`, fontSize: TYPE.label1.fontSize, color: '#18181b' }}>강변</div>
@@ -7698,19 +7705,19 @@ function AutocompletePlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '260px', top: '104px', width: '240px', height: '168px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
           {/* 4. 일치 강조 항목(첫 행) — 하이라이트 배경 + 일치 텍스트 */}
           <div style={{ position: 'absolute', left: '261px', top: '110px', width: '238px', height: '36px', background: 'rgba(0,102,255,0.08)', borderRadius: '7px 7px 0 0', zIndex: 2 }} />
-          <div style={{ position: 'absolute', left: '284px', top: '120px', zIndex: 3, fontSize: TYPE.label2.fontSize, color: '#18181b' }}><span style={{ color: T.primary, fontWeight: W.bold }}>강변</span>북로</div>
-          {/* 3. 추천 항목(일반 행) — 스켈레톤 바 */}
-          <div style={{ position: 'absolute', left: '284px', top: '160px', width: '130px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '284px', top: '196px', width: '150px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '284px', top: '232px', width: '110px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '272px', top: '120px', zIndex: 3, fontSize: TYPE.label2.fontSize, color: '#18181b' }}><span style={{ color: T.primary, fontWeight: W.bold }}>강변</span>북로</div>
+          {/* 3. 추천 항목(일반 행) — 스켈레톤 바 (항목 좌측 패딩 SP[12]) */}
+          <div style={{ position: 'absolute', left: '272px', top: '160px', width: '130px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '272px', top: '196px', width: '150px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '272px', top: '232px', width: '110px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
 
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
             {/* 1. 입력 필드 좌측(x=260) y=80 */}
             <line x1="240" y1="80" x2="260" y2="80" stroke="#999" strokeWidth="1.2" /><circle cx="260" cy="80" r="1.6" fill="#999" />
-            {/* 3. 추천 항목 좌측(x=284) y=164 */}
-            <line x1="240" y1="164" x2="284" y2="164" stroke="#999" strokeWidth="1.2" /><circle cx="284" cy="164" r="1.6" fill="#999" />
-            {/* 4. 일치 강조 우측(x=340) y=128 */}
-            <line x1="520" y1="128" x2="340" y2="128" stroke="#999" strokeWidth="1.2" /><circle cx="340" cy="128" r="1.6" fill="#999" />
+            {/* 3. 추천 항목 좌측(x=272) y=164 */}
+            <line x1="240" y1="164" x2="272" y2="164" stroke="#999" strokeWidth="1.2" /><circle cx="272" cy="164" r="1.6" fill="#999" />
+            {/* 4. 일치 강조 우측(x=328) y=128 */}
+            <line x1="520" y1="128" x2="328" y2="128" stroke="#999" strokeWidth="1.2" /><circle cx="328" cy="128" r="1.6" fill="#999" />
             {/* 2. 추천 목록 우측(x=500) y=210 */}
             <line x1="520" y1="210" x2="500" y2="210" stroke="#999" strokeWidth="1.2" /><circle cx="500" cy="210" r="1.6" fill="#999" />
           </svg>
@@ -7718,6 +7725,14 @@ function AutocompletePlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '226px', top: '164px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
           <div style={{ position: 'absolute', left: '534px', top: '128px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
           <div style={{ position: 'absolute', left: '534px', top: '210px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 입력·항목 가로 패딩 SP[12] */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={260} y={80} length={12} label="SP[12]" />{/* 입력 좌측 패딩 */}
+              <DimLine dir="h" x={260} y={210} length={12} label="SP[12]" />{/* 항목 좌측 패딩 */}
+            </>
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
           {[
@@ -7728,6 +7743,27 @@ function AutocompletePlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — 실제 Autocomplete 기준(입력·항목 SP 준수). anatomy 항목 들여쓰기만 SP[12]로 정합 */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['입력 가로 패딩', 'SP[12]', '12', '입력 필드 좌우'],
+              ['입력 아이콘↔텍스트', 'SP[8]', '8', '검색 아이콘↔입력'],
+              ['목록 항목 패딩', 'SP[8] × SP[12]', '8·12', '드롭다운 항목'],
+              ['입력↔목록 간격', 'SP[4]', '4', 'marginTop'],
+              ['높이', '40', '40', '입력 컨트롤 높이'],
+              ['모서리 반경', 'radius', '8', 'border-radius'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 Autocomplete는 이미 SP 준수 — anatomy 항목 들여쓰기(24)만 SP[12]로 맞춰 일치.</div>
         </div>
       </div>
     );

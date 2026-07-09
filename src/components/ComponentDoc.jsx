@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, Fragment } from 'react';
 import { COMPONENT_DOCS, SPACING_MAP, CATEGORIES, TIERS } from '../data/components';
 import { T, SP, TYPE, W, COLOR_ACCENT, COLOR_STATUS } from '../data/tokens';
 import { Icon } from './icons';
+import { SectionHeader } from '../ds/SectionHeader';
 
 /**
  * 컴포넌트 이름 (예: "Accordion.Item")을 ID (예: "accordion-item")로 변환 */

@@ -2177,6 +2177,7 @@ function ContentBadgePlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 배지 padding 4×8 = SP[4]/SP[8] */}
           {showSpacing && (
             <>
+              <PaddingFill x={301} y={157} w={118} h={26} t={4} l={8} />
               <DimLine dir="h" x={301.5} y={170} length={8} label="SP[8]" />{/* 좌측 가로 패딩 */}
               <DimLine dir="v" x={392} y={157.5} length={4} label="SP[4]" />{/* 세로 패딩 */}
             </>
@@ -2890,6 +2891,7 @@ function TextFieldPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 필드 padding 0 12=SP[12], gap=SP[8], 높이 44 */}
           {showSpacing && (
             <>
+              <PaddingFill x={251} y={151} w={298} h={42} l={12} r={12} />
               <DimLine dir="h" x={251} y={172} length={12} label="SP[12]" />{/* 필드 좌측 가로 패딩 */}
               <DimLine dir="v" x={558} y={150} length={44} label="44" />{/* 필드 높이 */}
               <DimLine dir="h" x={281} y={272} length={8} label="SP[8]" />{/* leading↔입력 */}
@@ -3183,6 +3185,7 @@ function TextAreaPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 필드 padding=SP[12], 높이 84, 라벨↔필드 SP[8] */}
           {showSpacing && (
             <>
+              <PaddingFill x={221} y={189} w={318} h={84} t={12} l={12} r={12} b={12} />
               <DimLine dir="h" x={221} y={210} length={12} label="SP[12]" />{/* 필드 좌측 가로 패딩 */}
               <DimLine dir="v" x={548} y={188} length={84} label="84" />{/* 필드 높이(멀티라인) */}
               <DimLine dir="v" x={232} y={180} length={8} label="SP[8]" />{/* 라벨↔필드 */}
@@ -6461,6 +6464,22 @@ function DimLine({ x, y, length, dir = 'h', label }) {
   );
 }
 
+// anatomy 여백(padding) 하이라이트 — 컴포넌트 박스(x,y,w,h) + 패딩값(t/r/b/l)으로 4변 여백을 보라 반투명 표시.
+//  치수선(DimLine)과 함께 "간격 표시" 토글에서 노출. List card 콘텐츠 바와 동일 보라 계열.
+function PaddingFill({ x, y, w, h, t = 0, r, b, l }) {
+  const rr = r ?? t, bb = b ?? t, ll = l ?? (r ?? t);
+  const fill = 'rgba(139,92,246,0.20)';
+  const strip = (s) => ({ position: 'absolute', background: fill, zIndex: 5, pointerEvents: 'none', ...s });
+  return (
+    <>
+      {t > 0 && <div style={strip({ left: x, top: y, width: w, height: t })} />}
+      {bb > 0 && <div style={strip({ left: x, top: y + h - bb, width: w, height: bb })} />}
+      {ll > 0 && <div style={strip({ left: x, top: y + t, width: ll, height: h - t - bb })} />}
+      {rr > 0 && <div style={strip({ left: x + w - rr, top: y + t, width: rr, height: h - t - bb })} />}
+    </>
+  );
+}
+
 /**
  * Tooltip(present-tooltip) — Anatomy + Interactive.
  * 정본 토큰: 본문 #1a1a1a · 보더 #2e2e2e · radius 8 · 패딩 8/12 · 대상과 8px 간격 · 화살표 8px(본문 동일 배경) · 본문 14px.
@@ -6521,6 +6540,7 @@ function TooltipPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 본문 padding 8×12=SP[8]/SP[12](이미 준수) */}
           {showSpacing && (
             <>
+              <PaddingFill x={310} y={154} w={100} h={36} t={8} l={12} r={12} b={8} />
               <DimLine dir="h" x={310} y={172} length={12} label="SP[12]" />{/* 좌측 가로 패딩 */}
               <DimLine dir="v" x={345} y={155} length={8} label="SP[8]" />{/* 상단 세로 패딩 */}
             </>
@@ -7845,7 +7865,10 @@ function PopoverPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 패널 패딩 SP[16] */}
           {showSpacing && (
-            <DimLine dir="h" x={300} y={180} length={16} label="SP[16]" />
+            <>
+              <PaddingFill x={301} y={113} w={158} h={126} t={16} l={16} r={16} b={16} />
+              <DimLine dir="h" x={300} y={180} length={16} label="SP[16]" />
+            </>
           )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
@@ -7953,6 +7976,7 @@ function AutocompletePlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 입력·항목 가로 패딩 SP[12] */}
           {showSpacing && (
             <>
+              <PaddingFill x={261} y={61} w={238} h={38} l={12} r={12} />
               <DimLine dir="h" x={260} y={80} length={12} label="SP[12]" />{/* 입력 좌측 패딩 */}
               <DimLine dir="h" x={260} y={210} length={12} label="SP[12]" />{/* 항목 좌측 패딩 */}
             </>
@@ -8097,6 +8121,7 @@ function SectionMessagePlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 실제 스펙(가로 SP[16]·아이콘↔텍스트 SP[12]) */}
           {showSpacing && (
             <>
+              <PaddingFill x={231} y={109} w={338} h={94} t={12} l={16} r={16} b={12} />
               <DimLine dir="h" x={230} y={143} length={16} label="SP[16]" />{/* 컨테이너 좌측 패딩 */}
               <DimLine dir="h" x={266} y={186} length={12} label="SP[12]" />{/* 아이콘↔텍스트 */}
             </>
@@ -10087,6 +10112,7 @@ function ListCardPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰 라벨, 카드 좌표 기준) */}
           {showSpacing && (
             <>
+              <PaddingFill x={140} y={100} w={440} h={180} t={16} l={16} r={16} b={16} />
               <DimLine dir="h" x={141} y={190} length={16} label="SP[16]" />{/* 좌측 내부 여백 */}
               <DimLine dir="v" x={277} y={100} length={16} label="SP[16]" />{/* 상단 내부 여백 */}
               <DimLine dir="h" x={173} y={226} length={16} label="SP[16]" />{/* leading↔썸네일 */}
@@ -10480,6 +10506,7 @@ function CardPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 카드 padding SP[16], 섹션 간격 SP[8] */}
           {showSpacing && (
             <>
+              <PaddingFill x={161} y={81} w={398} h={178} t={16} l={16} r={16} b={16} />
               <DimLine dir="h" x={161} y={110} length={16} label="SP[16]" />{/* 좌측 내부 여백 */}
               <DimLine dir="v" x={205} y={81} length={16} label="SP[16]" />{/* 상단 내부 여백 */}
               <DimLine dir="v" x={520} y={120} length={8} label="SP[8]" />{/* 헤더↔구분 바 섹션 간격 */}
@@ -11355,6 +11382,7 @@ function ToastPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 실제 토스트 스펙(가로 SP[16]·아이콘↔메시지 SP[8]) */}
           {showSpacing && (
             <>
+              <PaddingFill x={241} y={135} w={278} h={50} t={8} l={16} r={16} b={8} />
               <DimLine dir="h" x={240} y={160} length={16} label="SP[16]" />{/* 컨테이너 좌측 패딩 */}
               <DimLine dir="h" x={274} y={175} length={8} label="SP[8]" />{/* 아이콘↔메시지 */}
             </>

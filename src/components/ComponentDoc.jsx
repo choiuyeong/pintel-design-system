@@ -7028,6 +7028,7 @@ function paginationRange(cur, total, sib = 1) {
   return out;
 }
 function PaginationPlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     // 버튼 top 124(32px) · 중심 y=140
     const cellBase = { position: 'absolute', top: '124px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.label1.fontSize };
@@ -7035,37 +7036,52 @@ function PaginationPlayground({ activeSubTab }) {
     const arrow = { ...inactive };
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '280px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
+          {/* 셀 피치 36 = 32(셀) + SP[4](간격), 실제 pagination과 일치 */}
           {/* 1. 이전 화살표 */}
           <div style={{ ...arrow, left: '248px' }}>‹</div>
           {/* 3. 비활성 번호 */}
-          <div style={{ ...inactive, left: '288px' }}>1</div>
+          <div style={{ ...inactive, left: '284px' }}>1</div>
           {/* 2. 활성 페이지 */}
-          <div style={{ ...cellBase, left: '328px', width: '32px', background: T.primary, color: '#fff', fontWeight: W.bold }}>2</div>
-          <div style={{ ...inactive, left: '368px' }}>3</div>
+          <div style={{ ...cellBase, left: '320px', width: '32px', background: T.primary, color: '#fff', fontWeight: W.bold }}>2</div>
+          <div style={{ ...inactive, left: '356px' }}>3</div>
           {/* 4. 생략 표시 */}
-          <div style={{ ...cellBase, left: '408px', width: '24px', color: '#a1a1aa' }}>…</div>
-          <div style={{ ...inactive, left: '440px' }}>12</div>
+          <div style={{ ...cellBase, left: '392px', width: '24px', color: '#a1a1aa' }}>…</div>
+          <div style={{ ...inactive, left: '420px' }}>12</div>
           {/* 5. 다음 화살표 */}
-          <div style={{ ...arrow, left: '480px' }}>›</div>
+          <div style={{ ...arrow, left: '456px' }}>›</div>
 
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            {/* 2. 활성 상단(y=124) x=344 */}
-            <line x1="344" y1="72" x2="344" y2="124" stroke="#999" strokeWidth="1.2" /><circle cx="344" cy="124" r="1.6" fill="#999" />
-            {/* 4. 생략 상단(y=124) x=420 */}
-            <line x1="420" y1="72" x2="420" y2="124" stroke="#999" strokeWidth="1.2" /><circle cx="420" cy="124" r="1.6" fill="#999" />
-            {/* 5. 다음 상단(y=124) x=496 */}
-            <line x1="496" y1="72" x2="496" y2="124" stroke="#999" strokeWidth="1.2" /><circle cx="496" cy="124" r="1.6" fill="#999" />
+            {/* 2. 활성 상단(y=124) x=336 */}
+            <line x1="336" y1="72" x2="336" y2="124" stroke="#999" strokeWidth="1.2" /><circle cx="336" cy="124" r="1.6" fill="#999" />
+            {/* 4. 생략 상단(y=124) x=404 */}
+            <line x1="404" y1="72" x2="404" y2="124" stroke="#999" strokeWidth="1.2" /><circle cx="404" cy="124" r="1.6" fill="#999" />
+            {/* 5. 다음 상단(y=124) x=472 */}
+            <line x1="472" y1="72" x2="472" y2="124" stroke="#999" strokeWidth="1.2" /><circle cx="472" cy="124" r="1.6" fill="#999" />
             {/* 1. 이전 하단(y=156) x=264 */}
             <line x1="264" y1="208" x2="264" y2="156" stroke="#999" strokeWidth="1.2" /><circle cx="264" cy="156" r="1.6" fill="#999" />
-            {/* 3. 비활성 하단(y=156) x=384 */}
-            <line x1="384" y1="208" x2="384" y2="156" stroke="#999" strokeWidth="1.2" /><circle cx="384" cy="156" r="1.6" fill="#999" />
+            {/* 3. 비활성 하단(y=156) x=372 */}
+            <line x1="372" y1="208" x2="372" y2="156" stroke="#999" strokeWidth="1.2" /><circle cx="372" cy="156" r="1.6" fill="#999" />
           </svg>
-          <div style={{ position: 'absolute', left: '344px', top: '60px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
-          <div style={{ position: 'absolute', left: '420px', top: '60px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
-          <div style={{ position: 'absolute', left: '496px', top: '60px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
+          <div style={{ position: 'absolute', left: '336px', top: '60px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '404px', top: '60px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '472px', top: '60px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
           <div style={{ position: 'absolute', left: '264px', top: '220px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
-          <div style={{ position: 'absolute', left: '384px', top: '220px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '372px', top: '220px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 셀 32 + 셀 간격 SP[4] */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={284} y={172} length={32} label="32" />{/* 셀 폭 */}
+              <DimLine dir="h" x={316} y={140} length={4} label="SP[4]" />{/* 셀 간격 */}
+            </>
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
           {[
@@ -7077,6 +7093,25 @@ function PaginationPlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — 실제 Pagination 기준. 셀 간격 anatomy 8→SP[4]로 정합 */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['셀 간격', 'SP[4]', '4', '번호·화살표 사이(8→4 정합)'],
+              ['셀 크기', '—', '32', '번호·화살표 버튼'],
+              ['생략 표시 폭', '—', '24', 'Ellipsis'],
+              ['모서리 반경', 'radius', '8', 'border-radius'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 pagination은 셀 간격 SP[4] — anatomy(8)를 SP[4]로 맞춰 일치.</div>
         </div>
       </div>
     );

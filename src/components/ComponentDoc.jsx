@@ -8890,15 +8890,22 @@ function CheckboxPlayground({ activeSubTab }) {
   const PRIMARY = T.primary;
   const CARD = '#16161a';
   const BORDER = '#2a2a30';
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
 
   // ── Anatomy: 라이트 카드 + 번호 콜아웃(1 Control · 2 Label) ──
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 */}
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '720px', height: '300px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
           {/* 체크박스 컴포넌트 — 중앙 */}
-          <div style={{ position: 'absolute', left: '345px', top: '139px', display: 'inline-flex', alignItems: 'center', gap: '10px', zIndex: 3 }}>
+          <div style={{ position: 'absolute', left: '345px', top: '139px', display: 'inline-flex', alignItems: 'center', gap: SP[8], zIndex: 3 }}>
             <Icon name="check_on" size={22} />
             <span style={{ fontSize: '15px', fontWeight: 600, color: '#18181b', whiteSpace: 'nowrap' }}>Checkbox</span>
           </div>
@@ -8916,6 +8923,11 @@ function CheckboxPlayground({ activeSubTab }) {
           {/* Callouts */}
           <div style={{ position: 'absolute', left: '266px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
           <div style={{ position: 'absolute', left: '520px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). Control↔Label = SP[8] */}
+          {showSpacing && (
+            <DimLine dir="h" x={367} y={150} length={8} label="SP[8]" />
+          )}
         </div>
 
         {/* Legend */}
@@ -8928,6 +8940,25 @@ function CheckboxPlayground({ activeSubTab }) {
               {item.num}. {item.label}
             </div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — 실제 체크박스(Chk) 기준. 간격 SP[8], 컨트롤 16/18px */}
+        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['Control ↔ Label 간격', 'SP[8]', '8', '박스↔라벨(anatomy 10→8 정규화)'],
+              ['컨트롤 크기(라벨 동반)', '—', '18', 'check_on/off 아이콘'],
+              ['컨트롤 크기(단독)', '—', '16', '라벨 없이 그리드·헤더'],
+              ['항목 간 세로 간격', 'SP[12]~SP[16]', '12·16', '목록 나열(권장)'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 체크박스는 이미 gap SP[8] — anatomy만 10이라 정규화해 일치. 컨트롤 크기는 라벨 동반 18 / 단독 16.</div>
         </div>
       </div>
     );

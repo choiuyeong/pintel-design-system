@@ -6321,6 +6321,37 @@ const calloutStyle = {
   cursor: 'default',
 };
 
+// ── anatomy 간격 명세용 치수선(dimension line) ────────────────────────────
+//  간격 바(#eae6ff)와 통일된 보라 계열. dir 'h'=(x,y)→오른쪽 length / 'v'=(x,y)→아래 length.
+//  양끝 tick + SP 토큰 라벨. 라벨은 SP 토큰값을 그대로 표기해 토큰과 동기화(리빙 스펙).
+const DIM_C = '#8b5cf6';
+function DimLabel({ children, style }) {
+  return (
+    <span style={{ position: 'absolute', fontSize: '10px', fontWeight: 700, color: '#6d28d9', background: '#fff', border: '1px solid #ddd6fe', borderRadius: '4px', padding: '0 4px', lineHeight: '15px', whiteSpace: 'nowrap', boxShadow: '0 1px 2px rgba(0,0,0,0.10)', zIndex: 7, ...style }}>{children}</span>
+  );
+}
+function DimLine({ x, y, length, dir = 'h', label }) {
+  const t = 4; // tick 반길이
+  if (dir === 'v') {
+    return (
+      <>
+        <div style={{ position: 'absolute', left: x, top: y, width: 0, height: length, borderLeft: `1px solid ${DIM_C}`, zIndex: 6 }} />
+        <div style={{ position: 'absolute', left: x - t, top: y, width: t * 2, height: 0, borderTop: `1px solid ${DIM_C}`, zIndex: 6 }} />
+        <div style={{ position: 'absolute', left: x - t, top: y + length, width: t * 2, height: 0, borderTop: `1px solid ${DIM_C}`, zIndex: 6 }} />
+        <DimLabel style={{ left: x + 7, top: y + length / 2, transform: 'translateY(-50%)' }}>{label}</DimLabel>
+      </>
+    );
+  }
+  return (
+    <>
+      <div style={{ position: 'absolute', left: x, top: y, width: length, height: 0, borderTop: `1px solid ${DIM_C}`, zIndex: 6 }} />
+      <div style={{ position: 'absolute', left: x, top: y - t, width: 0, height: t * 2, borderLeft: `1px solid ${DIM_C}`, zIndex: 6 }} />
+      <div style={{ position: 'absolute', left: x + length, top: y - t, width: 0, height: t * 2, borderLeft: `1px solid ${DIM_C}`, zIndex: 6 }} />
+      <DimLabel style={{ left: x + length / 2, top: y - 17, transform: 'translateX(-50%)' }}>{label}</DimLabel>
+    </>
+  );
+}
+
 /**
  * Tooltip(present-tooltip) — Anatomy + Interactive.
  * 정본 토큰: 본문 #1a1a1a · 보더 #2e2e2e · radius 8 · 패딩 8/12 · 대상과 8px 간격 · 화살표 8px(본문 동일 배경) · 본문 14px.
@@ -9336,10 +9367,17 @@ function ListCardPlayground({ activeSubTab }) {
   const [topContent, setTopContent] = useState(true);
   const [trailing, setTrailing] = useState(true);
   const [bottomContent, setBottomContent] = useState(true);
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
 
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 */}
         <div style={{
           position: 'relative',
@@ -9477,6 +9515,17 @@ function ListCardPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '380px', top: '50px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>7</div>
           <div style={{ position: 'absolute', left: '620px', top: '190px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>8</div>
           <div style={{ position: 'absolute', left: '440px', top: '330px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>9</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰 라벨, 카드 좌표 기준) */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={141} y={189} length={20} label="20" />{/* 좌측 내부 여백(off-grid) */}
+              <DimLine dir="v" x={281} y={101} length={20} label="20" />{/* 상단 내부 여백(off-grid) */}
+              <DimLine dir="h" x={177} y={230} length={16} label="SP[16]" />{/* leading↔썸네일 */}
+              <DimLine dir="h" x={273} y={230} length={16} label="SP[16]" />{/* 썸네일↔텍스트 */}
+              <DimLine dir="v" x={345} y={178} length={4} label="SP[4]" />{/* 텍스트 줄 간격 */}
+            </>
+          )}
         </div>
 
         {/* Legend */}
@@ -9496,6 +9545,25 @@ function ListCardPlayground({ activeSubTab }) {
               {item.num}. {item.label}
             </div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — SP 토큰 기준(리빙 스펙). 토큰 열 보라 강조, off-grid 값은 권장 토큰 병기 */}
+        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['카드 내부 여백', '20 → SP[16] 권장', '20', 'Container padding (off-grid)'],
+              ['요소 간격', 'SP[16]', '16', 'leading·썸네일·텍스트 사이'],
+              ['텍스트 줄 간격', 'SP[4]', '4', 'Heading·Caption·Extra caption'],
+              ['상·하 콘텐츠 여백', 'space-between', '—', 'Top/Bottom content 분배'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 토큰은 SP 스케일(4/8pt) 기준. off-grid(20) 값은 SP[16]/SP[24] 중 하나로 정규화 권장.</div>
         </div>
       </div>
     );
@@ -9542,8 +9610,8 @@ function ListCardPlayground({ activeSubTab }) {
               </div>
             )}
 
-            {/* Main Row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
+            {/* Main Row — 썸네일 top이 제목 top과 맞도록 상단 정렬(멀티라인 텍스트 대비) */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', width: '100%' }}>
               {/* Leading content */}
               {leading && (
                 <div style={{ color: '#eb5e28', display: 'flex', alignItems: 'center' }}>
@@ -9583,6 +9651,7 @@ function ListCardPlayground({ activeSubTab }) {
               {/* Trailing content */}
               {trailing && (
                 <button style={{
+                  alignSelf: 'center',
                   background: '#222',
                   border: '1px solid #333',
                   color: '#fff',

@@ -9930,10 +9930,17 @@ function CardPlayground({ activeSubTab }) {
   const [showUnit, setShowUnit] = useState(true);
   const [showPeriod, setShowPeriod] = useState(true);
   const [showMetric, setShowMetric] = useState(true);
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
 
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         <div style={{
           position: 'relative',
           background: '#efefef',
@@ -9954,7 +9961,7 @@ function CardPlayground({ activeSubTab }) {
             borderRadius: '12px',
             border: '1.5px solid #e4e4e7',
             boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
-            padding: '20px',
+            padding: SP[16],
             boxSizing: 'border-box',
             display: 'flex',
             flexDirection: 'column',
@@ -9963,7 +9970,7 @@ function CardPlayground({ activeSubTab }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
               <span style={{ fontSize: '15px', fontWeight: '700', color: '#18181b' }}>Card Header</span>
               <div style={{
-                padding: '4px 10px',
+                padding: `${SP[4]} ${SP[8]}`,
                 borderRadius: '4px',
                 border: '1px solid #1ED45A',
                 color: '#1ED45A',
@@ -9977,8 +9984,8 @@ function CardPlayground({ activeSubTab }) {
               height: '12px',
               background: '#eae6ff',
               borderRadius: '2px',
-              marginTop: '10px',
-              marginBottom: '10px',
+              marginTop: SP[8],
+              marginBottom: SP[8],
               flexShrink: 0
             }} />
             <div style={{
@@ -10007,6 +10014,15 @@ function CardPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '620px', top: '100px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
           <div style={{ position: 'absolute', left: '360px', top: '290px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
           <div style={{ position: 'absolute', left: '620px', top: '140px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>5</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 카드 padding SP[16], 섹션 간격 SP[8] */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={161} y={110} length={16} label="SP[16]" />{/* 좌측 내부 여백 */}
+              <DimLine dir="v" x={205} y={81} length={16} label="SP[16]" />{/* 상단 내부 여백 */}
+              <DimLine dir="v" x={520} y={120} length={8} label="SP[8]" />{/* 헤더↔구분 바 섹션 간격 */}
+            </>
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
           {[
@@ -10020,6 +10036,25 @@ function CardPlayground({ activeSubTab }) {
               {item.num}. {item.label}
             </div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — 카드 내부 간격(SP 토큰). 정규화 완료 */}
+        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['카드 내부 여백', 'SP[16]', '16', 'Container padding'],
+              ['섹션 간격(헤더·바디)', 'SP[8]', '8', '헤더↔구분↔바디'],
+              ['헤더 액션 배지 패딩', 'SP[4] × SP[8]', '4·8', 'Content badge 규격'],
+              ['모서리 반경', 'radius', '12', 'Card border-radius'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화 완료(카드 여백 SP[16], 섹션 간격 SP[8], 액션 배지 SP[4]×SP[8]).</div>
         </div>
       </div>
     );

@@ -6468,10 +6468,17 @@ function DimLine({ x, y, length, dir = 'h', label }) {
 function TooltipPlayground({ activeSubTab }) {
   const [show, setShow] = useState(true);
   const [size, setSize] = useState('M'); // 툴팁 사이즈: S(컴팩트) / M(정본 기본)
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
 
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 */}
         <div style={{ position: 'relative', background: '#efefef', borderRadius: '16px', width: '720px', height: '340px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
           {/* Tooltip 컴포넌트 — 중앙(anatomy는 화이트 톤으로 표현) */}
@@ -6509,6 +6516,14 @@ function TooltipPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '360px', top: '90px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
           <div style={{ position: 'absolute', left: '230px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
           <div style={{ position: 'absolute', left: '490px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 본문 padding 8×12=SP[8]/SP[12](이미 준수) */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={310} y={172} length={12} label="SP[12]" />{/* 좌측 가로 패딩 */}
+              <DimLine dir="v" x={345} y={155} length={8} label="SP[8]" />{/* 상단 세로 패딩 */}
+            </>
+          )}
         </div>
 
         {/* Legend */}
@@ -6523,6 +6538,27 @@ function TooltipPlayground({ activeSubTab }) {
               {item.num}. {item.label}
             </div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — 정본 Tooltip 기준. 이미 SP 스케일 준수(정규화 불필요) */}
+        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['가로 패딩', 'SP[12]', '12', '본문 좌우'],
+              ['세로 패딩', 'SP[8]', '8', '본문 상하'],
+              ['라벨 ↔ 단축키', 'SP[8]', '8', '내부 요소 간격'],
+              ['대상과 간격', 'SP[8]', '8', '툴팁↔대상(화살표 포함)'],
+              ['화살표', '—', '8', '8×8 회전 사각'],
+              ['모서리 반경', 'radius', '8', 'border-radius'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 정본: MCP get_component(Tooltip). 이미 SP 스케일(8/12) 준수 — 정규화 불필요.</div>
         </div>
       </div>
     );

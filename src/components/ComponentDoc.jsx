@@ -6884,10 +6884,17 @@ function ContextMenuPlayground({ activeSubTab }) {
 // Progress indicator(nav-progress-indicator) — 진행률(0~100%)을 선형/원형으로 시각화.
 //  구성: 트랙 · 채움 · 퍼센트 라벨 · 원형 변형.
 function ProgressIndicatorPlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     const R = 18, C = 2 * Math.PI * R;
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '300px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 선형: 1. 트랙 + 2. 채움 (top 128, height 8) */}
           <div style={{ position: 'absolute', left: '210px', top: '128px', width: '320px', height: '8px', borderRadius: '4px', background: '#e4e4e7', zIndex: 2 }} />
@@ -6914,6 +6921,11 @@ function ProgressIndicatorPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '470px', top: '68px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
           <div style={{ position: 'absolute', left: '562px', top: '68px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
           <div style={{ position: 'absolute', left: '320px', top: '274px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 트랙 높이 SP[8] */}
+          {showSpacing && (
+            <DimLine dir="v" x={540} y={128} length={8} label="SP[8]" />
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
           {[
@@ -6924,6 +6936,25 @@ function ProgressIndicatorPlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — Progress indicator. 이미 SP 준수(트랙 8·radius 4) */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['선형 트랙/채움 높이', 'SP[8]', '8', '바 두께'],
+              ['모서리 반경', 'SP[4]', '4', '트랙·채움'],
+              ['원형 지름', 'SP[40]', '40', '원형 변형'],
+              ['원형 스트로크', 'SP[4]', '4', '원형 두께'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 스케일(8/4/40) 준수 — 정규화 불필요.</div>
         </div>
       </div>
     );

@@ -7741,9 +7741,16 @@ function ProgressTrackerPlayground({ activeSubTab }) {
 // Popover(present-popover) — 앵커에 붙어 뜨는 기반 오버레이 프리미티브.
 //  구성: 앵커 · 화살표(arrow) · 콘텐츠 · 컨테이너.
 function PopoverPlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '320px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 1. 앵커 (Anchor) — 트리거 요소 */}
           <div style={{ position: 'absolute', left: '330px', top: '58px', width: '100px', height: '34px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#18181b' }}>앵커</div>
@@ -7751,19 +7758,19 @@ function PopoverPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '372px', top: '106px', width: '12px', height: '12px', background: '#fff', borderLeft: '1px solid #e4e4e7', borderTop: '1px solid #e4e4e7', transform: 'rotate(45deg)', zIndex: 4 }} />
           {/* 4. 컨테이너 (Popover 패널) */}
           <div style={{ position: 'absolute', left: '300px', top: '112px', width: '160px', height: '128px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
-          {/* 3. 콘텐츠 — 스켈레톤 바 */}
-          <div style={{ position: 'absolute', left: '320px', top: '132px', width: '120px', height: '11px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '320px', top: '156px', width: '100px', height: '9px', background: '#e4e4e7', borderRadius: '4px', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '320px', top: '176px', width: '110px', height: '9px', background: '#e4e4e7', borderRadius: '4px', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '320px', top: '196px', width: '80px', height: '9px', background: '#e4e4e7', borderRadius: '4px', zIndex: 3 }} />
+          {/* 3. 콘텐츠 — 스켈레톤 바 (패널 패딩 SP[16]) */}
+          <div style={{ position: 'absolute', left: '316px', top: '128px', width: '120px', height: '11px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '316px', top: '152px', width: '100px', height: '9px', background: '#e4e4e7', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '316px', top: '172px', width: '110px', height: '9px', background: '#e4e4e7', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '316px', top: '192px', width: '80px', height: '9px', background: '#e4e4e7', borderRadius: '4px', zIndex: 3 }} />
 
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 5 }}>
             {/* 1. 앵커 상단(y=58) x=380 */}
             <line x1="380" y1="36" x2="380" y2="58" stroke="#999" strokeWidth="1.2" /><circle cx="380" cy="58" r="1.6" fill="#999" />
             {/* 2. 화살표 좌측(x=372) y=112 */}
             <line x1="244" y1="112" x2="372" y2="112" stroke="#999" strokeWidth="1.2" /><circle cx="372" cy="112" r="1.6" fill="#999" />
-            {/* 3. 콘텐츠 좌측 경계(x=320) y=180 */}
-            <line x1="244" y1="180" x2="320" y2="180" stroke="#999" strokeWidth="1.2" /><circle cx="320" cy="180" r="1.6" fill="#999" />
+            {/* 3. 콘텐츠 좌측 경계(x=316) y=180 */}
+            <line x1="244" y1="180" x2="316" y2="180" stroke="#999" strokeWidth="1.2" /><circle cx="316" cy="180" r="1.6" fill="#999" />
             {/* 4. 컨테이너 우측 경계(x=460) y=200 */}
             <line x1="520" y1="200" x2="460" y2="200" stroke="#999" strokeWidth="1.2" /><circle cx="460" cy="200" r="1.6" fill="#999" />
           </svg>
@@ -7771,6 +7778,11 @@ function PopoverPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '230px', top: '112px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
           <div style={{ position: 'absolute', left: '230px', top: '180px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
           <div style={{ position: 'absolute', left: '534px', top: '200px', transform: 'translate(-50%, -50%)', zIndex: 6, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 패널 패딩 SP[16] */}
+          {showSpacing && (
+            <DimLine dir="h" x={300} y={180} length={16} label="SP[16]" />
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
           {[
@@ -7781,6 +7793,26 @@ function PopoverPlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — Popover. 앵커 간격 10→SP[8] 정규화, anatomy 패딩 20→SP[16] 정합 */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['패널 패딩', 'SP[16]', '16', '팝오버 내부 여백'],
+              ['콘텐츠 줄 간격', 'SP[8]', '8', '제목↔본문'],
+              ['앵커 ↔ 팝오버', 'SP[8]', '8', '트리거↔패널(10→8 정규화)'],
+              ['화살표', '—', '12', '12×12 회전 사각'],
+              ['모서리 반경', 'radius', '8', 'border-radius'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 앵커 간격 10→SP[8] 정규화, anatomy 패딩(20)도 SP[16]로 정합.</div>
         </div>
       </div>
     );
@@ -7798,7 +7830,7 @@ function PopoverPlayground({ activeSubTab }) {
             background: open ? T.primaryHeavy : T.primary, border: 'none',
           }}>이벤트 상세</button>
           {open && (
-            <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 'calc(100% + 10px)', left: '50%', transform: 'translateX(-50%)', zIndex: 20 }}>
+            <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: `calc(100% + ${SP[8]})`, left: '50%', transform: 'translateX(-50%)', zIndex: 20 }}>
               <div style={{ position: 'absolute', top: '-6px', left: '50%', transform: 'translateX(-50%) rotate(45deg)', width: 12, height: 12, background: '#1a1a1a', borderLeft: '1px solid #2e2e2e', borderTop: '1px solid #2e2e2e' }} />
               <div style={{ width: 240, background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 8, boxShadow: '0 16px 40px rgba(0,0,0,0.5)', padding: SP[16] }}>
                 <div style={{ fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: '#e8e8ec', marginBottom: SP[8] }}>교차로 A-12</div>

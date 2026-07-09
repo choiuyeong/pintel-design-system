@@ -6745,7 +6745,7 @@ const CTX_MENU_ITEMS = [
   { label: '카메라 웹 연결', icon: 'language' },
   { label: '카메라 점검모드로 전환', icon: 'flip_camera_ios' },
 ];
-const ctxMenuItemStyle = (extra) => ({ display: 'flex', alignItems: 'center', gap: SP[8], padding: `7px ${SP[12]}`, ...TYPE.caption1, color: '#d4d4d8', cursor: 'pointer', whiteSpace: 'nowrap', ...extra });
+const ctxMenuItemStyle = (extra) => ({ display: 'flex', alignItems: 'center', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, ...TYPE.caption1, color: '#d4d4d8', cursor: 'pointer', whiteSpace: 'nowrap', ...extra });
 
 function ContextMenuBody({ pinned = false, onPin, onPick }) {
   return (
@@ -6767,36 +6767,43 @@ function ContextMenuBody({ pinned = false, onPin, onPick }) {
 function ContextMenuPlayground({ activeSubTab }) {
   const [menu, setMenu] = useState(null); // {x,y}
   const [pinned, setPinned] = useState(false);
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
 
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 — Text field anatomy와 동일 시각 언어(흰 패널 + 흰 콜아웃) */}
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '340px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 5. 컨테이너 — 메뉴 패널(흰 패널), center x=380 */}
           <div style={{ position: 'absolute', left: '260px', top: '52px', width: '240px', height: '232px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
           {/* 1. 강조 항목 — 강조 색상으로 부각된 행(미세 하이라이트) */}
           <div style={{ position: 'absolute', left: '261px', top: '60px', width: '238px', height: '40px', background: 'rgba(255,169,56,0.08)', borderRadius: '7px 7px 0 0', zIndex: 2 }} />
-          <div style={{ position: 'absolute', left: '284px', top: '72px', width: '16px', height: '16px', borderRadius: '4px', background: 'rgba(255,169,56,0.5)', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '308px', top: '71px', zIndex: 3, fontSize: TYPE.label2.fontSize, fontWeight: W.bold, color: '#8a6d3b' }}>강조</div>
+          <div style={{ position: 'absolute', left: '272px', top: '73px', width: '14px', height: '14px', borderRadius: '4px', background: 'rgba(255,169,56,0.5)', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '294px', top: '71px', zIndex: 3, fontSize: TYPE.label2.fontSize, fontWeight: W.bold, color: '#8a6d3b' }}>강조</div>
           {/* 4. 구분선 */}
           <div style={{ position: 'absolute', left: '260px', top: '100px', width: '240px', height: '1px', background: '#e4e4e7', zIndex: 3 }} />
           {/* 일반 행 — 아이콘(점선 placeholder) + 라벨(스켈레톤 바) */}
-          <div style={{ position: 'absolute', left: '284px', top: '118px', width: '16px', height: '16px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '308px', top: '122px', width: '140px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '284px', top: '158px', width: '16px', height: '16px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '308px', top: '162px', width: '120px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '284px', top: '198px', width: '16px', height: '16px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
-          <div style={{ position: 'absolute', left: '308px', top: '202px', width: '150px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '272px', top: '119px', width: '14px', height: '14px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '294px', top: '122px', width: '140px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '272px', top: '159px', width: '14px', height: '14px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '294px', top: '162px', width: '120px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '272px', top: '199px', width: '14px', height: '14px', border: '1.5px dashed #a1a1aa', borderRadius: '4px', zIndex: 3 }} />
+          <div style={{ position: 'absolute', left: '294px', top: '202px', width: '150px', height: '9px', background: '#d4d4d8', borderRadius: '4px', zIndex: 3 }} />
 
           {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
             {/* 1. 고정 항목 좌측 경계(x=260) y=80 */}
             <line x1="240" y1="80" x2="260" y2="80" stroke="#999" strokeWidth="1.2" /><circle cx="260" cy="80" r="1.6" fill="#999" />
-            {/* 2. 아이콘 좌측 경계(x=284) y=126 */}
-            <line x1="240" y1="126" x2="284" y2="126" stroke="#999" strokeWidth="1.2" /><circle cx="284" cy="126" r="1.6" fill="#999" />
-            {/* 3. 라벨 우측 경계(x=428) y=166 */}
-            <line x1="520" y1="166" x2="428" y2="166" stroke="#999" strokeWidth="1.2" /><circle cx="428" cy="166" r="1.6" fill="#999" />
+            {/* 2. 아이콘 좌측 경계(x=272) y=126 */}
+            <line x1="240" y1="126" x2="272" y2="126" stroke="#999" strokeWidth="1.2" /><circle cx="272" cy="126" r="1.6" fill="#999" />
+            {/* 3. 라벨 우측 경계(x=414) y=166 */}
+            <line x1="520" y1="166" x2="414" y2="166" stroke="#999" strokeWidth="1.2" /><circle cx="414" cy="166" r="1.6" fill="#999" />
             {/* 4. 구분선 우측 경계(x=500) y=100 */}
             <line x1="520" y1="100" x2="500" y2="100" stroke="#999" strokeWidth="1.2" /><circle cx="500" cy="100" r="1.6" fill="#999" />
             {/* 5. 컨테이너 상단 경계(y=52) x=380 */}
@@ -6808,6 +6815,14 @@ function ContextMenuPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '534px', top: '166px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
           <div style={{ position: 'absolute', left: '534px', top: '100px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
           <div style={{ position: 'absolute', left: '380px', top: '28px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 실제 메뉴 스펙에 맞춤(행 가로 SP[12]·아이콘↔라벨 SP[8]) */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={260} y={126} length={12} label="SP[12]" />{/* 행 좌측 패딩(아이콘 들여쓰기) */}
+              <DimLine dir="h" x={286} y={166} length={8} label="SP[8]" />{/* 아이콘↔라벨 */}
+            </>
+          )}
         </div>
         {/* Legend */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
@@ -6820,6 +6835,26 @@ function ContextMenuPlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — 실제 메뉴(ctxMenuItem) 기준. 세로 패딩 7→SP[8] 정규화 */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['행 세로 패딩', 'SP[8]', '8', '항목 상하(7→8 정규화)'],
+              ['행 가로 패딩', 'SP[12]', '12', '항목 좌우·아이콘 들여쓰기'],
+              ['아이콘 ↔ 라벨', 'SP[8]', '8', '내부 요소 간격'],
+              ['패널 세로 패딩', 'SP[4]', '4', '메뉴 상하 여백'],
+              ['모서리 반경', 'radius', '8', 'Panel border-radius'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 메뉴 행 세로 패딩 7→SP[8] 정규화, anatomy 들여쓰기도 실제(SP[12])에 맞춤 → 스펙 일치.</div>
         </div>
       </div>
     );

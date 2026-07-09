@@ -2106,10 +2106,17 @@ function ContentBadgePlayground({ activeSubTab }) {
   const [level, setLevel] = useState(4); // Variants = Hierarchy Level(1~4)
   const [leadingIcon, setLeadingIcon] = useState(true);
   const [trailingIcon, setTrailingIcon] = useState(true);
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
 
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 */}
         <div style={{
           position: 'relative',
@@ -2165,6 +2172,14 @@ function ContentBadgePlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '360px', top: '90px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
           <div style={{ position: 'absolute', left: '490px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
           <div style={{ position: 'absolute', left: '360px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 배지 padding 4×8 = SP[4]/SP[8] */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={301.5} y={170} length={8} label="SP[8]" />{/* 좌측 가로 패딩 */}
+              <DimLine dir="v" x={392} y={157.5} length={4} label="SP[4]" />{/* 세로 패딩 */}
+            </>
+          )}
         </div>
 
         {/* Legend — 심플 텍스트, 3열 그리드 */}
@@ -2179,6 +2194,27 @@ function ContentBadgePlayground({ activeSubTab }) {
               {item.num}. {item.label}
             </div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — 정본 Content badge 기준(SP 토큰). off-grid 값은 권장 토큰 병기 */}
+        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['가로 패딩(아이콘 有)', 'SP[8]', '8', '좌우 내부 여백'],
+              ['가로 패딩(아이콘 無)', 'SP[12]', '12', '아이콘 없을 때 좌우'],
+              ['세로 패딩', 'SP[4]', '4', '상하 내부 여백'],
+              ['아이콘↔라벨 간격', '5 → SP[4] 권장', '5', '내부 요소 간격 (off-grid)'],
+              ['모서리 반경', 'radius', '6', 'border-radius'],
+              ['높이', 'xs20 / sm24 / md28', '28', '이 예시 = Medium'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 정본: MCP get_component(Content badge). 토큰은 SP 스케일(4/8pt) 기준, off-grid(5) 값은 SP[4] 정규화 권장.</div>
         </div>
       </div>
     );

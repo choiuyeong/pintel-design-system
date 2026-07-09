@@ -2137,7 +2137,7 @@ function ContentBadgePlayground({ activeSubTab }) {
             height: '28px',
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '5px',
+            gap: SP[4],
             padding: '4px 8px',
             borderRadius: '6px',
             background: '#ffffff',
@@ -2207,14 +2207,14 @@ function ContentBadgePlayground({ activeSubTab }) {
               ['가로 패딩(아이콘 有)', 'SP[8]', '8', '좌우 내부 여백'],
               ['가로 패딩(아이콘 無)', 'SP[12]', '12', '아이콘 없을 때 좌우'],
               ['세로 패딩', 'SP[4]', '4', '상하 내부 여백'],
-              ['아이콘↔라벨 간격', '5 → SP[4] 권장', '5', '내부 요소 간격 (off-grid)'],
+              ['아이콘↔라벨 간격', 'SP[4]', '4', '내부 요소 간격'],
               ['모서리 반경', 'radius', '6', 'border-radius'],
               ['높이', 'xs20 / sm24 / md28', '28', '이 예시 = Medium'],
             ].map((r, i) => r.map((c, j) => (
               <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
             )))}
           </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 정본: MCP get_component(Content badge). 토큰은 SP 스케일(4/8pt) 기준, off-grid(5) 값은 SP[4] 정규화 권장.</div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 정본: MCP get_component(Content badge). 간격 전부 SP 스케일(4/8pt)로 정규화 완료.</div>
         </div>
       </div>
     );
@@ -2819,7 +2819,7 @@ function TextFieldPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
     const fieldBox = {
       position: 'absolute', left: '250px', width: '300px', height: '44px',
-      display: 'flex', alignItems: 'center', gap: '10px', padding: '0 12px',
+      display: 'flex', alignItems: 'center', gap: SP[8], padding: '0 12px',
       background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', boxSizing: 'border-box', zIndex: 3,
     };
     const ph = { fontSize: TYPE.label1.fontSize, color: '#a1a1aa' };
@@ -2886,12 +2886,12 @@ function TextFieldPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '614px', top: '272px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>7</div>
           <div style={{ position: 'absolute', left: '614px', top: '352px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>8</div>
 
-          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 필드 padding 0 12=SP[12], gap 10(off-grid), 높이 44 */}
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 필드 padding 0 12=SP[12], gap=SP[8], 높이 44 */}
           {showSpacing && (
             <>
               <DimLine dir="h" x={251} y={172} length={12} label="SP[12]" />{/* 필드 좌측 가로 패딩 */}
               <DimLine dir="v" x={558} y={150} length={44} label="44" />{/* 필드 높이 */}
-              <DimLine dir="h" x={281} y={272} length={10} label="10" />{/* leading↔입력(off-grid) */}
+              <DimLine dir="h" x={281} y={272} length={8} label="SP[8]" />{/* leading↔입력 */}
             </>
           )}
         </div>
@@ -2923,7 +2923,7 @@ function TextFieldPlayground({ activeSubTab }) {
             ))}
             {[
               ['필드 가로 패딩', 'SP[12]', '12', '입력 내부 좌우'],
-              ['아이콘·버튼 ↔ 입력', '10 → SP[8] 권장', '10', '필드 내부 요소 (off-grid)'],
+              ['아이콘·버튼 ↔ 입력', 'SP[8]', '8', '필드 내부 요소'],
               ['라벨·설명 세로 간격', 'SP[8]', '8', 'Heading↔Field↔Description'],
               ['필드 높이', '44', '44', '컨트롤 높이(고정)'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
@@ -2931,7 +2931,7 @@ function TextFieldPlayground({ activeSubTab }) {
               <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
             )))}
           </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 토큰은 SP 스케일(4/8pt) 기준. off-grid(10) 값은 SP[8] 정규화 권장. 필드 높이 44는 컨트롤 규격(스케일 예외).</div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화 완료. 필드 높이 44는 컨트롤 규격(스케일 예외).</div>
         </div>
       </div>
     );
@@ -3140,7 +3140,7 @@ function TextAreaPlayground({ activeSubTab }) {
           <div style={{
             position: 'absolute', left: '220px', top: '188px', width: '320px', height: '84px',
             background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 3,
-            display: 'flex', flexDirection: 'column', padding: '12px 14px', boxSizing: 'border-box',
+            display: 'flex', flexDirection: 'column', padding: SP[12], boxSizing: 'border-box',
           }}>
             <span style={{ fontSize: TYPE.label1.fontSize, color: '#a1a1aa', flex: 1 }}>Placeholder</span>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -3179,10 +3179,10 @@ function TextAreaPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '390px', top: '340px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>6</div>
           <div style={{ position: 'absolute', left: '260px', top: '340px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
 
-          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 필드 padding 12×14(세로 SP[12]·가로 14 off-grid), 높이 84 */}
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 필드 padding=SP[12], 높이 84, 라벨↔필드 SP[8] */}
           {showSpacing && (
             <>
-              <DimLine dir="h" x={221} y={210} length={14} label="14" />{/* 필드 좌측 가로 패딩(off-grid) */}
+              <DimLine dir="h" x={221} y={210} length={12} label="SP[12]" />{/* 필드 좌측 가로 패딩 */}
               <DimLine dir="v" x={548} y={188} length={84} label="84" />{/* 필드 높이(멀티라인) */}
               <DimLine dir="v" x={232} y={180} length={8} label="SP[8]" />{/* 라벨↔필드 */}
             </>
@@ -3214,8 +3214,7 @@ function TextAreaPlayground({ activeSubTab }) {
               <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
             ))}
             {[
-              ['필드 가로 패딩', '14 → SP[12]/SP[16] 권장', '14', '입력 내부 좌우 (off-grid)'],
-              ['필드 세로 패딩', 'SP[12]', '12', '입력 내부 상하'],
+              ['필드 패딩', 'SP[12]', '12', '입력 내부 상하·좌우'],
               ['라벨 ↔ 필드', 'SP[8]', '8', 'Heading↔Field'],
               ['필드 ↔ 설명', 'SP[12]', '12', 'Field↔Description'],
               ['필드 높이', '84', '84', '멀티라인 최소 높이'],
@@ -3224,7 +3223,7 @@ function TextAreaPlayground({ activeSubTab }) {
               <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
             )))}
           </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 토큰은 SP 스케일(4/8pt) 기준. 가로 패딩 14는 off-grid → SP[12]/SP[16] 정규화 권장. 필드 높이 84는 멀티라인 규격(스케일 예외).</div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화 완료. 필드 높이 84는 멀티라인 규격(스케일 예외).</div>
         </div>
       </div>
     );
@@ -3274,7 +3273,7 @@ function TextAreaInteractive() {
             <div style={{
               background: '#161618', border: `1px solid ${borderColor}`, borderRadius: '8px',
               boxShadow: ring, transition: 'border-color 0.15s, box-shadow 0.15s',
-              padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: SP[8], boxSizing: 'border-box',
+              padding: SP[12], display: 'flex', flexDirection: 'column', gap: SP[8], boxSizing: 'border-box',
             }}>
               <textarea
                 value={val}
@@ -9509,7 +9508,7 @@ function ListCardPlayground({ activeSubTab }) {
             borderRadius: '12px',
             border: '1.5px solid #e4e4e7',
             boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
-            padding: '20px',
+            padding: SP[16],
             boxSizing: 'border-box',
             display: 'flex',
             flexDirection: 'column',
@@ -9628,11 +9627,11 @@ function ListCardPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰 라벨, 카드 좌표 기준) */}
           {showSpacing && (
             <>
-              <DimLine dir="h" x={141} y={189} length={20} label="20" />{/* 좌측 내부 여백(off-grid) */}
-              <DimLine dir="v" x={281} y={101} length={20} label="20" />{/* 상단 내부 여백(off-grid) */}
-              <DimLine dir="h" x={177} y={230} length={16} label="SP[16]" />{/* leading↔썸네일 */}
-              <DimLine dir="h" x={273} y={230} length={16} label="SP[16]" />{/* 썸네일↔텍스트 */}
-              <DimLine dir="v" x={345} y={178} length={4} label="SP[4]" />{/* 텍스트 줄 간격 */}
+              <DimLine dir="h" x={141} y={190} length={16} label="SP[16]" />{/* 좌측 내부 여백 */}
+              <DimLine dir="v" x={277} y={100} length={16} label="SP[16]" />{/* 상단 내부 여백 */}
+              <DimLine dir="h" x={173} y={226} length={16} label="SP[16]" />{/* leading↔썸네일 */}
+              <DimLine dir="h" x={269} y={226} length={16} label="SP[16]" />{/* 썸네일↔텍스트 */}
+              <DimLine dir="v" x={341} y={178} length={4} label="SP[4]" />{/* 텍스트 줄 간격 */}
             </>
           )}
         </div>
@@ -9664,7 +9663,7 @@ function ListCardPlayground({ activeSubTab }) {
               <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
             ))}
             {[
-              ['카드 내부 여백', '20 → SP[16] 권장', '20', 'Container padding (off-grid)'],
+              ['카드 내부 여백', 'SP[16]', '16', 'Container padding'],
               ['요소 간격', 'SP[16]', '16', 'leading·썸네일·텍스트 사이'],
               ['텍스트 줄 간격', 'SP[4]', '4', 'Heading·Caption·Extra caption'],
               ['상·하 콘텐츠 여백', 'space-between', '—', 'Top/Bottom content 분배'],
@@ -9672,7 +9671,7 @@ function ListCardPlayground({ activeSubTab }) {
               <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
             )))}
           </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 토큰은 SP 스케일(4/8pt) 기준. off-grid(20) 값은 SP[16]/SP[24] 중 하나로 정규화 권장.</div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화 완료(카드 여백 SP[16]).</div>
         </div>
       </div>
     );

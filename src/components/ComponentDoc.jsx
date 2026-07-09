@@ -7381,9 +7381,16 @@ function TabPlayground({ activeSubTab }) {
 // Pagination dots(nav-pagination-dots) — 캐러셀/온보딩 현재 위치 점 인디케이터.
 //  구성: 활성 점(브랜드색 확장 pill) · 비활성 점 · 점 묶음(컨테이너).
 function PaginationDotsPlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '260px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 3. 점 묶음 (컨테이너) */}
           <div style={{ position: 'absolute', left: '230px', top: '108px', width: '300px', height: '64px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 2 }} />
@@ -7407,6 +7414,11 @@ function PaginationDotsPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '380px', top: '82px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
           <div style={{ position: 'absolute', left: '418px', top: '208px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
           <div style={{ position: 'absolute', left: '182px', top: '140px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 점 간격 SP[8] */}
+          {showSpacing && (
+            <DimLine dir="h" x={346} y={140} length={8} label="SP[8]" />
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
           {[
@@ -7416,6 +7428,25 @@ function PaginationDotsPlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — Pagination dots (gap SP[8] 준수) */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['점 간격', 'SP[8]', '8', '점 사이'],
+              ['점 크기', '—', '8', '비활성 점 지름'],
+              ['활성 pill', '—', '20×8', '활성 점 확장'],
+              ['모서리 반경', 'radius', '8', 'Container'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 준수(gap SP[8]) — 정규화 불필요.</div>
         </div>
       </div>
     );
@@ -8015,9 +8046,16 @@ function SectionMessagePlayground({ activeSubTab }) {
 // Skeleton(Loading) — 콘텐츠 로드 전 실제 레이아웃 형태의 회색 플레이스홀더 + shimmer.
 //  variant(text/circle/card) × loading(true/false), shimmer 애니메이션.
 function SkeletonPlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 — Text field anatomy와 동일 시각 언어(레이어드 흰 패널 + 흰 콜아웃) */}
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '360px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 흰 패널(레이어드 룩) */}
@@ -8049,6 +8087,11 @@ function SkeletonPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '185px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
           <div style={{ position: 'absolute', left: '185px', top: '258px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
           <div style={{ position: 'absolute', left: '412px', top: '42px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 텍스트 막대 줄 간격 SP[8] */}
+          {showSpacing && (
+            <DimLine dir="v" x={452} y={98} length={8} label="SP[8]" />
+          )}
         </div>
         {/* Legend */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
@@ -8060,6 +8103,25 @@ function SkeletonPlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — Skeleton */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['텍스트 막대 줄 간격', 'SP[8]', '8', '제목↔본문 막대'],
+              ['막대 모서리 반경', 'SP[4]', '4', 'Text 변형'],
+              ['카드 변형 반경', 'radius', '8', 'Card 변형'],
+              ['아바타', '원형', '—', 'Circle 변형'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 스케일 준수 — 정규화 불필요.</div>
         </div>
       </div>
     );

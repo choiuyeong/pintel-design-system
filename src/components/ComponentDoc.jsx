@@ -3112,9 +3112,16 @@ function SearchFieldInteractive() {
 
 // Text area(field-textarea) — 멀티라인 입력. Anatomy(7요소) + Interactive(글자수·액션·상태).
 function TextAreaPlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         {/* 라이트 카드 */}
         <div style={{
           position: 'relative', background: '#f4f4f5', borderRadius: '16px',
@@ -3171,6 +3178,15 @@ function TextAreaPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '605px', top: '252px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>7</div>
           <div style={{ position: 'absolute', left: '390px', top: '340px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>6</div>
           <div style={{ position: 'absolute', left: '260px', top: '340px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 필드 padding 12×14(세로 SP[12]·가로 14 off-grid), 높이 84 */}
+          {showSpacing && (
+            <>
+              <DimLine dir="h" x={221} y={210} length={14} label="14" />{/* 필드 좌측 가로 패딩(off-grid) */}
+              <DimLine dir="v" x={548} y={188} length={84} label="84" />{/* 필드 높이(멀티라인) */}
+              <DimLine dir="v" x={232} y={180} length={8} label="SP[8]" />{/* 라벨↔필드 */}
+            </>
+          )}
         </div>
 
         {/* Legend — 3열 그리드 */}
@@ -3188,6 +3204,27 @@ function TextAreaPlayground({ activeSubTab }) {
               {item.num}. {item.label}
             </div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — 필드 내부/외부 간격(SP 토큰). off-grid 값은 권장 토큰 병기 */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['필드 가로 패딩', '14 → SP[12]/SP[16] 권장', '14', '입력 내부 좌우 (off-grid)'],
+              ['필드 세로 패딩', 'SP[12]', '12', '입력 내부 상하'],
+              ['라벨 ↔ 필드', 'SP[8]', '8', 'Heading↔Field'],
+              ['필드 ↔ 설명', 'SP[12]', '12', 'Field↔Description'],
+              ['필드 높이', '84', '84', '멀티라인 최소 높이'],
+              ['모서리 반경', 'radius', '8', 'border-radius'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 토큰은 SP 스케일(4/8pt) 기준. 가로 패딩 14는 off-grid → SP[12]/SP[16] 정규화 권장. 필드 높이 84는 멀티라인 규격(스케일 예외).</div>
         </div>
       </div>
     );

@@ -7598,6 +7598,7 @@ const PT_STEPS = [
   { label: '종료', desc: '상황 종료' },
 ];
 function ProgressTrackerPlayground({ activeSubTab }) {
+  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
   if (activeSubTab === 'anatomy') {
     // 노드 중심 x좌표(4단계) · 노드 중심 y=150
     const NX = [200, 320, 440, 560];
@@ -7609,6 +7610,12 @@ function ProgressTrackerPlayground({ activeSubTab }) {
     };
     return (
       <div style={{ width: '100%' }}>
+        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
+          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
+          </button>
+        </div>
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '320px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
           {/* 컨테이너 패널 */}
           <div style={{ position: 'absolute', left: '110px', top: '104px', width: '540px', height: '116px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '8px', zIndex: 1 }} />
@@ -7647,6 +7654,11 @@ function ProgressTrackerPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: '560px', top: '72px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
           <div style={{ position: 'absolute', left: '260px', top: '264px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
           <div style={{ position: 'absolute', left: '320px', top: '264px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>5</div>
+
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 노드↔라벨 SP[12] */}
+          {showSpacing && (
+            <DimLine dir="v" x={200} y={164} length={12} label="SP[12]" />
+          )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
           {[
@@ -7658,6 +7670,25 @@ function ProgressTrackerPlayground({ activeSubTab }) {
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
+        </div>
+
+        {/* 간격 스펙 표 — Progress tracker */}
+        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
+          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
+            {['항목', '토큰', 'px', '용도'].map((h) => (
+              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
+            ))}
+            {[
+              ['노드 ↔ 라벨', 'SP[12]', '12', '노드 하단↔라벨'],
+              ['라벨 ↔ 보조설명', 'SP[2]', '2', '텍스트 줄 간격'],
+              ['노드 크기', '—', '28', '단계 노드 지름'],
+              ['연결선', '—', '2', 'Connector 두께'],
+            ].map((r, i) => r.map((c, j) => (
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+            )))}
+          </div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 준수(노드↔라벨 SP[12]·줄간격 SP[2]) — 정규화 불필요. 단계 간격은 폭 균등 분배.</div>
         </div>
       </div>
     );

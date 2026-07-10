@@ -3748,23 +3748,45 @@ function RadioPlayground({ activeSubTab }) {
 function SelectPlayground({ activeSubTab }) {
   const [open, setOpen] = useState(false);
   const [val, setVal] = useState(null);
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     const dash = '1.5px dashed #a1a1aa';
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
-          width: '760px', height: '420px', margin: '0 auto 24px', boxSizing: 'border-box',
-        }}>
+      <AnatomyFrame
+        card={{ w: 760, h: 420, bg: '#f4f4f5' }}
+        legendGap="14px 0"
+        callouts={[
+          { n: 1, x: 168, y: 230, line: { x1: 182, y1: 230, x2: 236, y2: 230 }, dot: true },
+          { n: 2, x: 300, y: 150, line: { x1: 300, y1: 164, x2: 300, y2: 222 }, dot: true },
+          { n: 3, x: 168, y: 272, line: { x1: 182, y1: 272, x2: 246, y2: 272 }, dot: true },
+          { n: 4, x: 638, y: 272, line: { x1: 624, y1: 272, x2: 566, y2: 272 }, dot: true },
+          { n: 5, x: 314, y: 393, line: { x1: 314, y1: 379, x2: 314, y2: 296 }, dot: true },
+          { n: 6, x: 168, y: 312, line: { x1: 182, y1: 312, x2: 232, y2: 312 }, dot: true },
+          { n: 7, x: 404, y: 393, line: { x1: 404, y1: 379, x2: 404, y2: 296 }, dot: true },
+        ]}
+        dims={[
+          { pad: { x: 241, y: 251, w: 328, h: 42, t: 0, l: 12, r: 12, b: 0 } },
+          { dir: 'v', x: 240, y: 242, sp: 8 },
+          { dir: 'v', x: 240, y: 294, sp: 12 },
+        ]}
+        legend={[
+          { n: 1, label: 'Heading' },
+          { n: 2, label: 'Required badge' },
+          { n: 3, label: 'Leading icon' },
+          { n: 4, label: 'Dropdown icon' },
+          { n: 5, label: 'Placeholder' },
+          { n: 6, label: 'Description' },
+          { n: 7, label: 'Field' },
+        ]}
+        spec={{ rows: [
+          ['필드 좌우 패딩', 'SP[12]', '12', '아이콘/텍스트 좌우 여백'],
+          ['아이콘 ↔ 텍스트', 'SP[8]', '8', '내부 요소 간격'],
+          ['Heading ↔ Field', 'SP[8]', '8', '라벨과 트리거 간격'],
+          ['Field ↔ Description', 'SP[12]', '12', '트리거와 설명 간격'],
+          ['필드 높이', '—', '44', '컨트롤 높이'],
+          ['모서리 반경', 'radius', '8', 'border-radius'],
+        ], note: '※ off-grid gap 10→SP[8] · 설명 간격 11→SP[12] 정규화.' }}
+      >
           {/* 필드 묶음 패널 */}
           <div style={{ position: 'absolute', left: '220px', top: '185px', width: '370px', height: '140px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
 
@@ -3790,86 +3812,7 @@ function SelectPlayground({ activeSubTab }) {
           {/* Description */}
           <div style={{ position: 'absolute', left: '240px', top: '305px', fontSize: TYPE.caption1.fontSize, color: '#a1a1aa', zIndex: 3 }}>Description</div>
 
-          {/* SVG 연결선 */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            {/* 1. Heading -> 좌 */}
-            <line x1="182" y1="230" x2="236" y2="230" stroke="#999" strokeWidth="1.2" />
-            <circle cx="236" cy="230" r="1.5" fill="#999" />
-            {/* 2. Required badge -> 위 */}
-            <line x1="300" y1="164" x2="300" y2="222" stroke="#999" strokeWidth="1.2" />
-            <circle cx="300" cy="222" r="1.5" fill="#999" />
-            {/* 3. Leading icon -> 좌 */}
-            <line x1="182" y1="272" x2="246" y2="272" stroke="#999" strokeWidth="1.2" />
-            <circle cx="246" cy="272" r="1.5" fill="#999" />
-            {/* 4. Dropdown icon -> 우 */}
-            <line x1="624" y1="272" x2="566" y2="272" stroke="#999" strokeWidth="1.2" />
-            <circle cx="566" cy="272" r="1.5" fill="#999" />
-            {/* 5. Placeholder -> 아래 */}
-            <line x1="314" y1="379" x2="314" y2="296" stroke="#999" strokeWidth="1.2" />
-            <circle cx="314" cy="296" r="1.5" fill="#999" />
-            {/* 6. Description -> 좌 */}
-            <line x1="182" y1="312" x2="232" y2="312" stroke="#999" strokeWidth="1.2" />
-            <circle cx="232" cy="312" r="1.5" fill="#999" />
-            {/* 7. Field -> 아래 */}
-            <line x1="404" y1="379" x2="404" y2="296" stroke="#999" strokeWidth="1.2" />
-            <circle cx="404" cy="296" r="1.5" fill="#999" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '168px', top: '230px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '300px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '168px', top: '272px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
-          <div style={{ position: 'absolute', left: '638px', top: '272px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
-          <div style={{ position: 'absolute', left: '314px', top: '393px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>5</div>
-          <div style={{ position: 'absolute', left: '168px', top: '312px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>6</div>
-          <div style={{ position: 'absolute', left: '404px', top: '393px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>7</div>
-
-          {/* 간격 치수선 — Field 좌우 패딩 SP[12] + Heading↔Field SP[8] + Field↔Description SP[12] */}
-          {showSpacing && (
-            <>
-              <PaddingFill x={241} y={251} w={328} h={42} t={0} l={12} r={12} b={0} />{/* border 1px 보정 */}
-              <DimLine dir="v" x={240} y={242} sp={8} />{/* Heading ↔ Field */}
-              <DimLine dir="v" x={240} y={294} sp={12} />{/* Field ↔ Description */}
-            </>
-          )}
-        </div>
-
-        {/* Legend — 3열 그리드 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
-          {[
-            { num: 1, label: 'Heading' },
-            { num: 2, label: 'Required badge' },
-            { num: 3, label: 'Leading icon' },
-            { num: 4, label: 'Dropdown icon' },
-            { num: 5, label: 'Placeholder' },
-            { num: 6, label: 'Description' },
-            { num: 7, label: 'Field' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 */}
-        {showSpacing && (
-        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
-            {[
-              ['필드 좌우 패딩', 'SP[12]', '12', '아이콘/텍스트 좌우 여백'],
-              ['아이콘 ↔ 텍스트', 'SP[8]', '8', '내부 요소 간격'],
-              ['Heading ↔ Field', 'SP[8]', '8', '라벨과 트리거 간격'],
-              ['Field ↔ Description', 'SP[12]', '12', '트리거와 설명 간격'],
-              ['필드 높이', '—', '44', '컨트롤 높이'],
-              ['모서리 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid gap 10→SP[8] · 설명 간격 11→SP[12] 정규화.</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 
@@ -3927,7 +3870,6 @@ function SelectPlayground({ activeSubTab }) {
 
 // Slider(control-slider) — 범위(2-thumb) 슬라이더. Anatomy(구조) + Interactive(녹화 영상 구간 선택).
 function SliderPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     // 트랙: x 170~600 (width 430), y 268. 손잡이 2개(좌 253 / 우 400)
     const TRACK_L = 170, TRACK_R = 600, TRACK_Y = 268;
@@ -3938,18 +3880,31 @@ function SliderPlayground({ activeSubTab }) {
       border: '2px solid #fff', boxShadow: '0 1px 4px rgba(0,0,0,0.25)', boxSizing: 'border-box', zIndex: 3,
     });
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
-          width: '760px', height: '400px', margin: '0 auto 24px', boxSizing: 'border-box',
-        }}>
+      <AnatomyFrame
+        card={{ w: 760, h: 400, bg: '#f4f4f5' }}
+        legendGap="14px 0"
+        callouts={[
+          { n: 1, x: 183, y: 268, line: { x1: 196, y1: 268, x2: 242, y2: 268 }, dot: true },
+          { n: 2, x: 410, y: 170, line: { x1: 410, y1: 184, x2: 410, y2: 205 }, dot: true },
+          { n: 3, x: 628, y: 268, line: { x1: 614, y1: 268, x2: 602, y2: 268 }, dot: true },
+          { n: 4, x: 400, y: 352, line: { x1: 400, y1: 338, x2: 400, y2: 312 }, dot: true },
+        ]}
+        dims={[
+          { dir: 'v', x: 253, y: 277, sp: 24 },
+        ]}
+        legend={[
+          { n: 1, label: 'Thumb' },
+          { n: 2, label: 'Heading' },
+          { n: 3, label: 'Track' },
+          { n: 4, label: 'Value' },
+        ]}
+        spec={{ rows: [
+          ['Thumb ↔ Value 라벨', 'SP[24]', '24', '손잡이와 값 라벨 세로 간격'],
+          ['트랙 두께', '—', '4', '트랙/Fill 높이'],
+          ['손잡이 지름', '—', '18', 'Thumb 크기'],
+          ['트랙 반경', 'radius', '2', 'border-radius'],
+        ], note: '※ off-grid 21→SP[24] 정규화. 트랙/손잡이는 컨트롤 고정 규격.' }}
+      >
           {/* Heading (Value ~ Value) */}
           <div style={{ position: 'absolute', left: '410px', top: '217px', transform: 'translate(-50%, -50%)', fontSize: TYPE.headline1.fontSize, fontWeight: W.bold, color: '#18181b', whiteSpace: 'nowrap', zIndex: 3 }}>
             Value ~ Value
@@ -3967,65 +3922,7 @@ function SliderPlayground({ activeSubTab }) {
           <div style={{ position: 'absolute', left: `${LO}px`, top: '298px', transform: 'translateX(-50%)', fontSize: TYPE.label2.fontSize, color: '#18181b', zIndex: 3 }}>Value</div>
           <div style={{ position: 'absolute', left: `${HI}px`, top: '298px', transform: 'translateX(-50%)', fontSize: TYPE.label2.fontSize, color: '#18181b', zIndex: 3 }}>Value</div>
 
-          {/* SVG 연결선 */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            {/* 1. Thumb -> 좌 */}
-            <line x1="196" y1="268" x2="242" y2="268" stroke="#999" strokeWidth="1.2" />
-            <circle cx="242" cy="268" r="1.5" fill="#999" />
-            {/* 2. Heading -> 위 */}
-            <line x1="410" y1="184" x2="410" y2="205" stroke="#999" strokeWidth="1.2" />
-            <circle cx="410" cy="205" r="1.5" fill="#999" />
-            {/* 3. Track -> 우 */}
-            <line x1="614" y1="268" x2="602" y2="268" stroke="#999" strokeWidth="1.2" />
-            <circle cx="602" cy="268" r="1.5" fill="#999" />
-            {/* 4. Value -> 아래 */}
-            <line x1="400" y1="338" x2="400" y2="312" stroke="#999" strokeWidth="1.2" />
-            <circle cx="400" cy="312" r="1.5" fill="#999" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '183px', top: '268px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '410px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '628px', top: '268px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
-          <div style={{ position: 'absolute', left: '400px', top: '352px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
-
-          {/* 간격 치수선 — Thumb ↔ Value 라벨 세로 간격 SP[24](21→24) */}
-          {showSpacing && (
-            <DimLine dir="v" x={253} y={277} sp={24} />
-          )}
-        </div>
-
-        {/* Legend — 3열 그리드 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
-          {[
-            { num: 1, label: 'Thumb' },
-            { num: 2, label: 'Heading' },
-            { num: 3, label: 'Track' },
-            { num: 4, label: 'Value' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 */}
-        {showSpacing && (
-        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
-            {[
-              ['Thumb ↔ Value 라벨', 'SP[24]', '24', '손잡이와 값 라벨 세로 간격'],
-              ['트랙 두께', '—', '4', '트랙/Fill 높이'],
-              ['손잡이 지름', '—', '18', 'Thumb 크기'],
-              ['트랙 반경', 'radius', '2', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 21→SP[24] 정규화. 트랙/손잡이는 컨트롤 고정 규격.</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 
@@ -4155,80 +4052,36 @@ function SwitchToggle({ checked, disabled, onClick, size = 'medium', forceHover 
 // Switch(control-switch) — On/Off 토글. Anatomy(Thumb·Container) + Interactive(토글 + 상태 + 사이즈).
 function SwitchPlayground({ activeSubTab }) {
   const [on, setOn] = useState(true);
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
-          width: '760px', height: '300px', margin: '0 auto 24px', boxSizing: 'border-box',
-        }}>
+      <AnatomyFrame
+        card={{ w: 760, h: 300, bg: '#f4f4f5' }}
+        linesBehind
+        callouts={[
+          { n: 1, x: 300, y: 150, line: { x1: 313, y1: 150, x2: 356, y2: 150 }, dot: true },
+          { n: 2, x: 470, y: 150, line: { x1: 457, y1: 150, x2: 410, y2: 150 }, dot: true },
+        ]}
+        dims={[
+          { dir: 'h', x: 352, y: 150, length: 3, label: '3' },
+        ]}
+        legend={[
+          { n: 1, label: 'Thumb (손잡이)' },
+          { n: 2, label: 'Container (트랙)' },
+        ]}
+        spec={{ rows: [
+          ['트랙 크기', '—', '40×22', '컨테이너(실제)'],
+          ['썸(Thumb)', '—', '18', '손잡이 지름(실제)'],
+          ['썸 인셋', '—', '2', '트랙↔썸 여백'],
+          ['모서리 반경', '—', 'h/2', '완전 라운드'],
+        ], note: '※ Switch는 컨트롤 규격(트랙·썸·인셋)으로 고정 — SP 간격 토큰 대상 아님. anatomy는 크게 그린 도식.' }}
+      >
           {/* Container(트랙) — 중앙, Off 상태 예시 */}
           <div style={{ position: 'absolute', left: '352px', top: '135px', width: '56px', height: '30px', borderRadius: '15px', background: '#c4c4c8', zIndex: 2 }} />
           {/* Thumb */}
           <div style={{ position: 'absolute', left: '355px', top: '138px', width: '24px', height: '24px', borderRadius: '50%', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.25)', zIndex: 3 }} />
 
-          {/* SVG 연결선 */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
-            {/* 1. Thumb -> 좌 */}
-            <line x1="313" y1="150" x2="356" y2="150" stroke="#999" strokeWidth="1.2" />
-            <circle cx="356" cy="150" r="1.5" fill="#999" />
-            {/* 2. Container -> 우 */}
-            <line x1="457" y1="150" x2="410" y2="150" stroke="#999" strokeWidth="1.2" />
-            <circle cx="410" cy="150" r="1.5" fill="#999" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '300px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '470px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-
-          {/* 간격 치수선 — 토글 시 표시. 썸 인셋 3px */}
-          {showSpacing && (
-            <DimLine dir="h" x={352} y={150} length={3} label="3" />
-          )}
-        </div>
-
-        {/* Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
-          {[
-            { num: 1, label: 'Thumb (손잡이)' },
-            { num: 2, label: 'Container (트랙)' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 — Switch (컨트롤 규격) */}
-        {showSpacing && (
-        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (
-              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
-            ))}
-            {[
-              ['트랙 크기', '—', '40×22', '컨테이너(실제)'],
-              ['썸(Thumb)', '—', '18', '손잡이 지름(실제)'],
-              ['썸 인셋', '—', '2', '트랙↔썸 여백'],
-              ['모서리 반경', '—', 'h/2', '완전 라운드'],
-            ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
-            )))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ Switch는 컨트롤 규격(트랙·썸·인셋)으로 고정 — SP 간격 토큰 대상 아님. anatomy는 크게 그린 도식.</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 

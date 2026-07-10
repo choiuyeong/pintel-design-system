@@ -394,7 +394,7 @@ function GisMonitorScreen() {
           <Stat dot={T.positive} label="정상" value="22" />
           <Stat dot={T.cautionary} label="경보" value="2" />
           <Stat dot={T.error} label="긴급" value="1" />
-          <span style={{ marginLeft: SP[8], color: '#9a9aa2', fontVariantNumeric: 'tabular-nums' }}>2026-06-05 14:12:38</span>
+          <span style={{ marginLeft: SP[8], color: '#9a9aa2', fontVariantNumeric: 'tabular-nums' }}>2026.06.05 14:12:38</span>
         </div>
       </div>
 
@@ -1186,7 +1186,7 @@ function PrevaxGisScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-06-08 11:26:32" />
+      <PrevaxTitleBar datetime="2026.06.08 11:26:32" />
       <PrevaxTabBar active="지도" />
 
       {/* ── 본문 ── */}
@@ -1440,11 +1440,11 @@ function PrevaxSettingsScreen({ initialNav } = {}) {
     ['PTZ Cam', '192.168.1.247', '97', '80', 'admin', 'p****', 'PTZCam'],
   ];
   const externals = [
-    ['SH0019_2_01', '신호등', 'RS-232', '핀텔', 'Traffic Light', '사용함', '2026-05-08 13:52:03'],
-    ['스피커 web 2', '스피커', '', '인터엠', 'MA-106A', '사용함', '2026-05-20 12:29:27'],
-    ['스피커 web 3', '스피커', '', '인터엠', 'MA-106A', '사용함', '2026-05-08 13:21:32'],
-    ['스피커 web 1', '스피커', '', '인터엠', 'MA-106A', '사용함', '2026-05-08 13:23:02'],
-    ['SH0019_3_05', '신호등', '없음', '핀텔', 'Traffic Light', '사용함', '2026-05-08 13:51:35'],
+    ['SH0019_2_01', '신호등', 'RS-232', '핀텔', 'Traffic Light', '사용함', '2026.05.08 13:52:03'],
+    ['스피커 web 2', '스피커', '', '인터엠', 'MA-106A', '사용함', '2026.05.20 12:29:27'],
+    ['스피커 web 3', '스피커', '', '인터엠', 'MA-106A', '사용함', '2026.05.08 13:21:32'],
+    ['스피커 web 1', '스피커', '', '인터엠', 'MA-106A', '사용함', '2026.05.08 13:23:02'],
+    ['SH0019_3_05', '신호등', '없음', '핀텔', 'Traffic Light', '사용함', '2026.05.08 13:51:35'],
   ];
   // 이벤트 관리 — [사용유무, 카메라 번호, 카메라 명, ROI 명, 이벤트명, ON/OFF, 스케줄]
   const [events, setEvents] = useState([
@@ -1481,7 +1481,7 @@ function PrevaxSettingsScreen({ initialNav } = {}) {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-06-05 15:12:12" />
+      <PrevaxTitleBar datetime="2026.06.05 15:12:12" />
       <PrevaxTabBar active="설정" />
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
@@ -1622,7 +1622,7 @@ function PrevaxSettingsScreen({ initialNav } = {}) {
             {/* 제목 + 시각 (위) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #232329' }}>
               <span style={panelTitle}>분석기 목록</span>
-              <span style={{ ...TYPE.caption1, color: '#8a8a92', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>2026-06-05 15:12:10 ⟳</span>
+              <span style={{ ...TYPE.caption1, color: '#8a8a92', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>2026.06.05 15:12:10 ⟳</span>
             </div>
             {/* 검색창 + 버튼 (아래) */}
             <div style={panelHead}>
@@ -1778,18 +1778,18 @@ function PrevaxHistoryScreen() {
 
   // 변경 이력 행: [작업 구분, 변경 구분, 작업내용, 작업자 명, 작업 시간, 대상, 대상 위치]
   const rows = [
-    ['장비 관리', '추가', '카메라 추가', '마스터', '2026-06-05 09:43:46', 'PTZ Cam(192.168.1.247)', '인천공항 분석서버'],
-    ['지역 정보 관리', '추가', '카메라 추가', '마스터', '2026-06-05 09:44:02', 'PTZ Cam/PTZ Cam', 'SH0020'],
-    ['장비 관리', '수정', '카메라 수정', '마스터', '2026-06-05 09:45:32', 'PTZ Cam(192.168.1.247)', '인천공항 분석서버'],
-    ['장비 관리', '수정', '카메라 수정', '마스터', '2026-06-05 09:50:37', 'ROI40(192.168.0.180)', '인천공항 분석서버'],
-    ['지역 정보 관리', '삭제', '카메라 삭제', '마스터', '2026-06-05 10:15:12', 'SH-CAM1/SH-CAM1', '보행신호연장'],
-    ['지역 정보 관리', '삭제', '카메라 삭제', '마스터', '2026-06-05 10:15:12', 'SH-CAM2/SH-CAM2', '보행신호연장'],
-    ['지역 정보 관리', '삭제', '카메라 삭제', '마스터', '2026-06-05 10:15:12', 'SH-CAM3/SH-CAM3', '보행신호연장'],
-    ['지역 정보 관리', '삭제', '카메라 삭제', '마스터', '2026-06-05 10:15:12', 'SH-CAM4/SH-CAM4', '보행신호연장'],
-    ['지역 정보 관리', '추가', '카메라 추가', '마스터', '2026-06-05 10:15:23', 'SH-CAM1/SH-CAM1', 'SH0019'],
-    ['지역 정보 관리', '추가', '카메라 추가', '마스터', '2026-06-05 10:15:23', 'SH-CAM2/SH-CAM2', 'SH0019'],
-    ['지역 정보 관리', '추가', '카메라 추가', '마스터', '2026-06-05 10:15:23', 'SH-CAM3/SH-CAM3', 'SH0019'],
-    ['지역 정보 관리', '추가', '카메라 추가', '마스터', '2026-06-05 10:15:23', 'SH-CAM4/SH-CAM4', 'SH0019'],
+    ['장비 관리', '추가', '카메라 추가', '마스터', '2026.06.05 09:43:46', 'PTZ Cam(192.168.1.247)', '인천공항 분석서버'],
+    ['지역 정보 관리', '추가', '카메라 추가', '마스터', '2026.06.05 09:44:02', 'PTZ Cam/PTZ Cam', 'SH0020'],
+    ['장비 관리', '수정', '카메라 수정', '마스터', '2026.06.05 09:45:32', 'PTZ Cam(192.168.1.247)', '인천공항 분석서버'],
+    ['장비 관리', '수정', '카메라 수정', '마스터', '2026.06.05 09:50:37', 'ROI40(192.168.0.180)', '인천공항 분석서버'],
+    ['지역 정보 관리', '삭제', '카메라 삭제', '마스터', '2026.06.05 10:15:12', 'SH-CAM1/SH-CAM1', '보행신호연장'],
+    ['지역 정보 관리', '삭제', '카메라 삭제', '마스터', '2026.06.05 10:15:12', 'SH-CAM2/SH-CAM2', '보행신호연장'],
+    ['지역 정보 관리', '삭제', '카메라 삭제', '마스터', '2026.06.05 10:15:12', 'SH-CAM3/SH-CAM3', '보행신호연장'],
+    ['지역 정보 관리', '삭제', '카메라 삭제', '마스터', '2026.06.05 10:15:12', 'SH-CAM4/SH-CAM4', '보행신호연장'],
+    ['지역 정보 관리', '추가', '카메라 추가', '마스터', '2026.06.05 10:15:23', 'SH-CAM1/SH-CAM1', 'SH0019'],
+    ['지역 정보 관리', '추가', '카메라 추가', '마스터', '2026.06.05 10:15:23', 'SH-CAM2/SH-CAM2', 'SH0019'],
+    ['지역 정보 관리', '추가', '카메라 추가', '마스터', '2026.06.05 10:15:23', 'SH-CAM3/SH-CAM3', 'SH0019'],
+    ['지역 정보 관리', '추가', '카메라 추가', '마스터', '2026.06.05 10:15:23', 'SH-CAM4/SH-CAM4', 'SH0019'],
   ];
 
   // 상세 작업 내용: [속성, 이전, 현재] — 카메라 추가(PTZ Cam)이므로 이전 값은 비어 있음
@@ -1831,7 +1831,7 @@ function PrevaxHistoryScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-06-05 15:12:56" />
+      <PrevaxTitleBar datetime="2026.06.05 15:12:56" />
       <PrevaxTabBar active="이력조회" />
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
@@ -1860,10 +1860,10 @@ function PrevaxHistoryScreen() {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], flexWrap: 'wrap' }}>
               <span style={lbl}>시작 일시</span>
-              <div style={{ ...ctl, width: '128px' }}>2026-06-05<Icon name="calendar_today" size={13} color="#6f6f77" style={{ marginLeft: 'auto' }} /></div>
+              <div style={{ ...ctl, width: '128px' }}>2026.06.05<Icon name="calendar_today" size={13} color="#6f6f77" style={{ marginLeft: 'auto' }} /></div>
               <Dd value="00" w="56px" /><Dd value="00" w="56px" />
               <span style={{ ...lbl, marginLeft: SP[12] }}>종료 일시</span>
-              <div style={{ ...ctl, width: '128px' }}>2026-06-05<Icon name="calendar_today" size={13} color="#6f6f77" style={{ marginLeft: 'auto' }} /></div>
+              <div style={{ ...ctl, width: '128px' }}>2026.06.05<Icon name="calendar_today" size={13} color="#6f6f77" style={{ marginLeft: 'auto' }} /></div>
               <Dd value="15" w="56px" /><Dd value="11" w="56px" />
               <div style={{ display: 'flex', gap: SP[4], marginLeft: SP[12] }}>
                 {['오늘', '어제', '3일', '초기화'].map((b) => <Tbtn key={b}>{b}</Tbtn>)}
@@ -2076,7 +2076,7 @@ function PrevaxStatsScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-06-05 15:13:18" />
+      <PrevaxTitleBar datetime="2026.06.05 15:13:18" />
       <PrevaxTabBar active="통계보고서" />
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
@@ -2111,11 +2111,11 @@ function PrevaxStatsScreen() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: SP[4], marginBottom: SP[4] }}>
                 <span style={{ ...TYPE.caption1, color: '#9a9aa2', width: '50px', flexShrink: 0 }}>시작 일시</span>
-                <DateF value="2026-06-05" /><Dd value="13" w="46px" /><Dd value="45" w="46px" /><Dd value="00" w="46px" />
+                <DateF value="2026.06.05" /><Dd value="13" w="46px" /><Dd value="45" w="46px" /><Dd value="00" w="46px" />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: SP[4] }}>
                 <span style={{ ...TYPE.caption1, color: '#9a9aa2', width: '50px', flexShrink: 0 }}>종료 일시</span>
-                <DateF value="2026-06-05" /><Dd value="14" w="46px" /><Dd value="15" w="46px" /><Dd value="00" w="46px" />
+                <DateF value="2026.06.05" /><Dd value="14" w="46px" /><Dd value="15" w="46px" /><Dd value="00" w="46px" />
               </div>
             </div>
 
@@ -2232,7 +2232,7 @@ function PrevaxSelectiveScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-06-05 15:12:12" away={away} onApplyAway={setAway} onRestore={() => setAway(null)} />
+      <PrevaxTitleBar datetime="2026.06.05 15:12:12" away={away} onApplyAway={setAway} onRestore={() => setAway(null)} />
       <PrevaxTabBar active="선별관제" />
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
@@ -2385,7 +2385,7 @@ function PrevaxAwayReceiverScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-07-02 14:25:40" />
+      <PrevaxTitleBar datetime="2026.07.02 14:25:40" />
       <PrevaxTabBar active="선별관제" />
 
       {/* 부재 대리 수신 안내 배너 */}
@@ -2521,9 +2521,9 @@ function PrevaxLiveScreen() {
 
   // 영상 그리드 — live = 시뮬레이션 씬, connecting = 연결중 플레이스홀더
   const grid = [
-    { name: 'SH0019C001', scene: 'linear-gradient(178deg, #9aa0a8 0%, #888d95 32%, #74787f 56%, #5c5f66 100%)', time: '2025년03월10일 10:05:00', ev: { label: '침입', color: T.cautionary } },
+    { name: 'SH0019C001', scene: 'linear-gradient(178deg, #9aa0a8 0%, #888d95 32%, #74787f 56%, #5c5f66 100%)', time: '2025.03.10 10:05:00', ev: { label: '침입', color: T.cautionary } },
     { name: 'SH0019C003' },
-    { name: 'SH0019C004', scene: 'linear-gradient(178deg, #aab0a8 0%, #939a8e 38%, #767c70 70%, #5e6358 100%)', time: '2025년03월10일 10:05:00' },
+    { name: 'SH0019C004', scene: 'linear-gradient(178deg, #aab0a8 0%, #939a8e 38%, #767c70 70%, #5e6358 100%)', time: '2025.03.10 10:05:00' },
     { name: 'SH0019C002' },
   ];
   // 분할(split)에 따라 N×N 그리드로 렌더 — 4→2×2, 9→3×3, 16→4×4.
@@ -2545,7 +2545,7 @@ function PrevaxLiveScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-06-05 15:15:02" away={away} onApplyAway={setAway} onRestore={() => setAway(null)} />
+      <PrevaxTitleBar datetime="2026.06.05 15:15:02" away={away} onApplyAway={setAway} onRestore={() => setAway(null)} />
       <PrevaxTabBar active="실시간영상" />
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
@@ -2781,7 +2781,7 @@ function UxAgentReportScreen() {
         color: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center',
       }}>
         <p style={{ ...TYPE.caption1, fontWeight: W.semibold, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.18em', marginBottom: SP[24] }}>
-          PINTEL DESIGN SYSTEM — INTERNAL REVIEW · 2026-06-11
+          PINTEL DESIGN SYSTEM — INTERNAL REVIEW · 2026.06.11
         </p>
         <h1 style={{ ...TYPE.display2, fontWeight: W.extrabold, color: '#fff', margin: `0 0 ${SP[12]} 0`, letterSpacing: '-0.03em' }}>
           UX Agent 활용성 리뷰
@@ -3143,7 +3143,7 @@ function PrevaxDashboardScreen() {
       display: 'flex', flexDirection: 'column',
       background: '#0d0d10', fontFamily: T.font, color: '#fff', overflow: 'hidden',
     }}>
-      <PrevaxTitleBar datetime="2026-06-12 14:13:08" warning="미확인 이벤트 7건" />
+      <PrevaxTitleBar datetime="2026.06.12 14:13:08" warning="미확인 이벤트 7건" />
       <PrevaxTabBar active="대시보드" />
 
       {/* 메인 콘텐츠 */}
@@ -3388,7 +3388,7 @@ function PrevaxEventSearchScreen() {
 
   const detail = {
     event: '침입', cam: '[카메라] 시청사거리72', obj: '승용차',
-    grade: '주의', gradeColor: T.cautionary, time: '2025-10-29 11:38:45',
+    grade: '주의', gradeColor: T.cautionary, time: '2025.10.29 11:38:45',
   };
 
   // 결과 헤더 버튼
@@ -3402,7 +3402,7 @@ function PrevaxEventSearchScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2025-10-29 11:48:28" />
+      <PrevaxTitleBar datetime="2025.10.29 11:48:28" />
       <PrevaxTabBar active="이벤트조회" />
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
@@ -3418,11 +3418,11 @@ function PrevaxEventSearchScreen() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: SP[4], padding: `${SP[2]} ${SP[12]} ${SP[12]}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: SP[4] }}>
                 <span style={{ ...TYPE.caption1, color: '#9a9aa2', width: '50px', flexShrink: 0 }}>시작 일시</span>
-                <DateF value="2025-10-29" /><Dd value="11" w="46px" /><Dd value="38" w="46px" /><Dd value="08" w="46px" />
+                <DateF value="2025.10.29" /><Dd value="11" w="46px" /><Dd value="38" w="46px" /><Dd value="08" w="46px" />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: SP[4] }}>
                 <span style={{ ...TYPE.caption1, color: '#9a9aa2', width: '50px', flexShrink: 0 }}>종료 일시</span>
-                <DateF value="2025-10-29" /><Dd value="11" w="46px" /><Dd value="48" w="46px" /><Dd value="08" w="46px" />
+                <DateF value="2025.10.29" /><Dd value="11" w="46px" /><Dd value="48" w="46px" /><Dd value="08" w="46px" />
               </div>
             </div>
 
@@ -3726,7 +3726,7 @@ function PrevaxCameraFormScreen() {
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
       position: 'relative',
     }}>
-      <PrevaxTitleBar datetime="2026-06-18 14:22:05" />
+      <PrevaxTitleBar datetime="2026.06.18 14:22:05" />
       <PrevaxTabBar active="설정" />
 
       {/* 배경(설정/장비관리) — 모달 컨텍스트용으로 흐리게 */}
@@ -3953,7 +3953,7 @@ function PrevaxEventDefAddScreen() {
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
       position: 'relative',
     }}>
-      <PrevaxTitleBar datetime="2026-06-25 14:22:05" />
+      <PrevaxTitleBar datetime="2026.06.25 14:22:05" />
       <PrevaxTabBar active="설정" />
 
       {/* 배경(설정/이벤트 정의) — 모달 컨텍스트용으로 흐리게 */}
@@ -4137,7 +4137,7 @@ function PrevaxCameraFormScreen2() {
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
       position: 'relative',
     }}>
-      <PrevaxTitleBar datetime="2026-06-18 14:22:05" />
+      <PrevaxTitleBar datetime="2026.06.18 14:22:05" />
       <PrevaxTabBar active="설정" />
 
       {/* 배경(설정/장비관리) — 모달 컨텍스트용으로 흐리게 */}
@@ -4506,7 +4506,7 @@ function PrevaxCameraGroupScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-06-23 14:21:33" />
+      <PrevaxTitleBar datetime="2026.06.23 14:21:33" />
       <PrevaxTabBar active="설정" />
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
@@ -4885,7 +4885,7 @@ function PrevaxEventActivationScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-06-28 09:42:10" />
+      <PrevaxTitleBar datetime="2026.06.28 09:42:10" />
       <PrevaxTabBar active="실시간영상" />
 
       {/* ── 헤더: 제목줄 / 동작줄 / 상태·안내줄 ── */}
@@ -5175,7 +5175,7 @@ function PrevaxAlarmSettingsScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-07-01 13:39:46" />
+      <PrevaxTitleBar datetime="2026.07.01 13:39:46" />
       <PrevaxTabBar active="설정" />
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0, position: 'relative' }}>
@@ -5381,7 +5381,7 @@ function PrevaxLiveFocusScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-07-02 14:21:08" away={away} onApplyAway={setAway} onRestore={() => setAway(null)} />
+      <PrevaxTitleBar datetime="2026.07.02 14:21:08" away={away} onApplyAway={setAway} onRestore={() => setAway(null)} />
       <PrevaxTabBar active="실시간영상" />
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
@@ -5509,7 +5509,7 @@ function PrevaxLiveFocusScreen() {
                     </div>
                     {/* 타임스탬프 (라이브, 하단 중앙) — 3×3 티어 크기 */}
                     {!c.connecting && (
-                      <span style={{ position: 'absolute', bottom: ov.edge, left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', fontFamily: T.font, fontSize: ov.stamp, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)', zIndex: 3 }}>2026년07월02일 14:21:08</span>
+                      <span style={{ position: 'absolute', bottom: ov.edge, left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', fontFamily: T.font, fontSize: ov.stamp, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)', zIndex: 3 }}>2026.07.02 14:21:08</span>
                     )}
                   </div>
                 );
@@ -5600,7 +5600,7 @@ function EventPopupWindow({ state }) {
         )}
         {/* 타임스탬프(하단 중앙) — 실시간 영상 기본 양식 */}
         {!cleared && (
-          <span style={{ position: 'absolute', bottom: SP[8], left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', ...TYPE.label2, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)' }}>2026-07-07 14:22:31</span>
+          <span style={{ position: 'absolute', bottom: SP[8], left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', ...TYPE.label2, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)' }}>2026.07.07 14:22:31</span>
         )}
         {/* BBox(DrawObjects) — 위험 등급색 */}
         {!cleared && (
@@ -5812,7 +5812,7 @@ function UnassignedChannelsWindow({ empty }) {
                     {c.st === 'ok' ? (
                       <>
                         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(120% 120% at 50% 38%, transparent 52%, rgba(0,0,0,0.34) 100%)' }} />
-                        <span style={{ position: 'absolute', bottom: SP[4], left: '50%', transform: 'translateX(-50%)', ...TYPE.caption2, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)', whiteSpace: 'nowrap' }}>2026-07-01 14:22:07</span>
+                        <span style={{ position: 'absolute', bottom: SP[4], left: '50%', transform: 'translateX(-50%)', ...TYPE.caption2, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)', whiteSpace: 'nowrap' }}>2026.07.01 14:22:07</span>
                       </>
                     ) : (
                       /* 오류/응답없음/스트림없음 = 실제 상태 화면(빈 박스 채움 금지) */

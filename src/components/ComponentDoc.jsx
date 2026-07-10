@@ -2107,7 +2107,7 @@ function ContentBadgePlayground({ activeSubTab }) {
   const [level, setLevel] = useState(4); // Variants = Hierarchy Level(1~4)
   const [leadingIcon, setLeadingIcon] = useState(true);
   const [trailingIcon, setTrailingIcon] = useState(true);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -2178,8 +2178,8 @@ function ContentBadgePlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={301} y={157} w={118} h={26} t={4} l={8} />
-              <DimLine dir="h" x={301.5} y={170} length={8} label="SP[8]" />{/* 좌측 가로 패딩 */}
-              <DimLine dir="v" x={392} y={157.5} length={4} label="SP[4]" />{/* 세로 패딩 */}
+              <DimLine dir="h" x={301.5} y={170} sp={8} />{/* 좌측 가로 패딩 */}
+              <DimLine dir="v" x={392} y={157.5} sp={4} />{/* 세로 패딩 */}
             </>
           )}
         </div>
@@ -2199,6 +2199,7 @@ function ContentBadgePlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 정본 Content badge 기준(SP 토큰). off-grid 값은 권장 토큰 병기 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -2213,11 +2214,12 @@ function ContentBadgePlayground({ activeSubTab }) {
               ['모서리 반경', 'radius', '6', 'border-radius'],
               ['높이', 'xs20 / sm24 / md28', '28', '이 예시 = Medium'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 정본: MCP get_component(Content badge). 간격 전부 SP 스케일(4/8pt)로 정규화 완료.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -2701,7 +2703,7 @@ function ContentBadgePlayground({ activeSubTab }) {
 
 // Framed style — 테두리(Frame) 컨테이너. Anatomy(구조) + Interactive(States 매트릭스).
 function FramedStylePlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -2727,8 +2729,8 @@ function FramedStylePlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={200} y={96} w={320} h={108} t={24} />
-              <DimLine dir="h" x={200} y={150} length={24} label="SP[24]" />{/* 좌측 여백 */}
-              <DimLine dir="v" x={272} y={96} length={24} label="SP[24]" />{/* 상단 여백 */}
+              <DimLine dir="h" x={200} y={150} sp={24} />{/* 좌측 여백 */}
+              <DimLine dir="v" x={272} y={96} sp={24} />{/* 상단 여백 */}
             </>
           )}
         </div>
@@ -2747,6 +2749,7 @@ function FramedStylePlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -2757,10 +2760,11 @@ function FramedStylePlayground({ activeSubTab }) {
               ['라벨 패딩', 'SP[8]', '8', '라벨 좌우 여백'],
               ['프레임 반경', 'radius', '10', '테두리 border-radius'],
               ['콘텐츠 반경', 'radius', '6', '내부 콘텐츠 border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ anatomy 여백 22→SP[24] · 라벨 패딩 6→SP[8] 정규화. 반경은 radius 토큰(간격 스케일 아님).</div>
         </div>
+        )}
       </div>
     );
   }
@@ -2849,7 +2853,7 @@ function FramedStylePlayground({ activeSubTab }) {
 
 // Text field(field-text) — 한 줄 입력. Anatomy(8요소 구조 도식) + Interactive(실동작).
 function TextFieldPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     const fieldBox = {
       position: 'absolute', left: '250px', width: '300px', height: '44px',
@@ -2924,9 +2928,9 @@ function TextFieldPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={251} y={151} w={298} h={42} l={12} r={12} />
-              <DimLine dir="h" x={251} y={172} length={12} label="SP[12]" />{/* 필드 좌측 가로 패딩 */}
+              <DimLine dir="h" x={251} y={172} sp={12} />{/* 필드 좌측 가로 패딩 */}
               <DimLine dir="v" x={558} y={150} length={44} label="44" />{/* 필드 높이 */}
-              <DimLine dir="h" x={281} y={272} length={8} label="SP[8]" />{/* leading↔입력 */}
+              <DimLine dir="h" x={281} y={272} sp={8} />{/* leading↔입력 */}
             </>
           )}
         </div>
@@ -2950,6 +2954,7 @@ function TextFieldPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 필드 내부 간격(SP 토큰). off-grid 값은 권장 토큰 병기 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -2963,11 +2968,12 @@ function TextFieldPlayground({ activeSubTab }) {
               ['필드 높이', '44', '44', '컨트롤 높이(고정)'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화 완료. 필드 높이 44는 컨트롤 규격(스케일 예외).</div>
         </div>
+        )}
       </div>
     );
   }
@@ -3028,7 +3034,7 @@ function TextFieldInteractive() {
 
 // Search field(field-search) — 키워드 검색 입력. Anatomy(구조 도식) + Interactive(실동작).
 function SearchFieldPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     // 입력 필드 한 줄(placeholder/value 두 가지 예시) 공통 스타일 — gap/padding/반경 SP 정규화
     const fieldBase = {
@@ -3091,9 +3097,9 @@ function SearchFieldPlayground({ activeSubTab }) {
           {/* 간격 치수선 — Value 필드(좌우 패딩 SP[12]) + 필드 간 간격 SP[24] */}
           {showSpacing && (
             <>
-              <PaddingFill x={230} y={226} w={300} h={52} t={0} l={12} r={12} b={0} />
-              <DimLine dir="h" x={230} y={252} length={12} label="SP[12]" />{/* 필드 좌우 패딩 */}
-              <DimLine dir="v" x={230} y={202} length={24} label="SP[24]" />{/* 필드 간 간격 */}
+              <PaddingFill x={231} y={227} w={298} h={50} t={0} l={12} r={12} b={0} />{/* border 1px 보정 */}
+              <DimLine dir="h" x={231} y={252} sp={12} />{/* 필드 좌우 패딩 */}
+              <DimLine dir="v" x={230} y={202} sp={24} />{/* 필드 간 간격 */}
             </>
           )}
         </div>
@@ -3114,6 +3120,7 @@ function SearchFieldPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -3124,10 +3131,11 @@ function SearchFieldPlayground({ activeSubTab }) {
               ['필드 간 간격', 'SP[24]', '24', '필드 사이 세로 간격'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
               ['필드 높이', '—', '52', '컨트롤 높이(실동작 40)'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ anatomy 패딩 14→SP[12] · gap 10→SP[8] · 반경 10→8 정규화. 실동작 렌더: 높이 40 · 패딩 SP[12] · gap SP[8].</div>
         </div>
+        )}
       </div>
     );
   }
@@ -3179,7 +3187,7 @@ function SearchFieldInteractive() {
 
 // Text area(field-textarea) — 멀티라인 입력. Anatomy(7요소) + Interactive(글자수·액션·상태).
 function TextAreaPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -3249,10 +3257,10 @@ function TextAreaPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 필드 padding=SP[12], 높이 84, 라벨↔필드 SP[8] */}
           {showSpacing && (
             <>
-              <PaddingFill x={221} y={189} w={318} h={84} t={12} l={12} r={12} b={12} />
-              <DimLine dir="h" x={221} y={210} length={12} label="SP[12]" />{/* 필드 좌측 가로 패딩 */}
-              <DimLine dir="v" x={548} y={188} length={84} label="84" />{/* 필드 높이(멀티라인) */}
-              <DimLine dir="v" x={232} y={180} length={8} label="SP[8]" />{/* 라벨↔필드 */}
+              <PaddingFill x={221} y={189} w={318} h={82} t={12} l={12} r={12} b={12} />{/* border-box: 84 − border 2px = 패딩 박스 82 */}
+              <DimLine dir="h" x={221} y={210} sp={12} />{/* 필드 좌측 가로 패딩 */}
+              <DimLine dir="v" x={548} y={188} length={84} label="84" />{/* 필드 높이(멀티라인, 외곽) */}
+              <DimLine dir="v" x={232} y={180} sp={8} />{/* 라벨↔필드 */}
             </>
           )}
         </div>
@@ -3275,6 +3283,7 @@ function TextAreaPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 필드 내부/외부 간격(SP 토큰). off-grid 값은 권장 토큰 병기 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -3288,11 +3297,12 @@ function TextAreaPlayground({ activeSubTab }) {
               ['필드 높이', '84', '84', '멀티라인 최소 높이'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화 완료. 필드 높이 84는 멀티라인 규격(스케일 예외).</div>
         </div>
+        )}
       </div>
     );
   }
@@ -3409,7 +3419,7 @@ function TextAreaInteractive() {
 
 // Segmented control(control-segmented) — 세그먼트 버튼. Anatomy(구조) + Interactive(전환).
 function SegmentedControlPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     const segBase = { width: '100px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: TYPE.body2.fontSize, boxSizing: 'border-box' };
     return (
@@ -3453,8 +3463,8 @@ function SegmentedControlPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 컨테이너 안쪽 패딩 SP[4](좌/상). 세그먼트는 100×40 고정 규격 */}
           {showSpacing && (
             <>
-              <DimLine dir="h" x={265} y={216} length={4} label="SP[4]" />{/* 좌측 패딩 */}
-              <DimLine dir="v" x={369} y={196} length={4} label="SP[4]" />{/* 상단 패딩 */}
+              <DimLine dir="h" x={265} y={216} sp={4} />{/* 좌측 패딩 */}
+              <DimLine dir="v" x={369} y={196} sp={4} />{/* 상단 패딩 */}
             </>
           )}
         </div>
@@ -3473,6 +3483,7 @@ function SegmentedControlPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -3483,10 +3494,11 @@ function SegmentedControlPlayground({ activeSubTab }) {
               ['세그먼트 높이', '—', '40', '개별 세그먼트 높이'],
               ['컨테이너 반경', 'radius', '8', '트랙 border-radius'],
               ['세그먼트 반경', 'radius', '6', '활성 배경 border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 컨테이너 패딩 SP[4] 이미 준수. 실동작 세그먼트 패딩 6/18 → SP[8]/SP[16].</div>
         </div>
+        )}
       </div>
     );
   }
@@ -3530,7 +3542,7 @@ function SegmentedControlInteractive() {
 
 // Icon button(button-icon) — 아이콘만으로 동작. Anatomy(구조) + Interactive(실동작).
 function IconButtonPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -3567,7 +3579,7 @@ function IconButtonPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 아이콘 여백 SP[16]((지름 56 − 아이콘 22)/2 = 17→SP[16]) */}
           {showSpacing && (
-            <DimLine dir="h" x={332} y={170} length={17} label="SP[16]" />
+            <DimLine dir="h" x={332} y={170} sp={16} />
           )}
         </div>
 
@@ -3584,6 +3596,7 @@ function IconButtonPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -3592,10 +3605,11 @@ function IconButtonPlayground({ activeSubTab }) {
               ['아이콘 여백', 'SP[16]', '16', '(지름−아이콘)/2 = 17→SP[16]'],
               ['컨테이너 지름', '—', '56', '원형 버튼 크기'],
               ['아이콘 크기', '—', '22', '내부 글리프'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 17→SP[16] 정규화. 실동작: 지름 44 · 아이콘 18 · 여백 13→SP[12].</div>
         </div>
+        )}
       </div>
     );
   }
@@ -3701,7 +3715,7 @@ function IconButtonInteractive() {
 function RadioPlayground({ activeSubTab }) {
   const [sel, setSel] = useState('day');
   const [size, setSize] = useState('medium');
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   // 핀텔 가이드 — 라디오 2가지 사이즈
   const SIZES = {
@@ -3763,7 +3777,7 @@ function RadioPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 컨트롤↔라벨 SP[8] */}
           {showSpacing && (
-            <DimLine dir="h" x={320} y={160} length={8} label="SP[8]" />
+            <DimLine dir="h" x={320} y={160} sp={8} />
           )}
         </div>
 
@@ -3780,6 +3794,7 @@ function RadioPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — Radio */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -3791,11 +3806,12 @@ function RadioPlayground({ activeSubTab }) {
               ['컨트롤 크기', '—', '20·16', 'Medium·Small 외곽원'],
               ['내부 점', '—', '8·6', '선택 표시'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ Medium gap SP[8] 준수. Small은 컴팩트 변형.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -3901,7 +3917,7 @@ function RadioPlayground({ activeSubTab }) {
 function SelectPlayground({ activeSubTab }) {
   const [open, setOpen] = useState(false);
   const [val, setVal] = useState(null);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     const dash = '1.5px dashed #a1a1aa';
@@ -3980,9 +3996,9 @@ function SelectPlayground({ activeSubTab }) {
           {/* 간격 치수선 — Field 좌우 패딩 SP[12] + Heading↔Field SP[8] + Field↔Description SP[12] */}
           {showSpacing && (
             <>
-              <PaddingFill x={240} y={250} w={330} h={44} t={0} l={12} r={12} b={0} />
-              <DimLine dir="v" x={240} y={242} length={8} label="SP[8]" />{/* Heading ↔ Field */}
-              <DimLine dir="v" x={240} y={294} length={11} label="SP[12]" />{/* Field ↔ Description */}
+              <PaddingFill x={241} y={251} w={328} h={42} t={0} l={12} r={12} b={0} />{/* border 1px 보정 */}
+              <DimLine dir="v" x={240} y={242} sp={8} />{/* Heading ↔ Field */}
+              <DimLine dir="v" x={240} y={294} sp={12} />{/* Field ↔ Description */}
             </>
           )}
         </div>
@@ -4005,6 +4021,7 @@ function SelectPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -4016,10 +4033,11 @@ function SelectPlayground({ activeSubTab }) {
               ['Field ↔ Description', 'SP[12]', '12', '트리거와 설명 간격'],
               ['필드 높이', '—', '44', '컨트롤 높이'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid gap 10→SP[8] · 설명 간격 11→SP[12] 정규화.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -4078,7 +4096,7 @@ function SelectPlayground({ activeSubTab }) {
 
 // Slider(control-slider) — 범위(2-thumb) 슬라이더. Anatomy(구조) + Interactive(녹화 영상 구간 선택).
 function SliderPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     // 트랙: x 170~600 (width 430), y 268. 손잡이 2개(좌 253 / 우 400)
     const TRACK_L = 170, TRACK_R = 600, TRACK_Y = 268;
@@ -4142,7 +4160,7 @@ function SliderPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — Thumb ↔ Value 라벨 세로 간격 SP[24](21→24) */}
           {showSpacing && (
-            <DimLine dir="v" x={253} y={277} length={21} label="SP[24]" />
+            <DimLine dir="v" x={253} y={277} sp={24} />
           )}
         </div>
 
@@ -4161,6 +4179,7 @@ function SliderPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -4170,10 +4189,11 @@ function SliderPlayground({ activeSubTab }) {
               ['트랙 두께', '—', '4', '트랙/Fill 높이'],
               ['손잡이 지름', '—', '18', 'Thumb 크기'],
               ['트랙 반경', 'radius', '2', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 21→SP[24] 정규화. 트랙/손잡이는 컨트롤 고정 규격.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -4304,7 +4324,7 @@ function SwitchToggle({ checked, disabled, onClick, size = 'medium', forceHover 
 // Switch(control-switch) — On/Off 토글. Anatomy(Thumb·Container) + Interactive(토글 + 상태 + 사이즈).
 function SwitchPlayground({ activeSubTab }) {
   const [on, setOn] = useState(true);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -4358,6 +4378,7 @@ function SwitchPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — Switch (컨트롤 규격) */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -4370,11 +4391,12 @@ function SwitchPlayground({ activeSubTab }) {
               ['썸 인셋', '—', '2', '트랙↔썸 여백'],
               ['모서리 반경', '—', 'h/2', '완전 라운드'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ Switch는 컨트롤 규격(트랙·썸·인셋)으로 고정 — SP 간격 토큰 대상 아님. anatomy는 크게 그린 도식.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -4430,7 +4452,7 @@ function ChipPlayground({ activeSubTab }) {
   const [styleMode, setStyleMode] = useState('outlined'); // 'solid' or 'outlined'
   const [leadingOption, setLeadingOption] = useState('icon'); // 'none', 'icon', 'image'
   const [trailingOption, setTrailingOption] = useState('icon'); // 'none', 'icon', 'image'
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -4507,8 +4529,8 @@ function ChipPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={280} y={150} w={160} h={36} t={6} l={14} r={14} b={6} />
-              <DimLine dir="h" x={280} y={178} length={14} label="SP[12]" />{/* 좌우 패딩 */}
-              <DimLine dir="v" x={360} y={150} length={6} label="SP[8]" />{/* 상하 패딩 */}
+              <DimLine dir="h" x={280} y={178} sp={12} />{/* 좌우 패딩 */}
+              <DimLine dir="v" x={360} y={150} sp={8} />{/* 상하 패딩 */}
             </>
           )}
         </div>
@@ -4528,6 +4550,7 @@ function ChipPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -4538,10 +4561,11 @@ function ChipPlayground({ activeSubTab }) {
               ['요소 간 간격', 'SP[8]', '8', '아이콘/라벨/× 간격'],
               ['모서리 반경', 'radius', '18', 'pill border-radius'],
               ['칩 높이', '—', '36', '컨트롤 높이'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 가로 14→SP[12] · 세로 6→SP[8] 정규화. gap SP[8] 준수.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -4776,7 +4800,7 @@ function SectionHeaderPlayground({ activeSubTab }) {
   const [showHeadingContent, setShowHeadingContent] = useState(true);
   const [trailingOption, setTrailingOption] = useState('link'); // 'none' | 'link' | 'meta' | 'icon'
   const [loading, setLoading] = useState(false);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   // 미니 Chip (헤딩 콘텐츠 슬롯 예시)
   const MiniChip = ({ dark = false }) => (
@@ -4849,8 +4873,8 @@ function SectionHeaderPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={210} y={128} w={360} h={44} t={0} l={16} r={16} b={0} />
-              <DimLine dir="h" x={210} y={160} length={16} label="SP[16]" />{/* 좌측 패딩 */}
-              <DimLine dir="h" x={554} y={160} length={16} label="SP[16]" />{/* 우측 패딩 */}
+              <DimLine dir="h" x={210} y={160} sp={16} />{/* 좌측 패딩 */}
+              <DimLine dir="h" x={554} y={160} sp={16} />{/* 우측 패딩 */}
             </>
           )}
         </div>
@@ -4869,6 +4893,7 @@ function SectionHeaderPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -4879,10 +4904,11 @@ function SectionHeaderPlayground({ activeSubTab }) {
               ['스트립 높이', '—', '44', '헤더 높이'],
               ['모서리 반경', 'radius', '6', 'border-radius'],
               ['제목 크기', '—', '18', 'Heading font-size'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 준수(패딩 SP[16] · gap SP[8]).</div>
         </div>
+        )}
       </div>
     );
   }
@@ -4972,7 +4998,7 @@ function SectionHeaderPlayground({ activeSubTab }) {
 function PushBadgePlayground({ activeSubTab }) {
   const [variant, setVariant] = useState('count'); // 'count' | 'dot'
   const [count, setCount] = useState(3);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     // count 배지(컨테이너 + 라벨) — 좌측 ②, 우측 ③ 콜아웃 대상
@@ -5046,6 +5072,7 @@ function PushBadgePlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -5055,10 +5082,11 @@ function PushBadgePlayground({ activeSubTab }) {
               ['Count 지름', '—', '26', 'anatomy 배지 크기'],
               ['Dot 지름', '—', '10', '점형 배지'],
               ['라벨 크기', '—', '13', '숫자 font-size'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실동작 count 높이 18 · 패딩 5→SP[4] · pill 반경 9. anatomy는 가독성 위해 확대 표기.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -5232,7 +5260,7 @@ function LoadingPlayground({ activeSubTab }) {
   const [showLabel, setShowLabel] = useState(true);
   const [waveValue, setWaveValue] = useState(0);
   const [elapsed, setElapsed] = useState(1);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   // wave 변형: 0→100% 자동 채움 루프(인터랙션 시연)
   useEffect(() => {
@@ -5292,7 +5320,7 @@ function LoadingPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — Spinner ↔ Label 세로 간격 SP[24](23→24) */}
           {showSpacing && (
-            <DimLine dir="v" x={360} y={183} length={23} label="SP[24]" />
+            <DimLine dir="v" x={360} y={183} sp={24} />
           )}
         </div>
 
@@ -5310,6 +5338,7 @@ function LoadingPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -5318,10 +5347,11 @@ function LoadingPlayground({ activeSubTab }) {
               ['Spinner ↔ Label', 'SP[24]', '24', '스피너와 라벨 세로 간격'],
               ['스피너 지름', '—', '66', '트랙 외경(r30+stroke6)'],
               ['트랙 두께', '—', '6', 'stroke-width'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 23→SP[24] 정규화. 실동작 region 스피너 40 · gap SP[16].</div>
         </div>
+        )}
       </div>
     );
   }
@@ -5430,7 +5460,7 @@ function AlertPlayground({ activeSubTab }) {
   const [actionLayout, setActionLayout] = useState('bottom'); // 'bottom' | 'inline'
   const [customTitle, setCustomTitle] = useState('장비 상태 통신 감지 경고');
   const [customMsg, setCustomMsg] = useState('지점 C의 보행자 감지 카메라에 10초 이상의 레이턴시 지연이 발생하고 있습니다.');
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -5527,8 +5557,8 @@ function AlertPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={150} y={113} w={420} h={114} t={12} l={16} r={16} b={12} />
-              <DimLine dir="h" x={150} y={200} length={16} label="SP[16]" />{/* 좌우 패딩 */}
-              <DimLine dir="v" x={200} y={113} length={12} label="SP[12]" />{/* 상하 패딩 */}
+              <DimLine dir="h" x={150} y={200} sp={16} />{/* 좌우 패딩 */}
+              <DimLine dir="v" x={200} y={113} sp={12} />{/* 상하 패딩 */}
             </>
           )}
         </div>
@@ -5549,6 +5579,7 @@ function AlertPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -5561,10 +5592,11 @@ function AlertPlayground({ activeSubTab }) {
               ['Title ↔ Message', 'SP[8]', '8', '콘텐츠 내부 간격'],
               ['버튼 간 간격', 'SP[8]', '8', 'Close ↔ Action'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 준수(12/16/8). 좌측 상태 강조선 4px.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -5828,7 +5860,7 @@ function AccordionPlayground({ componentId, activeSubTab }) {
   const [openItems, setOpenItems] = useState({ 'item-4': true });
   const [activeFilter, setActiveFilter] = useState('all');
   const [activeTime, setActiveTime] = useState('1h');
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   const toggleItem = (id) => {
     setOpenItems(prev => ({ ...prev, [id]: !prev[id] }));
@@ -5929,8 +5961,8 @@ function AccordionPlayground({ componentId, activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={180} y={90} w={360} h={48} t={12} l={16} r={16} b={12} />
-              <DimLine dir="h" x={180} y={114} length={16} label="SP[16]" />{/* 좌우 패딩 */}
-              <DimLine dir="v" x={200} y={90} length={12} label="SP[12]" />{/* 상하 패딩 */}
+              <DimLine dir="h" x={180} y={114} sp={16} />{/* 좌우 패딩 */}
+              <DimLine dir="v" x={200} y={90} sp={12} />{/* 상하 패딩 */}
             </>
           )}
         </div>
@@ -5949,6 +5981,7 @@ function AccordionPlayground({ componentId, activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -5959,10 +5992,11 @@ function AccordionPlayground({ componentId, activeSubTab }) {
               ['콘텐츠 행 간격', 'SP[8]', '8', 'Content 내부 행 간격'],
               ['Trigger 높이', '—', '48', '트리거 행 높이'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 준수(패딩 12/16 · gap 8).</div>
         </div>
+        )}
       </div>
     );
   }
@@ -6294,7 +6328,7 @@ function AvatarPlayground({ activeSubTab }) {
   const [shape, setShape] = useState('circle');
   const [status, setStatus] = useState('online');
   const [showImage, setShowImage] = useState(false);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   const sizes = { sm: 32, md: 40, lg: 48, xl: 56 };
   const px = sizes[size];
@@ -6382,7 +6416,7 @@ function AvatarPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <DimLine dir="h" x={328} y={170} length={64} label="64px" />{/* Container 지름 */}
-              <DimLine dir="h" x={389} y={192} length={3} label="SP[4]" />{/* 상태 점 우측 여백 */}
+              <DimLine dir="h" x={389} y={192} sp={4} />{/* 상태 점 우측 여백 */}
             </>
           )}
         </div>
@@ -6402,6 +6436,7 @@ function AvatarPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -6410,10 +6445,11 @@ function AvatarPlayground({ activeSubTab }) {
               ['상태 표시 여백', 'SP[4]', '3', '상태 점 모서리 오프셋'],
               ['Container 지름', '—', '64', 'anatomy 아바타 크기'],
               ['상태 점 지름', '—', '14', 'Status indicator'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 3→SP[4] 정규화. 실동작 사이즈 sm32 · md40 · lg48 · xl56.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -6557,7 +6593,7 @@ function AvatarGroupPlayground({ activeSubTab }) {
   const [count, setCount] = useState(5);
   const [max, setMax] = useState(4);
   const [overlap, setOverlap] = useState('md');
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   const overlapPx = { sm: 8, md: 14, lg: 20 };
   const gap = -overlapPx[overlap];
@@ -6664,7 +6700,7 @@ function AvatarGroupPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 아바타 중첩 간격 SP[12](anatomy 기준) */}
           {showSpacing && (
-            <DimLine dir="h" x={338} y={192} length={12} label="SP[12]" />
+            <DimLine dir="h" x={338} y={192} sp={12} />
           )}
         </div>
 
@@ -6683,6 +6719,7 @@ function AvatarGroupPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -6691,10 +6728,11 @@ function AvatarGroupPlayground({ activeSubTab }) {
               ['중첩 간격', 'SP[12]', '12', '아바타 겹침(anatomy 기준)'],
               ['아바타 지름', '—', '44', '개별 아바타'],
               ['테두리', '—', '2', '링 border'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실동작 overlap sm8 · md14 · lg20 · 아바타 40. anatomy는 겹침 12 · 지름 44.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -6925,8 +6963,19 @@ function DimLabel({ children, style }) {
     <span style={{ position: 'absolute', fontSize: '10px', fontWeight: 700, color: '#6d28d9', background: '#fff', border: '1px solid #ddd6fe', borderRadius: '4px', padding: '0 4px', lineHeight: '15px', whiteSpace: 'nowrap', boxShadow: '0 1px 2px rgba(0,0,0,0.10)', zIndex: 7, ...style }}>{children}</span>
   );
 }
-function DimLine({ x, y, length, dir = 'h', label }) {
+// SP 토큰(Foundation 스케일, tokens.js)에서 px 파생 — 단일 출처 바인딩
+const spNum = (key) => parseInt(SP[key], 10);
+// 스펙 표 px 열 파생: 토큰 셀이 'SP[n]'이면 SP 토큰에서 px 계산(하드코딩 값 무시)
+function spPxCell(row, j, cell) {
+  if (j === 2 && typeof row[1] === 'string') {
+    const m = row[1].match(/^SP\[(\d+)\]$/);
+    if (m) return String(spNum(m[1]));
+  }
+  return cell;
+}
+function DimLine({ x, y, length, dir = 'h', label, sp }) {
   const t = 4; // tick 반길이
+  if (sp != null) { length = spNum(sp); label = `SP[${sp}]`; } // sp 지정 시 토큰에서 길이·라벨 파생(단일 출처)
   if (dir === 'v') {
     return (
       <>
@@ -6971,7 +7020,7 @@ function PaddingFill({ x, y, w, h, t = 0, r, b, l }) {
 function TooltipPlayground({ activeSubTab }) {
   const [show, setShow] = useState(true);
   const [size, setSize] = useState('M'); // 툴팁 사이즈: S(컴팩트) / M(정본 기본)
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -7024,8 +7073,8 @@ function TooltipPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={310} y={154} w={100} h={36} t={8} l={12} r={12} b={8} />
-              <DimLine dir="h" x={310} y={172} length={12} label="SP[12]" />{/* 좌측 가로 패딩 */}
-              <DimLine dir="v" x={345} y={155} length={8} label="SP[8]" />{/* 상단 세로 패딩 */}
+              <DimLine dir="h" x={310} y={172} sp={12} />{/* 좌측 가로 패딩 */}
+              <DimLine dir="v" x={345} y={155} sp={8} />{/* 상단 세로 패딩 */}
             </>
           )}
         </div>
@@ -7045,6 +7094,7 @@ function TooltipPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 정본 Tooltip 기준. 이미 SP 스케일 준수(정규화 불필요) */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -7059,11 +7109,12 @@ function TooltipPlayground({ activeSubTab }) {
               ['화살표', '—', '8', '8×8 회전 사각'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 정본: MCP get_component(Tooltip). 이미 SP 스케일(8/12) 준수 — 정규화 불필요.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -7145,7 +7196,7 @@ const calloutStyleSm = {
 // Popup(present-popup) — 모달 대화상자. Anatomy(구조 도식) + Interactive(열기/닫기).
 function PopupPlayground({ activeSubTab }) {
   const [open, setOpen] = useState(true);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -7198,8 +7249,8 @@ function PopupPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={210} y={64} w={300} h={226} t={0} l={16} r={16} b={0} />
-              <DimLine dir="h" x={210} y={200} length={16} label="SP[16]" />{/* 좌우 패딩 */}
-              <DimLine dir="v" x={250} y={64} length={13} label="SP[12]" />{/* 헤더 상단 패딩 */}
+              <DimLine dir="h" x={210} y={200} sp={16} />{/* 좌우 패딩 */}
+              <DimLine dir="v" x={250} y={64} sp={12} />{/* 헤더 상단 패딩 */}
             </>
           )}
         </div>
@@ -7219,6 +7270,7 @@ function PopupPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -7230,10 +7282,11 @@ function PopupPlayground({ activeSubTab }) {
               ['하단 여백', 'SP[16]', '16', 'Action area 하단'],
               ['버튼 간 간격', 'SP[8]', '8', '액션 버튼 간격(실동작)'],
               ['모서리 반경', 'radius', '12', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 헤더 13→SP[12] · 콘텐츠 14→SP[12] 정규화. 좌우 16 = SP[16] 준수.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -7304,7 +7357,7 @@ function ContextMenuBody({ pinned = false, onPin, onPick }) {
 function ContextMenuPlayground({ activeSubTab }) {
   const [menu, setMenu] = useState(null); // {x,y}
   const [pinned, setPinned] = useState(false);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -7356,8 +7409,8 @@ function ContextMenuPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 실제 메뉴 스펙에 맞춤(행 가로 SP[12]·아이콘↔라벨 SP[8]) */}
           {showSpacing && (
             <>
-              <DimLine dir="h" x={260} y={126} length={12} label="SP[12]" />{/* 행 좌측 패딩(아이콘 들여쓰기) */}
-              <DimLine dir="h" x={286} y={166} length={8} label="SP[8]" />{/* 아이콘↔라벨 */}
+              <DimLine dir="h" x={260} y={126} sp={12} />{/* 행 좌측 패딩(아이콘 들여쓰기) */}
+              <DimLine dir="h" x={286} y={166} sp={8} />{/* 아이콘↔라벨 */}
             </>
           )}
         </div>
@@ -7375,6 +7428,7 @@ function ContextMenuPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 실제 메뉴(ctxMenuItem) 기준. 세로 패딩 7→SP[8] 정규화 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -7388,11 +7442,12 @@ function ContextMenuPlayground({ activeSubTab }) {
               ['패널 세로 패딩', 'SP[4]', '4', '메뉴 상하 여백'],
               ['모서리 반경', 'radius', '8', 'Panel border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 메뉴 행 세로 패딩 7→SP[8] 정규화, anatomy 들여쓰기도 실제(SP[12])에 맞춤 → 스펙 일치.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -7421,7 +7476,7 @@ function ContextMenuPlayground({ activeSubTab }) {
 // Progress indicator(nav-progress-indicator) — 진행률(0~100%)을 선형/원형으로 시각화.
 //  구성: 트랙 · 채움 · 퍼센트 라벨 · 원형 변형.
 function ProgressIndicatorPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     const R = 18, C = 2 * Math.PI * R;
     return (
@@ -7461,7 +7516,7 @@ function ProgressIndicatorPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 트랙 높이 SP[8] */}
           {showSpacing && (
-            <DimLine dir="v" x={540} y={128} length={8} label="SP[8]" />
+            <DimLine dir="v" x={540} y={128} sp={8} />
           )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
@@ -7476,6 +7531,7 @@ function ProgressIndicatorPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — Progress indicator. 이미 SP 준수(트랙 8·radius 4) */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -7488,11 +7544,12 @@ function ProgressIndicatorPlayground({ activeSubTab }) {
               ['원형 지름', 'SP[40]', '40', '원형 변형'],
               ['원형 스트로크', 'SP[4]', '4', '원형 두께'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 스케일(8/4/40) 준수 — 정규화 불필요.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -7565,7 +7622,7 @@ function paginationRange(cur, total, sib = 1) {
   return out;
 }
 function PaginationPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     // 버튼 top 124(32px) · 중심 y=140
     const cellBase = { position: 'absolute', top: '124px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.label1.fontSize };
@@ -7616,7 +7673,7 @@ function PaginationPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <DimLine dir="h" x={284} y={172} length={32} label="32" />{/* 셀 폭 */}
-              <DimLine dir="h" x={316} y={140} length={4} label="SP[4]" />{/* 셀 간격 */}
+              <DimLine dir="h" x={316} y={140} sp={4} />{/* 셀 간격 */}
             </>
           )}
         </div>
@@ -7633,6 +7690,7 @@ function PaginationPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 실제 Pagination 기준. 셀 간격 anatomy 8→SP[4]로 정합 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -7645,11 +7703,12 @@ function PaginationPlayground({ activeSubTab }) {
               ['생략 표시 폭', '—', '24', 'Ellipsis'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 pagination은 셀 간격 SP[4] — anatomy(8)를 SP[4]로 맞춰 일치.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -7685,7 +7744,7 @@ function PaginationPlayground({ activeSubTab }) {
 // Page counter(nav-page-counter) — 현재/전체 페이지를 숫자(6 / 32)로 표시 + 페이지당 개수 선택.
 //  구성: 현재 페이지 · 전체 페이지 · 이전/다음 화살표 · 페이지당 개수.
 function PageCounterPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     const grayBox = { position: 'absolute', top: '100px', height: '36px', borderRadius: '8px', background: '#e9e9ec', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.headline1.fontSize, fontWeight: W.bold, color: '#2a2a2a' };
     const arrowBox = { position: 'absolute', top: '100px', width: '36px', height: '36px', borderRadius: '8px', background: '#fff', border: '1px solid #e4e4e7', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.body1.fontSize, color: '#4a4a4a' };
@@ -7729,7 +7788,7 @@ function PageCounterPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 화살표 간격 SP[8] */}
           {showSpacing && (
-            <DimLine dir="h" x={438} y={118} length={8} label="SP[8]" />
+            <DimLine dir="h" x={438} y={118} sp={8} />
           )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
@@ -7744,6 +7803,7 @@ function PageCounterPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — Page counter (요소 간격 SP[8] 준수) */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -7756,11 +7816,12 @@ function PageCounterPlayground({ activeSubTab }) {
               ['화살표', '—', '30', '이전/다음 버튼'],
               ['모서리 반경', 'radius', '6', 'border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 요소 간격 SP[8] 준수. anatomy는 컨트롤 크게(36) 그린 도식.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -7832,7 +7893,7 @@ const TAB_ITEMS = [
   { label: '설정', badge: 0 },
 ];
 function TabPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -7876,7 +7937,7 @@ function TabPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 라벨↔배지 SP[8] */}
           {showSpacing && (
-            <DimLine dir="h" x={286} y={135} length={8} label="SP[8]" />
+            <DimLine dir="h" x={286} y={135} sp={8} />
           )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
@@ -7892,6 +7953,7 @@ function TabPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — Tab. 탭 간격은 탭 패딩 기반(SP[16] 권장), 라벨↔배지 SP[8] */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -7904,11 +7966,12 @@ function TabPlayground({ activeSubTab }) {
               ['언더라인 높이', '—', '2', '활성 탭 강조'],
               ['기준선', '—', '1', 'Baseline'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 탭 간격은 개별 탭 패딩(SP[16])으로 조절, 라벨↔배지는 SP[8].</div>
         </div>
+        )}
       </div>
     );
   }
@@ -7949,7 +8012,7 @@ function TabPlayground({ activeSubTab }) {
 // Pagination dots(nav-pagination-dots) — 캐러셀/온보딩 현재 위치 점 인디케이터.
 //  구성: 활성 점(브랜드색 확장 pill) · 비활성 점 · 점 묶음(컨테이너).
 function PaginationDotsPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -7985,7 +8048,7 @@ function PaginationDotsPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 점 간격 SP[8] */}
           {showSpacing && (
-            <DimLine dir="h" x={346} y={140} length={8} label="SP[8]" />
+            <DimLine dir="h" x={346} y={140} sp={8} />
           )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
@@ -7999,6 +8062,7 @@ function PaginationDotsPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — Pagination dots (gap SP[8] 준수) */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -8011,11 +8075,12 @@ function PaginationDotsPlayground({ activeSubTab }) {
               ['활성 pill', '—', '20×8', '활성 점 확장'],
               ['모서리 반경', 'radius', '8', 'Container'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 준수(gap SP[8]) — 정규화 불필요.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -8052,7 +8117,7 @@ function PaginationDotsPlayground({ activeSubTab }) {
 // Top navigation(nav-top) — PREVAX 전 화면 공유 상단 크롬. 정본: Library의 PrevaxTitleBar.
 //  구성: 브랜드·권한(좌) · 경고 배너(중앙) · 상태·시각·언어·계정·창 컨트롤(우).
 function TopNavigationPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -8102,7 +8167,7 @@ function TopNavigationPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 경고 배너 좌측 패딩 SP[8] */}
           {showSpacing && (
-            <DimLine dir="h" x={320} y={140} length={8} label="SP[8]" />
+            <DimLine dir="h" x={320} y={140} sp={8} />
           )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
@@ -8118,6 +8183,7 @@ function TopNavigationPlayground({ activeSubTab }) {
         <div style={{ marginTop: SP[16], fontSize: TYPE.caption1.fontSize, color: '#9a9aa2' }}>정본: <span style={{ color: '#d4d4d8' }}>PrevaxTitleBar</span> (Library.jsx 공통 크롬) — 새 화면에서 재사용하세요.</div>
 
         {/* 간격 스펙 표 — 정본 PrevaxTitleBar 기준 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '16px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -8131,11 +8197,12 @@ function TopNavigationPlayground({ activeSubTab }) {
               ['경고 배너 패딩', 'SP[8]', '8', '배너 좌우'],
               ['모서리 반경', 'radius', '6', '배너·버튼'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 정본 PrevaxTitleBar(padding SP[12]·gap SP[8]) 기준. anatomy는 요소 배치 도식.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -8172,7 +8239,7 @@ function TopNavigationPlayground({ activeSubTab }) {
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: T.positive }} />
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: T.positive }} />
             </span>
-            <span style={{ fontVariantNumeric: 'tabular-nums' }}>2026-07-07 14:30:00</span>
+            <span style={{ fontVariantNumeric: 'tabular-nums' }}>2026.07.07 14:30:00</span>
             <span style={{ cursor: 'pointer' }}>한국어 ▾</span>
             <span style={{ display: 'inline-flex', color: T.primaryStrong }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6.5 8-6.5s8 2.5 8 6.5" /></svg>
@@ -8198,7 +8265,7 @@ const PT_STEPS = [
   { label: '종료', desc: '상황 종료' },
 ];
 function ProgressTrackerPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     // 노드 중심 x좌표(4단계) · 노드 중심 y=150
     const NX = [200, 320, 440, 560];
@@ -8257,7 +8324,7 @@ function ProgressTrackerPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 노드↔라벨 SP[12] */}
           {showSpacing && (
-            <DimLine dir="v" x={200} y={164} length={12} label="SP[12]" />
+            <DimLine dir="v" x={200} y={164} sp={12} />
           )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
@@ -8273,6 +8340,7 @@ function ProgressTrackerPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — Progress tracker */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -8285,11 +8353,12 @@ function ProgressTrackerPlayground({ activeSubTab }) {
               ['노드 크기', '—', '28', '단계 노드 지름'],
               ['연결선', '—', '2', 'Connector 두께'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 준수(노드↔라벨 SP[12]·줄간격 SP[2]) — 정규화 불필요. 단계 간격은 폭 균등 분배.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -8341,7 +8410,7 @@ function ProgressTrackerPlayground({ activeSubTab }) {
 // Popover(present-popover) — 앵커에 붙어 뜨는 기반 오버레이 프리미티브.
 //  구성: 앵커 · 화살표(arrow) · 콘텐츠 · 컨테이너.
 function PopoverPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -8383,7 +8452,7 @@ function PopoverPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={301} y={113} w={158} h={126} t={16} l={16} r={16} b={16} />
-              <DimLine dir="h" x={300} y={180} length={16} label="SP[16]" />
+              <DimLine dir="h" x={300} y={180} sp={16} />
             </>
           )}
         </div>
@@ -8399,6 +8468,7 @@ function PopoverPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — Popover. 앵커 간격 10→SP[8] 정규화, anatomy 패딩 20→SP[16] 정합 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -8412,11 +8482,12 @@ function PopoverPlayground({ activeSubTab }) {
               ['화살표', '—', '12', '12×12 회전 사각'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 앵커 간격 10→SP[8] 정규화, anatomy 패딩(20)도 SP[16]로 정합.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -8451,7 +8522,7 @@ function PopoverPlayground({ activeSubTab }) {
 //  구성: 입력 필드 · 추천 목록 · 추천 항목 · 일치 강조. (Popover 특수형)
 const AC_ITEMS = ['강변북로', '강남대로', '경부고속도로', '올림픽대로', '내부순환로', '동부간선도로'];
 function AutocompletePlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -8493,8 +8564,8 @@ function AutocompletePlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={261} y={61} w={238} h={38} l={12} r={12} />
-              <DimLine dir="h" x={260} y={80} length={12} label="SP[12]" />{/* 입력 좌측 패딩 */}
-              <DimLine dir="h" x={260} y={210} length={12} label="SP[12]" />{/* 항목 좌측 패딩 */}
+              <DimLine dir="h" x={260} y={80} sp={12} />{/* 입력 좌측 패딩 */}
+              <DimLine dir="h" x={260} y={210} sp={12} />{/* 항목 좌측 패딩 */}
             </>
           )}
         </div>
@@ -8510,6 +8581,7 @@ function AutocompletePlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 실제 Autocomplete 기준(입력·항목 SP 준수). anatomy 항목 들여쓰기만 SP[12]로 정합 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -8524,11 +8596,12 @@ function AutocompletePlayground({ activeSubTab }) {
               ['높이', '40', '40', '입력 컨트롤 높이'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 Autocomplete는 이미 SP 준수 — anatomy 항목 들여쓰기(24)만 SP[12]로 맞춰 일치.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -8593,7 +8666,7 @@ function SectionMessageContent({ variant = 'info', title, body }) {
 }
 
 function SectionMessagePlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -8638,8 +8711,8 @@ function SectionMessagePlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={231} y={109} w={338} h={94} t={12} l={16} r={16} b={12} />
-              <DimLine dir="h" x={230} y={143} length={16} label="SP[16]" />{/* 컨테이너 좌측 패딩 */}
-              <DimLine dir="h" x={266} y={186} length={12} label="SP[12]" />{/* 아이콘↔텍스트 */}
+              <DimLine dir="h" x={230} y={143} sp={16} />{/* 컨테이너 좌측 패딩 */}
+              <DimLine dir="h" x={266} y={186} sp={12} />{/* 아이콘↔텍스트 */}
             </>
           )}
         </div>
@@ -8657,6 +8730,7 @@ function SectionMessagePlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 실제 Section message 기준(이미 SP 준수). anatomy 들여쓰기/gap을 실제에 맞춤 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -8671,11 +8745,12 @@ function SectionMessagePlayground({ activeSubTab }) {
               ['좌측 강조 보더', '—', '3', 'variant 색 강조'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 Section message는 이미 SP 준수(gap 12·padding 12/16). anatomy 들여쓰기·gap을 실제(SP[16]/SP[12])에 맞춰 일치.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -8714,7 +8789,7 @@ function SectionMessagePlayground({ activeSubTab }) {
 // Skeleton(Loading) — 콘텐츠 로드 전 실제 레이아웃 형태의 회색 플레이스홀더 + shimmer.
 //  variant(text/circle/card) × loading(true/false), shimmer 애니메이션.
 function SkeletonPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -8758,7 +8833,7 @@ function SkeletonPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). 텍스트 막대 줄 간격 SP[8] */}
           {showSpacing && (
-            <DimLine dir="v" x={452} y={98} length={8} label="SP[8]" />
+            <DimLine dir="v" x={452} y={98} sp={8} />
           )}
         </div>
         {/* Legend */}
@@ -8774,6 +8849,7 @@ function SkeletonPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — Skeleton */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -8786,11 +8862,12 @@ function SkeletonPlayground({ activeSubTab }) {
               ['카드 변형 반경', 'radius', '8', 'Card 변형'],
               ['아바타', '원형', '—', 'Circle 변형'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 스케일 준수 — 정규화 불필요.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -8919,7 +8996,7 @@ function FallbackViewPlayground({ activeSubTab }) {
   const [variant, setVariant] = useState('error');
   const [size, setSize] = useState('compact');
   const [loading, setLoading] = useState(false);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   const retry = () => { setLoading(true); };
 
   if (activeSubTab === 'anatomy') {
@@ -8970,8 +9047,8 @@ function FallbackViewPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 세로 리듬(아이콘↔제목 SP[24] · 설명↔버튼 SP[24]), x=490 오른쪽 여백열 */}
           {showSpacing && (
             <>
-              <DimLine dir="v" x={490} y={168} length={22} label="SP[24]" />{/* 아이콘 ↔ 제목 */}
-              <DimLine dir="v" x={490} y={238} length={24} label="SP[24]" />{/* 설명 ↔ 버튼 */}
+              <DimLine dir="v" x={490} y={168} sp={24} />{/* 아이콘 ↔ 제목 */}
+              <DimLine dir="v" x={490} y={238} sp={24} />{/* 설명 ↔ 버튼 */}
             </>
           )}
         </div>
@@ -8989,6 +9066,7 @@ function FallbackViewPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -8999,10 +9077,11 @@ function FallbackViewPlayground({ activeSubTab }) {
               ['설명 ↔ 버튼', 'SP[24]', '24', '설명과 액션 버튼 간격'],
               ['아이콘 크기', '—', '76', '일러스트 placeholder'],
               ['버튼 크기', '—', '96×36', '액션 버튼'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 22→SP[24] 정규화. 세로 리듬 SP[8]/SP[24] 기준.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -9039,7 +9118,7 @@ function FallbackViewPlayground({ activeSubTab }) {
 
 function CategoryPlayground({ activeSubTab }) {
   const [activeIdx, setActiveIdx] = useState(0);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   const items = ['전체', '지점별', '장비별', '이벤트별'];
 
   // ── Anatomy ──────────────────────────────────────
@@ -9141,8 +9220,8 @@ function CategoryPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 칩 간격 SP[8] · 아이콘 버튼 분리 SP[24] */}
           {showSpacing && (
             <>
-              <DimLine dir="h" x={236} y={168} length={8} label="SP[8]" />{/* 칩 간격 */}
-              <DimLine dir="h" x={512} y={168} length={24} label="SP[24]" />{/* 아이콘 버튼 분리 */}
+              <DimLine dir="h" x={236} y={168} sp={8} />{/* 칩 간격 */}
+              <DimLine dir="h" x={512} y={168} sp={24} />{/* 아이콘 버튼 분리 */}
             </>
           )}
         </div>
@@ -9161,6 +9240,7 @@ function CategoryPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -9170,10 +9250,11 @@ function CategoryPlayground({ activeSubTab }) {
               ['아이콘 버튼 분리', 'SP[24]', '24', '칩 그룹 ↔ 아이콘 버튼'],
               ['칩 높이', '—', '36', '칩/버튼 높이'],
               ['칩 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 준수(gap SP[8] · 분리 SP[24]). 실동작 칩 패딩 8/16 = SP[8]/SP[16].</div>
         </div>
+        )}
       </div>
     );
   }
@@ -9229,7 +9310,7 @@ function CategoryPlayground({ activeSubTab }) {
 function ListCellPlayground({ activeSubTab }) {
   const [trailingType, setTrailingType] = useState('Switch'); // 'Badge' | 'Checkbox' | 'Icon button' | 'Switch' | 'Text button' | 'Value'
   const [hasDivider, setHasDivider] = useState(false);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -9328,8 +9409,8 @@ function ListCellPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={150} y={138} w={420} h={64} t={12} l={20} r={20} b={12} />
-              <DimLine dir="h" x={150} y={170} length={20} label="SP[16]" />{/* 좌우 패딩 */}
-              <DimLine dir="v" x={300} y={138} length={12} label="SP[12]" />{/* 상하 패딩 */}
+              <DimLine dir="h" x={150} y={170} sp={16} />{/* 좌우 패딩 */}
+              <DimLine dir="v" x={300} y={138} sp={12} />{/* 상하 패딩 */}
             </>
           )}
         </div>
@@ -9350,6 +9431,7 @@ function ListCellPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -9362,10 +9444,11 @@ function ListCellPlayground({ activeSubTab }) {
               ['Divider 인셋', 'SP[16]', '20', '구분선 좌우 여백'],
               ['셀 높이', '—', '64', '리스트 셀 높이'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 좌우 패딩·Divider 20→SP[16] · Label/Desc 2→SP[4] 정규화.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -9667,7 +9750,7 @@ function FilterButtonPlayground({ activeSubTab }) {
   const FONT = "'Inter','Pretendard','맑은 고딕',sans-serif";
 
   // ── Anatomy: 라이트 카드 + 번호 콜아웃(1 Label · 2 Count badge · 3 Dropdown caret · 4 Container) ──
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -9708,8 +9791,8 @@ function FilterButtonPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 트리거 좌우 패딩 SP[12](14→12) */}
           {showSpacing && (
             <>
-              <PaddingFill x={286} y={132} w={148} h={36} t={0} l={14} r={14} b={0} />
-              <DimLine dir="h" x={286} y={158} length={14} label="SP[12]" />{/* 좌우 패딩 */}
+              <PaddingFill x={287} y={133} w={146} h={34} t={0} l={14} r={14} b={0} />{/* border 1px 보정 */}
+              <DimLine dir="h" x={286} y={158} sp={12} />{/* 좌우 패딩 */}
             </>
           )}
         </div>
@@ -9729,6 +9812,7 @@ function FilterButtonPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -9739,10 +9823,11 @@ function FilterButtonPlayground({ activeSubTab }) {
               ['카운트 배지 패딩', 'SP[4]', '4', '배지 좌우 여백'],
               ['트리거 높이', '—', '36', '컨트롤 높이'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 패딩 14→SP[12] · gap 6→SP[8] 정규화.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -9915,7 +10000,7 @@ function CheckboxPlayground({ activeSubTab }) {
   const PRIMARY = T.primary;
   const CARD = '#16161a';
   const BORDER = '#2a2a30';
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   // ── Anatomy: 라이트 카드 + 번호 콜아웃(1 Control · 2 Label) ──
   if (activeSubTab === 'anatomy') {
@@ -9951,7 +10036,7 @@ function CheckboxPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰). Control↔Label = SP[8] */}
           {showSpacing && (
-            <DimLine dir="h" x={367} y={150} length={8} label="SP[8]" />
+            <DimLine dir="h" x={367} y={150} sp={8} />
           )}
         </div>
 
@@ -9968,6 +10053,7 @@ function CheckboxPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 실제 체크박스(Chk) 기준. 간격 SP[8], 컨트롤 16/18px */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -9980,11 +10066,12 @@ function CheckboxPlayground({ activeSubTab }) {
               ['컨트롤 크기(단독)', '—', '16', '라벨 없이 그리드·헤더'],
               ['항목 간 세로 간격', 'SP[12]~SP[16]', '12·16', '목록 나열(권장)'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 체크박스는 이미 gap SP[8] — anatomy만 10이라 정규화해 일치. 컨트롤 크기는 라벨 동반 18 / 단독 16.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -10070,7 +10157,7 @@ function DatePickerPlayground({ activeSubTab }) {
   const TODAY_BG = 'rgba(0, 102, 255,0.28)';
 
   // ── Anatomy: 라이트 카드 + 번호 콜아웃(1 Value · 2 Label · 3 Calendar icon · 4 Container) ──
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
       <div style={{ width: '100%' }}>
@@ -10115,9 +10202,9 @@ function DatePickerPlayground({ activeSubTab }) {
           {/* 간격 치수선 — 필드 좌우 패딩 SP[12](14→12) · Label↔Field SP[8] */}
           {showSpacing && (
             <>
-              <PaddingFill x={242} y={134} w={236} h={44} t={0} l={14} r={14} b={0} />
-              <DimLine dir="h" x={242} y={166} length={14} label="SP[12]" />{/* 좌우 패딩 */}
-              <DimLine dir="v" x={242} y={126} length={8} label="SP[8]" />{/* Label ↔ Field */}
+              <PaddingFill x={243} y={135} w={234} h={42} t={0} l={14} r={14} b={0} />{/* border 1px 보정 */}
+              <DimLine dir="h" x={242} y={166} sp={12} />{/* 좌우 패딩 */}
+              <DimLine dir="v" x={242} y={126} sp={8} />{/* Label ↔ Field */}
             </>
           )}
         </div>
@@ -10137,6 +10224,7 @@ function DatePickerPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -10146,10 +10234,11 @@ function DatePickerPlayground({ activeSubTab }) {
               ['Label ↔ Field', 'SP[8]', '8', '캡션과 입력 간격'],
               ['필드 높이', '—', '44', '컨트롤 높이'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 패딩 14→SP[12] 정규화.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -10362,7 +10451,7 @@ function DatePickerPlayground({ activeSubTab }) {
 
 function TablePlayground({ activeSubTab }) {
   // ── Anatomy: 라이트 카드 + 번호 콜아웃(1 Header · 2 Cell · 3 Pagination · 4 Container) ──
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     const thS = { padding: '8px 10px', textAlign: 'left', whiteSpace: 'nowrap' };
     const tdS = { padding: '8px 10px', color: '#18181b', borderTop: '1px solid #f0f0f2', whiteSpace: 'nowrap' };
@@ -10425,8 +10514,8 @@ function TablePlayground({ activeSubTab }) {
           {/* 간격 치수선 — 셀 패딩 좌우 SP[8](10→8) · 상하 SP[8] (미니 테이블) */}
           {showSpacing && (
             <>
-              <DimLine dir="h" x={190} y={85} length={10} label="SP[8]" />{/* 셀 좌우 패딩 */}
-              <DimLine dir="v" x={230} y={72} length={8} label="SP[8]" />{/* 셀 상하 패딩 */}
+              <DimLine dir="h" x={190} y={85} sp={8} />{/* 셀 좌우 패딩 */}
+              <DimLine dir="v" x={230} y={72} sp={8} />{/* 셀 상하 패딩 */}
             </>
           )}
         </div>
@@ -10446,6 +10535,7 @@ function TablePlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -10455,10 +10545,11 @@ function TablePlayground({ activeSubTab }) {
               ['셀 상하 패딩', 'SP[8]', '8', '헤더/셀 상하 여백'],
               ['페이지네이션 간격', 'SP[8]', '6', '페이지 항목 간격'],
               ['테이블 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 10→SP[8] · 페이지 6→SP[8] 정규화. 실동작 셀 패딩 14/16 → SP[12]/SP[16].</div>
         </div>
+        )}
       </div>
     );
   }
@@ -10658,12 +10749,12 @@ function ListCardPlayground({ activeSubTab }) {
   const [thumbnail, setThumbnail] = useState(true);
   const [leading, setLeading] = useState(true);
   const [heading, setHeading] = useState('차량 번호판 검지');
-  const [caption, setCaption] = useState('2026-05-27 11:30:22');
+  const [caption, setCaption] = useState('2026.05.27 11:30:22');
   const [extraCaption, setExtraCaption] = useState('신뢰도: 98.5% • 속도: 62km/h');
   const [topContent, setTopContent] = useState(true);
   const [trailing, setTrailing] = useState(true);
   const [bottomContent, setBottomContent] = useState(true);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -10707,7 +10798,7 @@ function ListCardPlayground({ activeSubTab }) {
             <div style={{
               width: '180px',
               height: '12px',
-              background: '#eae6ff',
+              background: showSpacing ? '#eae6ff' : 'transparent',
               borderRadius: '2px',
               alignSelf: 'flex-start',
               marginLeft: '120px' /* 썸네일 영역 뒤부터 시작 */
@@ -10719,7 +10810,7 @@ function ListCardPlayground({ activeSubTab }) {
               <div style={{
                 width: '16px',
                 height: '16px',
-                background: '#eae6ff',
+                background: showSpacing ? '#eae6ff' : 'transparent',
                 borderRadius: '2px',
                 flexShrink: 0
               }} />
@@ -10757,7 +10848,7 @@ function ListCardPlayground({ activeSubTab }) {
               <div style={{
                 width: '16px',
                 height: '16px',
-                background: '#eae6ff',
+                background: showSpacing ? '#eae6ff' : 'transparent',
                 borderRadius: '2px',
                 flexShrink: 0
               }} />
@@ -10767,7 +10858,7 @@ function ListCardPlayground({ activeSubTab }) {
             <div style={{
               width: '180px',
               height: '12px',
-              background: '#eae6ff',
+              background: showSpacing ? '#eae6ff' : 'transparent',
               borderRadius: '2px',
               alignSelf: 'flex-start',
               marginLeft: '120px'
@@ -10781,9 +10872,9 @@ function ListCardPlayground({ activeSubTab }) {
             {/* 1. Container */}
             <line x1="360" y1="330" x2="360" y2="280" stroke="#999" strokeWidth="1.2" />
             {/* 2. Thumbnail */}
-            <line x1="224" y1="50" x2="224" y2="136" stroke="#999" strokeWidth="1.2" />
-            {/* 3. Leading content */}
-            <line x1="100" y1="190" x2="160" y2="190" stroke="#999" strokeWidth="1.2" />
+            <line x1="224" y1="50" x2="224" y2="158" stroke="#999" strokeWidth="1.2" />
+            {/* 3. Leading content — 간격 표시 시에만 */}
+            {showSpacing && <line x1="100" y1="190" x2="160" y2="190" stroke="#999" strokeWidth="1.2" />}
             {/* 4. Heading (줄 중심 y≈170) */}
             <line x1="400" y1="168" x2="348" y2="170" stroke="#999" strokeWidth="1.2" />
             <circle cx="348" cy="170" r="1.5" fill="#999" />
@@ -10793,36 +10884,34 @@ function ListCardPlayground({ activeSubTab }) {
             {/* 6. Extra caption (줄 중심 y≈212) */}
             <line x1="400" y1="216" x2="366" y2="212" stroke="#999" strokeWidth="1.2" />
             <circle cx="366" cy="212" r="1.5" fill="#999" />
-            {/* 7. Top content */}
-            <line x1="380" y1="50" x2="380" y2="116" stroke="#999" strokeWidth="1.2" />
-            {/* 8. Trailing content */}
-            <line x1="620" y1="190" x2="560" y2="190" stroke="#999" strokeWidth="1.2" />
-            {/* 9. Bottom content */}
-            <line x1="440" y1="330" x2="440" y2="264" stroke="#999" strokeWidth="1.2" />
+            {/* 7·8·9. Top/Trailing/Bottom content — 간격 표시 시에만 */}
+            {showSpacing && <line x1="380" y1="50" x2="380" y2="116" stroke="#999" strokeWidth="1.2" />}
+            {showSpacing && <line x1="620" y1="190" x2="560" y2="190" stroke="#999" strokeWidth="1.2" />}
+            {showSpacing && <line x1="440" y1="330" x2="440" y2="264" stroke="#999" strokeWidth="1.2" />}
           </svg>
 
           {/* Callouts */}
           <div style={{ position: 'absolute', left: '360px', top: '330px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
           <div style={{ position: 'absolute', left: '224px', top: '50px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '100px', top: '190px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
+          {showSpacing && <div style={{ position: 'absolute', left: '100px', top: '190px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>}
           <div style={{ position: 'absolute', left: '410px', top: '168px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyleSm }}>4</div>
           <div style={{ position: 'absolute', left: '410px', top: '192px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyleSm }}>5</div>
           <div style={{ position: 'absolute', left: '410px', top: '216px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyleSm }}>6</div>
-          <div style={{ position: 'absolute', left: '380px', top: '50px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>7</div>
-          <div style={{ position: 'absolute', left: '620px', top: '190px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>8</div>
-          <div style={{ position: 'absolute', left: '440px', top: '330px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>9</div>
+          {showSpacing && <div style={{ position: 'absolute', left: '380px', top: '50px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>7</div>}
+          {showSpacing && <div style={{ position: 'absolute', left: '620px', top: '190px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>8</div>}
+          {showSpacing && <div style={{ position: 'absolute', left: '440px', top: '330px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>9</div>}
 
           {/* 간격 치수선 — 토글 시 표시(SP 토큰 라벨, 카드 좌표 기준) */}
           {showSpacing && (
             <>
               <PaddingFill x={140} y={100} w={440} h={180} t={16} l={16} r={16} b={16} />
-              <DimLine dir="h" x={141} y={190} length={16} label="SP[16]" />{/* 좌측 내부 여백 */}
-              <DimLine dir="v" x={277} y={100} length={16} label="SP[16]" />{/* 상단 내부 여백 */}
-              <DimLine dir="h" x={173} y={226} length={16} label="SP[16]" />{/* leading↔썸네일 */}
-              <DimLine dir="h" x={269} y={226} length={16} label="SP[16]" />{/* 썸네일↔텍스트 */}
-              <DimLine dir="v" x={341} y={178} length={4} label="SP[4]" />{/* 텍스트 줄 간격 */}
+              <DimLine dir="h" x={141} y={190} sp={16} />{/* 좌측 내부 여백 */}
+              <DimLine dir="v" x={277} y={100} sp={16} />{/* 상단 내부 여백 */}
+              <DimLine dir="h" x={173} y={222} sp={16} />{/* leading↔썸네일 */}
+              <DimLine dir="h" x={269} y={222} sp={16} />{/* 썸네일↔텍스트 */}
+              <DimLine dir="v" x={348} y={180} sp={4} />{/* 텍스트 줄 간격(Heading↔Caption, 텍스트 우측 여백에 배치) */}
               <DimLine dir="v" x={252} y={128} length={32} label="space-between" />{/* 상단 콘텐츠↔본문 세로 간격(자동 분배) */}
-              <DimLine dir="v" x={252} y={220} length={26} label="space-between" />{/* 본문↔하단 콘텐츠 세로 간격(자동 분배) */}
+              <DimLine dir="v" x={252} y={220} length={32} label="space-between" />{/* 본문↔하단 콘텐츠 세로 간격(자동 분배) */}
             </>
           )}
         </div>
@@ -10839,7 +10928,7 @@ function ListCardPlayground({ activeSubTab }) {
             { num: 7, label: 'Top content' },
             { num: 8, label: 'Trailing content' },
             { num: 9, label: 'Bottom content' },
-          ].map(item => (
+          ].filter(item => showSpacing || ![3, 7, 8, 9].includes(item.num)).map(item => (
             <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
               {item.num}. {item.label}
             </div>
@@ -10847,6 +10936,7 @@ function ListCardPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — SP 토큰 기준(리빙 스펙). 토큰 열 보라 강조, off-grid 값은 권장 토큰 병기 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -10859,11 +10949,12 @@ function ListCardPlayground({ activeSubTab }) {
               ['텍스트 줄 간격', 'SP[4]', '4', 'Heading·Caption·Extra caption'],
               ['상·하 콘텐츠 여백', 'space-between', '—', 'Top/Bottom content 분배'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화(카드 여백 SP[16]). 상·하 콘텐츠(보라 바)의 세로 간격은 <b style={{ color: '#c4b5fd' }}>space-between</b>(자동 분배)이라 고정 토큰 없음 — 치수선에 "space-between"으로 표기.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -11121,7 +11212,7 @@ function CardPlayground({ activeSubTab }) {
   const [showUnit, setShowUnit] = useState(true);
   const [showPeriod, setShowPeriod] = useState(true);
   const [showMetric, setShowMetric] = useState(true);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -11171,16 +11262,8 @@ function CardPlayground({ activeSubTab }) {
               }}>Action</div>
             </div>
             <div style={{
-              width: '100%',
-              height: '12px',
-              background: '#eae6ff',
-              borderRadius: '2px',
-              marginTop: SP[8],
-              marginBottom: SP[8],
-              flexShrink: 0
-            }} />
-            <div style={{
               flex: 1,
+              marginTop: SP[8],
               background: '#f4f4f5',
               border: '1px dashed #d4d4d8',
               borderRadius: '6px',
@@ -11210,9 +11293,9 @@ function CardPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={161} y={81} w={398} h={178} t={16} l={16} r={16} b={16} />
-              <DimLine dir="h" x={161} y={110} length={16} label="SP[16]" />{/* 좌측 내부 여백 */}
-              <DimLine dir="v" x={205} y={81} length={16} label="SP[16]" />{/* 상단 내부 여백 */}
-              <DimLine dir="v" x={520} y={120} length={8} label="SP[8]" />{/* 헤더↔구분 바 섹션 간격 */}
+              <DimLine dir="h" x={161} y={110} sp={16} />{/* 좌측 내부 여백 */}
+              <DimLine dir="v" x={205} y={81} sp={16} />{/* 상단 내부 여백 */}
+              <DimLine dir="v" x={190} y={119} sp={8} />{/* 헤더↔바디 섹션 간격(바디 상단 좌측에 연결) */}
             </>
           )}
         </div>
@@ -11231,6 +11314,7 @@ function CardPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 카드 내부 간격(SP 토큰). 정규화 완료 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -11239,15 +11323,16 @@ function CardPlayground({ activeSubTab }) {
             ))}
             {[
               ['카드 내부 여백', 'SP[16]', '16', 'Container padding'],
-              ['섹션 간격(헤더·바디)', 'SP[8]', '8', '헤더↔구분↔바디'],
+              ['섹션 간격(헤더·바디)', 'SP[8]', '8', '헤더↔바디'],
               ['헤더 액션 배지 패딩', 'SP[4] × SP[8]', '4·8', 'Content badge 규격'],
               ['모서리 반경', 'radius', '12', 'Card border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화 완료(카드 여백 SP[16], 섹션 간격 SP[8], 액션 배지 SP[4]×SP[8]).</div>
         </div>
+        )}
       </div>
     );
   }
@@ -11703,7 +11788,7 @@ function ActionAreaPlayground({ activeSubTab }) {
   const [subText, setSubText] = useState('Sub action');
   const [toastMessage, setToastMessage] = useState(null);
   const [toastType, setToastType] = useState('success');
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   useEffect(() => {
     if (toastMessage) {
@@ -11825,9 +11910,9 @@ function ActionAreaPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={210} y={30} w={300} h={280} t={24} l={20} r={20} b={16} />
-              <DimLine dir="v" x={460} y={30} length={24} label="SP[24]" />{/* 상단 패딩 */}
-              <DimLine dir="h" x={210} y={237} length={20} label="SP[16]" />{/* 좌우 패딩 */}
-              <DimLine dir="v" x={230} y={205} length={12} label="SP[12]" />{/* 버튼 간격 */}
+              <DimLine dir="v" x={460} y={30} sp={24} />{/* 상단 패딩 */}
+              <DimLine dir="h" x={210} y={237} sp={16} />{/* 좌우 패딩 */}
+              <DimLine dir="v" x={230} y={205} sp={12} />{/* 버튼 간격 */}
             </>
           )}
         </div>
@@ -11846,6 +11931,7 @@ function ActionAreaPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -11857,10 +11943,11 @@ function ActionAreaPlayground({ activeSubTab }) {
               ['버튼 간격', 'SP[12]', '12', '액션 버튼 사이 간격'],
               ['버튼 높이', '—', '40', '액션 버튼 높이'],
               ['모서리 반경', 'radius', '8', '버튼 border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 좌우 20→SP[16] 정규화. Sub action 패딩 6/12 = SP[8]/SP[12].</div>
         </div>
+        )}
       </div>
     );
   }
@@ -12082,7 +12169,7 @@ function ToastPlayground({ activeSubTab }) {
   const [toastType, setToastType] = useState('neutral');
   const [message, setMessage] = useState('장비 정상 가동 중: 정상 연결 상태가 복구되었습니다.');
   const [showIcon, setShowIcon] = useState(true);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
@@ -12120,8 +12207,8 @@ function ToastPlayground({ activeSubTab }) {
           {showSpacing && (
             <>
               <PaddingFill x={241} y={135} w={278} h={50} t={8} l={16} r={16} b={8} />
-              <DimLine dir="h" x={240} y={160} length={16} label="SP[16]" />{/* 컨테이너 좌측 패딩 */}
-              <DimLine dir="h" x={274} y={175} length={8} label="SP[8]" />{/* 아이콘↔메시지 */}
+              <DimLine dir="h" x={240} y={160} sp={16} />{/* 컨테이너 좌측 패딩 */}
+              <DimLine dir="h" x={274} y={175} sp={8} />{/* 아이콘↔메시지 */}
             </>
           )}
         </div>
@@ -12137,6 +12224,7 @@ function ToastPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 — 실제 토스트 기준. gap 10→SP[8]·세로 패딩 10→SP[8] 정규화 */}
+        {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -12149,11 +12237,12 @@ function ToastPlayground({ activeSubTab }) {
               ['아이콘 ↔ 메시지', 'SP[8]', '8', '내부 요소 간격(10/14→8 정규화)'],
               ['모서리 반경', 'radius', '8', 'border-radius'],
             ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>
+              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실제 토스트 gap 10·세로 패딩 10 → SP[8] 정규화, anatomy 들여쓰기·gap도 실제(SP[16]/SP[8])에 맞춤.</div>
         </div>
+        )}
       </div>
     );
   }
@@ -13469,7 +13558,7 @@ function CheckmarkPlayground({ activeSubTab }) {
   const [size, setSize] = useState('medium'); // 'small' | 'medium' | 'large'
   const [color, setColor] = useState('accent'); // 'accent' | 'neutral'
   const [disabled, setDisabled] = useState(false);
-  const [showSpacing, setShowSpacing] = useState(false); // anatomy 간격 치수선 토글
+  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   const calloutStyle = {
     width: '20px',
@@ -13541,7 +13630,7 @@ function CheckmarkPlayground({ activeSubTab }) {
 
           {/* 간격 치수선 — 체크마크 ↔ 라벨 간격 SP[8] */}
           {showSpacing && (
-            <DimLine dir="h" x={318} y={160} length={8} label="SP[8]" />
+            <DimLine dir="h" x={318} y={160} sp={8} />
           )}
         </div>
 
@@ -13558,6 +13647,7 @@ function CheckmarkPlayground({ activeSubTab }) {
         </div>
 
         {/* 간격 스펙 표 */}
+        {showSpacing && (
         <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
@@ -13565,10 +13655,11 @@ function CheckmarkPlayground({ activeSubTab }) {
             {[
               ['체크마크 ↔ 라벨', 'SP[8]', '8', '아이콘과 콘텐츠 간격'],
               ['체크 아이콘', '—', '18', 'check 글리프'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{c}</div>)))}
+            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
           <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 준수(gap SP[8]). 실동작 사이즈별 gap 8/10/12 · 패딩 12/24.</div>
         </div>
+        )}
       </div>
     );
   }

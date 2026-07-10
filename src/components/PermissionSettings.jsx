@@ -263,7 +263,7 @@ export default function PrevaxPermissionScreen() {
       background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
       overflow: 'hidden', fontFamily: T.font, color: '#e8e8ec', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
     }}>
-      <PrevaxTitleBar datetime="2026-06-11 10:24:38" />
+      <PrevaxTitleBar datetime="2026.06.11 10:24:38" />
       <PrevaxTabBar active="설정" />
 
       <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
@@ -484,7 +484,7 @@ export function PrevaxPermissionScreen2() {
     }}>
       {/* ① 크롬(타이틀바·탭) = 제외 */}
       <Region n={1} kind="exclude" style={{ border: 'none', borderBottom: `1px dashed ${SEM.status.negative}`, borderRadius: 0 }}>
-        <PrevaxTitleBar datetime="2026-06-17 10:24:38" />
+        <PrevaxTitleBar datetime="2026.06.17 10:24:38" />
         <PrevaxTabBar active="설정" />
       </Region>
 

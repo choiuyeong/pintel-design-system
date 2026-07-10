@@ -5765,7 +5765,6 @@ function AvatarPlayground({ activeSubTab }) {
   const [shape, setShape] = useState('circle');
   const [status, setStatus] = useState('online');
   const [showImage, setShowImage] = useState(false);
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   const sizes = { sm: 32, md: 40, lg: 48, xl: 56 };
   const px = sizes[size];
@@ -5774,24 +5773,31 @@ function AvatarPlayground({ activeSubTab }) {
 
   if (activeSubTab === 'anatomy') {
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative',
-          background: '#efefef',
-          borderRadius: '16px',
-          width: '720px',
-          height: '340px',
-          margin: '0 auto 24px',
-          overflow: 'hidden',
-          boxSizing: 'border-box'
-        }}>
+      <AnatomyFrame
+        card={{ w: 720, h: 340 }}
+        linesBehind
+        callouts={[
+          { n: 1, x: 230, y: 170, line: { x1: 230, y1: 170, x2: 324, y2: 170 } },
+          { n: 2, x: 360, y: 70, line: { x1: 360, y1: 70, x2: 360, y2: 134 } },
+          { n: 3, x: 490, y: 130, line: { x1: 490, y1: 130, x2: 379, y2: 160 }, dot: true },
+          { n: 4, x: 382, y: 270, line: { x1: 382, y1: 270, x2: 382, y2: 198 } },
+        ]}
+        dims={[
+          { dir: 'h', x: 328, y: 170, length: 64, label: '64px' },
+          { dir: 'h', x: 389, y: 192, sp: 4 },
+        ]}
+        legend={[
+          { n: 1, label: 'Container (아바타 외곽 영역)' },
+          { n: 2, label: 'Avatar image (프로필 이미지)' },
+          { n: 3, label: 'Initials fallback (대체 이니셜)' },
+          { n: 4, label: 'Status indicator (접속 상태 표시)' },
+        ]}
+        spec={{ rows: [
+          ['상태 표시 여백', 'SP[4]', '3', '상태 점 모서리 오프셋'],
+          ['Container 지름', '—', '64', 'anatomy 아바타 크기'],
+          ['상태 점 지름', '—', '14', 'Status indicator'],
+        ], note: '※ off-grid 3→SP[4] 정규화. 실동작 사이즈 sm32 · md40 · lg48 · xl56.' }}
+      >
           {/* 아바타 — 중앙 */}
           <div style={{
             position: 'absolute',
@@ -5828,66 +5834,7 @@ function AvatarPlayground({ activeSubTab }) {
             </div>
           </div>
 
-          {/* SVG 직선 */}
-          <svg
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}
-          >
-            {/* 1. Container -> 수평선 좌측으로 */}
-            <line x1="230" y1="170" x2="324" y2="170" stroke="#999" strokeWidth="1.2" />
-            {/* 2. Avatar image -> 수직선 위로 */}
-            <line x1="360" y1="70" x2="360" y2="134" stroke="#999" strokeWidth="1.2" />
-            {/* 3. Initials fallback -> 대각선 우측 위로 */}
-            <line x1="490" y1="130" x2="379" y2="160" stroke="#999" strokeWidth="1.2" />
-            <circle cx="379" cy="160" r="1.5" fill="#999" />
-            {/* 4. Status indicator -> 수직선 아래로 */}
-            <line x1="382" y1="270" x2="382" y2="198" stroke="#999" strokeWidth="1.2" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '230px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '360px', top: '70px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '490px', top: '130px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
-          <div style={{ position: 'absolute', left: '382px', top: '270px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
-
-          {/* 간격 치수선 — 컨테이너 지름 + 상태 점 모서리 여백 SP[4](3→4) */}
-          {showSpacing && (
-            <>
-              <DimLine dir="h" x={328} y={170} length={64} label="64px" />{/* Container 지름 */}
-              <DimLine dir="h" x={389} y={192} sp={4} />{/* 상태 점 우측 여백 */}
-            </>
-          )}
-        </div>
-
-        {/* Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
-          {[
-            { num: 1, label: 'Container (아바타 외곽 영역)' },
-            { num: 2, label: 'Avatar image (프로필 이미지)' },
-            { num: 3, label: 'Initials fallback (대체 이니셜)' },
-            { num: 4, label: 'Status indicator (접속 상태 표시)' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 */}
-        {showSpacing && (
-        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
-            {[
-              ['상태 표시 여백', 'SP[4]', '3', '상태 점 모서리 오프셋'],
-              ['Container 지름', '—', '64', 'anatomy 아바타 크기'],
-              ['상태 점 지름', '—', '14', 'Status indicator'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 3→SP[4] 정규화. 실동작 사이즈 sm32 · md40 · lg48 · xl56.</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 
@@ -6030,7 +5977,6 @@ function AvatarGroupPlayground({ activeSubTab }) {
   const [count, setCount] = useState(5);
   const [max, setMax] = useState(4);
   const [overlap, setOverlap] = useState('md');
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   const overlapPx = { sm: 8, md: 14, lg: 20 };
   const gap = -overlapPx[overlap];
@@ -6048,24 +5994,30 @@ function AvatarGroupPlayground({ activeSubTab }) {
 
   if (activeSubTab === 'anatomy') {
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative',
-          background: '#efefef',
-          borderRadius: '16px',
-          width: '720px',
-          height: '340px',
-          margin: '0 auto 24px',
-          overflow: 'hidden',
-          boxSizing: 'border-box'
-        }}>
+      <AnatomyFrame
+        card={{ w: 720, h: 340 }}
+        linesBehind
+        callouts={[
+          { n: 1, x: 180, y: 170, line: { x1: 180, y1: 170, x2: 270, y2: 170 } },
+          { n: 2, x: 296, y: 70, line: { x1: 296, y1: 70, x2: 296, y2: 144 } },
+          { n: 3, x: 338, y: 270, line: { x1: 338, y1: 270, x2: 338, y2: 192 } },
+          { n: 4, x: 540, y: 170, line: { x1: 540, y1: 170, x2: 450, y2: 170 } },
+        ]}
+        dims={[
+          { dir: 'h', x: 338, y: 192, sp: 12 },
+        ]}
+        legend={[
+          { n: 1, label: 'Group container (아바타 그룹 용기)' },
+          { n: 2, label: 'Avatar item (개별 아바타)' },
+          { n: 3, label: 'Overlap gap (중첩 간격)' },
+          { n: 4, label: 'Overflow badge (오버플로 배지)' },
+        ]}
+        spec={{ rows: [
+          ['중첩 간격', 'SP[12]', '12', '아바타 겹침(anatomy 기준)'],
+          ['아바타 지름', '—', '44', '개별 아바타'],
+          ['테두리', '—', '2', '링 border'],
+        ], note: '※ 실동작 overlap sm8 · md14 · lg20 · 아바타 40. anatomy는 겹침 12 · 지름 44.' }}
+      >
           {/* 아바타 그룹 — 카드 중앙 */}
           <div style={{
             position: 'absolute',
@@ -6115,62 +6067,7 @@ function AvatarGroupPlayground({ activeSubTab }) {
             }}>+2</div>
           </div>
 
-          {/* SVG 직선 */}
-          <svg
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}
-          >
-            {/* 1. Group Container -> 수평선 좌측으로 */}
-            <line x1="180" y1="170" x2="270" y2="170" stroke="#999" strokeWidth="1.2" />
-            {/* 2. Avatar Item -> 수직선 위로 */}
-            <line x1="296" y1="70" x2="296" y2="144" stroke="#999" strokeWidth="1.2" />
-            {/* 3. Overlap Gap -> 수직선 아래로 */}
-            <line x1="338" y1="270" x2="338" y2="192" stroke="#999" strokeWidth="1.2" />
-            {/* 4. Overflow Badge -> 수평선 우측으로 */}
-            <line x1="540" y1="170" x2="450" y2="170" stroke="#999" strokeWidth="1.2" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '180px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '296px', top: '70px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '338px', top: '270px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
-          <div style={{ position: 'absolute', left: '540px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
-
-          {/* 간격 치수선 — 아바타 중첩 간격 SP[12](anatomy 기준) */}
-          {showSpacing && (
-            <DimLine dir="h" x={338} y={192} sp={12} />
-          )}
-        </div>
-
-        {/* Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
-          {[
-            { num: 1, label: 'Group container (아바타 그룹 용기)' },
-            { num: 2, label: 'Avatar item (개별 아바타)' },
-            { num: 3, label: 'Overlap gap (중첩 간격)' },
-            { num: 4, label: 'Overflow badge (오버플로 배지)' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 */}
-        {showSpacing && (
-        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
-            {[
-              ['중첩 간격', 'SP[12]', '12', '아바타 겹침(anatomy 기준)'],
-              ['아바타 지름', '—', '44', '개별 아바타'],
-              ['테두리', '—', '2', '링 border'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 실동작 overlap sm8 · md14 · lg20 · 아바타 40. anatomy는 겹침 12 · 지름 44.</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 

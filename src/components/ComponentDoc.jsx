@@ -4136,28 +4136,38 @@ function ChipPlayground({ activeSubTab }) {
   const [styleMode, setStyleMode] = useState('outlined'); // 'solid' or 'outlined'
   const [leadingOption, setLeadingOption] = useState('icon'); // 'none', 'icon', 'image'
   const [trailingOption, setTrailingOption] = useState('icon'); // 'none', 'icon', 'image'
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative',
-          background: '#efefef',
-          borderRadius: '16px',
-          width: '720px',
-          height: '340px',
-          margin: '0 auto 24px',
-          overflow: 'hidden',
-          boxSizing: 'border-box'
-        }}>
+      <AnatomyFrame
+        card={{ w: 720, h: 340 }}
+        linesBehind
+        legendCols={4}
+        callouts={[
+          { n: 1, x: 210, y: 168, line: { x1: 210, y1: 168, x2: 288, y2: 168 } },
+          { n: 2, x: 360, y: 90, line: { x1: 360, y1: 90, x2: 360, y2: 144 } },
+          { n: 3, x: 510, y: 168, line: { x1: 510, y1: 168, x2: 424, y2: 168 } },
+          { n: 4, x: 360, y: 250, line: { x1: 360, y1: 250, x2: 360, y2: 190 } },
+        ]}
+        dims={[
+          { pad: { x: 280, y: 150, w: 160, h: 36, t: 6, l: 14, r: 14, b: 6 } },
+          { dir: 'h', x: 280, y: 178, sp: 12 },
+          { dir: 'v', x: 360, y: 150, sp: 8 },
+        ]}
+        legend={[
+          { n: 1, label: 'Leading Content' },
+          { n: 2, label: 'Label Text' },
+          { n: 3, label: 'Trailing Action' },
+          { n: 4, label: 'Chip Container' },
+        ]}
+        spec={{ rows: [
+          ['가로 패딩', 'SP[12]', '14', '칩 좌우 여백'],
+          ['세로 패딩', 'SP[8]', '6', '칩 상하 여백'],
+          ['요소 간 간격', 'SP[8]', '8', '아이콘/라벨/× 간격'],
+          ['모서리 반경', 'radius', '18', 'pill border-radius'],
+          ['칩 높이', '—', '36', '컨트롤 높이'],
+        ], note: '※ off-grid 가로 14→SP[12] · 세로 6→SP[8] 정규화. gap SP[8] 준수.' }}
+      >
           {/* 칩 컴포넌트 — 중앙 */}
           <div style={{
             position: 'absolute',
@@ -4189,68 +4199,7 @@ function ChipPlayground({ activeSubTab }) {
             <span style={{ fontSize: '14px', color: '#a1a1aa', fontWeight: 'bold', marginLeft: 'auto', userSelect: 'none' }}>×</span>
           </div>
 
-          {/* SVG 직선 */}
-          <svg
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}
-          >
-            {/* 1. Leading content -> 수평선 좌측으로 */}
-            <line x1="210" y1="168" x2="288" y2="168" stroke="#999" strokeWidth="1.2" />
-            {/* 2. Label Text -> 수직선 위로 */}
-            <line x1="360" y1="90" x2="360" y2="144" stroke="#999" strokeWidth="1.2" />
-            {/* 3. Trailing close -> 수평선 우측으로 */}
-            <line x1="510" y1="168" x2="424" y2="168" stroke="#999" strokeWidth="1.2" />
-            {/* 4. Container -> 수직선 아래로 */}
-            <line x1="360" y1="250" x2="360" y2="190" stroke="#999" strokeWidth="1.2" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '210px', top: '168px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '360px', top: '90px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '510px', top: '168px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
-          <div style={{ position: 'absolute', left: '360px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
-
-          {/* 간격 치수선 — 칩 패딩 좌우 SP[12](14→12) · 상하 SP[8](6→8) */}
-          {showSpacing && (
-            <>
-              <PaddingFill x={280} y={150} w={160} h={36} t={6} l={14} r={14} b={6} />
-              <DimLine dir="h" x={280} y={178} sp={12} />{/* 좌우 패딩 */}
-              <DimLine dir="v" x={360} y={150} sp={8} />{/* 상하 패딩 */}
-            </>
-          )}
-        </div>
-
-        {/* Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px 0' }}>
-          {[
-            { num: 1, label: 'Leading Content' },
-            { num: 2, label: 'Label Text' },
-            { num: 3, label: 'Trailing Action' },
-            { num: 4, label: 'Chip Container' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 */}
-        {showSpacing && (
-        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
-            {[
-              ['가로 패딩', 'SP[12]', '14', '칩 좌우 여백'],
-              ['세로 패딩', 'SP[8]', '6', '칩 상하 여백'],
-              ['요소 간 간격', 'SP[8]', '8', '아이콘/라벨/× 간격'],
-              ['모서리 반경', 'radius', '18', 'pill border-radius'],
-              ['칩 높이', '—', '36', '컨트롤 높이'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 가로 14→SP[12] · 세로 6→SP[8] 정규화. gap SP[8] 준수.</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 
@@ -4484,7 +4433,6 @@ function SectionHeaderPlayground({ activeSubTab }) {
   const [showHeadingContent, setShowHeadingContent] = useState(true);
   const [trailingOption, setTrailingOption] = useState('link'); // 'none' | 'link' | 'meta' | 'icon'
   const [loading, setLoading] = useState(false);
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   // 미니 Chip (헤딩 콘텐츠 슬롯 예시)
   const MiniChip = ({ dark = false }) => (
@@ -4499,24 +4447,32 @@ function SectionHeaderPlayground({ activeSubTab }) {
 
   if (activeSubTab === 'anatomy') {
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative',
-          background: '#efefef',
-          borderRadius: '16px',
-          width: '720px',
-          height: '340px',
-          margin: '0 auto 24px',
-          overflow: 'hidden',
-          boxSizing: 'border-box',
-        }}>
+      <AnatomyFrame
+        card={{ w: 720, h: 340 }}
+        linesBehind
+        callouts={[
+          { n: 1, x: 170, y: 150, line: { x1: 170, y1: 150, x2: 226, y2: 150 } },
+          { n: 2, x: 364, y: 250, line: { x1: 364, y1: 250, x2: 364, y2: 172 } },
+          { n: 3, x: 610, y: 150, line: { x1: 610, y1: 150, x2: 556, y2: 150 } },
+        ]}
+        dims={[
+          { pad: { x: 210, y: 128, w: 360, h: 44, t: 0, l: 16, r: 16, b: 0 } },
+          { dir: 'h', x: 210, y: 160, sp: 16 },
+          { dir: 'h', x: 554, y: 160, sp: 16 },
+        ]}
+        legend={[
+          { n: 1, label: 'Heading' },
+          { n: 2, label: 'Heading content' },
+          { n: 3, label: 'Trailing content' },
+        ]}
+        spec={{ rows: [
+          ['좌우 패딩', 'SP[16]', '16', '스트립 좌우 여백'],
+          ['요소 간 간격', 'SP[8]', '8', 'Heading/Chip/Text 간격'],
+          ['스트립 높이', '—', '44', '헤더 높이'],
+          ['모서리 반경', 'radius', '6', 'border-radius'],
+          ['제목 크기', '—', '18', 'Heading font-size'],
+        ], note: '※ 이미 SP 준수(패딩 SP[16] · gap SP[8]).' }}
+      >
           {/* 헤더 컴포넌트 — 중앙 흰 스트립 */}
           <div style={{
             position: 'absolute',
@@ -4538,62 +4494,7 @@ function SectionHeaderPlayground({ activeSubTab }) {
             <span style={{ marginLeft: 'auto', fontSize: '14px', fontWeight: 500, color: '#9a9aa2', whiteSpace: 'nowrap' }}>Text</span>
           </div>
 
-          {/* SVG 직선 */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
-            {/* 1. Heading -> 좌측 수평선 */}
-            <line x1="170" y1="150" x2="226" y2="150" stroke="#999" strokeWidth="1.2" />
-            {/* 2. Heading content(Chip) -> 하단 수직선 */}
-            <line x1="364" y1="250" x2="364" y2="172" stroke="#999" strokeWidth="1.2" />
-            {/* 3. Trailing content(Text) -> 우측 수평선 */}
-            <line x1="610" y1="150" x2="556" y2="150" stroke="#999" strokeWidth="1.2" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '170px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '364px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '610px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
-
-          {/* 간격 치수선 — 스트립 좌우 패딩 SP[16] */}
-          {showSpacing && (
-            <>
-              <PaddingFill x={210} y={128} w={360} h={44} t={0} l={16} r={16} b={0} />
-              <DimLine dir="h" x={210} y={160} sp={16} />{/* 좌측 패딩 */}
-              <DimLine dir="h" x={554} y={160} sp={16} />{/* 우측 패딩 */}
-            </>
-          )}
-        </div>
-
-        {/* Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
-          {[
-            { num: 1, label: 'Heading' },
-            { num: 2, label: 'Heading content' },
-            { num: 3, label: 'Trailing content' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 */}
-        {showSpacing && (
-        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
-            {[
-              ['좌우 패딩', 'SP[16]', '16', '스트립 좌우 여백'],
-              ['요소 간 간격', 'SP[8]', '8', 'Heading/Chip/Text 간격'],
-              ['스트립 높이', '—', '44', '헤더 높이'],
-              ['모서리 반경', 'radius', '6', 'border-radius'],
-              ['제목 크기', '—', '18', 'Heading font-size'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 이미 SP 준수(패딩 SP[16] · gap SP[8]).</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 

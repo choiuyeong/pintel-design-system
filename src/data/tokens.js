@@ -137,6 +137,8 @@ export const ICONS = [
   { name: 'automation',         label: '자동화 / 연동',    usage: '카메라 연결 테스트 등 자동화·연동(이중 나선, Figma automation)' },
   { name: 'language',           label: '웹 / 언어',        usage: '카메라 웹 연결(지구본, Figma language)' },
   { name: 'flip_camera_ios',    label: '카메라 전환',      usage: '카메라 점검모드로 전환(카메라+회전, Figma flip_camera_ios)' },
+  { name: 'play',               label: '재생',             usage: '영상 재생(삼각형). 스냅샷 위 원형 재생 버튼(Play button) 및 재생 컨트롤에 사용' },
+  { name: 'pause',              label: '일시정지',         usage: '영상 일시정지(두 세로 바). 재생 중 Play button 전환 상태 및 일시정지 컨트롤에 사용' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────

@@ -2172,16 +2172,22 @@ function PlayButton({ size = 56, playing = false, hovered = false }) {
     </span>
   );
 }
-function VideoThumb({ w = 320, size = 56, playing = false, hovered = false, onClick, onEnter, onLeave, label }) {
+function VideoThumb({ w = 320, size = 56, playing = false, hovered = false, onClick, onEnter, onLeave, label, schematic = false }) {
   return (
     <div onClick={onClick} onMouseEnter={onEnter} onMouseLeave={onLeave} style={{
       position: 'relative', width: `${w}px`, aspectRatio: '16 / 9', borderRadius: '10px', overflow: 'hidden',
-      background: '#2a2f38',
+      background: schematic ? 'linear-gradient(135deg, #cdd4dc, #aab3bd)' : '#2a2f38',
       cursor: onClick ? 'pointer' : 'default', flexShrink: 0, boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
     }}>
-      <ParkCctvScene />
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.22)' }} />
-      {label && <span style={{ position: 'absolute', left: SP[8], top: SP[8], padding: `2px ${SP[8]}`, borderRadius: '4px', background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: '11px', fontWeight: W.semibold, letterSpacing: '0.02em' }}>{label}</span>}
+      {schematic ? (
+        <>
+          {/* 스냅샷 플레이스홀더(추상) — 점선 프레임 + 흐린 이미지 아이콘 */}
+          <div style={{ position: 'absolute', inset: '8px', border: '1.5px dashed rgba(255,255,255,0.5)', borderRadius: '6px' }} />
+          <svg style={{ position: 'absolute', left: '10px', top: '10px', opacity: 0.5 }} width={Math.round(w * 0.11)} height={Math.round(w * 0.11)} viewBox="0 0 24 24" fill="none" stroke="#5c6773" strokeWidth="1.4"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.6" /><path d="M21 15l-5-5L5 21" /></svg>
+        </>
+      ) : <ParkCctvScene />}
+      <div style={{ position: 'absolute', inset: 0, background: schematic ? 'rgba(0,0,0,0.10)' : 'rgba(0,0,0,0.22)' }} />
+      {label && !schematic && <span style={{ position: 'absolute', left: SP[8], top: SP[8], padding: `2px ${SP[8]}`, borderRadius: '4px', background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: '11px', fontWeight: W.semibold, letterSpacing: '0.02em' }}>{label}</span>}
       <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <PlayButton size={size} playing={playing} hovered={hovered} />
       </div>
@@ -2220,7 +2226,7 @@ function PlayButtonPlayground({ activeSubTab }) {
           ], note: '※ 버튼은 SP 스케일이 아닌 미디어 컨트롤 규격(지름 40/56/72)입니다.' }}
         >
           <div style={{ position: 'absolute', left: '210px', top: '96px', zIndex: 2 }}>
-            <VideoThumb w={300} size={64} label="LIVE" />
+            <VideoThumb w={300} size={64} schematic />
           </div>
         </AnatomyFrame>
         <div style={{ fontSize: TYPE.label1.fontSize, color: '#888', lineHeight: '1.7', marginBottom: SP[48] }}>
@@ -2236,7 +2242,7 @@ function PlayButtonPlayground({ activeSubTab }) {
               { name: 'Large', w: 340, size: 72, use: '단독 히어로·상세 뷰' },
             ].map((s) => (
               <div key={s.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: SP[12], maxWidth: `${s.w}px` }}>
-                <VideoThumb w={s.w} size={s.size} />
+                <VideoThumb w={s.w} size={s.size} schematic />
                 <span style={{ fontSize: TYPE.label2.fontSize, color: '#888', textAlign: 'center', lineHeight: 1.5 }}>{s.name} · {s.size}px<br /><span style={{ color: '#666' }}>{s.use}</span></span>
               </div>
             ))}

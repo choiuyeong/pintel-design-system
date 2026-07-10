@@ -140,6 +140,10 @@ export const TIERS = {
             children: [{ id: 'content-badge-default', name: 'Content badge' }]
           },
           {
+            id: 'play-button', name: 'Play button',
+            children: [{ id: 'play-button-default', name: 'Play button' }]
+          },
+          {
             id: 'list-card', name: 'List card',
             children: [{ id: 'list-card-default', name: 'List card' }]
           },
@@ -3741,7 +3745,7 @@ export function Alert({ type = 'info', title, message, isCloseable = true, onClo
       { id: 'web', label: 'Web' },
       { id: 'cs', label: 'Cs' }
     ],
-    overview: '콘텐츠 배지(Content badge)는 지점 정보, 장비 목록 등 대시보드 내 리스트나 카드에서 부가적인 분류 태그나 경고/정상 상태 등을 시각적으로 라벨링하여 가독성을 높여줍니다. 전면 아이콘과 후면 아이콘 슬롯을 활성화하여 닫기 액션이나 다양한 식별 심볼을 병기할 수 있습니다.',
+    overview: '콘텐츠 배지(Content badge)는 지점 정보, 장비 목록 등 대시보드 내 리스트나 카드에서 부가적인 분류 태그나 경고/정상 상태 등을 시각적으로 라벨링하여 가독성을 높여줍니다. 전면 아이콘과 후면 아이콘 슬롯을 활성화하여 닫기 액션이나 다양한 식별 심볼을 병기할 수 있습니다. 영상 스냅샷의 재생 진입 버튼은 Play button(play-button-default)을 참고하세요.',
     properties: [
       {
         name: 'color',
@@ -3878,6 +3882,48 @@ export function ContentBadge({ color = 'accent', leadingIcon, trailingIcon, labe
         </Setter.Value>
     </Setter>
 </Style>`
+  },
+  'play-button-default': {
+    name: 'Play button',
+    description: '영상 스냅샷(썸네일) 위에 올라오는 원형 재생 버튼 오버레이입니다.',
+    tabs: [
+      { id: 'design', label: 'Design' },
+      { id: 'web', label: 'Web' },
+      { id: 'cs', label: 'Cs' }
+    ],
+    overview: '재생 버튼(Play button)은 관제 영상 스냅샷/썸네일 위에 중앙 정렬로 올라오는 원형 재생 진입 버튼입니다. 클릭하면 해당 채널의 실시간/녹화 영상 재생으로 이동합니다. 프로스트 화이트 원 + Primary(#0066FF) 재생 삼각형으로 구성하며, 어떤 스냅샷 위에서도 잘 보이도록 어두운 스크림(rgba(0,0,0,0.18))을 함께 사용합니다. 재생 중에는 pause 아이콘으로 전환됩니다.',
+    properties: [
+      {
+        name: 'size',
+        title: '크기 (Size)',
+        type: 'enum',
+        conditions: [
+          { condition: 'Small 40px: 리스트 썸네일·조밀한 그리드' },
+          { condition: 'Medium 56px: 기본값. 카드/패널 미리보기' },
+          { condition: 'Large 72px: 단독 히어로·상세 뷰. 아이콘 크기는 지름의 약 42%' },
+        ],
+      },
+      {
+        name: 'button',
+        title: '버튼 (Button)',
+        type: 'string',
+        conditions: [
+          { condition: '원형 프로스트 화이트: background rgba(255,255,255,0.92)+blur(4px), 그림자 0 4px 14px rgba(0,0,0,0.28)' },
+          { condition: '아이콘: Primary(#0066FF) play 삼각형(재생 중 pause). 광학 중심 위해 우측 미세 오프셋' },
+          { condition: '호버: 원 100% 불투명 + scale 1.06 + 그림자 강화(0.16s ease)' },
+        ],
+      },
+      {
+        name: 'thumbnail',
+        title: '썸네일 (Thumbnail)',
+        type: 'ReactNode',
+        conditions: [
+          { condition: '16:9 스냅샷, radius 10px, 어두운 스크림(rgba(0,0,0,0.18))으로 버튼 대비 확보' },
+          { condition: '선택: 좌상단 상태 라벨(LIVE 등) 오버레이 병기 가능' },
+        ],
+      },
+    ],
+    code: `// 영상 스냅샷 위 재생 버튼 오버레이\n<div className="video-thumb">\n  <img src={snapshotUrl} alt="" />\n  <div className="scrim" />\n  <button className="play-button" onClick={playChannel}>\n    <Icon name={playing ? 'pause' : 'play'} size={24} color="#0066FF" />\n  </button>\n</div>`,
   },
   'list-cell-default': {
     name: 'List cell',

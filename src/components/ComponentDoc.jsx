@@ -3195,21 +3195,43 @@ function SearchFieldInteractive() {
 
 // Text area(field-textarea) — 멀티라인 입력. Anatomy(7요소) + Interactive(글자수·액션·상태).
 function TextAreaPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
-          width: '760px', height: '420px', margin: '0 auto 24px', boxSizing: 'border-box',
-        }}>
+      <AnatomyFrame
+        card={{ w: 760, h: 420, bg: '#f4f4f5' }}
+        legendGap="14px 0"
+        callouts={[
+          { n: 1, x: 160, y: 172, line: { x1: 174, y1: 172, x2: 218, y2: 172 } },
+          { n: 5, x: 284, y: 116, line: { x1: 284, y1: 130, x2: 284, y2: 162 } },
+          { n: 2, x: 160, y: 208, line: { x1: 174, y1: 208, x2: 218, y2: 208 } },
+          { n: 3, x: 160, y: 252, line: { x1: 174, y1: 252, x2: 230, y2: 252 } },
+          { n: 7, x: 605, y: 252, line: { x1: 591, y1: 252, x2: 530, y2: 252 } },
+          { n: 6, x: 390, y: 340, line: { x1: 390, y1: 326, x2: 390, y2: 274 } },
+          { n: 4, x: 260, y: 340, line: { x1: 260, y1: 326, x2: 260, y2: 292 } },
+        ]}
+        dims={[
+          { pad: { x: 221, y: 189, w: 318, h: 82, t: 12, r: 12, b: 12, l: 12 } },
+          { dir: 'h', x: 221, y: 210, sp: 12 },
+          { dir: 'v', x: 548, y: 188, length: 84, label: '84' },
+          { dir: 'v', x: 232, y: 180, sp: 8 },
+        ]}
+        legend={[
+          { n: 1, label: 'Heading' },
+          { n: 2, label: 'Placeholder' },
+          { n: 3, label: 'Leading content' },
+          { n: 4, label: 'Description' },
+          { n: 5, label: 'Required badge' },
+          { n: 6, label: 'Field' },
+          { n: 7, label: 'Trailing content' },
+        ]}
+        spec={{ rows: [
+          ['필드 패딩', 'SP[12]', '12', '입력 내부 상하·좌우'],
+          ['라벨 ↔ 필드', 'SP[8]', '8', 'Heading↔Field'],
+          ['필드 ↔ 설명', 'SP[12]', '12', 'Field↔Description'],
+          ['필드 높이', '84', '84', '멀티라인 최소 높이'],
+          ['모서리 반경', 'radius', '8', 'border-radius'],
+        ], note: '※ 간격 SP 스케일(4/8pt)로 정규화 완료. 필드 높이 84는 멀티라인 규격(스케일 예외).' }}
+      >
           {/* 뒤 흰 패널(레이어드 룩) */}
           <div style={{ position: 'absolute', left: '195px', top: '146px', width: '380px', height: '150px', background: '#fff', borderRadius: '16px', zIndex: 2 }} />
 
@@ -3235,83 +3257,7 @@ function TextAreaPlayground({ activeSubTab }) {
           {/* Description */}
           <div style={{ position: 'absolute', left: '220px', top: '284px', zIndex: 3, fontSize: TYPE.label2.fontSize, color: '#71717a' }}>Description</div>
 
-          {/* SVG 연결선 */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            {/* 1. Heading -> 좌측 */}
-            <line x1="174" y1="172" x2="218" y2="172" stroke="#999" strokeWidth="1.2" />
-            {/* 5. Required badge -> 위 */}
-            <line x1="284" y1="130" x2="284" y2="162" stroke="#999" strokeWidth="1.2" />
-            {/* 2. Placeholder -> 좌측 */}
-            <line x1="174" y1="208" x2="218" y2="208" stroke="#999" strokeWidth="1.2" />
-            {/* 3. Leading content -> 좌측 */}
-            <line x1="174" y1="252" x2="230" y2="252" stroke="#999" strokeWidth="1.2" />
-            {/* 7. Trailing content -> 우측 */}
-            <line x1="591" y1="252" x2="530" y2="252" stroke="#999" strokeWidth="1.2" />
-            {/* 6. Field -> 아래 */}
-            <line x1="390" y1="326" x2="390" y2="274" stroke="#999" strokeWidth="1.2" />
-            {/* 4. Description -> 아래 */}
-            <line x1="260" y1="326" x2="260" y2="292" stroke="#999" strokeWidth="1.2" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '160px', top: '172px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '284px', top: '116px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>5</div>
-          <div style={{ position: 'absolute', left: '160px', top: '208px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '160px', top: '252px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
-          <div style={{ position: 'absolute', left: '605px', top: '252px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>7</div>
-          <div style={{ position: 'absolute', left: '390px', top: '340px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>6</div>
-          <div style={{ position: 'absolute', left: '260px', top: '340px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>4</div>
-
-          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 필드 padding=SP[12], 높이 84, 라벨↔필드 SP[8] */}
-          {showSpacing && (
-            <>
-              <PaddingFill x={221} y={189} w={318} h={82} t={12} l={12} r={12} b={12} />{/* border-box: 84 − border 2px = 패딩 박스 82 */}
-              <DimLine dir="h" x={221} y={210} sp={12} />{/* 필드 좌측 가로 패딩 */}
-              <DimLine dir="v" x={548} y={188} length={84} label="84" />{/* 필드 높이(멀티라인, 외곽) */}
-              <DimLine dir="v" x={232} y={180} sp={8} />{/* 라벨↔필드 */}
-            </>
-          )}
-        </div>
-
-        {/* Legend — 3열 그리드 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
-          {[
-            { num: 1, label: 'Heading' },
-            { num: 2, label: 'Placeholder' },
-            { num: 3, label: 'Leading content' },
-            { num: 4, label: 'Description' },
-            { num: 5, label: 'Required badge' },
-            { num: 6, label: 'Field' },
-            { num: 7, label: 'Trailing content' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 — 필드 내부/외부 간격(SP 토큰). off-grid 값은 권장 토큰 병기 */}
-        {showSpacing && (
-        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (
-              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
-            ))}
-            {[
-              ['필드 패딩', 'SP[12]', '12', '입력 내부 상하·좌우'],
-              ['라벨 ↔ 필드', 'SP[8]', '8', 'Heading↔Field'],
-              ['필드 ↔ 설명', 'SP[12]', '12', 'Field↔Description'],
-              ['필드 높이', '84', '84', '멀티라인 최소 높이'],
-              ['모서리 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
-            )))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 간격 SP 스케일(4/8pt)로 정규화 완료. 필드 높이 84는 멀티라인 규격(스케일 예외).</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 
@@ -3427,22 +3373,34 @@ function TextAreaInteractive() {
 
 // Segmented control(control-segmented) — 세그먼트 버튼. Anatomy(구조) + Interactive(전환).
 function SegmentedControlPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     const segBase = { width: '100px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: TYPE.body2.fontSize, boxSizing: 'border-box' };
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '760px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative', background: '#f4f4f5', borderRadius: '16px',
-          width: '760px', height: '400px', margin: '0 auto 24px', boxSizing: 'border-box',
-        }}>
+      <AnatomyFrame
+        card={{ w: 760, h: 400, bg: '#f4f4f5' }}
+        legendGap="14px 0"
+        callouts={[
+          { n: 1, x: 215, y: 220, line: { x1: 228, y1: 220, x2: 267, y2: 220 } },
+          { n: 2, x: 319, y: 165, line: { x1: 319, y1: 178, x2: 319, y2: 199 } },
+          { n: 3, x: 435, y: 280, line: { x1: 435, y1: 267, x2: 435, y2: 244 } },
+        ]}
+        dims={[
+          { dir: 'h', x: 265, y: 216, sp: 4 },
+          { dir: 'v', x: 369, y: 196, sp: 4 },
+        ]}
+        legend={[
+          { n: 1, label: 'Segment' },
+          { n: 2, label: 'Label' },
+          { n: 3, label: 'Container' },
+        ]}
+        spec={{ rows: [
+          ['컨테이너 패딩', 'SP[4]', '4', '트랙 안쪽 4변 여백'],
+          ['세그먼트 너비', '—', '100', '개별 세그먼트 폭'],
+          ['세그먼트 높이', '—', '40', '개별 세그먼트 높이'],
+          ['컨테이너 반경', 'radius', '8', '트랙 border-radius'],
+          ['세그먼트 반경', 'radius', '6', '활성 배경 border-radius'],
+        ], note: '※ 컨테이너 패딩 SP[4] 이미 준수. 실동작 세그먼트 패딩 6/18 → SP[8]/SP[16].' }}
+      >
           {/* 세그먼트 컨테이너 */}
           <div style={{
             position: 'absolute', left: '265px', top: '196px',
@@ -3453,61 +3411,7 @@ function SegmentedControlPlayground({ activeSubTab }) {
             <div style={{ ...segBase, color: '#8a8a90' }}>Inactive</div>
           </div>
 
-          {/* SVG 연결선 */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            {/* 1. Segment -> 좌측 */}
-            <line x1="228" y1="220" x2="267" y2="220" stroke="#999" strokeWidth="1.2" />
-            {/* 2. Label -> 위 */}
-            <line x1="319" y1="178" x2="319" y2="199" stroke="#999" strokeWidth="1.2" />
-            {/* 3. Container -> 아래 */}
-            <line x1="435" y1="267" x2="435" y2="244" stroke="#999" strokeWidth="1.2" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '215px', top: '220px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '319px', top: '165px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '435px', top: '280px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle }}>3</div>
-
-          {/* 간격 치수선 — 컨테이너 안쪽 패딩 SP[4](좌/상). 세그먼트는 100×40 고정 규격 */}
-          {showSpacing && (
-            <>
-              <DimLine dir="h" x={265} y={216} sp={4} />{/* 좌측 패딩 */}
-              <DimLine dir="v" x={369} y={196} sp={4} />{/* 상단 패딩 */}
-            </>
-          )}
-        </div>
-
-        {/* Legend — 3열 그리드 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 0' }}>
-          {[
-            { num: 1, label: 'Segment' },
-            { num: 2, label: 'Label' },
-            { num: 3, label: 'Container' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 */}
-        {showSpacing && (
-        <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
-            {[
-              ['컨테이너 패딩', 'SP[4]', '4', '트랙 안쪽 4변 여백'],
-              ['세그먼트 너비', '—', '100', '개별 세그먼트 폭'],
-              ['세그먼트 높이', '—', '40', '개별 세그먼트 높이'],
-              ['컨테이너 반경', 'radius', '8', '트랙 border-radius'],
-              ['세그먼트 반경', 'radius', '6', '활성 배경 border-radius'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 컨테이너 패딩 SP[4] 이미 준수. 실동작 세그먼트 패딩 6/18 → SP[8]/SP[16].</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 
@@ -3550,21 +3454,28 @@ function SegmentedControlInteractive() {
 
 // Icon button(button-icon) — 아이콘만으로 동작. Anatomy(구조) + Interactive(실동작).
 function IconButtonPlayground({ activeSubTab }) {
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
   if (activeSubTab === 'anatomy') {
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative', background: '#efefef', borderRadius: '16px',
-          width: '720px', height: '340px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box',
-        }}>
+      <AnatomyFrame
+        card={{ w: 720, h: 340 }}
+        linesBehind
+        callouts={[
+          { n: 1, x: 250, y: 170, line: { x1: 263, y1: 170, x2: 348, y2: 170 } },
+          { n: 2, x: 470, y: 170, line: { x1: 457, y1: 170, x2: 390, y2: 170 } },
+        ]}
+        dims={[
+          { dir: 'h', x: 332, y: 170, sp: 16 },
+        ]}
+        legend={[
+          { n: 1, label: 'Icon' },
+          { n: 2, label: 'Container' },
+        ]}
+        spec={{ rows: [
+          ['아이콘 여백', 'SP[16]', '16', '(지름−아이콘)/2 = 17→SP[16]'],
+          ['컨테이너 지름', '—', '56', '원형 버튼 크기'],
+          ['아이콘 크기', '—', '22', '내부 글리프'],
+        ], note: '※ off-grid 17→SP[16] 정규화. 실동작: 지름 44 · 아이콘 18 · 여백 13→SP[12].' }}
+      >
           {/* 아이콘 버튼 — 중앙 (원형 Primary + 재생 아이콘) */}
           <div style={{
             position: 'absolute', left: '332px', top: '142px', width: '56px', height: '56px',
@@ -3573,52 +3484,7 @@ function IconButtonPlayground({ activeSubTab }) {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 19,12 8,19" /></svg>
           </div>
 
-          {/* SVG 연결선 */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
-            {/* 1. Icon -> 좌측 */}
-            <line x1="263" y1="170" x2="348" y2="170" stroke="#999" strokeWidth="1.2" />
-            {/* 2. Container -> 우측 */}
-            <line x1="457" y1="170" x2="390" y2="170" stroke="#999" strokeWidth="1.2" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '250px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '470px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-
-          {/* 간격 치수선 — 아이콘 여백 SP[16]((지름 56 − 아이콘 22)/2 = 17→SP[16]) */}
-          {showSpacing && (
-            <DimLine dir="h" x={332} y={170} sp={16} />
-          )}
-        </div>
-
-        {/* Legend — 3열 그리드(이미지와 동일: 2개 항목) */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
-          {[
-            { num: 1, label: 'Icon' },
-            { num: 2, label: 'Container' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 */}
-        {showSpacing && (
-        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (<div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>))}
-            {[
-              ['아이콘 여백', 'SP[16]', '16', '(지름−아이콘)/2 = 17→SP[16]'],
-              ['컨테이너 지름', '—', '56', '원형 버튼 크기'],
-              ['아이콘 크기', '—', '22', '내부 글리프'],
-            ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 17→SP[16] 정규화. 실동작: 지름 44 · 아이콘 18 · 여백 13→SP[12].</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 
@@ -3723,7 +3589,6 @@ function IconButtonInteractive() {
 function RadioPlayground({ activeSubTab }) {
   const [sel, setSel] = useState('day');
   const [size, setSize] = useState('medium');
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   // 핀텔 가이드 — 라디오 2가지 사이즈
   const SIZES = {
@@ -3747,18 +3612,27 @@ function RadioPlayground({ activeSubTab }) {
 
   if (activeSubTab === 'anatomy') {
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
-        </div>
-        {/* 라이트 카드 */}
-        <div style={{
-          position: 'relative', background: '#efefef', borderRadius: '16px',
-          width: '720px', height: '340px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box',
-        }}>
+      <AnatomyFrame
+        card={{ w: 720, h: 340 }}
+        linesBehind
+        legendCols={2}
+        callouts={[
+          { n: 1, x: 230, y: 160, line: { x1: 240, y1: 160, x2: 298, y2: 160 }, dot: true },
+          { n: 2, x: 450, y: 160, line: { x1: 440, y1: 160, x2: 382, y2: 160 }, dot: true },
+        ]}
+        dims={[
+          { dir: 'h', x: 320, y: 160, sp: 8 },
+        ]}
+        legend={[
+          { n: 1, label: 'Control (선택 컨트롤 — 외곽 원 + 내부 점)' },
+          { n: 2, label: 'Label (텍스트 라벨)' },
+        ]}
+        spec={{ rows: [
+          ['컨트롤 ↔ 라벨', 'SP[8]', '8', '원↔텍스트(Medium)'],
+          ['컨트롤 크기', '—', '20·16', 'Medium·Small 외곽원'],
+          ['내부 점', '—', '8·6', '선택 표시'],
+        ], note: '※ Medium gap SP[8] 준수. Small은 컴팩트 변형.' }}
+      >
           {/* 라디오 컴포넌트 — 중앙 (선택 상태) */}
           <div style={{
             position: 'absolute', left: '300px', top: '150px',
@@ -3769,58 +3643,7 @@ function RadioPlayground({ activeSubTab }) {
             <span>Radio</span>
           </div>
 
-          {/* SVG 직선 */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
-            {/* 1. Control -> 좌측 */}
-            <line x1="240" y1="160" x2="298" y2="160" stroke="#999" strokeWidth="1.2" />
-            <circle cx="298" cy="160" r="1.5" fill="#999" />
-            {/* 2. Label -> 우측 */}
-            <line x1="440" y1="160" x2="382" y2="160" stroke="#999" strokeWidth="1.2" />
-            <circle cx="382" cy="160" r="1.5" fill="#999" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '230px', top: '160px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '450px', top: '160px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-
-          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 컨트롤↔라벨 SP[8] */}
-          {showSpacing && (
-            <DimLine dir="h" x={320} y={160} sp={8} />
-          )}
-        </div>
-
-        {/* Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px 0' }}>
-          {[
-            { num: 1, label: 'Control (선택 컨트롤 — 외곽 원 + 내부 점)' },
-            { num: 2, label: 'Label (텍스트 라벨)' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 — Radio */}
-        {showSpacing && (
-        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (
-              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
-            ))}
-            {[
-              ['컨트롤 ↔ 라벨', 'SP[8]', '8', '원↔텍스트(Medium)'],
-              ['컨트롤 크기', '—', '20·16', 'Medium·Small 외곽원'],
-              ['내부 점', '—', '8·6', '선택 표시'],
-            ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
-            )))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ Medium gap SP[8] 준수. Small은 컴팩트 변형.</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 

@@ -146,23 +146,35 @@ function extractComponent(code) {
   return { component: c.name, ...propsFromPattern(c.param0, c.body) };
 }
 
-// ── 손문서 properties 와 소스 prop 이름 드리프트 리포트(경고만, 빌드 실패 아님) ──
-const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
-const IGNORE = new Set(['children']); // 문서에 잘 안 적는 표준 슬롯
-function driftReport(id, derivedProps) {
-  const docProps = COMPONENT_DOCS[id]?.properties;
-  if (!Array.isArray(docProps) || docProps.length === 0) return null; // 손문서 없음 → 비교 생략
-  const docSet = new Set(docProps.map((p) => norm(p.name)).filter(Boolean));
-  const srcSet = new Set(derivedProps.map((p) => norm(p.name)));
-  const onlySource = derivedProps.filter((p) => !IGNORE.has(p.name) && !docSet.has(norm(p.name))).map((p) => p.name);
-  const onlyDoc = docProps.filter((p) => !srcSet.has(norm(p.name))).map((p) => p.name);
-  if (!onlySource.length && !onlyDoc.length) return null;
-  return { onlySource, onlyDoc };
+// ── 리포트: 손문서 properties(=디자인 스펙: 상태·변형·크기)와 derivedProps(=실제 API)는
+//    서로 다른 관점이므로 이름 대조는 하지 않는다(노이즈). 대신 '진짜 문제'만 잡는다:
+//    (1) doc 예제/코드가 존재하지 않는 prop 을 참조(=stale 참조), (2) ds 컴포넌트인데 doc 누락.
+const ATTR_ALLOW = new Set(['key', 'ref', 'className', 'style', 'id']); // 컴포넌트 prop 아닌 범용 속성
+function staleRefs(id, comp, propNames) {
+  const doc = COMPONENT_DOCS[id];
+  if (!doc || !comp) return [];
+  const texts = [];
+  if (typeof doc.code === 'string') texts.push(doc.code);
+  if (typeof doc.webCode === 'string') texts.push(doc.webCode);
+  if (Array.isArray(doc.examples)) for (const s of doc.examples) if (typeof s === 'string') texts.push(s);
+  const allow = new Set([...propNames, ...ATTR_ALLOW]);
+  const bad = new Set();
+  const tagRe = new RegExp(`<${comp}\\b([^>]*?)/?>`, 'g'); // 여는 태그 속성 구간
+  for (const t of texts) {
+    let m;
+    while ((m = tagRe.exec(t))) {
+      const attrs = m[1];
+      const aRe = /(?:^|\s)([a-zA-Z_][\w]*)\s*=/g;
+      let a;
+      while ((a = aRe.exec(attrs))) if (!allow.has(a[1])) bad.add(a[1]);
+    }
+  }
+  return [...bad];
 }
 
 const out = {};
 const summary = [];
-const drifts = [];
+const problems = [];
 for (const [id, file] of Object.entries(MODULES)) {
   const rel = `src/ds/${file}`;
   const raw = readFileSync(join(root, rel), 'utf8');
@@ -173,8 +185,10 @@ for (const [id, file] of Object.entries(MODULES)) {
   }
   out[id] = { component: info.component, file: rel, props: info.props };
   summary.push(`${id} (${info.component}): ${info.destructured ? `${info.props.length} props` : 'props 구조분해 아님(추출 0)'}`);
-  const d = driftReport(id, info.props);
-  if (d) drifts.push({ id, ...d });
+  // 진짜 문제만: doc 누락 / 예제·코드가 없는 prop 참조
+  if (!COMPONENT_DOCS[id]) problems.push(`${id}: COMPONENT_DOCS 항목 없음(문서 누락)`);
+  const stale = staleRefs(id, info.component, info.props.map((p) => p.name));
+  if (stale.length) problems.push(`${id}: 예제/코드가 존재하지 않는 prop 참조 → ${stale.join(', ')}`);
 }
 
 const banner = '// ⚠️ 자동 생성 파일 — 직접 수정하지 마세요. 원본: src/ds/*.jsx (생성: mcp/gen-component-props.mjs)\n';
@@ -184,12 +198,10 @@ writeFileSync(
 );
 console.log(`[gen-component-props] ✅ ${Object.keys(out).length}개 컴포넌트 prop 추출 → src/data/components-props.js`);
 for (const s of summary) console.log(`  · ${s}`);
-if (drifts.length) {
-  console.log('[gen-component-props] ⚠ 손문서(properties) ↔ 소스(derivedProps) 이름 드리프트:');
-  for (const d of drifts) {
-    if (d.onlySource.length) console.log(`  · ${d.id}: 소스에만 있음 → ${d.onlySource.join(', ')}`);
-    if (d.onlyDoc.length) console.log(`  · ${d.id}: 손문서에만 있음 → ${d.onlyDoc.join(', ')}`);
-  }
+console.log('[gen-component-props] ℹ properties(디자인 스펙)와 derivedProps(실제 API)는 별개 관점 — 이름 대조 생략.');
+if (problems.length) {
+  console.log('[gen-component-props] ⚠ 점검 필요:');
+  for (const p of problems) console.log(`  · ${p}`);
 } else {
-  console.log('[gen-component-props] 드리프트 없음(이름 정규화 대조 기준).');
+  console.log('[gen-component-props] ✅ 점검 통과: doc 누락·stale prop 참조 없음.');
 }

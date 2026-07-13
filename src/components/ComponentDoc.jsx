@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, Fragment } from 'react';
 import { COMPONENT_DOCS, SPACING_MAP, CATEGORIES, TIERS } from '../data/components';
+import { COMPONENT_PROPS } from '../data/components-props';
 import { T, SP, TYPE, W, COLOR_ACCENT, COLOR_STATUS } from '../data/tokens';
 import { Icon } from './icons';
 import { SectionHeader } from '../ds/SectionHeader';
@@ -918,6 +919,28 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
             </div>
           )}
 
+          {/* Props (소스 자동 도출) — src/ds/*.jsx 시그니처를 AST로 추출한 실제 API (gen-component-props.mjs) */}
+          {COMPONENT_PROPS[componentId] && COMPONENT_PROPS[componentId].props.length > 0 && (
+            <div style={{ marginTop: '40px' }}>
+              <h2 className="doc-anatomy-title">Props (소스 자동 도출)</h2>
+              <p style={{ color: '#999', fontSize: '13px', lineHeight: 1.6, margin: '0 0 14px', maxWidth: '760px', wordBreak: 'keep-all' }}>
+                정본 소스 <code style={{ color: '#bdbdc4' }}>{COMPONENT_PROPS[componentId].file}</code>의 시그니처에서 AST로 자동 추출한 실제 prop입니다 — 코드와 항상 일치합니다(위 Design Specs는 사람이 쓴 개념 설명).
+              </p>
+              <div style={{ maxWidth: '760px', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: '1px', background: '#2a2a30', fontSize: '13px' }}>
+                  {['Prop', 'Type', 'Default'].map((h) => (
+                    <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '9px 12px' }}>{h}</div>
+                  ))}
+                  {COMPONENT_PROPS[componentId].props.flatMap((p) => ([
+                    <div key={`${p.name}-n`} style={{ background: '#141416', color: '#e4e4e7', fontWeight: 600, padding: '9px 12px', fontFamily: 'monospace' }}>{p.name}</div>,
+                    <div key={`${p.name}-t`} style={{ background: '#141416', color: '#60a5fa', padding: '9px 12px', fontFamily: 'monospace' }}>{p.type}</div>,
+                    <div key={`${p.name}-d`} style={{ background: '#141416', color: p.default != null ? '#b5ce8e' : '#555', padding: '9px 12px', fontFamily: 'monospace' }}>{p.default != null ? p.default : '—'}</div>,
+                  ]))}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Design Behavior guidelines */}
           {doc.behavior && (
             <div style={{ marginTop: '40px' }}>
@@ -935,6 +958,38 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
               <p style={{ color: '#cccccc', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
                 {doc.usage}
               </p>
+            </div>
+          )}
+
+          {/* When to use — 컴포넌트 간 선택(whenToUse/related)·조합(combineRule) 규칙 */}
+          {(doc.whenToUse || (doc.related && doc.related.length > 0) || doc.combineRule) && (
+            <div style={{ marginTop: '40px' }}>
+              <h2 className="doc-anatomy-title">언제 쓰나 (When to use)</h2>
+              {doc.whenToUse && (
+                <p style={{ color: '#cccccc', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap', maxWidth: '760px', wordBreak: 'keep-all' }}>
+                  {doc.whenToUse}
+                </p>
+              )}
+              {doc.related && doc.related.length > 0 && (
+                <div style={{ marginTop: '16px', maxWidth: '760px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '10px' }}>대신 고려할 컴포넌트</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {doc.related.map((r) => (
+                      <div key={r.id} style={{ display: 'flex', gap: '10px', alignItems: 'baseline', fontSize: '14px', lineHeight: 1.6, wordBreak: 'keep-all' }}>
+                        <span style={{ flexShrink: 0, fontWeight: 600, color: '#60a5fa' }}>{COMPONENT_DOCS[r.id]?.name || r.id}</span>
+                        <span style={{ color: '#666' }}>—</span>
+                        <span style={{ color: '#cccccc' }}>{r.note}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {doc.combineRule && (
+                <div style={{ marginTop: '16px', maxWidth: '760px', padding: '12px 14px', borderRadius: '8px', background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.24)', wordBreak: 'keep-all' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#60a5fa', letterSpacing: '0.03em' }}>함께 쓰기 </span>
+                  <span style={{ fontSize: '14px', color: '#cccccc', lineHeight: 1.6 }}>{doc.combineRule}</span>
+                </div>
+              )}
             </div>
           )}
 
@@ -1461,6 +1516,9 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
                       overview: targetDoc.overview || '',
                       behavior: targetDoc.behavior || '',
                       usage: targetDoc.usage || '',
+                      ...(targetDoc.whenToUse ? { whenToUse: targetDoc.whenToUse } : {}),
+                      ...(targetDoc.related ? { related: targetDoc.related } : {}),
+                      ...(targetDoc.combineRule ? { combineRule: targetDoc.combineRule } : {}),
                       designTokens: targetDoc.designTokens || [],
                       properties: targetDoc.webProps || targetDoc.properties || [],
                       csProperties: targetDoc.csProperties || [],
@@ -6421,102 +6479,52 @@ function AnatomyFrame({ card = {}, callouts = [], dims = [], legend = [], legend
 function TooltipPlayground({ activeSubTab }) {
   const [show, setShow] = useState(true);
   const [size, setSize] = useState('M'); // 툴팁 사이즈: S(컴팩트) / M(정본 기본)
-  const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
 
   if (activeSubTab === 'anatomy') {
     return (
-      <div style={{ width: '100%' }}>
-        {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: '720px', margin: '0 auto 10px' }}>
-          <button type="button" onClick={() => setShowSpacing((v) => !v)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '28px', padding: '0 12px', borderRadius: '6px', border: `1px solid ${showSpacing ? '#8b5cf6' : '#3a3a42'}`, background: showSpacing ? 'rgba(139,92,246,0.16)' : '#202024', color: showSpacing ? '#c4b5fd' : '#a1a1aa', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
-          </button>
+      <AnatomyFrame
+        card={{ w: 720, h: 340 }}
+        linesBehind
+        callouts={[
+          { n: 1, x: 360, y: 250, line: { x1: 360, y1: 232, x2: 360, y2: 188 }, dot: true },
+          { n: 2, x: 360, y: 90, line: { x1: 360, y1: 108, x2: 360, y2: 146 }, dot: true },
+          { n: 3, x: 230, y: 170, line: { x1: 243, y1: 170, x2: 322, y2: 170 }, dot: true },
+          { n: 4, x: 490, y: 170, line: { x1: 477, y1: 170, x2: 398, y2: 170 }, dot: true },
+        ]}
+        dims={[
+          { pad: { x: 310, y: 154, w: 100, h: 36, t: 8, l: 12, r: 12, b: 8 } },
+          { dir: 'h', x: 310, y: 172, sp: 12 },
+          { dir: 'v', x: 345, y: 155, sp: 8 },
+        ]}
+        legend={[
+          { n: 1, label: 'Container' },
+          { n: 2, label: 'Arrow' },
+          { n: 3, label: 'Label' },
+          { n: 4, label: 'Shortcut' },
+        ]}
+        spec={{ rows: [
+          ['가로 패딩', 'SP[12]', '12', '본문 좌우'],
+          ['세로 패딩', 'SP[8]', '8', '본문 상하'],
+          ['라벨 ↔ 단축키', 'SP[8]', '8', '내부 요소 간격'],
+          ['대상과 간격', 'SP[8]', '8', '툴팁↔대상(화살표 포함)'],
+          ['화살표', '—', '8', '8×8 회전 사각'],
+          ['모서리 반경', 'radius', '8', 'border-radius'],
+        ], note: '※ 정본: MCP get_component(Tooltip). 이미 SP 스케일(8/12) 준수 — 정규화 불필요.' }}
+      >
+        {/* Tooltip 컴포넌트 — 중앙(anatomy는 화이트 톤으로 표현) */}
+        <div style={{
+          position: 'absolute', left: '50%', top: '154px', transform: 'translateX(-50%)',
+          display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 12px',
+          borderRadius: '8px', background: '#fff', border: '1px solid #e4e4e7',
+          color: '#18181b', fontSize: '14px', fontWeight: 600, whiteSpace: 'nowrap', zIndex: 3,
+          boxShadow: '0 6px 16px rgba(0,0,0,0.12)',
+        }}>
+          <span>Label</span>
+          <span style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 500 }}>Ctrl+C</span>
+          {/* 화살표: 본문과 동일 배경 8px, 위쪽 대상을 향함 */}
+          <span style={{ position: 'absolute', left: '50%', top: '-5px', marginLeft: '-4px', width: '8px', height: '8px', background: '#fff', borderLeft: '1px solid #e4e4e7', borderTop: '1px solid #e4e4e7', transform: 'rotate(45deg)' }} />
         </div>
-        {/* 라이트 카드 */}
-        <div style={{ position: 'relative', background: '#efefef', borderRadius: '16px', width: '720px', height: '340px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
-          {/* Tooltip 컴포넌트 — 중앙(anatomy는 화이트 톤으로 표현) */}
-          <div style={{
-            position: 'absolute', left: '50%', top: '154px', transform: 'translateX(-50%)',
-            display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 12px',
-            borderRadius: '8px', background: '#fff', border: '1px solid #e4e4e7',
-            color: '#18181b', fontSize: '14px', fontWeight: 600, whiteSpace: 'nowrap', zIndex: 3,
-            boxShadow: '0 6px 16px rgba(0,0,0,0.12)',
-          }}>
-            <span>Label</span>
-            <span style={{ fontSize: '12px', color: '#a1a1aa', fontWeight: 500 }}>Ctrl+C</span>
-            {/* 화살표: 본문과 동일 배경 8px, 위쪽 대상을 향함 */}
-            <span style={{ position: 'absolute', left: '50%', top: '-5px', marginLeft: '-4px', width: '8px', height: '8px', background: '#fff', borderLeft: '1px solid #e4e4e7', borderTop: '1px solid #e4e4e7', transform: 'rotate(45deg)' }} />
-          </div>
-
-          {/* SVG 연결선 */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
-            {/* 2. Arrow -> 수직선 위로 */}
-            <line x1="360" y1="108" x2="360" y2="146" stroke="#999" strokeWidth="1.2" />
-            <circle cx="360" cy="146" r="1.5" fill="#999" />
-            {/* 1. Container -> 수직선 아래로 */}
-            <line x1="360" y1="232" x2="360" y2="188" stroke="#999" strokeWidth="1.2" />
-            <circle cx="360" cy="188" r="1.5" fill="#999" />
-            {/* 3. Label -> 수평선 좌측으로 */}
-            <line x1="243" y1="170" x2="322" y2="170" stroke="#999" strokeWidth="1.2" />
-            <circle cx="322" cy="170" r="1.5" fill="#999" />
-            {/* 4. Shortcut -> 수평선 우측으로 */}
-            <line x1="477" y1="170" x2="398" y2="170" stroke="#999" strokeWidth="1.2" />
-            <circle cx="398" cy="170" r="1.5" fill="#999" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '360px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '360px', top: '90px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '230px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
-          <div style={{ position: 'absolute', left: '490px', top: '170px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
-
-          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 본문 padding 8×12=SP[8]/SP[12](이미 준수) */}
-          {showSpacing && (
-            <>
-              <PaddingFill x={310} y={154} w={100} h={36} t={8} l={12} r={12} b={8} />
-              <DimLine dir="h" x={310} y={172} sp={12} />{/* 좌측 가로 패딩 */}
-              <DimLine dir="v" x={345} y={155} sp={8} />{/* 상단 세로 패딩 */}
-            </>
-          )}
-        </div>
-
-        {/* Legend */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px 0' }}>
-          {[
-            { num: 1, label: 'Container' },
-            { num: 2, label: 'Arrow' },
-            { num: 3, label: 'Label' },
-            { num: 4, label: 'Shortcut' },
-          ].map(item => (
-            <div key={item.num} style={{ fontSize: '13px', fontWeight: '600', color: '#fff' }}>
-              {item.num}. {item.label}
-            </div>
-          ))}
-        </div>
-
-        {/* 간격 스펙 표 — 정본 Tooltip 기준. 이미 SP 스케일 준수(정규화 불필요) */}
-        {showSpacing && (
-        <div style={{ maxWidth: '720px', margin: '20px auto 0' }}>
-          <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.2fr 0.4fr 1.5fr', gap: '1px', background: '#2a2a30', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', fontSize: '12px' }}>
-            {['항목', '토큰', 'px', '용도'].map((h) => (
-              <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
-            ))}
-            {[
-              ['가로 패딩', 'SP[12]', '12', '본문 좌우'],
-              ['세로 패딩', 'SP[8]', '8', '본문 상하'],
-              ['라벨 ↔ 단축키', 'SP[8]', '8', '내부 요소 간격'],
-              ['대상과 간격', 'SP[8]', '8', '툴팁↔대상(화살표 포함)'],
-              ['화살표', '—', '8', '8×8 회전 사각'],
-              ['모서리 반경', 'radius', '8', 'border-radius'],
-            ].map((r, i) => r.map((c, j) => (
-              <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
-            )))}
-          </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 정본: MCP get_component(Tooltip). 이미 SP 스케일(8/12) 준수 — 정규화 불필요.</div>
-        </div>
-        )}
-      </div>
+      </AnatomyFrame>
     );
   }
 
@@ -7142,13 +7150,33 @@ function PaginationPlayground({ activeSubTab }) {
   );
 }
 
-// Page counter(nav-page-counter) — 현재/전체 페이지를 숫자(6 / 32)로 표시 + 페이지당 개수 선택.
-//  구성: 현재 페이지 · 전체 페이지 · 이전/다음 화살표 · 페이지당 개수.
+// Page counter(nav-page-counter) — 콘텐츠 내 현재 위치를 숫자로 알리는 정보성(수동) 인디케이터.
+//  구성: 현재 값 · 구분자(/) · 전체 값. 인터랙션 없음 — 갤러리·슬라이더·문서 뷰어 진행 표시.
 function PageCounterPlayground({ activeSubTab }) {
   const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
+
+  // 정본(nav-page-counter) 수동 인디케이터 — 현재 값(강조 가능) / 구분자 / 전체 값
+  const PageCounter = ({ current, total, size = 'md', emphasis = false, onLight = false }) => {
+    const fs = size === 'sm' ? TYPE.caption1.fontSize : size === 'lg' ? TYPE.body1.fontSize : TYPE.label1.fontSize;
+    const single = total <= 1;
+    const muted = onLight ? '#9a9aa2' : '#888';
+    const curColor = emphasis ? T.primaryStrong : (onLight ? '#18181b' : '#e8e8ec');
+    return (
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[4], padding: `${SP[4]} ${SP[8]}`, borderRadius: 8, fontFamily: T.font, fontSize: fs, fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+        {single ? (
+          <span style={{ color: muted, fontWeight: W.medium }}>{Math.min(current, total)}</span>
+        ) : (
+          <>
+            <strong style={{ color: curColor, fontWeight: W.bold }}>{Math.min(current, total)}</strong>
+            <span style={{ color: muted, fontWeight: W.regular }}>/</span>
+            <span style={{ color: muted, fontWeight: W.regular }}>{total}</span>
+          </>
+        )}
+      </span>
+    );
+  };
+
   if (activeSubTab === 'anatomy') {
-    const grayBox = { position: 'absolute', top: '100px', height: '36px', borderRadius: '8px', background: '#e9e9ec', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.headline1.fontSize, fontWeight: W.bold, color: '#2a2a2a' };
-    const arrowBox = { position: 'absolute', top: '100px', width: '36px', height: '36px', borderRadius: '8px', background: '#fff', border: '1px solid #e4e4e7', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', zIndex: 3, fontSize: TYPE.body1.fontSize, color: '#4a4a4a' };
     return (
       <div style={{ width: '100%' }}>
         {/* 간격 표시 토글 — 치수선(SP 토큰) on/off */}
@@ -7157,53 +7185,50 @@ function PageCounterPlayground({ activeSubTab }) {
             <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#8b5cf6' }} />간격 {showSpacing ? '숨기기' : '표시'}
           </button>
         </div>
-        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '280px', margin: '0 auto 24px', boxSizing: 'border-box' }}>
-          {/* Row1: [6] / 32  ‹ › */}
-          {/* 1. 현재 페이지 */}
-          <div style={{ ...grayBox, left: '260px', width: '44px' }}>6</div>
-          {/* 2. 전체 페이지 */}
-          <div style={{ position: 'absolute', left: '320px', top: '105px', zIndex: 3, fontSize: TYPE.headline1.fontSize, color: '#a1a1aa' }}>/ 32</div>
-          {/* 3. 이전/다음 화살표 */}
-          <div style={{ ...arrowBox, left: '402px' }}>‹</div>
-          <div style={{ ...arrowBox, left: '446px' }}>›</div>
-          {/* Row2: [20 ▾] 개씩 */}
-          {/* 4. 페이지당 개수 */}
-          <div style={{ ...grayBox, top: '166px', left: '260px', width: '62px', fontSize: TYPE.body1.fontSize, gap: '6px' }}>20 <span style={{ fontSize: TYPE.caption2.fontSize, color: '#6a6a6a' }}>▾</span></div>
-          <div style={{ position: 'absolute', left: '334px', top: '174px', zIndex: 3, fontSize: TYPE.label1.fontSize, fontWeight: W.semibold, color: '#18181b' }}>per page</div>
+        {/* 라이트 카드 */}
+        <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '760px', height: '280px', margin: '0 auto 24px', boxSizing: 'border-box', overflow: 'hidden' }}>
+          {/* 4. 컨테이너 pill */}
+          <div style={{ position: 'absolute', left: '296px', top: '104px', width: '168px', height: '68px', background: '#fff', border: '1px solid #e4e4e7', borderRadius: '14px', zIndex: 2 }} />
+          {/* 1. 현재 값 */}
+          <div style={{ position: 'absolute', left: '328px', top: '120px', zIndex: 3, fontSize: '32px', fontWeight: W.bold, color: '#18181b', lineHeight: 1 }}>6</div>
+          {/* 2. 구분자 */}
+          <div style={{ position: 'absolute', left: '366px', top: '121px', zIndex: 3, fontSize: '30px', color: '#a1a1aa', lineHeight: 1 }}>/</div>
+          {/* 3. 전체 값 */}
+          <div style={{ position: 'absolute', left: '392px', top: '120px', zIndex: 3, fontSize: '32px', color: '#a1a1aa', lineHeight: 1 }}>32</div>
 
           {/* SVG 연결선 — 요소 경계까지 정확히 그음 */}
           <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 4 }}>
-            {/* 1. 현재 좌측(x=260) y=118 */}
-            <line x1="238" y1="118" x2="260" y2="118" stroke="#999" strokeWidth="1.2" /><circle cx="260" cy="118" r="1.6" fill="#999" />
-            {/* 2. 전체 상단(y=100) x=341 */}
-            <line x1="341" y1="78" x2="341" y2="100" stroke="#999" strokeWidth="1.2" /><circle cx="341" cy="100" r="1.6" fill="#999" />
-            {/* 3. 화살표 상단(y=100) x=442 */}
-            <line x1="442" y1="78" x2="442" y2="100" stroke="#999" strokeWidth="1.2" /><circle cx="442" cy="100" r="1.6" fill="#999" />
-            {/* 4. 페이지당 개수 좌측(x=260) y=184 */}
-            <line x1="238" y1="184" x2="260" y2="184" stroke="#999" strokeWidth="1.2" /><circle cx="260" cy="184" r="1.6" fill="#999" />
+            {/* 1. 현재 값 위 (x=337) */}
+            <line x1="337" y1="66" x2="337" y2="104" stroke="#999" strokeWidth="1.2" /><circle cx="337" cy="104" r="1.6" fill="#999" />
+            {/* 3. 전체 값 위 (x=408) */}
+            <line x1="408" y1="66" x2="408" y2="104" stroke="#999" strokeWidth="1.2" /><circle cx="408" cy="104" r="1.6" fill="#999" />
+            {/* 2. 구분자 아래 (x=372) */}
+            <line x1="372" y1="214" x2="372" y2="172" stroke="#999" strokeWidth="1.2" /><circle cx="372" cy="172" r="1.6" fill="#999" />
+            {/* 4. 컨테이너 우측 (y=138) */}
+            <line x1="490" y1="138" x2="464" y2="138" stroke="#999" strokeWidth="1.2" /><circle cx="464" cy="138" r="1.6" fill="#999" />
           </svg>
-          <div style={{ position: 'absolute', left: '224px', top: '118px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
-          <div style={{ position: 'absolute', left: '341px', top: '66px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
-          <div style={{ position: 'absolute', left: '442px', top: '66px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
-          <div style={{ position: 'absolute', left: '224px', top: '184px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
+          <div style={{ position: 'absolute', left: '337px', top: '58px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>1</div>
+          <div style={{ position: 'absolute', left: '408px', top: '58px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>3</div>
+          <div style={{ position: 'absolute', left: '372px', top: '224px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>2</div>
+          <div style={{ position: 'absolute', left: '508px', top: '138px', transform: 'translate(-50%, -50%)', zIndex: 5, ...calloutStyle, backgroundColor: '#fff', color: '#111' }}>4</div>
 
-          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 화살표 간격 SP[8] */}
+          {/* 간격 치수선 — 토글 시 표시(SP 토큰). 값↔구분자 gap SP[4] */}
           {showSpacing && (
-            <DimLine dir="h" x={438} y={118} sp={8} />
+            <DimLine dir="h" x={347} y={188} sp={4} />
           )}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px 0' }}>
           {[
-            { num: 1, label: '현재 페이지 (Current)' },
-            { num: 2, label: '전체 페이지 (Total)' },
-            { num: 3, label: '이전 / 다음 (Prev / Next)' },
-            { num: 4, label: '페이지당 개수 (Per page)' },
+            { num: 1, label: '현재 값 (Current)' },
+            { num: 2, label: '구분자 (Separator)' },
+            { num: 3, label: '전체 값 (Total)' },
+            { num: 4, label: '컨테이너 (Container)' },
           ].map(item => (
             <div key={item.num} style={{ fontSize: TYPE.label2.fontSize, fontWeight: W.semibold, color: '#fff' }}>{item.num}. {item.label}</div>
           ))}
         </div>
 
-        {/* 간격 스펙 표 — Page counter (요소 간격 SP[8] 준수) */}
+        {/* 간격 스펙 표 — Page counter (정보성 요소, 값 사이 SP[4] / 컨테이너 패딩 SP[8]) */}
         {showSpacing && (
         <div style={{ maxWidth: '760px', margin: '20px auto 0' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>간격 스펙 (Spacing)</div>
@@ -7212,73 +7237,98 @@ function PageCounterPlayground({ activeSubTab }) {
               <div key={h} style={{ background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, padding: '7px 10px' }}>{h}</div>
             ))}
             {[
-              ['요소 간격', 'SP[8]', '8', '입력·화살표·개수 사이'],
-              ['박스 높이', '—', '30', '입력·개수 컨트롤'],
-              ['화살표', '—', '30', '이전/다음 버튼'],
-              ['모서리 반경', 'radius', '6', 'border-radius'],
+              ['요소 간격(값↔구분자)', 'SP[4]', '4', '현재·구분자·전체 사이'],
+              ['컨테이너 좌우 패딩', 'SP[8]', '8', 'padding 0 8px'],
+              ['모서리 반경', 'radius', '8', 'border-radius'],
+              ['크기(기본 md)', '—', '14', 'sm 12 / md 14 / lg 16'],
             ].map((r, i) => r.map((c, j) => (
               <div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>
             )))}
           </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 요소 간격 SP[8] 준수. anatomy는 컨트롤 크게(36) 그린 도식.</div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 정보성(수동) 요소 — 인터랙션 없음. anatomy는 값을 크게 그린 도식(실제 md=14px). 현재 값은 기본 텍스트, 구분자·전체 값은 보조 텍스트(#888).</div>
         </div>
         )}
       </div>
     );
   }
 
-  // Interactive — 현재 페이지 입력/이동 + 페이지당 개수 변경 (숫자 표기)
-  const TOTAL_ITEMS = 632;
-  const SIZES = [10, 20, 50];
-  const [pageSize, setPageSize] = useState(20);
-  const [sizeOpen, setSizeOpen] = useState(false);
-  const [cur, setCur] = useState(6);
-  const totalPages = Math.max(1, Math.ceil(TOTAL_ITEMS / pageSize));
-  const page = Math.min(Math.max(1, cur), totalPages);
-  const grayBox = { height: 30, borderRadius: 6, background: '#2a2a30', color: '#e8e8ec', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', fontFamily: T.font };
-  const arrowBtn = (label, disabled, onClick) => (
-    <button type="button" onClick={onClick} disabled={disabled} style={{
-      width: 30, height: 30, borderRadius: 6, cursor: disabled ? 'default' : 'pointer', fontFamily: T.font, fontSize: TYPE.label1.fontSize,
-      background: 'transparent', border: '1px solid #2e2e2e', color: disabled ? '#5a5a62' : '#d4d4d8',
-    }}>{label}</button>
-  );
+  // Usage/Variants — 인터랙션 없는 정보성 요소이므로 변형·크기 + 실제 사용 맥락을 보여준다
+  const CARD = '#16161a';
+  const BORDER = '#2a2a30';
+  const panel = { background: CARD, border: `1px solid ${BORDER}`, borderRadius: '10px', padding: '20px' };
+  const sectionLabel = { fontSize: '12px', color: '#6a6a72', marginBottom: '14px', letterSpacing: '0.04em' };
+  const vRow = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: SP[16], padding: `${SP[8]} 0` };
+  const vLabel = { fontSize: TYPE.label2.fontSize, color: '#8a8a92' };
+  const divider = <div style={{ height: 1, background: '#232329' }} />;
   return (
-    <div style={{ width: '100%' }}>
-      <div style={{ border: '1px solid #2a2a2a', borderRadius: '12px', background: '#1a1a1a', padding: `${SP[24]} ${SP[24]}` }}>
-        {/* Row1: [현재] / 전체  ‹ › */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: SP[8] }}>
-          <input type="number" min={1} max={totalPages} value={page}
-            onChange={(e) => setCur(Math.min(Math.max(1, Number(e.target.value) || 1), totalPages))}
-            style={{ ...grayBox, width: 44, textAlign: 'center', border: 'none', outline: 'none', fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: T.primaryStrong, MozAppearance: 'textfield' }} />
-          <span style={{ fontSize: TYPE.label1.fontSize, color: '#888', fontWeight: W.medium }}>/ {totalPages}</span>
-          {arrowBtn('‹', page === 1, () => setCur(page - 1))}
-          {arrowBtn('›', page === totalPages, () => setCur(page + 1))}
-        </div>
-        {/* Row2: [20 ▾] 개씩 — 드롭다운 목록 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], marginTop: SP[12] }}>
-          <div style={{ position: 'relative' }}>
-            <button type="button" onClick={() => setSizeOpen((v) => !v)}
-              style={{ ...grayBox, gap: SP[4], padding: `0 ${SP[8]}`, cursor: 'pointer', border: `1px solid ${sizeOpen ? T.primary : 'transparent'}`, fontSize: TYPE.label1.fontSize, fontWeight: W.semibold }}>
-              {pageSize} <span style={{ fontSize: TYPE.caption2.fontSize, color: '#9a9aa2', transform: sizeOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>▾</span>
-            </button>
-            {sizeOpen && (
-              <>
-                <div onClick={() => setSizeOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 30 }} />
-                <div style={{ position: 'absolute', top: 'calc(100% + 4px)', left: 0, zIndex: 31, minWidth: 72, background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: 8, boxShadow: '0 12px 32px rgba(0,0,0,0.5)', padding: `${SP[4]} 0`, overflow: 'hidden' }}>
-                  {SIZES.map((s) => (
-                    <div key={s} onClick={() => { setPageSize(s); setCur(1); setSizeOpen(false); }}
-                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, cursor: 'pointer', fontSize: TYPE.label1.fontSize, fontWeight: s === pageSize ? W.semibold : W.regular, color: s === pageSize ? T.primaryStrong : '#d4d4d8' }}
-                      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}>
-                      {s}
-                      {s === pageSize && <Icon name="check" size={14} color={T.primaryStrong} />}
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
+      <div style={{ fontSize: '13px', color: '#999', marginBottom: '20px' }}>
+        Page counter는 콘텐츠 내 현재 위치를 숫자로 안내하는 <b style={{ color: '#bdbdc4' }}>정보성(수동)</b> 요소입니다. 클릭·이동 같은 인터랙션 없이 갤러리·슬라이더·문서 뷰어 등에서 진행 상황을 간결히 전달합니다.
+      </div>
+
+      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', background: '#0f0f12', border: `1px solid ${BORDER}`, borderRadius: '12px', padding: '32px' }}>
+        {/* 변형 */}
+        <div style={{ ...panel, flex: '1 1 260px' }}>
+          <div style={sectionLabel}>변형 (Variants)</div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={vRow}><span style={vLabel}>활성 (기본)</span><PageCounter current={6} total={32} /></div>
+            {divider}
+            <div style={vRow}><span style={vLabel}>강조 (Primary Strong)</span><PageCounter current={6} total={32} emphasis /></div>
+            {divider}
+            <div style={vRow}><span style={vLabel}>비활성 (단일 페이지)</span><PageCounter current={1} total={1} /></div>
           </div>
-          <span style={{ fontSize: TYPE.label2.fontSize, color: '#888', fontWeight: W.medium }}>개씩</span>
+        </div>
+
+        {/* 크기 */}
+        <div style={{ ...panel, flex: '1 1 260px' }}>
+          <div style={sectionLabel}>크기 (Sizes)</div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={vRow}><span style={vLabel}>sm — 12px</span><PageCounter current={3} total={12} size="sm" /></div>
+            {divider}
+            <div style={vRow}><span style={vLabel}>md — 14px (기본)</span><PageCounter current={3} total={12} size="md" /></div>
+            {divider}
+            <div style={vRow}><span style={vLabel}>lg — 16px</span><PageCounter current={3} total={12} size="lg" /></div>
+          </div>
+        </div>
+      </div>
+
+      {/* 사용 맥락 */}
+      <div style={{ fontSize: '12px', color: '#6a6a72', margin: '24px 0 12px', letterSpacing: '0.04em' }}>사용 맥락 (Usage)</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+        {/* 1. CCTV 스냅샷 캐러셀 — 카운터 오버레이(우하단) */}
+        <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: '12px', overflow: 'hidden' }}>
+          <div style={{ position: 'relative', height: '130px', background: 'linear-gradient(135deg, #2a3340, #171c24)' }}>
+            <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '55%', background: 'linear-gradient(180deg, rgba(60,70,84,0), rgba(23,28,36,0.9))' }} />
+            <div style={{ position: 'absolute', left: SP[8], top: SP[8], fontSize: TYPE.caption2.fontSize, color: 'rgba(255,255,255,0.7)', fontWeight: W.semibold, letterSpacing: '0.04em' }}>ROAD-CAM 03</div>
+            <div style={{ position: 'absolute', right: SP[8], bottom: SP[8], background: 'rgba(0,0,0,0.55)', borderRadius: 8 }}>
+              <PageCounter current={3} total={12} />
+            </div>
+          </div>
+          <div style={{ padding: `${SP[12]} ${SP[16]}`, fontSize: TYPE.label2.fontSize, color: '#8a8a92' }}>CCTV 스냅샷 캐러셀</div>
+        </div>
+
+        {/* 2. 문서 뷰어 — 라이트 배경, 하단 중앙 카운터 */}
+        <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: '12px', overflow: 'hidden' }}>
+          <div style={{ height: '130px', background: '#f4f4f5', padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '7px', boxSizing: 'border-box' }}>
+            {[100, 88, 94, 70, 82, 60].map((w, i) => (<div key={i} style={{ height: '6px', width: `${w}%`, borderRadius: '3px', background: '#d9d9de' }} />))}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: `${SP[8]} 0`, borderTop: `1px solid ${BORDER}` }}>
+            <PageCounter current={12} total={248} />
+          </div>
+        </div>
+
+        {/* 3. 이벤트 리스트 — 하단 우측 카운터 */}
+        <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: '12px', overflow: 'hidden' }}>
+          <div style={{ height: '130px', padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '8px', boxSizing: 'border-box' }}>
+            {['침입 감지', '무단횡단', '배회 경고'].map((t, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: SP[8], fontSize: TYPE.label2.fontSize, color: '#c4c4cc' }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: i === 0 ? T.error : '#4a4a52' }} />{t}
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: `${SP[8]} ${SP[16]}`, borderTop: `1px solid ${BORDER}` }}>
+            <PageCounter current={2} total={8} />
+          </div>
         </div>
       </div>
     </div>
@@ -9884,12 +9934,23 @@ function TablePlayground({ activeSubTab }) {
                 <div style={{ ...tdS, textAlign: 'right', color: '#6b6b72' }}>{st}</div>
               </div>
             ))}
-            {/* 푸터 — 페이지네이션 */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px', padding: '7px 10px', borderTop: '1px solid #eee', color: '#9a9aa2' }}>
-              <span>‹</span>
-              <span style={{ color: '#0066FF', fontWeight: 700 }}>1</span>
-              <span>2</span><span>3</span>
-              <span>›</span>
+            {/* 푸터 — 페이지네이션 (Pagination 컴포넌트 반영: 박스형 셀, active=파란 채움) */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '4px', padding: '7px 10px', borderTop: '1px solid #eee' }}>
+              {[
+                { t: '‹' },
+                { t: '1', active: true },
+                { t: '2' },
+                { t: '3' },
+                { t: '›' },
+              ].map((c, i) => (
+                <span key={i} style={{
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  width: '18px', height: '18px', borderRadius: '4px', boxSizing: 'border-box',
+                  background: c.active ? '#0066FF' : 'transparent',
+                  border: `1px solid ${c.active ? '#0066FF' : '#e2e2e6'}`,
+                  color: c.active ? '#fff' : '#9a9aa2', fontWeight: c.active ? 700 : 400,
+                }}>{c.t}</span>
+              ))}
             </div>
           </div>
 
@@ -9984,13 +10045,18 @@ function TablePlayground({ activeSubTab }) {
   const Pager = () => {
     if (pagination === 'None') return null;
 
+    // Pagination 컴포넌트(nav-pagination)와 동일한 박스형 셀 — active=파란 채움(#0066FF), 그 외 테두리 셀
+    const cellBase = {
+      minWidth: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      borderRadius: '6px', userSelect: 'none', boxSizing: 'border-box',
+    };
     const arrow = (label, onClick, disabled) => (
       <span
         onClick={disabled ? undefined : onClick}
         style={{
-          minWidth: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          borderRadius: '6px', fontSize: '15px', userSelect: 'none',
-          color: disabled ? '#3e3e42' : '#a1a1aa', cursor: disabled ? 'default' : 'pointer',
+          ...cellBase, fontSize: '15px',
+          border: `1px solid ${disabled ? '#242428' : '#2e2e2e'}`,
+          color: disabled ? '#3e3e42' : '#8a8a92', cursor: disabled ? 'default' : 'pointer',
         }}
       >{label}</span>
     );
@@ -10001,11 +10067,11 @@ function TablePlayground({ activeSubTab }) {
           key={`p${n}`}
           onClick={() => setPage(n)}
           style={{
-            minWidth: '28px', height: '28px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            borderRadius: '6px', fontSize: '13px', cursor: 'pointer', userSelect: 'none',
+            ...cellBase, fontSize: '13px', cursor: 'pointer',
             fontWeight: active ? 700 : 500,
-            color: active ? '#fff' : '#a1a1aa',
-            backgroundColor: active ? '#3a3a3c' : 'transparent',
+            color: active ? '#fff' : '#8a8a92',
+            backgroundColor: active ? '#0066FF' : 'transparent',
+            border: `1px solid ${active ? '#0066FF' : '#2e2e2e'}`,
           }}
         >{n}</span>
       );
@@ -10036,7 +10102,7 @@ function TablePlayground({ activeSubTab }) {
     }
 
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
         {arrow('‹', () => setPage((p) => Math.max(1, p - 1)), page === 1)}
         {items}
         {arrow('›', () => setPage((p) => Math.min(totalPages, p + 1)), page === totalPages)}

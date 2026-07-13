@@ -791,6 +791,12 @@ export const COMPONENT_DOCS = {
     ],
     "behavior": "current 값이 변경되면 숫자만 즉시 갱신되며 구분자와 total은 고정된 채 위치 위계를 유지합니다. total이 1이면 자동으로 비활성 변형이 적용되어 보조 텍스트 색(#888)으로 흐리게 표시됩니다.",
     "usage": "교통 관제 화면에서 다중 CCTV 스냅샷 캐러셀이나 돌발상황 이벤트 리스트의 페이지네이션 위치 안내에 사용합니다. 현재 페이지를 강조해야 하는 경우(예: 우선순위 이벤트 페이지)에는 강조 변형으로 current 값에 Primary Strong(#3385FF)을 적용하세요.",
+    "whenToUse": "갤러리·문서 뷰어·슬라이더에서 현재 위치를 '6 / 32'처럼 정확한 숫자로 간결히 보여줄 때(정보성·수동, 인터랙션 없음).",
+    "related": [
+      { "id": "nav-pagination-dots", "note": "항목이 적고 정확한 번호보다 대략적인 위치면 충분할 때" },
+      { "id": "nav-pagination", "note": "특정 페이지로 이동(클릭)이 필요할 때" }
+    ],
+    "combineRule": "위치 인디케이터는 콘텐츠 영역당 1개. 화살표 등 '이동 컨트롤'과의 병용은 가능하나, 번호 Pagination과 동시 표기는 중복이라 지양.",
     "code": "function PageCounter({ current, total, size = 'md' }) {\n  const fontSize = size === 'sm' ? 12 : size === 'lg' ? 16 : 14;\n  const muted = { color: '#888' };\n  return (\n    <span\n      style={{\n        display: 'inline-flex',\n        alignItems: 'center',\n        gap: 4,\n        padding: '0 8px',\n        borderRadius: 8,\n        background: '#1a1a1a',\n        fontSize,\n        color: '#fff',\n      }}\n    >\n      <strong>{Math.min(current, total)}</strong>\n      <span style={muted}>/</span>\n      <span style={muted}>{total}</span>\n    </span>\n  );\n}\n\n// 사용 예 (교통 관제 CCTV 캐러셀)\n<PageCounter current={3} total={12} size='md' />"
   },
   "nav-pagination": {
@@ -855,6 +861,12 @@ export const COMPONENT_DOCS = {
     ],
     "behavior": "번호나 화살표를 클릭하면 해당 페이지로 이동하며 활성 버튼이 Primary(#0066FF)로 강조된다. 페이지 수가 많아 표시 범위를 넘어서면 중간 구간을 생략 표시(...)로 접고 첫/끝 페이지는 항상 노출한다.",
     "usage": "교통 돌발 이벤트 로그나 CCTV 장비 목록처럼 수백 건 이상의 행을 다루는 테이블 하단에 배치해 페이지 단위로 탐색하게 한다. 한 화면 행 수(예: 20건)에 맞춰 총 페이지를 산출하고, 모바일 협폭 화면에서는 sibling-count를 줄여 번호 노출을 최소화한다.",
+    "whenToUse": "수백 건 이상의 목록·표에서 특정 페이지로 직접 이동(점프)해야 할 때. 정확한 페이지 번호 탐색이 필요한 데이터 밀도 높은 화면.",
+    "related": [
+      { "id": "nav-page-counter", "note": "이동은 필요 없고 현재 위치만 숫자로 보여주면 될 때" },
+      { "id": "nav-pagination-dots", "note": "항목이 적고(≤7) 슬라이드형 시각 콘텐츠일 때" }
+    ],
+    "combineRule": "위치 인디케이터는 콘텐츠 영역당 1개 — 같은 표에 Page counter와 동시 표기는 중복이라 지양. 페이지당 개수 선택 등 '컨트롤'과의 병용은 가능.",
     "code": "import { Pagination } from '@pintel/ui';\n\nfunction EventLogFooter() {\n  const [page, setPage] = useState(1);\n\n  return (\n    <Pagination\n      currentPage={page}\n      totalPages={42}\n      siblingCount={1}\n      onPageChange={(next) => setPage(next)}\n    />\n  );\n}"
   },
   "nav-pagination-dots": {
@@ -916,6 +928,12 @@ export const COMPONENT_DOCS = {
     ],
     "behavior": "activeIndex가 변경되면 이전 활성 점은 6px 원으로 축소되고 새 활성 점은 18px 라운드 바로 확장되며 색상이 Primary Strong(#3385FF)로 200ms 전환됩니다. interactive가 true일 때 점 클릭이나 방향키 입력으로 페이지를 이동하고 포커스 링(Primary Heavy #0052CC)으로 현재 대상을 표시합니다.",
     "usage": "교통 관제 카드 슬라이드(예: 교차로별 혼잡도 요약 페이지 전환)나 초기 온보딩 단계 안내에서 페이지 위치를 가볍게 보여줄 때 사용하며, 점 개수가 8개를 넘으면 숫자 페이지네이션으로 대체하는 것을 권장합니다. 표시 전용이 기본이고, 사용자가 직접 페이지를 넘겨야 하는 경우에만 interactive를 활성화하세요.",
+    "whenToUse": "항목이 적고(≤7) 순서대로 훑는 시각 콘텐츠(캐러셀·온보딩)에서 '대략 어디쯤'만 가볍게 알릴 때. 화면이 좁아 숫자 UI를 넣기 아까운 관제 카드 슬라이드.",
+    "related": [
+      { "id": "nav-pagination", "note": "특정 페이지로 이동(클릭)이 필요하거나 항목이 8개를 넘을 때" },
+      { "id": "nav-page-counter", "note": "정확한 숫자 위치(6 / 32)가 필요할 때" }
+    ],
+    "combineRule": "위치 인디케이터는 콘텐츠 영역당 1개. 좌우 화살표·스와이프 같은 '이동 컨트롤'과의 병용은 자연스럽고 권장. dots + Page counter 중복 표기는 지양.",
     "code": "import { PaginationDots } from '@pintel/ui';\n\nfunction CongestionCarousel() {\n  const [page, setPage] = useState(0);\n\n  return (\n    <PaginationDots\n      count={5}\n      activeIndex={page}\n      interactive\n      onChange={setPage}\n    />\n  );\n}"
   },
   "nav-progress-indicator": {

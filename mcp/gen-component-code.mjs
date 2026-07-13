@@ -9,20 +9,10 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { DS_MODULES as MODULES } from './ds-modules.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
-
-// 컴포넌트 id → src/ds 모듈 파일명
-const MODULES = {
-  'control-checkbox': 'Checkbox.jsx',
-  'filter-button-default': 'FilterButton.jsx',
-  'control-datepicker': 'DateField.jsx',
-  'table-default': 'DataTable.jsx',
-  'present-menu': 'ContextMenu.jsx',
-  'section-header-default': 'SectionHeader.jsx',
-  'loading-default': 'Loading.jsx',
-};
 
 // 선두 JSDoc 헤더(단일 출처 안내) 1개를 제거해 표시용 코드를 정돈.
 function stripHeader(src) {

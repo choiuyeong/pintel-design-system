@@ -9,7 +9,8 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "gen:template-code": "node mcp/gen-template-code.mjs",
     "gen:component-code": "node mcp/gen-component-code.mjs",
-    "prebuild": "node mcp/gen-component-code.mjs && node mcp/gen-template-code.mjs",
+    "gen:component-props": "node mcp/gen-component-props.mjs",
+    "prebuild": "node mcp/gen-component-code.mjs && node mcp/gen-component-props.mjs && node mcp/gen-template-code.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },

@@ -5,6 +5,7 @@
  * stdio 서버(server.mjs)와 HTTP 함수(netlify/functions/mcp.mjs)가 함께 사용합니다.
  */
 import { TIERS, COMPONENT_DOCS } from '../src/data/components.js';
+import { COMPONENT_PROPS } from '../src/data/components-props.js';
 import { LIBRARY_TEMPLATES } from '../src/data/templates.js';
 import { TEMPLATE_CODE } from '../src/data/templates-code.js';
 import {
@@ -265,7 +266,14 @@ export function callTool(name, args = {}) {
     case 'get_component': {
       const found = findComponent(args);
       if (!found) return { ...textResult(`컴포넌트를 찾을 수 없습니다: ${JSON.stringify(args)}`), isError: true };
-      return textResult({ id: found.id, ...found.doc });
+      // derivedProps: 정본 소스(src/ds/*.jsx)에서 AST로 추출한 실제 prop 스펙(이름·타입·기본값).
+      // 손으로 쓴 doc.properties 와 달리 소스와 항상 일치(드리프트 0). 정본 코드가 있는 컴포넌트만 포함.
+      const derived = COMPONENT_PROPS[found.id];
+      return textResult({
+        id: found.id,
+        ...found.doc,
+        ...(derived ? { derivedProps: derived.props, derivedFrom: derived.file } : {}),
+      });
     }
     case 'search_components': {
       const q = String(args.query || '').toLowerCase();

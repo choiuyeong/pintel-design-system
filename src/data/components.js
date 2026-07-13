@@ -10,7 +10,12 @@ export const TIERS = {
     id: 'get-started',
     label: 'Get Started',
     description: '핀텔 디자인 시스템 시작하기',
-    categories: [],
+    categories: [
+      {
+        id: 'guide', name: '가이드',
+        children: [{ id: 'prompting-guide', name: '프롬프트 가이드' }],
+      },
+    ],
   },
   foundation: {
     id: 'foundation',
@@ -415,6 +420,12 @@ export const CATEGORIES = Object.values(TIERS).flatMap(tier =>
 export const SPACING_MAP = ['none', 'px', '25', '50', '100', '200', '250', '300', '400', '500', '600', '800', '1000', '1200', '1300', '1400', '1500'];
 
 export const COMPONENT_DOCS = {
+  'prompting-guide': {
+    name: '프롬프트 가이드',
+    description: 'MCP(정본 코드·토큰·판단 규칙)를 최대한 활용해 관제 화면·컴포넌트를 설계하도록 프롬프트를 작성하는 방법입니다.',
+    // 본문 정본은 docs/prompting-guide.md — ComponentDoc.jsx가 ?raw 로 읽어 렌더(단일 출처).
+    customLayout: 'markdown',
+  },
   "feedback-fallback": {
     "name": "Fallback view",
     "description": "데이터 로드 실패, 빈 상태, 권한 없음 등 정상 콘텐츠를 표시할 수 없을 때 안내 일러스트와 문구, 액션 버튼을 제공하는 대체 화면 컴포넌트입니다.",

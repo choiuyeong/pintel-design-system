@@ -4,6 +4,89 @@ import { COMPONENT_PROPS } from '../data/components-props';
 import { T, SP, TYPE, W, COLOR_ACCENT, COLOR_STATUS } from '../data/tokens';
 import { Icon } from './icons';
 import { SectionHeader } from '../ds/SectionHeader';
+import promptingGuideRaw from '../../docs/prompting-guide.md?raw';
+
+// customLayout: 'markdown' 페이지가 렌더하는 원본 md(단일 출처는 docs/*.md, 여기선 ?raw로 읽어옴)
+const MARKDOWN_DOCS = { 'prompting-guide': promptingGuideRaw };
+
+// ── 경량 마크다운 렌더러 — 문서 사이트용(제목·표·코드블록·리스트·인용·굵기·인라인코드) ──
+function mdInline(text) {
+  const out = [];
+  let rest = text;
+  let key = 0;
+  const re = /(\*\*([^*]+)\*\*|`([^`]+)`)/;
+  for (;;) {
+    const m = rest.match(re);
+    if (!m) { if (rest) out.push(rest); break; }
+    if (m.index > 0) out.push(rest.slice(0, m.index));
+    if (m[2] != null) out.push(<strong key={`b${key++}`} style={{ color: '#fff', fontWeight: 700 }}>{m[2]}</strong>);
+    else out.push(<code key={`c${key++}`} style={{ fontFamily: 'monospace', fontSize: '0.9em', color: '#8fd0ff', background: 'rgba(255,255,255,0.06)', padding: '1px 5px', borderRadius: 4 }}>{m[3]}</code>);
+    rest = rest.slice(m.index + m[0].length);
+  }
+  return out;
+}
+function mdRow(line) {
+  return line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((s) => s.trim());
+}
+function MarkdownView({ src }) {
+  const lines = (src || '').replace(/\r\n/g, '\n').split('\n');
+  const blocks = [];
+  let i = 0;
+  let k = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.startsWith('```')) {
+      const buf = [];
+      i++;
+      while (i < lines.length && !lines[i].startsWith('```')) { buf.push(lines[i]); i++; }
+      i++;
+      blocks.push(<pre key={k++} style={{ background: '#0f0f12', border: '1px solid #2a2a30', borderRadius: 8, padding: '14px 16px', overflowX: 'auto', fontSize: 13, lineHeight: 1.6, color: '#d4d4d8', fontFamily: 'monospace', margin: '0 0 16px' }}>{buf.join('\n')}</pre>);
+      continue;
+    }
+    if (line.trim().startsWith('|') && i + 1 < lines.length && /^\s*\|[\s:|-]+\|\s*$/.test(lines[i + 1])) {
+      const header = mdRow(line);
+      i += 2;
+      const rows = [];
+      while (i < lines.length && lines[i].trim().startsWith('|')) { rows.push(mdRow(lines[i])); i++; }
+      blocks.push(
+        <div key={k++} style={{ overflowX: 'auto', margin: '0 0 20px' }}>
+          <table style={{ borderCollapse: 'collapse', width: '100%', fontSize: 13, minWidth: 480 }}>
+            <thead>
+              <tr>{header.map((h, ci) => <th key={ci} style={{ textAlign: 'left', padding: '8px 12px', background: '#1b1b1d', color: '#a1a1aa', fontWeight: 700, borderBottom: '1px solid #2a2a30', whiteSpace: 'nowrap' }}>{mdInline(h)}</th>)}</tr>
+            </thead>
+            <tbody>
+              {rows.map((r, ri) => (
+                <tr key={ri}>{r.map((c, ci) => <td key={ci} style={{ padding: '8px 12px', color: '#cccccc', borderBottom: '1px solid #232329', verticalAlign: 'top', wordBreak: 'keep-all' }}>{mdInline(c)}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>,
+      );
+      continue;
+    }
+    if (/^### /.test(line)) { blocks.push(<h3 key={k++} style={{ color: '#fff', fontSize: 16, fontWeight: 700, margin: '24px 0 10px' }}>{mdInline(line.slice(4))}</h3>); i++; continue; }
+    if (/^## /.test(line)) { blocks.push(<h2 key={k++} style={{ color: '#fff', fontSize: 19, fontWeight: 700, margin: '32px 0 12px' }}>{mdInline(line.slice(3))}</h2>); i++; continue; }
+    if (/^# /.test(line)) { blocks.push(<h1 key={k++} style={{ color: '#fff', fontSize: 24, fontWeight: 800, margin: '0 0 16px' }}>{mdInline(line.slice(2))}</h1>); i++; continue; }
+    if (/^---+\s*$/.test(line)) { blocks.push(<hr key={k++} style={{ border: 'none', borderTop: '1px solid #2a2a30', margin: '28px 0' }} />); i++; continue; }
+    if (/^\s*>\s?/.test(line)) {
+      const buf = [];
+      while (i < lines.length && /^\s*>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
+      blocks.push(<blockquote key={k++} style={{ margin: '0 0 16px', padding: '10px 16px', borderLeft: '3px solid #3385FF', background: 'rgba(51,133,255,0.08)', borderRadius: '0 8px 8px 0', color: '#cbd5e1', fontSize: 14, lineHeight: 1.6 }}>{mdInline(buf.join(' '))}</blockquote>);
+      continue;
+    }
+    if (/^\s*[-*] /.test(line)) {
+      const items = [];
+      while (i < lines.length && /^\s*[-*] /.test(lines[i])) { items.push(lines[i].replace(/^\s*[-*] /, '')); i++; }
+      blocks.push(<ul key={k++} style={{ margin: '0 0 16px', paddingLeft: 22, color: '#cccccc', fontSize: 14, lineHeight: 1.7 }}>{items.map((it, ii) => <li key={ii} style={{ marginBottom: 4, wordBreak: 'keep-all' }}>{mdInline(it)}</li>)}</ul>);
+      continue;
+    }
+    if (line.trim() === '') { i++; continue; }
+    const para = [];
+    while (i < lines.length && lines[i].trim() !== '' && !/^(#{1,3} |```|\s*[-*] |\s*>|---+\s*$)/.test(lines[i]) && !(lines[i].trim().startsWith('|'))) { para.push(lines[i]); i++; }
+    blocks.push(<p key={k++} style={{ color: '#cccccc', fontSize: 14, lineHeight: 1.7, margin: '0 0 14px', maxWidth: 820, wordBreak: 'keep-all' }}>{mdInline(para.join(' '))}</p>);
+  }
+  return <div style={{ textAlign: 'left' }}>{blocks}</div>;
+}
 
 /**
  * 컴포넌트 이름 (예: "Accordion.Item")을 ID (예: "accordion-item")로 변환 */
@@ -624,14 +707,28 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
     );
   }
 
-  const tabs = [
-    { id: 'design', label: 'Design' },
-    { id: 'web', label: 'Web' },
-    { id: 'cs', label: 'Cs' },
-  ];
+  // 마크다운 가이드 페이지(예: 프롬프트 가이드)는 Design 탭 하나만 노출.
+  const isMarkdownDoc = doc.customLayout === 'markdown';
+  const tabs = isMarkdownDoc
+    ? [{ id: 'design', label: 'Design' }]
+    : [
+      { id: 'design', label: 'Design' },
+      { id: 'web', label: 'Web' },
+      { id: 'cs', label: 'Cs' },
+    ];
 
   // 특정 탭의 내용을 렌더링하는 헬퍼 함수
   const renderTabContent = (tabId) => {
+    // 마크다운 가이드: 탭과 무관하게 항상 md 렌더(이전 페이지의 web/cs 탭 잔상 방지)
+    if (isMarkdownDoc) {
+      return (
+        <div className="doc-tab-content-inner fade-in" style={{ textAlign: 'left' }}>
+          <div className="doc-tab-content">
+            <MarkdownView src={MARKDOWN_DOCS[componentId] || ''} />
+          </div>
+        </div>
+      );
+    }
     // ──────────────────────────────────────────────
     // 1. DESIGN TAB
     // ──────────────────────────────────────────────

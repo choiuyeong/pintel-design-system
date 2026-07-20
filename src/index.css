@@ -548,7 +548,7 @@ body {
 }
 .doc-color-bar {
   display: flex;
-  height: 60px;
+  height: 30px;
   width: 100%;
 }
 .doc-color-swatch {
@@ -859,6 +859,18 @@ body {
 /* Loading — 원형 스피너 회전 / 선형 바 무한 진행(indeterminate) */
 @keyframes pds-spin {
   to { transform: rotate(360deg); }
+}
+/* Checkbox — 체크 시 박스 팝(pop) 마이크로 인터랙션 */
+@keyframes ds-check-pop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+/* Checkbox — 체크마크가 켜질 때 흐릿→급격히 밝아지며 광채가 번졌다 잦아듦(그라데이션 밝아짐 강조) */
+@keyframes ds-check-shine {
+  0%   { opacity: 0.3; filter: drop-shadow(0 0 0 rgba(255,255,255,0)) brightness(1); }
+  45%  { opacity: 1;   filter: drop-shadow(0 0 4px rgba(255,255,255,0.95)) brightness(1.6); }
+  100% { opacity: 1;   filter: drop-shadow(0 0 0.6px rgba(255,255,255,0.35)) brightness(1); }
 }
 @keyframes pds-bar {
   0%   { left: -40%; width: 40%; }

@@ -96,7 +96,7 @@ export const TIERS = {
     groups: [
       {
         id: 'actions',
-        label: 'Actions',
+        label: '액션 (Actions)',
         categories: [
           {
             id: 'action-area', name: 'Action area',
@@ -122,20 +122,14 @@ export const TIERS = {
       },
       {
         id: 'contents',
-        label: 'Contents',
+        label: '콘텐츠 (Content)',
         categories: [
           {
             id: 'accordion', name: 'Accordion',
             children: [{ id: 'accordion-default', name: 'Accordion' }]
           },
-          {
-            id: 'avatar', name: 'Avatar',
-            children: [{ id: 'avatar-default', name: 'Avatar' }]
-          },
-          {
-            id: 'avatar-group', name: 'Avatar group',
-            children: [{ id: 'avatar-group-default', name: 'Avatar group' }]
-          },
+          // Avatar · Avatar group: 관제 도메인 부적합(소셜/협업 태생, 사용 화면 0)으로 네비게이션에서 제외.
+          //  COMPONENT_DOCS 정의는 보존 — 필요 시 이 블록에 category를 되살리면 복구됨.
           {
             id: 'card', name: 'Card',
             children: [{ id: 'card-panel', name: 'Card' }]
@@ -168,7 +162,7 @@ export const TIERS = {
       },
       {
         id: 'selection-input',
-        label: 'Selection and input',
+        label: '선택 및 입력 (Selection & Input)',
         categories: [
           { id: 'checkmark', name: 'Check mark', children: [{ id: 'control-checkmark', name: 'Check mark' }] },
           { id: 'checkbox', name: 'Checkbox', children: [{ id: 'control-checkbox', name: 'Checkbox' }] },
@@ -187,7 +181,7 @@ export const TIERS = {
       },
       {
         id: 'feedback',
-        label: 'Feedback',
+        label: '피드백 (Feedback)',
         categories: [
           { id: 'alert', name: 'Alert', children: [{ id: 'alert-default', name: 'Alert' }] },
           { id: 'fallback-view', name: 'Fallback view', children: [{ id: 'feedback-fallback', name: 'Fallback view' }] },
@@ -198,29 +192,29 @@ export const TIERS = {
       },
       {
         id: 'loading',
-        label: 'Loading',
+        label: '로딩 (Loading)',
         categories: [
           { id: 'loading', name: 'Loading', children: [{ id: 'loading-default', name: 'Loading' }] },
-          { id: 'skeleton', name: 'Skeleton', children: [{ id: 'loading-skeleton', name: 'Skeleton' }] },
+          // Skeleton: 실시간 스트리밍 관제엔 스피너(Loading)가 자연스러워 제외(사용 화면 0). COMPONENT_DOCS 보존.
         ]
       },
       {
         id: 'navigations',
-        label: 'Navigations',
+        label: '내비게이션 (Navigation)',
         categories: [
           { id: 'category', name: 'Category', children: [{ id: 'category-default', name: 'Category' }] },
           { id: 'page-counter', name: 'Page counter', children: [{ id: 'nav-page-counter', name: 'Page counter' }] },
           { id: 'pagination', name: 'Pagination', children: [{ id: 'nav-pagination', name: 'Pagination' }] },
-          { id: 'pagination-dots', name: 'Pagination dots', children: [{ id: 'nav-pagination-dots', name: 'Pagination dots' }] },
+          // Pagination dots: 캐러셀·온보딩용이라 관제 부적합(사용 화면 0)으로 제외. COMPONENT_DOCS 보존.
           { id: 'progress-indicator', name: 'Progress indicator', children: [{ id: 'nav-progress-indicator', name: 'Progress indicator' }] },
-          { id: 'progress-tracker', name: 'Progress tracker', children: [{ id: 'nav-progress-tracker', name: 'Progress tracker' }] },
+          // Progress tracker: 다단계 위저드용으로 관제 사용처 없음(사용 화면 0)으로 제외. COMPONENT_DOCS 보존.
           { id: 'tab', name: 'Tab', children: [{ id: 'nav-tab', name: 'Tab' }] },
           { id: 'top-navigation', name: 'Top navigation', children: [{ id: 'nav-top', name: 'Top navigation' }] },
         ]
       },
       {
         id: 'presentation',
-        label: 'Presentation',
+        label: '오버레이 (Overlays)',
         categories: [
           { id: 'autocomplete', name: 'Autocomplete', children: [{ id: 'present-autocomplete', name: 'Autocomplete' }] },
           { id: 'menu', name: 'Menu', children: [{ id: 'present-menu', name: 'Menu' }] },
@@ -348,12 +342,15 @@ export const TIERS = {
               { id: 'library-live', name: '기본' },
               { id: 'library-live-focus', name: 'Focus (고정)' },
               { id: 'library-unassigned', name: '미배치 채널 확인 (F-2)' },
+              { id: 'library-dragnet', name: '투망관제 · 주변 카메라 보기 (F-9)' },
               { id: 'library-event-popup', name: '이벤트 자동 팝업 (D-3)' },
               { id: 'library-event-popup-live', name: '이벤트 자동 팝업 (화면)' },
             ]
           },
           { id: 'tpl-selective', name: '선별관제 모니터링', children: [
             { id: 'library-selective', name: '선별관제 모니터링' },
+            { id: 'library-selective-active', name: '선별관제 모니터링 (운영 중)' },
+            { id: 'library-selective-eventdetail', name: '이벤트 상세 · 주변 카메라 보기 (F-9 진입)' },
             { id: 'library-selective-away', name: '자리비움 수신자' },
           ] },
           { id: 'tpl-gis', name: 'GIS 관제', children: [{ id: 'library-gis-monitor', name: 'GIS 관제' }] },
@@ -4433,6 +4430,67 @@ for (const [id, c] of Object.entries(COMPONENT_CODE)) {
   if (COMPONENT_DOCS[id]) {
     COMPONENT_DOCS[id].code = c.code;
     COMPONENT_DOCS[id].importPath = c.file;
+  }
+}
+
+// 자연어(한글·영문) 검색 별칭 — MCP search_components/plan_screen 이 name·description 외에
+//  aliases 도 매칭 대상으로 삼는다. "다중 선택","삭제 버튼"처럼 사용자가 부르는 표현으로 정본에 도달.
+//  이미 인라인 aliases 가 있는 항목은 건드리지 않는다(아래 병합의 가드).
+const COMPONENT_ALIASES = {
+  // 액션 (Actions)
+  'action-area-default': ['액션 영역', '버튼 영역', '하단 액션 바', '확인 취소 버튼', '주요 동작 버튼 묶음', 'action area', 'button bar', 'action bar'],
+  'chip-closeable': ['칩', '필터 칩', '태그', '닫기 가능 태그', '선택 조건 칩', '제거 가능 태그', 'chip', 'tag', 'filter chip', 'removable tag'],
+  'button-text': ['텍스트 버튼', '링크 버튼', '보조 버튼', '가벼운 버튼', '유틸리티 버튼', '더보기 링크', 'text button', 'link button', 'ghost button'],
+  // 콘텐츠 (Content)
+  'accordion-default': ['아코디언', '접기 펼치기', '펼침 목록', '토글 목록', '확장 패널', 'accordion', 'collapse', 'expand', 'disclosure'],
+  'avatar-default': ['아바타', '프로필 이미지', '프로필 사진', '사용자 아이콘', '이니셜 이미지', '접속 상태 표시', 'avatar', 'profile image', 'user icon'],
+  'avatar-group-default': ['아바타 그룹', '프로필 묶음', '참여자 목록', '팀원 표시', '중첩 아바타', '+N 배지', 'avatar group', 'stacked avatars', 'participants'],
+  'card-panel': ['카드', '패널', '정보 카드', '컨테이너 카드', '박스', 'card', 'panel', 'container'],
+  'content-badge-default': ['배지', '상태 배지', '라벨 태그', '메타 태그', '상태 표시', 'new 배지', 'badge', 'status badge', 'label'],
+  'play-button-default': ['재생 버튼', '플레이 버튼', '영상 재생', '재생 오버레이', 'play button', 'video play', 'play overlay'],
+  'list-card-default': ['리스트 카드', '목록 카드', '썸네일 카드', '이미지 목록 항목', 'list card', 'media card', 'list item card'],
+  'list-cell-default': ['리스트 셀', '목록 행', '리스트 항목', '행 아이템', '목록 줄', 'list cell', 'list row', 'list item'],
+  'section-header-default': ['섹션 헤더', '패널 제목', '영역 제목', '제목 줄', '카드 헤더', 'section header', 'panel header', 'title bar'],
+  'table-default': ['테이블', '표', '데이터 표', '목록 표', '그리드', '장비 목록', '이벤트 이력', 'table', 'data grid', 'datagrid'],
+  // 선택 및 입력 (Selection & Input)
+  'control-checkmark': ['체크마크', '체크 표시', '선택됨 표시', '체크 아이콘', 'check mark', 'checkmark', 'tick', 'selected mark'],
+  'control-datepicker': ['날짜 선택', '달력', '캘린더', '기간 선택', '일시 선택', '날짜 입력', 'date picker', 'calendar', 'date range'],
+  'filter-button-default': ['필터 버튼', '필터', '조건 필터', '필터 열기', '적용 필터 개수', 'filter', 'filter button'],
+  'framed-style-default': ['테두리 스타일', '프레임', '박스 테두리', '구획 컨테이너', 'frame', 'framed', 'bordered container'],
+  'field-search': ['검색창', '검색 필드', '검색 입력', '키워드 검색', '찾기', 'search', 'search field', 'search box'],
+  'control-segmented': ['세그먼트 컨트롤', '분절 버튼', '보기 전환', '일별 주별 월별', 'segmented control', 'toggle group', 'view switch'],
+  'control-select': ['셀렉트', '드롭다운', '선택 상자', '콤보박스', '목록 선택', 'select', 'dropdown', 'combobox'],
+  'control-slider': ['슬라이더', '범위 조절', '구간 선택', '값 조절', '레인지', 'slider', 'range', 'range slider'],
+  'control-switch': ['스위치', '토글', '켜기 끄기', 'on off', '활성 비활성', 'switch', 'toggle'],
+  'field-textarea': ['텍스트 영역', '여러 줄 입력', '멀티라인 입력', '메모 입력', '긴 텍스트 입력', 'textarea', 'text area', 'multiline'],
+  'field-text': ['텍스트 필드', '입력창', '입력 필드', '한 줄 입력', '텍스트 입력', 'input', 'text field', 'text input'],
+  // 피드백 (Feedback)
+  'alert-default': ['얼럿', '경고', '알림', '경고창', '상태 알림', '이벤트 알림', 'alert', 'warning'],
+  'feedback-fallback': ['폴백 화면', '빈 화면', '데이터 없음', '오류 화면', '권한 없음 화면', 'fallback', 'empty state', 'error state'],
+  'feedback-pushbadge': ['푸시 배지', '알림 배지', '알림 개수', '미확인 표시', '닷 배지', '숫자 배지', 'push badge', 'notification badge', 'dot badge'],
+  'toast-default': ['토스트', '스낵바', '임시 알림', '플로팅 알림', '완료 알림', 'toast', 'snackbar', 'notification'],
+  // 로딩 (Loading)
+  'loading-default': ['로딩', '로딩 스피너', '진행중 표시', '처리중', '스피너', 'loading', 'spinner', 'loader'],
+  'loading-skeleton': ['스켈레톤', '로딩 자리표시자', '플레이스홀더', 'shimmer', '콘텐츠 로딩', 'skeleton', 'placeholder'],
+  // 내비게이션 (Navigation)
+  'category-default': ['카테고리', '하위 탭', '소분류 탭', '분류 내비', '카테고리 탭', 'category', 'sub navigation', 'subtab'],
+  'nav-page-counter': ['페이지 카운터', '페이지 표시', '현재 페이지', '페이지 위치', 'page counter', 'page indicator'],
+  'nav-pagination': ['페이지네이션', '페이지 이동', '페이지 번호', '이전 다음', '쪽 넘김', 'pagination', 'pager', 'paging'],
+  'nav-pagination-dots': ['페이지 점', '닷 인디케이터', '캐러셀 점', '슬라이드 위치', 'pagination dots', 'carousel dots'],
+  'nav-progress-indicator': ['진행률', '프로그레스 바', '진행 표시줄', '퍼센트 표시', '원형 진행', 'progress', 'progress bar', 'progress indicator'],
+  'nav-progress-tracker': ['진행 단계', '스텝퍼', '단계 표시', '절차 진행', '다단계', 'progress tracker', 'stepper', 'steps'],
+  'nav-tab': ['탭', '탭 메뉴', '섹션 전환', '탭 내비게이션', 'tab', 'tabs', 'tab navigation'],
+  'nav-top': ['상단바', '앱바', '타이틀바', '헤더바', '상단 내비게이션', 'top navigation', 'app bar', 'title bar', 'header'],
+  // 오버레이 (Overlays)
+  'present-autocomplete': ['자동완성', '추천 입력', '검색 추천', '자동 완성 드롭다운', 'autocomplete', 'typeahead', 'suggest'],
+  'present-menu': ['메뉴', '우클릭 메뉴', '컨텍스트 메뉴', 'context menu', 'menu', 'right click menu'],
+  'present-popover': ['팝오버', '말풍선 패널', '앵커 오버레이', '떠있는 패널', 'popover', 'overlay', 'floating panel'],
+  'present-popup': ['팝업', '모달', '대화상자', '다이얼로그', '확인 창', 'popup', 'modal', 'dialog'],
+  'present-tooltip': ['툴팁', '말풍선', '도움말', '힌트', '설명 풍선', 'tooltip', 'hint'],
+};
+for (const [id, a] of Object.entries(COMPONENT_ALIASES)) {
+  if (COMPONENT_DOCS[id] && !Array.isArray(COMPONENT_DOCS[id].aliases)) {
+    COMPONENT_DOCS[id].aliases = a;
   }
 }
 

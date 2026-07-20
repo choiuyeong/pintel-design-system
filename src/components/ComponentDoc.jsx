@@ -213,9 +213,9 @@ function renderComponentThumbnail(id) {
     <div style={{
       width: '160px',
       height: '100px',
-      border: '1.5px solid transparent',
+      border: '3px solid transparent',
       borderRadius: '8px',
-      backgroundImage: 'linear-gradient(#ffffff, #ffffff), linear-gradient(135deg, #ff007f, #7f00ff, #00f0ff)',
+      backgroundImage: `linear-gradient(#ffffff, #ffffff), linear-gradient(135deg, ${T.primary}, #ffffff, #c4c4cc)`,
       backgroundOrigin: 'border-box',
       backgroundClip: 'content-box, border-box',
       display: 'flex',
@@ -2313,17 +2313,27 @@ function ParkCctvScene() {
 // Play button(play-button-default) — 영상 스냅샷(썸네일) 위에 올라오는 원형 재생 버튼 오버레이.
 //  프로스트 화이트 원 + Primary play 삼각형. 재생 시 pause로 전환. 스냅샷 클릭 = 영상 재생 진입점.
 function PlayButton({ size = 56, playing = false, hovered = false }) {
-  const ic = Math.round(size * 0.42);
+  const ic = Math.round(size * 0.40);
+  // 모서리를 둥글린 play 삼각형(무게중심을 원 중심에 맞춘 8~20, 코너 반경 ≈2) ↔ 둥근 pause 막대(rx 1.5).
+  // 둥근 코너를 위해 실제 라운드 path/rect 사용. 전환은 크로스페이드(부드러운 페이드).
+  // (삼각형은 밑변 면적이 왼쪽에 쏠려 바운딩박스 중앙이면 왼쪽으로 보이므로 무게중심 기준 정렬 — 실브라우저 측정 검증)
+  const PLAY = 'M8 7 Q8 5 9.73 6.01 L18.27 10.99 Q20 12 18.27 13.01 L9.73 17.99 Q8 19 8 17 Z';
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
       width: `${size}px`, height: `${size}px`, borderRadius: '50%',
       background: hovered ? '#ffffff' : 'rgba(255,255,255,0.92)',
       boxShadow: hovered ? '0 6px 20px rgba(0,0,0,0.35)' : '0 4px 14px rgba(0,0,0,0.28)',
-      transform: hovered ? 'scale(1.06)' : 'scale(1)', transition: 'all 0.16s ease',
+      transform: hovered ? 'scale(1.06)' : 'scale(1)', transition: 'transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease',
       backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
     }}>
-      <Icon name={playing ? 'pause' : 'play'} size={ic} color={T.primary} style={{ marginLeft: playing ? 0 : `${Math.round(size * 0.03)}px` }} />
+      <svg width={ic} height={ic} viewBox="0 0 24 24" style={{ display: 'block', overflow: 'visible', transform: hovered ? 'scale(1.1)' : 'scale(1)', transformOrigin: 'center', transition: 'transform 0.16s ease' }}>
+        <path d={PLAY} fill={T.primary} style={{ opacity: playing ? 0 : 1, transition: 'opacity 0.2s ease' }} />
+        <g style={{ opacity: playing ? 1 : 0, transition: 'opacity 0.2s ease' }}>
+          <rect x="6" y="5" width="4" height="14" rx="1.5" fill={T.primary} />
+          <rect x="14" y="5" width="4" height="14" rx="1.5" fill={T.primary} />
+        </g>
+      </svg>
     </span>
   );
 }
@@ -2341,9 +2351,11 @@ function VideoThumb({ w = 320, size = 56, playing = false, hovered = false, onCl
           <svg style={{ position: 'absolute', left: '10px', top: '10px', opacity: 0.5 }} width={Math.round(w * 0.11)} height={Math.round(w * 0.11)} viewBox="0 0 24 24" fill="none" stroke="#5c6773" strokeWidth="1.4"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.6" /><path d="M21 15l-5-5L5 21" /></svg>
         </>
       ) : <ParkCctvScene />}
-      <div style={{ position: 'absolute', inset: 0, background: schematic ? 'rgba(0,0,0,0.10)' : 'rgba(0,0,0,0.22)' }} />
+      {/* 스크림 — 재생 중(호버 아님)에는 옅게 낮춰 깨끗한 재생 화면처럼 보이게 */}
+      <div style={{ position: 'absolute', inset: 0, transition: 'background 0.24s ease', background: schematic ? 'rgba(0,0,0,0.10)' : `rgba(0,0,0,${(!playing || hovered) ? 0.22 : 0.06})` }} />
       {label && !schematic && <span style={{ position: 'absolute', left: SP[8], top: SP[8], padding: `2px ${SP[8]}`, borderRadius: '4px', background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: '11px', fontWeight: W.semibold, letterSpacing: '0.02em' }}>{label}</span>}
-      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {/* 재생 버튼 오버레이 — 재생 시작하면 자동 페이드아웃, 호버하면 pause로 다시 등장(정본 미디어 컨트롤 동작) */}
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: (!playing || hovered) ? 1 : 0, transition: 'opacity 0.24s ease', pointerEvents: 'none' }}>
         <PlayButton size={size} playing={playing} hovered={hovered} />
       </div>
     </div>
@@ -2414,7 +2426,7 @@ function PlayButtonPlayground({ activeSubTab }) {
         <VideoThumb w={420} size={64} playing={playing} hovered={hovered}
           onClick={() => setPlaying((v) => !v)}
           onEnter={() => setHovered(true)} onLeave={() => setHovered(false)} />
-        <div style={{ fontSize: TYPE.label2.fontSize, color: '#8a8a92' }}>썸네일 클릭 = 재생 ↔ 일시정지 · 호버 시 버튼 강조</div>
+        <div style={{ fontSize: TYPE.label2.fontSize, color: '#8a8a92' }}>썸네일 클릭 = 재생 ↔ 일시정지 · 재생 중에는 버튼이 숨고, 호버 시 pause로 다시 표시</div>
       </div>
     </div>
   );
@@ -9310,39 +9322,42 @@ function FilterButtonPlayground({ activeSubTab }) {
         </div>
         {/* 라이트 카드 */}
         <div style={{ position: 'relative', background: '#f4f4f5', borderRadius: '16px', width: '720px', height: '300px', margin: '0 auto 24px', overflow: 'hidden', boxSizing: 'border-box' }}>
-          {/* 필터 트리거(활성) — 중앙 */}
-          <div style={{ position: 'absolute', left: '286px', top: '132px', width: '148px', height: '36px', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0 14px', borderRadius: '8px', background: 'rgba(0,102,255,0.10)', border: '1px solid #0066FF', color: '#0066FF', fontSize: '13px', fontWeight: 600, boxSizing: 'border-box', whiteSpace: 'nowrap', zIndex: 3 }}>
+          {/* 필터 트리거(활성) — 콜아웃/여백 하이라이트를 버튼·배지·캐럿의 자식으로 부착.
+              내용 폭에 맞춰 크기가 변해도 실제 가장자리에 항상 정렬(픽셀 추정 불필요). */}
+          <div style={{ position: 'absolute', left: '286px', top: '132px', height: '36px', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '0 12px', borderRadius: '8px', background: 'rgba(0,102,255,0.10)', border: '1px solid #0066FF', color: '#0066FF', fontSize: '13px', fontWeight: 600, boxSizing: 'border-box', whiteSpace: 'nowrap', zIndex: 3 }}>
+            {/* 좌우 패딩 하이라이트(SP[12]) — 버튼 자식이라 실제 좌우 가장자리에 항상 정렬 */}
+            {showSpacing && (<>
+              <span aria-hidden style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '12px', background: 'rgba(139,92,246,0.22)', borderTopLeftRadius: '7px', borderBottomLeftRadius: '7px', pointerEvents: 'none' }} />
+              <span aria-hidden style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '12px', background: 'rgba(139,92,246,0.22)', borderTopRightRadius: '7px', borderBottomRightRadius: '7px', pointerEvents: 'none' }} />
+            </>)}
+
+            {/* 1. Label — 좌측 콜아웃 */}
+            <span aria-hidden style={{ position: 'absolute', left: 0, top: '50%', width: '22px', height: 0, borderTop: '1.2px solid #999', transform: 'translate(-100%, -50%)' }} />
+            <div style={{ position: 'absolute', left: '-22px', top: '50%', transform: 'translate(-100%, -50%)', ...calloutStyle }}>1</div>
+
             이벤트 종류
-            <span style={{ minWidth: '16px', height: '16px', padding: '0 4px', borderRadius: '8px', background: '#0066FF', color: '#fff', fontSize: '10px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>2</span>
-            <span style={{ fontSize: '9px' }}>▾</span>
+
+            {/* 2. Count badge — 상단 콜아웃(배지에 부착) */}
+            <span style={{ position: 'relative', minWidth: '16px', height: '16px', padding: '0 4px', borderRadius: '8px', background: '#0066FF', color: '#fff', fontSize: '10px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              2
+              <span aria-hidden style={{ position: 'absolute', left: '50%', bottom: '100%', width: 0, height: '40px', borderLeft: '1.2px solid #999', marginBottom: '2px' }} />
+              <div style={{ position: 'absolute', left: '50%', bottom: '100%', marginBottom: '42px', transform: 'translateX(-50%)', ...calloutStyle }}>2</div>
+            </span>
+
+            {/* 3. Dropdown caret — 우측 콜아웃(캐럿에 부착) */}
+            <span style={{ position: 'relative', fontSize: '9px' }}>
+              ▾
+              <span aria-hidden style={{ position: 'absolute', left: '100%', top: '50%', width: '30px', height: 0, borderTop: '1.2px solid #999', transform: 'translateY(-50%)', marginLeft: '12px' }} />
+              <div style={{ position: 'absolute', left: '100%', top: '50%', marginLeft: '54px', transform: 'translate(-50%, -50%)', ...calloutStyle }}>3</div>
+            </span>
+
+            {/* 4. Container — 하단 콜아웃(버튼 중앙) */}
+            <span aria-hidden style={{ position: 'absolute', left: '50%', top: '100%', width: 0, height: '44px', borderLeft: '1.2px solid #999' }} />
+            <div style={{ position: 'absolute', left: '50%', top: '100%', marginTop: '46px', transform: 'translate(-50%, -50%)', ...calloutStyle }}>4</div>
           </div>
 
-          {/* 연결선 */}
-          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1 }}>
-            {/* 1. Label -> 좌측 */}
-            <line x1="258" y1="150" x2="284" y2="150" stroke="#999" strokeWidth="1.2" />
-            {/* 2. Count badge -> 위 */}
-            <line x1="379" y1="86" x2="379" y2="132" stroke="#999" strokeWidth="1.2" />
-            <circle cx="379" cy="132" r="2.6" fill="#999" />
-            {/* 3. Dropdown caret -> 우측 */}
-            <line x1="500" y1="150" x2="436" y2="150" stroke="#999" strokeWidth="1.2" />
-            {/* 4. Container -> 아래 */}
-            <line x1="360" y1="250" x2="360" y2="170" stroke="#999" strokeWidth="1.2" />
-          </svg>
-
-          {/* Callouts */}
-          <div style={{ position: 'absolute', left: '240px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>1</div>
-          <div style={{ position: 'absolute', left: '379px', top: '70px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>2</div>
-          <div style={{ position: 'absolute', left: '510px', top: '150px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>3</div>
-          <div style={{ position: 'absolute', left: '360px', top: '250px', transform: 'translate(-50%, -50%)', zIndex: 4, ...calloutStyle }}>4</div>
-
-          {/* 간격 치수선 — 트리거 좌우 패딩 SP[12](14→12) */}
-          {showSpacing && (
-            <>
-              <PaddingFill x={287} y={133} w={146} h={34} t={0} l={14} r={14} b={0} />{/* border 1px 보정 */}
-              <DimLine dir="h" x={286} y={158} sp={12} />{/* 좌우 패딩 */}
-            </>
-          )}
+          {/* 좌우 패딩 치수선 — SP[12] 토큰 라벨(좌측 고정 좌표, 결정적) */}
+          {showSpacing && <DimLine dir="h" x={286} y={158} sp={12} />}
         </div>
 
         {/* Legend */}
@@ -9373,7 +9388,7 @@ function FilterButtonPlayground({ activeSubTab }) {
               ['모서리 반경', 'radius', '8', 'border-radius'],
             ].map((r, i) => r.map((c, j) => (<div key={`${i}-${j}`} style={{ background: '#161618', color: j === 1 ? '#c4b5fd' : '#d4d4d8', fontWeight: j === 1 ? 700 : 400, padding: '7px 10px', fontVariantNumeric: 'tabular-nums' }}>{spPxCell(r, j, c)}</div>)))}
           </div>
-          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ off-grid 패딩 14→SP[12] · gap 6→SP[8] 정규화.</div>
+          <div style={{ marginTop: '8px', fontSize: '11px', color: '#71717a' }}>※ 좌우 패딩 SP[12]·요소 간격 SP[8]로 정본 정렬(트리거는 내용 폭에 맞춰 좌우 대칭).</div>
         </div>
         )}
       </div>
@@ -9640,12 +9655,59 @@ function CheckboxPlayground({ activeSubTab }) {
     </span>
   );
 
+  // 체크 인터랙션 데모용 애니메이션 체크박스 — 정본 check_on 형태(16px 라운드 사각 rx4·#0066FF·흰 체크)를
+  // 그대로 맞추되, 체크 순간 ① 박스 팝(scale) ② 체크마크 draw-in(stroke-dashoffset) ③ 채움 페이드를 준다.
+  const AnimatedCheck = ({ on, animate, size = 18 }) => (
+    <span style={{ display: 'inline-flex', width: size, height: size, flexShrink: 0 }}>
+      <svg width={size} height={size} viewBox="0 0 20 20" style={{ display: 'block', transformOrigin: 'center', animation: (on && animate) ? 'ds-check-pop 0.28s ease' : 'none' }}>
+        <defs>
+          {/* 꼭짓점(은은)→끝(밝음) 방사형 그라데이션 — 바깥으로 갈수록 밝아지는 흰 V */}
+          <radialGradient id="dsCheckGrad" cx="9" cy="13.2" r="8.5" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#ffffff" stopOpacity="0.22" />
+            <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.6" />
+            <stop offset="1" stopColor="#ffffff" stopOpacity="1" />
+          </radialGradient>
+        </defs>
+        <rect x="2" y="2" width="16" height="16" rx="4"
+          fill={on ? T.primary : 'transparent'}
+          stroke={on ? T.primary : 'rgba(112,115,124,0.52)'} strokeWidth="1.4"
+          style={{ transition: 'fill 0.18s ease, stroke 0.18s ease' }} />
+        {/* 체크마크 — 켜질 때 광채가 번졌다 잦아들며 밝아짐 */}
+        <g style={{ animation: (on && animate) ? 'ds-check-shine 0.6s ease-out' : 'none' }}>
+          {/* ① 꼭짓점(9,13.2)에 점이 톡 생김 */}
+          <circle cx="9" cy="13.2" r="1" fill="#ffffff"
+            style={{ transform: on ? 'scale(1)' : 'scale(0)', transformBox: 'fill-box', transformOrigin: 'center', transition: 'transform 0.14s ease' }} />
+          {/* ② 두 팔이 그 점에서 바깥으로 자라나며 그라데이션으로 밝아짐(전환 중에만 보임) */}
+          <path d="M9 13.2 L6.2 10.6" fill="none" stroke="url(#dsCheckGrad)" strokeWidth="2" strokeLinecap="round"
+            pathLength="1" strokeDasharray="1" strokeDashoffset={on ? 0 : 1}
+            style={{ transition: 'stroke-dashoffset 0.14s ease 0.08s' }} />
+          <path d="M9 13.2 L14 7.6" fill="none" stroke="url(#dsCheckGrad)" strokeWidth="2" strokeLinecap="round"
+            pathLength="1" strokeDasharray="1" strokeDashoffset={on ? 0 : 1}
+            style={{ transition: 'stroke-dashoffset 0.24s cubic-bezier(0.65,0,0.35,1) 0.08s' }} />
+          {/* ③ 솔리드 흰색 V가 뒤늦게 채워져 최종엔 완전 흰색으로 꽉 참(정지 상태=솔리드 흰색) */}
+          <path d="M9 13.2 L6.2 10.6" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"
+            style={{ opacity: on ? 1 : 0, transition: on ? 'opacity 0.26s ease 0.30s' : 'opacity 0.16s ease' }} />
+          <path d="M9 13.2 L14 7.6" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"
+            style={{ opacity: on ? 1 : 0, transition: on ? 'opacity 0.26s ease 0.30s' : 'opacity 0.16s ease' }} />
+        </g>
+      </svg>
+    </span>
+  );
+  const ChkAnim = ({ on, animate, onClick, children }) => (
+    <span onClick={onClick} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none', fontSize: '14px', color: on ? '#e8e8ec' : '#9a9aa2' }}>
+      <AnimatedCheck on={on} animate={animate} />
+      {children}
+    </span>
+  );
+
   // 인터랙티브: 전체 선택 + 하위 항목 (Event Search 이벤트 필터 패턴)
   const ITEMS = ['침입', '무단횡단(공간적)', '침입경고', '배회'];
   const [checked, setChecked] = useState({ 침입: true, '무단횡단(공간적)': true, 침입경고: false, 배회: true });
+  // 방금 사용자가 켠 박스만 애니메이션 발동(마운트·미변경 박스는 발동 안 함)
+  const [anim, setAnim] = useState({});
   const allOn = ITEMS.every((k) => checked[k]);
-  const toggle = (k) => setChecked((s) => ({ ...s, [k]: !s[k] }));
-  const toggleAll = () => { const v = !allOn; const next = {}; ITEMS.forEach((k) => { next[k] = v; }); setChecked(next); };
+  const toggle = (k) => { setAnim((a) => ({ ...a, [k]: !checked[k] })); setChecked((s) => ({ ...s, [k]: !s[k] })); };
+  const toggleAll = () => { const v = !allOn; const next = {}, na = { 전체: v }; ITEMS.forEach((k) => { next[k] = v; na[k] = v; }); setAnim((a) => ({ ...a, ...na })); setChecked(next); };
 
   const panel = { background: CARD, border: `1px solid ${BORDER}`, borderRadius: '10px', padding: '20px' };
   const sectionLabel = { fontSize: '12px', color: '#6a6a72', marginBottom: '14px', letterSpacing: '0.04em' };
@@ -9667,19 +9729,19 @@ function CheckboxPlayground({ activeSubTab }) {
           </div>
         </div>
 
-        {/* 인터랙티브 — 전체 선택 트리 */}
+        {/* 인터랙티브 — 전체 선택 트리 (체크 애니메이션: 박스 팝 + 체크마크 draw-in) */}
         <div style={{ ...panel, flex: '1 1 260px' }}>
-          <div style={sectionLabel}>전체 선택 + 하위 항목 (인터랙티브)</div>
-          <Chk on={allOn} onClick={toggleAll}><span style={{ fontWeight: 600 }}>전체</span></Chk>
+          <div style={sectionLabel}>전체 선택 + 하위 항목 (인터랙티브 · 체크 애니메이션)</div>
+          <ChkAnim on={allOn} animate={anim['전체']} onClick={toggleAll}><span style={{ fontWeight: 600 }}>전체</span></ChkAnim>
           <div style={{ height: '1px', background: '#232329', margin: '12px 0' }} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingLeft: '6px' }}>
-            {ITEMS.map((k) => <Chk key={k} on={checked[k]} onClick={() => toggle(k)}>{k}</Chk>)}
+            {ITEMS.map((k) => <ChkAnim key={k} on={checked[k]} animate={anim[k]} onClick={() => toggle(k)}>{k}</ChkAnim>)}
           </div>
         </div>
       </div>
 
       <div style={{ marginTop: '16px', fontSize: '12px', color: '#6a6a72' }}>
-        ※ 그리드/표 안의 일괄 선택 헤더에도 동일한 <code style={{ color: '#9a9aa2' }}>check_on/check_off</code>를 씁니다(권한 설정 매트릭스·이벤트 목록). 라벨 없는 단독 사용 시 16px, 라벨과 함께면 18px 권장.
+        ※ 체크 순간 인터랙션(선택): 박스 팝(scale) + 꼭짓점 점에서 V가 자라나며 그라데이션으로 밝아짐 → 마지막엔 완전 흰색으로 꽉 채워짐 + 광채 번짐. 정지 상태는 솔리드 흰색이며, 방금 켠 박스에만 발동. 정본 <code style={{ color: '#9a9aa2' }}>check_on</code> 형태(16px 라운드 사각·#0066FF·흰 체크)를 그대로 유지하고 전환만 부드럽게 합니다. 정적 캡처·표·매트릭스 헤더에는 기존 <code style={{ color: '#9a9aa2' }}>check_on/check_off</code> 아이콘을 그대로 씁니다.
       </div>
     </div>
   );

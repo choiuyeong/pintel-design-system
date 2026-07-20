@@ -2480,7 +2480,7 @@ function PrevaxAwayReceiverScreen() {
  * 원본 관제 화면의 원색(saturated) 대신 선별관제 패밀리 정본 팔레트(#F0436A/#C9847A/#F5EFE0)와
  * 동일 카드/칩/컨트롤을 사용해 Library 선별관제 화면들과 시각 일관성을 유지한다.
  */
-function PrevaxSelectiveActiveScreen() {
+function PrevaxSelectiveActiveScreen({ onEventClick, withDetail } = {}) {
   const [chkAction, setChkAction] = useState(true);
   const [chkNoAction, setChkNoAction] = useState(true);
   const [showDragnet, setShowDragnet] = useState(false); // F-9 주변 카메라 보기 부유 창 팝업
@@ -2518,9 +2518,19 @@ function PrevaxSelectiveActiveScreen() {
   const totalRecent = 879;
   const recent = Array.from({ length: 13 }).map((_, i) => ({ evt: '속도 위반', cam: 'CAM 5', ts: `14:43:${String(11 - i).padStart(2, '0')}` }));
 
+  // 우측 상세정보 패널(withDetail) — 이벤트 클릭 시 채워짐. 그룹 있으면 "주변 카메라 보기"(F-9) 활성.
+  const OBJ_OF = { '침입': '사람', '배회': '사람', '쓰러짐': '사람', '속도 위반': '승용차', '불법 주정차': '승용차', '화재': '연기', '유기': '물체', '싸움': '사람' };
+  const GROUP_OF = { 'CAM 1': '강남대로 일대', 'CAM 3': '역삼 사거리', 'CAM 5': null }; // CAM 5 = 그룹 미지정(주변 카메라 보기 비활성 예시)
+  const toDetail = (c, band) => ({ evt: c.evt, cam: c.cam, obj: OBJ_OF[c.evt] || '객체', grade: band.label, band: band.color, ts: c.ts, group: (c.cam in GROUP_OF) ? GROUP_OF[c.cam] : '강남대로 일대' });
+  const [selEv, setSelEv] = useState(() => toDetail(bands[1].cards[0], bands[1])); // 기본: 경고·침입·CAM 3(그룹 있음)
+  const [judge, setJudge] = useState(null);   // '정탐' | '오탐'
+  const [actor, setActor] = useState('');      // 조치자 명
+  const [tip, setTip] = useState(false);       // 비활성 "주변 카메라 보기" 툴팁
+  const pick = (d) => { setSelEv(d); setJudge(null); };
+
   const cardBtn = { flex: 1, height: '26px', ...TYPE.caption1, fontWeight: W.semibold, borderRadius: '4px', cursor: 'pointer', fontFamily: T.font };
-  const EvtCard = ({ c, band }) => (
-    <div style={{ flex: '1 1 0', minWidth: '184px', maxWidth: '320px', background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+  const EvtCard = ({ c, band, onClick, selected }) => (
+    <div onClick={onClick} title={withDetail ? '이벤트 상세 보기' : undefined} style={{ flex: '1 1 0', minWidth: '184px', maxWidth: '320px', background: '#1a1a1f', border: `1px solid ${selected ? T.primaryStrong : '#2a2a30'}`, boxShadow: selected ? `0 0 0 1px ${T.primaryStrong}` : 'none', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column', cursor: withDetail ? 'pointer' : 'default' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], padding: `${SP[4]} ${SP[8]} ${SP[2]}` }}>
         <span style={{ ...TYPE.label2, fontWeight: W.bold, color: '#fff' }}>{c.evt}</span>
         <span style={{ ...TYPE.caption2, color: '#a8a8b0', background: '#202027', border: '1px solid #2e2e35', borderRadius: '3px', padding: `1px ${SP[8]}` }}>{c.elapsed}</span>
@@ -2578,7 +2588,7 @@ function PrevaxSelectiveActiveScreen() {
           </div>
           <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }} className="prevax-scroll">
             {recent.map((e, i) => (
-              <div key={i} onClick={() => setShowDragnet(true)} onMouseEnter={() => setHoverEv(i)} onMouseLeave={() => setHoverEv((h) => (h === i ? null : h))} title="주변 카메라 보기(F-9)" style={{ display: 'flex', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #202027', cursor: 'pointer', background: hoverEv === i ? 'rgba(0,102,255,0.10)' : 'transparent' }}>
+              <div key={i} onClick={() => (withDetail ? pick(toDetail(e, bands[2])) : setShowDragnet(true))} onMouseEnter={() => setHoverEv(i)} onMouseLeave={() => setHoverEv((h) => (h === i ? null : h))} title={withDetail ? '이벤트 상세 보기' : '주변 카메라 보기(F-9)'} style={{ display: 'flex', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #202027', cursor: 'pointer', background: hoverEv === i ? 'rgba(0,102,255,0.10)' : 'transparent' }}>
                 <div style={{ width: '52px', height: '40px', flexShrink: 0, borderRadius: '4px', background: 'linear-gradient(135deg,#20222a,#14161c)', border: '1px solid #2a2a30' }} />
                 <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
                   <span style={{ ...TYPE.caption1, fontWeight: W.semibold, color: '#e4e4e8' }}>{e.evt}</span>
@@ -2615,7 +2625,7 @@ function PrevaxSelectiveActiveScreen() {
                 {/* 이벤트 카드 행 — 카드 없으면 빈 상태 안내 */}
                 {b.cards.length > 0 ? (
                   <div className="prevax-scroll" style={{ flex: 1, minWidth: 0, display: 'flex', gap: SP[8], padding: SP[8], overflowX: 'auto', alignItems: 'stretch' }}>
-                    {b.cards.map((c, i) => <EvtCard key={i} c={c} band={b} />)}
+                    {b.cards.map((c, i) => { const d = toDetail(c, b); const on = withDetail && selEv.evt === d.evt && selEv.cam === d.cam && selEv.ts === d.ts; return <EvtCard key={i} c={c} band={b} selected={on} onClick={withDetail ? () => pick(d) : undefined} />; })}
                   </div>
                 ) : (
                   <div style={{ flex: 1, minHeight: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', ...TYPE.caption1, color: '#5a5a62' }}>
@@ -2626,6 +2636,72 @@ function PrevaxSelectiveActiveScreen() {
             </div>
           ))}
         </div>
+
+        {/* 우측 상세정보 패널(withDetail) — 이벤트 클릭 시 채워짐, "주변 카메라 보기"(F-9) 포함 */}
+        {withDetail && (
+          <div className="prevax-scroll" style={{ width: '336px', flexShrink: 0, background: '#16161a', borderLeft: '1px solid #2a2a30', display: 'flex', flexDirection: 'column', minHeight: 0, overflowY: 'auto' }}>
+            <div style={{ padding: `${SP[12]} ${SP[16]} ${SP[8]}`, ...TYPE.label1, fontWeight: W.bold, color: '#fff' }}>상세정보</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: SP[12], padding: `0 ${SP[16]} ${SP[16]}` }}>
+              {/* 스냅샷 */}
+              <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 10', borderRadius: '8px', overflow: 'hidden', background: 'linear-gradient(135deg,#20222a,#14161c)', border: '1px solid #2a2a30' }}>
+                <div style={{ position: 'absolute', left: '34%', top: '30%', width: '30%', height: '44%', border: `1.5px solid ${selEv.band}`, borderRadius: '2px' }} />
+                <span style={{ position: 'absolute', bottom: SP[8], right: SP[8], ...TYPE.caption2, color: '#e8e8ec', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)' }}>2026-07-15 {selEv.ts}</span>
+              </div>
+              {/* 정보 행 */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: SP[4] }}>
+                {[['이벤트 명', selEv.evt], ['카메라 명', selEv.cam], ['객체', selEv.obj], ['알람 등급', selEv.grade], ['일시', `2026-07-15 ${selEv.ts}`]].map(([k, v]) => (
+                  <div key={k} style={{ display: 'flex', gap: SP[8], ...TYPE.caption1 }}>
+                    <span style={{ color: '#8a8a92', width: '64px', flexShrink: 0 }}>{k}</span>
+                    <span style={{ color: '#e4e4e8', fontWeight: W.medium }}>{v}</span>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], ...TYPE.caption1 }}>
+                  <span style={{ color: '#8a8a92', width: '64px', flexShrink: 0 }}>그룹</span>
+                  {selEv.group
+                    ? <span style={{ ...TYPE.caption2, color: '#8fb8ff', background: 'rgba(0,102,255,0.14)', border: '1px solid rgba(0,102,255,0.4)', borderRadius: '3px', padding: `1px ${SP[8]}` }}>{selEv.group}</span>
+                    : <span style={{ ...TYPE.caption2, color: '#8a8a92', background: '#202027', border: '1px solid #2e2e35', borderRadius: '3px', padding: `1px ${SP[8]}` }}>그룹 미지정</span>}
+                </div>
+              </div>
+              {/* 액션 버튼 */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: SP[8] }}>
+                <div style={{ display: 'flex', gap: SP[8] }}>
+                  <button type="button" style={{ flex: 1, height: '32px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: SP[4], ...TYPE.caption1, fontWeight: W.semibold, color: '#d4d4d8', background: '#2a2a30', border: '1px solid #3a3a42', borderRadius: '6px', cursor: 'pointer', fontFamily: T.font }}><Icon name="play" size={14} color="#d4d4d8" />이벤트 영상</button>
+                  <button type="button" style={{ flex: 1, height: '32px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: SP[4], ...TYPE.caption1, fontWeight: W.semibold, color: '#d4d4d8', background: '#2a2a30', border: '1px solid #3a3a42', borderRadius: '6px', cursor: 'pointer', fontFamily: T.font }}><Icon name="nest_cam_outdoor" size={14} color="#d4d4d8" />실시간 영상</button>
+                </div>
+                {/* 주변 카메라 보기 — 그룹 있으면 F-9 팝업, 없으면 비활성 + 툴팁 */}
+                <span style={{ position: 'relative', display: 'flex' }} onMouseEnter={() => !selEv.group && setTip(true)} onMouseLeave={() => setTip(false)}>
+                  <button type="button" onClick={() => { if (selEv.group) setShowDragnet(true); }}
+                    style={{ width: '100%', height: '34px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: SP[4], ...TYPE.caption1, fontWeight: W.bold, borderRadius: '6px', fontFamily: T.font,
+                      ...(selEv.group
+                        ? { color: '#fff', background: `linear-gradient(135deg, ${T.primaryStrong} 0%, ${T.primaryHeavy} 100%)`, border: `1px solid ${T.primaryHeavy}`, cursor: 'pointer' }
+                        : { color: '#6f6f77', background: '#202024', border: '1px solid #2a2a30', cursor: 'not-allowed' }) }}>
+                    <Icon name="location_searching" size={14} color={selEv.group ? '#fff' : '#6f6f77'} />주변 카메라 보기
+                  </button>
+                  {tip && !selEv.group && (
+                    <span style={{ position: 'absolute', bottom: 'calc(100% + 6px)', left: 0, zIndex: 10, ...TYPE.caption2, color: '#e8e8ec', background: '#101015', border: '1px solid #2c3540', borderRadius: '6px', padding: `${SP[4]} ${SP[8]}`, whiteSpace: 'nowrap', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}>이 카메라는 그룹에 속해 있지 않습니다.</span>
+                  )}
+                </span>
+              </div>
+              {/* 조치내역 */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: SP[4] }}>
+                <span style={{ ...TYPE.caption1, color: '#9a9aa2' }}>조치내역</span>
+                <div style={{ minHeight: '60px', background: '#141417', border: '1px solid #2e2e35', borderRadius: '6px', padding: SP[8], ...TYPE.caption1, color: '#6f6f77' }}>기록 없음</div>
+              </div>
+              {/* 이벤트 판정 */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: SP[16] }}>
+                <span style={{ ...TYPE.caption1, color: '#9a9aa2', width: '64px', flexShrink: 0 }}>이벤트 판정</span>
+                <Chk on={judge === '정탐'} onClick={() => setJudge((v) => (v === '정탐' ? null : '정탐'))}>정탐</Chk>
+                <Chk on={judge === '오탐'} onClick={() => setJudge((v) => (v === '오탐' ? null : '오탐'))}>오탐</Chk>
+              </div>
+              {/* 조치자 명 */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: SP[8] }}>
+                <span style={{ ...TYPE.caption1, color: '#9a9aa2', width: '64px', flexShrink: 0 }}>조치자 명</span>
+                <input value={actor} onChange={(e) => setActor(e.target.value)} style={{ flex: 1, height: '30px', padding: `0 ${SP[8]}`, background: '#141417', border: '1px solid #2e2e35', borderRadius: '4px', ...TYPE.caption1, color: '#e4e4e8', fontFamily: T.font, outline: 'none', boxSizing: 'border-box' }} />
+              </div>
+              <button type="button" style={{ alignSelf: 'flex-end', minWidth: '84px', height: '32px', ...TYPE.caption1, fontWeight: W.semibold, color: '#fff', background: T.primary, border: `1px solid ${T.primary}`, borderRadius: '6px', cursor: 'pointer', fontFamily: T.font }}>저장</button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* F-9 주변 카메라 보기 부유 창 팝업 — 최근 이벤트 행 클릭 시 등장 */}
@@ -2648,162 +2724,9 @@ function PrevaxSelectiveActiveScreen() {
  * 좌측 이벤트 목록에서 (a)그룹 있음 / (b)그룹 없음 두 상태를 오가며 확인할 수 있다.
  */
 function PrevaxSelectiveEventDetailScreen() {
-  const events = [
-    { evt: '배회', cam: '[17] 강남대로 사거리', ts: '14:21:08', band: '#F5EFE0', group: '강남대로 일대' },
-    { evt: '침입', cam: '[57] 독립 설치 카메라', ts: '14:22:40', band: '#C9847A', group: null },
-    { evt: '배회', cam: '[03] 강남역 2번출구', ts: '14:19:55', band: '#F5EFE0', group: '강남대로 일대' },
-    { evt: '유기', cam: '[22] 신관 로비', ts: '14:18:30', band: '#F5EFE0', group: null },
-  ];
-  const [sel, setSel] = useState(0);
-  const [judge, setJudge] = useState(null); // '정탐' | '오탐' | null
-  const [tip, setTip] = useState(false);    // 비활성 "주변 카메라 보기" 툴팁
-  const [open, setOpen] = useState(true);   // 이벤트 상세 팝업(선별관제 모니터링 위에 뜸)
-  const [showDragnet, setShowDragnet] = useState(false); // F-9 부유 조사 창 팝업
-  const cur = events[sel];
-  const hasGroup = !!cur.group;
-
-  const Chk = ({ on, onClick, children }) => (
-    <span onClick={onClick} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'pointer', ...TYPE.caption1, color: on ? '#fff' : '#9a9aa2', whiteSpace: 'nowrap' }}>
-      <span style={{ width: '14px', height: '14px', borderRadius: '3px', flexShrink: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', border: `1px solid ${on ? T.primary : '#33333b'}`, background: on ? T.primary : '#141417' }}>
-        {on && <Icon name="check" size={10} color="#fff" />}
-      </span>
-      {children}
-    </span>
-  );
-  const actBtn = (extra) => ({ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: SP[4], height: '32px', padding: `0 ${SP[12]}`, ...TYPE.caption1, fontWeight: W.semibold, borderRadius: '6px', fontFamily: T.font, whiteSpace: 'nowrap', boxSizing: 'border-box', ...extra });
-  const secBtn = { color: '#d4d4d8', background: '#2a2a30', border: '1px solid #3a3a42', cursor: 'pointer' };
-
-  return (
-    <div style={{ position: 'relative', width: '100%', maxWidth: '1920px', fontFamily: T.font }}>
-      {/* 배경: 선별관제 모니터링(운영 중) — 이벤트 상세는 이 위에 팝업으로 뜬다 */}
-      <PrevaxSelectiveActiveScreen />
-
-      {/* 팝업이 닫힌 상태: 다시 열기 힌트 */}
-      {!open && (
-        <button type="button" onClick={() => setOpen(true)} style={{ position: 'absolute', top: SP[16], left: '50%', transform: 'translateX(-50%)', zIndex: 20, display: 'inline-flex', alignItems: 'center', gap: SP[8], height: '34px', padding: `0 ${SP[16]}`, ...TYPE.caption1, fontWeight: W.semibold, color: '#fff', background: T.primary, border: `1px solid ${T.primary}`, borderRadius: '8px', cursor: 'pointer', fontFamily: T.font, boxShadow: '0 8px 24px rgba(0,0,0,0.5)' }}>
-          <Icon name="visibility" size={15} color="#fff" />이벤트 상세 다시 열기
-        </button>
-      )}
-
-      {/* 이벤트 상세 팝업(모달) — 딤 배경 위 중앙 다이얼로그 */}
-      {open && (
-      <div onClick={() => setOpen(false)} style={{ position: 'absolute', inset: 0, zIndex: 30, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: SP[24], borderRadius: '10px' }}>
-      <div onClick={(e) => e.stopPropagation()} style={{
-        width: '88%', maxWidth: '840px', maxHeight: '88%', display: 'flex', flexDirection: 'column',
-        background: '#1a1a1f', border: '1px solid #2a2a30', borderRadius: '10px',
-        overflow: 'hidden', color: '#e8e8ec', boxShadow: '0 32px 80px rgba(0,0,0,0.66)',
-      }}>
-        {/* 다이얼로그 타이틀바 */}
-        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '40px', padding: `0 ${SP[8]} 0 ${SP[16]}`, background: '#101015', borderBottom: '1px solid #232329' }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[8], ...TYPE.label2, fontWeight: W.bold, color: '#fff' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', background: T.primary }} />이벤트 상세
-          </span>
-          <span onClick={() => setOpen(false)} title="닫기" style={{ width: '34px', height: '34px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#b3b3b3', cursor: 'pointer' }}>✕</span>
-        </div>
-
-        <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
-        {/* 좌측 이벤트 목록 — (a)그룹 있음 / (b)그룹 없음 선택 */}
-        <div style={{ width: '320px', flexShrink: 0, background: '#16161a', borderRight: '1px solid #2a2a30', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: SP[8], padding: `${SP[12]} ${SP[16]} ${SP[8]}` }}>
-            <span style={{ ...TYPE.label1, fontWeight: W.bold, color: '#fff' }}>이벤트 목록</span>
-            <span style={{ ...TYPE.caption1, color: '#8a8a92', fontVariantNumeric: 'tabular-nums' }}>미조치 {events.length}건</span>
-          </div>
-          <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }} className="prevax-scroll">
-            {events.map((e, i) => {
-              const on = i === sel;
-              return (
-                <div key={i} onClick={() => { setSel(i); setJudge(null); setTip(false); }} style={{ display: 'flex', gap: SP[8], padding: `${SP[8]} ${SP[16]}`, borderBottom: '1px solid #202027', cursor: 'pointer', background: on ? 'rgba(0,102,255,0.10)' : 'transparent', boxShadow: on ? `inset 3px 0 0 ${T.primaryStrong}` : 'none' }}>
-                  <div style={{ width: '56px', height: '42px', flexShrink: 0, borderRadius: '4px', background: 'linear-gradient(135deg,#20222a,#14161c)', border: '1px solid #2a2a30', position: 'relative', overflow: 'hidden' }}>
-                    <div style={{ position: 'absolute', left: '28%', top: '26%', width: '44%', height: '48%', border: `1.5px solid ${e.band}`, borderRadius: '2px' }} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <span style={{ ...TYPE.caption1, fontWeight: W.bold, color: on ? '#fff' : '#e4e4e8' }}>{e.evt}</span>
-                    <span style={{ ...TYPE.caption2, color: '#bdbdc4', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.cam}</span>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[4], marginTop: '1px' }}>
-                      {e.group
-                        ? <span style={{ ...TYPE.caption2, fontSize: '10px', color: '#8fb8ff', background: 'rgba(0,102,255,0.14)', border: '1px solid rgba(0,102,255,0.4)', borderRadius: '3px', padding: `0 ${SP[4]}` }}>{e.group}</span>
-                        : <span style={{ ...TYPE.caption2, fontSize: '10px', color: '#8a8a92', background: '#202027', border: '1px solid #2e2e35', borderRadius: '3px', padding: `0 ${SP[4]}` }}>그룹 미지정</span>}
-                    </span>
-                  </div>
-                  <span style={{ ...TYPE.caption2, color: '#8a8a92', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>{e.ts}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* 우측 이벤트 상세 */}
-        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', padding: SP[16], gap: SP[12], overflowY: 'auto' }} className="prevax-scroll">
-          <span style={{ ...TYPE.label1, fontWeight: W.bold, color: '#fff' }}>이벤트 상세</span>
-
-          {/* 스냅샷 */}
-          <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 10', borderRadius: '8px', overflow: 'hidden', background: 'linear-gradient(135deg,#20222a,#14161c)', border: '1px solid #2a2a30' }}>
-            <div style={{ position: 'absolute', left: '34%', top: '30%', width: '30%', height: '44%', border: `1.5px solid ${cur.band}`, borderRadius: '2px' }} />
-            <span style={{ position: 'absolute', bottom: SP[8], right: SP[8], ...TYPE.caption2, color: '#e8e8ec', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)' }}>2026-07-15 {cur.ts}</span>
-          </div>
-
-          {/* 이벤트 헤더 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-            <span style={{ ...TYPE.label2, fontWeight: W.bold, color: '#fff' }}>{cur.evt} 감지 · {cur.cam}</span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[8] }}>
-              <span style={{ ...TYPE.caption1, color: '#8a8a92', fontVariantNumeric: 'tabular-nums' }}>2026-07-15 {cur.ts}</span>
-              {cur.group
-                ? <span style={{ ...TYPE.caption2, color: '#8fb8ff', background: 'rgba(0,102,255,0.14)', border: '1px solid rgba(0,102,255,0.4)', borderRadius: '3px', padding: `1px ${SP[8]}` }}>그룹 · {cur.group}</span>
-                : <span style={{ ...TYPE.caption2, color: '#8a8a92', background: '#202027', border: '1px solid #2e2e35', borderRadius: '3px', padding: `1px ${SP[8]}` }}>그룹 미지정</span>}
-            </span>
-          </div>
-
-          {/* 버튼 줄 — 이벤트 영상 · 주변 카메라 보기 · 실시간 영상 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], flexWrap: 'wrap' }}>
-            <button type="button" style={actBtn(secBtn)}><Icon name="play" size={14} color="#d4d4d8" />이벤트 영상</button>
-            {/* 주변 카메라 보기 — 그룹 있으면 활성(→F-9), 없으면 비활성 + 툴팁 */}
-            <span style={{ position: 'relative', display: 'inline-flex' }}
-              onMouseEnter={() => !hasGroup && setTip(true)} onMouseLeave={() => setTip(false)}>
-              <button type="button"
-                onClick={() => { if (hasGroup) setShowDragnet(true); }}
-                style={actBtn(hasGroup
-                  ? { color: '#fff', background: `linear-gradient(135deg, ${T.primaryStrong} 0%, ${T.primaryHeavy} 100%)`, border: `1px solid ${T.primaryHeavy}`, cursor: 'pointer' }
-                  : { color: '#6f6f77', background: '#202024', border: '1px solid #2a2a30', cursor: 'not-allowed' })}>
-                <Icon name="location_searching" size={14} color={hasGroup ? '#fff' : '#6f6f77'} />주변 카메라 보기
-              </button>
-              {tip && !hasGroup && (
-                <span style={{ position: 'absolute', top: 'calc(100% + 6px)', left: 0, zIndex: 10, ...TYPE.caption2, color: '#e8e8ec', background: '#101015', border: '1px solid #2c3540', borderRadius: '6px', padding: `${SP[4]} ${SP[8]}`, whiteSpace: 'nowrap', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}>
-                  이 카메라는 그룹에 속해 있지 않습니다.
-                </span>
-              )}
-            </span>
-            <button type="button" style={actBtn(secBtn)}><Icon name="nest_cam_outdoor" size={14} color="#d4d4d8" />실시간 영상</button>
-          </div>
-
-          {/* 조치내역 */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: SP[4] }}>
-            <span style={{ ...TYPE.caption1, color: '#9a9aa2' }}>조치내역</span>
-            <div style={{ minHeight: '64px', background: '#141417', border: '1px solid #2e2e35', borderRadius: '6px', padding: SP[8], ...TYPE.caption1, color: '#6f6f77' }}>기록 없음</div>
-          </div>
-
-          {/* 이벤트 판정 + 저장 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: SP[16] }}>
-            <span style={{ ...TYPE.caption1, color: '#9a9aa2', flexShrink: 0 }}>이벤트 판정</span>
-            <Chk on={judge === '정탐'} onClick={() => setJudge((v) => (v === '정탐' ? null : '정탐'))}>정탐</Chk>
-            <Chk on={judge === '오탐'} onClick={() => setJudge((v) => (v === '오탐' ? null : '오탐'))}>오탐</Chk>
-            <button type="button" style={{ ...actBtn({ color: '#fff', background: T.primary, border: `1px solid ${T.primary}`, cursor: 'pointer' }), marginLeft: 'auto', minWidth: '84px' }}>저장</button>
-          </div>
-        </div>
-        </div>
-      </div>
-      </div>
-      )}
-
-      {/* F-9 부유 조사 창 팝업 — "주변 카메라 보기" 클릭 시 메인 화면 위에 딤+플로팅 창으로 등장(정본: 별도 비저장 창) */}
-      {showDragnet && (
-        <div onClick={() => setShowDragnet(false)} style={{ position: 'absolute', inset: 0, zIndex: 50, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: SP[24] }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ width: '84%', maxWidth: '1180px' }}>
-            <DragnetInvestigationWindow onClose={() => setShowDragnet(false)} />
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  // F-9 진입 컷① — 선별관제 모니터링(운영 중) 화면 + 우측 상세정보 패널.
+  //  이벤트(최근 리스트/밴드 카드) 클릭 → 우측 패널이 채워지고, 그룹 있으면 "주변 카메라 보기"로 F-9 부유 창 진입.
+  return <PrevaxSelectiveActiveScreen withDetail />;
 }
 
 /**

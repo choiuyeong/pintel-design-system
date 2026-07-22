@@ -177,6 +177,7 @@ export const TIERS = {
           { id: 'switch', name: 'Switch', children: [{ id: 'control-switch', name: 'Switch' }] },
           { id: 'text-area', name: 'Text area', children: [{ id: 'field-textarea', name: 'Text area' }] },
           { id: 'text-field', name: 'Text field', children: [{ id: 'field-text', name: 'Text field' }] },
+          { id: 'number-field', name: 'Number field', children: [{ id: 'field-number', name: 'Number field' }] },
         ]
       },
       {
@@ -341,10 +342,12 @@ export const TIERS = {
             children: [
               { id: 'library-live', name: '기본' },
               { id: 'library-live-focus', name: 'Focus (고정)' },
+              { id: 'library-auto-switch', name: '이벤트 자동 전환 설정 (F-6)' },
               { id: 'library-unassigned', name: '미배치 채널 확인 (F-2)' },
               { id: 'library-dragnet', name: '투망관제 · 주변 카메라 보기 (F-9)' },
               { id: 'library-event-popup', name: '이벤트 자동 팝업 (D-3)' },
               { id: 'library-event-popup-live', name: '이벤트 자동 팝업 (화면)' },
+              { id: 'library-auto-window-unified', name: '이벤트 자동 창 통합안 (제안)' },
             ]
           },
           { id: 'tpl-selective', name: '선별관제 모니터링', children: [
@@ -377,6 +380,7 @@ export const TIERS = {
           },
           { id: 'tpl-camera-group', name: '카메라 그룹 관리', children: [{ id: 'library-camera-group', name: '카메라 그룹 관리' }] },
           { id: 'tpl-events', name: '이벤트 관리', children: [{ id: 'library-events', name: '이벤트 관리' }] },
+          { id: 'tpl-data-retention', name: '데이터 보관기간 설정', children: [{ id: 'library-data-retention', name: '데이터 보관기간 설정' }] },
           { id: 'tpl-alarm', name: '알림 설정', children: [{ id: 'library-alarm-settings', name: '알림 설정' }] },
           { id: 'tpl-permission', name: '권한 설정', children: [{ id: 'library-permission', name: '권한 설정' }] },
         ]
@@ -3272,6 +3276,51 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
   <label>지점명</label>
   <input className="ds-input" value={v} onChange={e => setV(e.target.value)} />
 </div>`,
+  },
+  'field-number': {
+    name: 'Number field',
+    description: '숫자를 입력하고 우측 ▲▼ 스텝 버튼으로 증감하는 입력 필드입니다. 보관기간·정지시간·임계치 등 단위가 붙는 정수 값 설정에 사용합니다.',
+    overview: '넘버 필드는 가운데 정렬된 숫자 입력 영역과, 우측에 위/아래로 분할된 스텝 버튼(▲▼)으로 구성됩니다. 스텝 글리프는 채운 삼각형이 아니라 가벼운 셰브런(Foundation 계열)으로 통일해 시각 부담을 줄이며, min·max로 값을 클램프하고 step 단위로 증감합니다. 단위(초·일·개월 등)와 보조 안내(최소/최대)를 필드 우측 슬롯에 병기할 수 있습니다.',
+    properties: [
+      {
+        name: 'anatomy',
+        title: '구성 (Anatomy)',
+        type: 'string',
+        conditions: [
+          { condition: "1. Label: 필드 상단 라벨(12px #9a9aa2)" },
+          { condition: "2. Value: 가운데 정렬 숫자 입력 — 14px Bold, tabular-nums, #fff" },
+          { condition: "3. Stepper: 우측 22px 컬럼 — 위/아래 셰브런(가벼운 stroke) 절반 분할, 구분선 1px #2e2e35" },
+          { condition: "4. Unit: 값 우측 단위 텍스트(초·일·개월·년 등, 13px #d4d4d8) — 선택" },
+          { condition: "5. Hint: 단위 뒤 보조 안내(예: · 최소 1초, 11px #6f6f77) — 선택" },
+          { condition: "6. Field: 컨테이너 — 배경 #141417, 테두리 1px #2e2e35, 둥글기 7px, 높이 32px" },
+        ],
+      },
+      {
+        name: 'value',
+        title: '값 (Value)',
+        type: 'number',
+        conditions: [
+          { condition: "min / max 로 값 클램프(범위 밖 입력·스텝은 경계값으로 고정)" },
+          { condition: "step 단위 증감(▲ = +step, ▼ = −step), 기본 step 1" },
+          { condition: "직접 입력 시 숫자만 허용(비숫자 제거), 빈 값은 min 으로 보정" },
+        ],
+      },
+      {
+        name: 'states',
+        title: '상태 (States)',
+        type: 'enum',
+        conditions: [
+          { condition: "Default: 테두리 #2e2e35" },
+          { condition: "Disabled: 투명도 50% · 스텝/입력 비활성" },
+        ],
+      },
+    ],
+    behavior: '▲/▼ 클릭 시 step 단위로 증감하며 min·max를 벗어나지 않습니다. 값 영역에 직접 입력하면 숫자만 반영되고, 빈 값은 min으로 보정됩니다. 단위·안내는 필드 밖 우측에 병기해 값 편집을 방해하지 않습니다.',
+    usage: '데이터 보관기간(일·개월·년), 추출/정지 시간(초), 분할 수, 임계치 등 단위가 붙는 정수 설정에 사용합니다. 연속 값의 감각적 조절에는 Slider, 자유 텍스트/코드에는 Text field를 사용하세요. 스텝 화살표는 반드시 가벼운 셰브런을 쓰고 채운 삼각형(▲▼ 글리프)은 쓰지 않습니다.',
+    code: `import { NumberField } from '../ds';
+
+<NumberField label="추출 정지 시간" value={sec} onChange={setSec}
+  min={1} step={1} unit="초" hint="· 최소 1초" />`,
   },
   'field-textarea': {
     name: 'Text area',

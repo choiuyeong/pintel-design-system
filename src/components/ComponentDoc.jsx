@@ -4,6 +4,7 @@ import { COMPONENT_PROPS } from '../data/components-props';
 import { T, SP, TYPE, W, COLOR_ACCENT, COLOR_STATUS } from '../data/tokens';
 import { Icon } from './icons';
 import { SectionHeader } from '../ds/SectionHeader';
+import { NumberField } from '../ds/NumberField';
 import promptingGuideRaw from '../../docs/prompting-guide.md?raw';
 
 // customLayout: 'markdown' 페이지가 렌더하는 원본 md(단일 출처는 docs/*.md, 여기선 ?raw로 읽어옴)
@@ -530,6 +531,18 @@ function renderComponentThumbnail(id) {
             <div style={{ width: '120px', height: '22px', border: '1px solid #0066FF', borderRadius: '6px', backgroundColor: '#fff', display: 'flex', alignItems: 'center', padding: '0 6px', boxSizing: 'border-box' }}>
               <div style={{ width: '1.5px', height: '12px', backgroundColor: '#0066FF' }} />
             </div>
+          </div>
+        </BrowserFrame>
+      );
+    case 'field-number':
+      return (
+        <BrowserFrame>
+          <div style={{ width: '96px', height: '26px', border: '1px solid #e4e4e7', borderRadius: '6px', backgroundColor: '#fff', display: 'flex', alignItems: 'center', boxSizing: 'border-box', overflow: 'hidden' }}>
+            <span style={{ flex: 1, textAlign: 'center', fontSize: '11px', fontWeight: 700, color: '#18181b' }}>10</span>
+            <span style={{ display: 'flex', flexDirection: 'column', width: '18px', height: '100%', borderLeft: '1px solid #e4e4e7' }}>
+              <span style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid #e4e4e7' }}><svg width="8" height="5" viewBox="0 0 9 6" fill="none" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1.5 4.5 L4.5 1.5 L7.5 4.5" /></svg></span>
+              <span style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><svg width="8" height="5" viewBox="0 0 9 6" fill="none" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1.5 1.5 L4.5 4.5 L7.5 1.5" /></svg></span>
+            </span>
           </div>
         </BrowserFrame>
       );
@@ -1941,6 +1954,9 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
   if (componentId === 'field-text') {
     return <TextFieldPlayground activeSubTab={activeSubTab} />;
   }
+  if (componentId === 'field-number') {
+    return <NumberFieldPlayground activeSubTab={activeSubTab} />;
+  }
   if (componentId === 'control-radio') {
     return <RadioPlayground activeSubTab={activeSubTab} />;
   }
@@ -3124,6 +3140,83 @@ function FramedStylePlayground({ activeSubTab }) {
 }
 
 // Text field(field-text) — 한 줄 입력. Anatomy(8요소 구조 도식) + Interactive(실동작).
+// Number field — 숫자 + ▲▼ 스텝 입력(정본 ds/NumberField 사용). 데이터 보관기간·정지시간 등 단위 정수 설정용.
+function NumberFieldPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    const lightChevron = (up) => (
+      <svg width="9" height="6" viewBox="0 0 9 6" fill="none" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={up ? 'M1.5 4.5 L4.5 1.5 L7.5 4.5' : 'M1.5 1.5 L4.5 4.5 L7.5 1.5'} /></svg>
+    );
+    return (
+      <AnatomyFrame
+        card={{ w: 740, h: 380, bg: '#f4f4f5' }}
+        legendGap="14px 0"
+        callouts={[
+          { n: 1, x: 196, y: 116, line: { x1: 246, y1: 116, x2: 202, y2: 116 } },
+          { n: 2, x: 338, y: 104, line: { x1: 338, y1: 144, x2: 338, y2: 114 } },
+          { n: 3, x: 560, y: 168, line: { x1: 552, y1: 168, x2: 464, y2: 168 } },
+          { n: 4, x: 560, y: 118, line: { x1: 552, y1: 124, x2: 488, y2: 156 } },
+          { n: 5, x: 338, y: 240, line: { x1: 338, y1: 192, x2: 338, y2: 226 } },
+          { n: 6, x: 196, y: 210, line: { x1: 246, y1: 210, x2: 202, y2: 210 } },
+        ]}
+        dims={[
+          { dir: 'v', x: 468, y: 146, length: 44, label: '32' },
+        ]}
+        legend={[
+          { n: 1, label: 'Label' },
+          { n: 2, label: 'Value' },
+          { n: 3, label: 'Stepper' },
+          { n: 4, label: 'Unit' },
+          { n: 5, label: 'Field' },
+          { n: 6, label: 'Hint' },
+        ]}
+        spec={{ rows: [
+          ['필드 높이', '32', '32', '컨트롤 높이(고정)'],
+          ['모서리 반경', 'radius', '7', 'border-radius'],
+          ['스텝 컬럼 폭', '—', '22', '우측 증감 버튼'],
+          ['값 ↔ 단위 간격', 'SP[8]', '8', '필드↔단위'],
+          ['라벨 세로 간격', 'SP[8]', '8', 'Label↔Field'],
+        ], note: '※ 스텝 글리프는 가벼운 셰브런으로 통일(채운 삼각형 ▲▼ 금지). 필드 높이 32는 컨트롤 규격(스케일 예외).' }}
+      >
+        <div style={{ position: 'absolute', left: '210px', top: '78px', width: '360px', height: '250px', background: '#fff', borderRadius: '12px', zIndex: 2 }} />
+        {/* Label */}
+        <div style={{ position: 'absolute', left: '250px', top: '110px', fontSize: TYPE.label1.fontSize, fontWeight: W.bold, color: '#18181b', zIndex: 3 }}>보관 일수</div>
+        {/* Field */}
+        <div style={{ position: 'absolute', left: '250px', top: '146px', width: '210px', height: '44px', display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #d4d4d8', borderRadius: '8px', overflow: 'hidden', boxSizing: 'border-box', zIndex: 3 }}>
+          <span style={{ flex: 1, textAlign: 'center', fontSize: '16px', fontWeight: W.bold, color: '#18181b', fontVariantNumeric: 'tabular-nums' }}>100</span>
+          <span style={{ display: 'flex', flexDirection: 'column', width: '30px', height: '100%', borderLeft: '1px solid #e4e4e7', flexShrink: 0 }}>
+            <span style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid #e4e4e7' }}>{lightChevron(true)}</span>
+            <span style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{lightChevron(false)}</span>
+          </span>
+        </div>
+        {/* Unit */}
+        <div style={{ position: 'absolute', left: '470px', top: '158px', fontSize: TYPE.label1.fontSize, color: '#3f3f46', zIndex: 3 }}>일</div>
+        {/* Hint */}
+        <div style={{ position: 'absolute', left: '250px', top: '204px', fontSize: TYPE.label2.fontSize, color: '#a1a1aa', zIndex: 3 }}>· 최소 1 · 최대 3650</div>
+      </AnatomyFrame>
+    );
+  }
+  return <NumberFieldInteractive />;
+}
+
+// Interactive — 정본 ds/NumberField 실동작(단위·스텝·min/max·비활성).
+function NumberFieldInteractive() {
+  const [sec, setSec] = useState(10);
+  const [days, setDays] = useState(100);
+  const [split, setSplit] = useState(9);
+  return (
+    <div style={{ width: '100%', textAlign: 'left' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', minHeight: '220px', background: '#1e1e1e', padding: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <NumberField label="추출 정지 시간" value={sec} onChange={setSec} min={1} step={1} unit="초" hint="· 최소 1초" />
+          <NumberField label="이벤트 정보 보관" value={days} onChange={setDays} min={1} step={10} unit="일" />
+          <NumberField label="화면 분할" value={split} onChange={setSplit} min={1} max={64} step={1} unit="분할" />
+          <NumberField label="비활성 예시" value={6} min={1} unit="개월" disabled />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function TextFieldPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
     const fieldBox = {

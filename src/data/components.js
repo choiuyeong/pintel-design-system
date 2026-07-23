@@ -157,6 +157,10 @@ export const TIERS = {
           {
             id: 'table', name: 'Table',
             children: [{ id: 'table-default', name: 'Table' }]
+          },
+          {
+            id: 'video', name: 'Video',
+            children: [{ id: 'media-video', name: 'Video' }]
           }
         ]
       },
@@ -260,6 +264,10 @@ export const TIERS = {
           {
             id: 'selective-overview', name: 'Overview',
             children: [{ id: 'selective-overview-default', name: 'Overview' }]
+          },
+          {
+            id: 'event-badge', name: 'Event Badge',
+            children: [{ id: 'event-badge-default', name: 'Event Badge' }]
           },
           {
             id: 'detected-targets', name: 'Detected Target List',
@@ -3322,6 +3330,45 @@ export function AvatarGroup({ avatars = [], max = 4, overlap = 'md', size = 'md'
 <NumberField label="추출 정지 시간" value={sec} onChange={setSec}
   min={1} step={1} unit="초" hint="· 최소 1초" />`,
   },
+  'media-video': {
+    name: 'Video',
+    description: '카메라 실시간 영상을 표출하는 셀 컴포넌트입니다. 영상 프레임 + 연결상태(정상·오류·응답없음·스트림없음) + 오버레이(선택·검지 박스·타임스탬프)와 하단 정보 바(카메라명·번호 + 연결상태 칩)로 구성됩니다. 선별관제 미배치 채널 실시간 확인(F-2)의 영상 표출 레이아웃을 정본화했습니다.',
+    overview: '영상 프레임은 연결상태에 따라 다르게 그려집니다 — 정상(ok)은 라이브 화면 + 하단 중앙 타임스탬프(옵션: 검지 박스), 오류/응답없음/스트림없음은 빈 박스를 채우지 않고 상태 얼굴(어두운 배경) + 상태 아이콘·문구로 실제 상태를 드러냅니다. 상태 색은 색만으로 가르지 않고 아이콘·글자를 병기합니다(정상=positive·오류=error·응답없음=cautionary·스트림없음=neutral). 배치 대상은 청색 테두리 + "선택" 칩, 미처리 이벤트가 있으면 좌상단 이벤트 배지를 얹습니다.',
+    properties: [
+      {
+        name: 'anatomy',
+        title: '구성 (Anatomy)',
+        type: 'string',
+        conditions: [
+          { condition: "1. Frame: 영상 프레임 — aspect(기본 16:9), 배경 #0a0a0c, 테두리 1px, 둥글기 6px" },
+          { condition: "2. Timestamp: 정상 상태 하단 중앙 시각 — Caption 2, 흰색 + 그림자, tabular-nums" },
+          { condition: "3. Detection box: 검지 박스(positive) + 라벨 — bbox 지정 시(정상에서만)" },
+          { condition: "4. Select chip: 좌상단 '선택' 칩(Primary) — selected 시" },
+          { condition: "5. Event badge: 좌상단 '이벤트 N' 배지(accent) — event 지정 시" },
+          { condition: "6. Info bar: 하단 카메라명(Caption 1) + 번호(Caption 2) + 연결상태 칩" },
+        ],
+      },
+      {
+        name: 'state',
+        title: '연결상태 (State)',
+        type: 'enum',
+        conditions: [
+          { condition: "ok(정상): 라이브 화면 + 타임스탬프 · 칩=중립+초록 체크(조용히)" },
+          { condition: "error(오류): 상태 얼굴 + error 아이콘 '연결 오류 · 영상 없음' · 칩=error" },
+          { condition: "wait(응답없음): cautionary '응답 지연 · 20초 이상 신호 없음' · 칩=cautionary" },
+          { condition: "nostream(스트림없음): neutral '스트림 없음 · 스트림 미설정(신규 등록)' · 칩=neutral" },
+        ],
+      },
+    ],
+    behavior: '연결상태에 따라 프레임 내용이 전환됩니다. 문제 상태(오류·응답없음·스트림없음)는 빈 화면을 임의로 채우지 않고 상태 얼굴 + 아이콘·문구로 실제 상태를 노출해 방치 카메라가 묻히지 않게 합니다. selected면 청색 테두리·글로우 + 선택 칩, showInfo=false면 정보 바를 숨겨 순수 영상만 표출합니다.',
+    usage: '미배치 채널 점검(F-2), 실시간 영상 그리드 셀, 이벤트 추출 창 등 카메라 영상을 표출하는 모든 곳에 사용합니다. 색만으로 상태를 구분하지 말고 항상 아이콘·문구를 병기하세요. 빈 영상 영역을 가짜 이미지로 채우지 않습니다.',
+    code: `import { Video } from '../ds';
+
+<Video state="ok" name="정문 카메라" no="CH-101"
+  timestamp="2026.07.01 14:22:07" bbox="사람" event={2} />
+<Video state="error" name="후문 카메라" no="CH-103" selected />
+<Video state="nostream" name="신규 카메라 A" no="CH-201" />`,
+  },
   'field-textarea': {
     name: 'Text area',
     description: '여러 줄의 긴 텍스트를 입력받는 멀티라인 입력 필드입니다.',
@@ -4333,6 +4380,33 @@ export function Toast({ type = 'neutral', message, showIcon = true, duration = 3
     overview: '지도 연동 시 카메라의 분석 경계를 시각적인 서클로 시각화하고, 슬라이더나 직접 핸들을 드래그하여 감지 거리를 미터(m) 단위로 조절할 수 있습니다. 범위 확장 시 지도의 고도 및 투영비에 맞추어 스케일이 정교하게 보간됩니다.',
     usage: '관제 구역 설정, GIS 지도기반 카메라 분석 조건 설정 툴에 내장됩니다.',
     webCode: `// React Camera Range Slider component\nimport React, { useState } from 'react';\n\nexport function CameraRangeController({ min = 10, max = 200, defaultValue = 50, onChange }) {\n  const [val, setVal] = useState(defaultValue);\n  return (\n    <div className="range-ctrl-widget">\n      <label>분석 유효 반경 설정: {val}m</label>\n      <input \n        type="range" \n        min={min} \n        max={max} \n        value={val} \n        onChange={(e) => {\n          const v = parseInt(e.target.value);\n          setVal(v);\n          if (onChange) onChange(v);\n        }}\n      />\n    </div>\n  );\n}`
+  },
+  'event-badge-default': {
+    name: '이벤트 배지 (Event Badge)',
+    description: '영상 셀 위에 이벤트 발생과 위험 단계를 알리는 오버레이 배지입니다. 위치는 항상 좌상단, 색상으로 위험 단계(위험/경고/주의)를 구분하며 S·M 두 가지 크기를 제공합니다.',
+    overview: '선별관제 영상 그리드에서 이벤트가 검지된 셀을 즉시 식별하기 위한 표기 규칙입니다. 표기법은 두 가지로 고정됩니다 — (1) 위치: 항상 좌상단(카메라 식별 정보는 우상단으로 분리), (2) 색상: 위험 단계를 색으로 표현합니다. 위험 단계는 위험(빨강 · T.error)·경고(주황 · T.cautionary)·주의(파랑 · T.primaryStrong) 3티어로, 도메인 내 Detected Target List와 동일한 매핑을 사용합니다. 색만으로 구분하지 않도록 한글 라벨(위험/경고/주의)을 항상 함께 표기합니다(색맹 접근성). 기본은 텍스트 전용이며, 필요 시 showIcon으로 아이콘을 켤 수 있습니다.',
+    behavior: '크기는 셀 밀도에 맞춰 두 가지를 사용합니다 — M(높이 28 · 12px · radius 10)은 1×1·2×2 등 큰 뷰의 기본값, S(높이 24 · 11px · radius 10)는 3×3 이상 밀집 그리드용입니다. 배지는 부모 영상 셀의 좌상단(top/left = SP[8])에 고정 배치되며, 패딩은 상하 2 · 좌우 8(SP[2] SP[8])로 SP 스케일만 사용합니다.',
+    usage: '선별관제 실시간 영상 그리드(F-2·F-6·F-9)에서 이벤트가 발생한 카메라 셀 좌상단에 배치합니다. 카메라명·CH 등 식별 정보는 우상단, 타임스탬프는 하단 중앙에 두어 코너 역할을 분리합니다.',
+    properties: [
+      {
+        name: 'severity', title: '위험 단계', type: "'danger' | 'warning' | 'caution'",
+        conditions: [
+          { condition: 'danger — 위험(빨강). 침입·사고 등 즉시 조치 대상' },
+          { condition: 'warning — 경고(주황). 배회·이상 징후 등 확인 필요' },
+          { condition: 'caution — 주의(파랑). 참고·낮은 우선순위' },
+        ]
+      },
+      {
+        name: 'size', title: '크기', type: "'M' | 'S'",
+        conditions: [
+          { condition: 'M — 기본. 높이 28 · 12px · radius 10 (1×1·2×2 뷰)' },
+          { condition: 'S — 밀집. 높이 24 · 11px · radius 10 (3×3+ 그리드)' },
+        ]
+      },
+      { name: 'label', title: '라벨', type: 'string', conditions: [{ condition: '미지정 시 위험 단계 기본 라벨(위험/경고/주의). 예: "침입 · 위험"' }] },
+      { name: 'showIcon', title: '아이콘 표시', type: 'boolean', conditions: [{ condition: '기본 false — 텍스트 전용. true일 때만 상태 아이콘(위험=error / 경고·주의=warning) 표시' }] },
+    ],
+    webCode: `// React Event Badge — 위치: 항상 좌상단 · 색상(배경·글씨): 위험 단계\nimport React from 'react';\n\n// 위험 단계별 연한 틴트 배경 + 선명 컬러 글씨 + 컬러 글로우(형광 느낌)\nconst SEV = {\n  danger:  { label: '위험', tint: 'rgba(255,99,99,0.22)',  tx: '#FF8F8F', glow: 'rgba(255,60,60,0.85)' },\n  warning: { label: '경고', tint: 'rgba(255,169,56,0.22)', tx: '#FFC272', glow: 'rgba(255,150,30,0.8)' },\n  caution: { label: '주의', tint: 'rgba(51,133,255,0.24)', tx: '#8FB8FF', glow: 'rgba(60,140,255,0.8)' },\n};\nconst SIZE = {\n  M: { height: 28, fontSize: 12, borderRadius: 10 },\n  S: { height: 24, fontSize: 11, borderRadius: 10 },\n};\n\nexport function EventBadge({ severity = 'danger', size = 'M', label }) {\n  const s = SEV[severity], z = SIZE[size];\n  return (\n    <span style={{\n      position: 'absolute', top: 8, left: 8,           // 항상 좌상단\n      display: 'inline-flex', alignItems: 'center', gap: 4,\n      height: z.height, padding: '2px 8px', borderRadius: z.borderRadius,\n      background: s.tint, color: s.tx,                 // 색 = 위험 단계\n      textShadow: \`0 0 4px \${s.glow}, 0 0 9px \${s.glow}\`,  // 형광(네온) 글로우\n      fontSize: z.fontSize, fontWeight: 500, lineHeight: 1, whiteSpace: 'nowrap',\n    }}>\n      {label || s.label}\n    </span>\n  );\n}`
   },
   'event-grid-default': {
     name: '이상행동 이벤트 그리드 (Event Grid)',

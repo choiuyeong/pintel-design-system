@@ -5,6 +5,7 @@ import { T, SP, TYPE, W, COLOR_ACCENT, COLOR_STATUS } from '../data/tokens';
 import { Icon } from './icons';
 import { SectionHeader } from '../ds/SectionHeader';
 import { NumberField } from '../ds/NumberField';
+import { Video } from '../ds/Video';
 import promptingGuideRaw from '../../docs/prompting-guide.md?raw';
 
 // customLayout: 'markdown' 페이지가 렌더하는 원본 md(단일 출처는 docs/*.md, 여기선 ?raw로 읽어옴)
@@ -546,6 +547,20 @@ function renderComponentThumbnail(id) {
           </div>
         </BrowserFrame>
       );
+    case 'media-video':
+      return (
+        <BrowserFrame>
+          <div style={{ width: '130px', borderRadius: '6px', overflow: 'hidden', border: '1px solid #2a2a30', background: '#0a0a0c' }}>
+            <div style={{ position: 'relative', aspectRatio: '16 / 9', background: 'linear-gradient(160deg,#1c2230,#0c0f16)' }}>
+              <span style={{ position: 'absolute', bottom: '3px', left: '50%', transform: 'translateX(-50%)', fontSize: '6px', color: '#fff', whiteSpace: 'nowrap' }}>14:22:07</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 5px', background: '#16161a' }}>
+              <span style={{ fontSize: '6.5px', color: '#d4d4d8' }}>정문 카메라</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', fontSize: '6px', color: '#66e08f' }}><span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#1ED45A' }} />정상</span>
+            </div>
+          </div>
+        </BrowserFrame>
+      );
     case 'field-textarea':
       return (
         <BrowserFrame>
@@ -581,6 +596,15 @@ function renderComponentThumbnail(id) {
           <div style={{ width: '110px', height: '44px', border: '1px solid #c4c4c8', borderRadius: '6px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' }}>
             <span style={{ position: 'absolute', top: '-6px', left: '8px', background: '#fff', padding: '0 4px', fontSize: '7px', color: '#888' }}>Frame</span>
             <div style={{ width: '70px', height: '4px', borderRadius: '2px', backgroundColor: '#e4e4e7' }} />
+          </div>
+        </BrowserFrame>
+      );
+    case 'event-badge-default':
+      return (
+        <BrowserFrame>
+          <div style={{ width: '120px', aspectRatio: '16 / 9', borderRadius: '4px', position: 'relative', background: 'linear-gradient(160deg,#1c2230,#0c0f16)', overflow: 'hidden' }}>
+            <span style={{ position: 'absolute', top: '5px', left: '5px', display: 'inline-flex', alignItems: 'center', height: '13px', padding: '0 5px', borderRadius: '7px', background: 'rgba(255,99,99,0.22)', color: '#FF8F8F', textShadow: '0 0 5px rgba(255,60,60,0.85)', fontSize: '8px', fontWeight: 500 }}>위험</span>
+            <span style={{ position: 'absolute', top: '5px', right: '5px', fontSize: '7px', color: '#9aa3b2', fontWeight: 600 }}>CAM 07</span>
           </div>
         </BrowserFrame>
       );
@@ -1912,6 +1936,9 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
   if (componentId === 'event-grid-default') {
     return <EventGridPlayground />;
   }
+  if (componentId === 'event-badge-default') {
+    return <EventBadgePlayground />;
+  }
   if (componentId === 'pedestrian-overview-default') {
     return <PedestrianOverviewPlayground />;
   }
@@ -1956,6 +1983,9 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
   }
   if (componentId === 'field-number') {
     return <NumberFieldPlayground activeSubTab={activeSubTab} />;
+  }
+  if (componentId === 'media-video') {
+    return <VideoPlayground activeSubTab={activeSubTab} />;
   }
   if (componentId === 'control-radio') {
     return <RadioPlayground activeSubTab={activeSubTab} />;
@@ -3140,6 +3170,72 @@ function FramedStylePlayground({ activeSubTab }) {
 }
 
 // Text field(field-text) — 한 줄 입력. Anatomy(8요소 구조 도식) + Interactive(실동작).
+// Video — 카메라 영상 표출 셀(정본 ds/Video). F-2 미배치 채널 실시간 확인 레이아웃 기반.
+function VideoPlayground({ activeSubTab }) {
+  if (activeSubTab === 'anatomy') {
+    return (
+      <AnatomyFrame
+        card={{ w: 760, h: 460, bg: '#f4f4f5' }}
+        legendGap="14px 0"
+        callouts={[
+          { n: 1, x: 214, y: 150, line: { x1: 270, y1: 150, x2: 220, y2: 150 } },
+          { n: 2, x: 402, y: 330, line: { x1: 402, y1: 300, x2: 402, y2: 316 } },
+          { n: 3, x: 214, y: 240, line: { x1: 342, y1: 220, x2: 220, y2: 240 } },
+          { n: 4, x: 214, y: 120, line: { x1: 300, y1: 120, x2: 220, y2: 120 } },
+          { n: 5, x: 560, y: 120, line: { x1: 470, y1: 120, x2: 552, y2: 120 } },
+          { n: 6, x: 560, y: 372, line: { x1: 490, y1: 372, x2: 552, y2: 372 } },
+        ]}
+        legend={[
+          { n: 1, label: 'Frame' },
+          { n: 2, label: 'Timestamp' },
+          { n: 3, label: 'Detection box' },
+          { n: 4, label: 'Select chip' },
+          { n: 5, label: 'Event badge' },
+          { n: 6, label: 'Info bar' },
+        ]}
+        spec={{ rows: [
+          ['프레임 비율', 'aspect', '16:9', 'aspectRatio(기본)'],
+          ['모서리 반경', 'radius', '6', 'border-radius'],
+          ['정보 바 패딩', 'SP[8]', '8', '카메라명·칩 여백'],
+          ['오버레이 여백', 'SP[8]', '8', '칩·배지 top/left'],
+          ['상태 칩 높이', '20', '20', '연결상태 배지'],
+        ], note: '※ 상태 색은 색만으로 가르지 않고 아이콘·글자 병기(정상 positive / 오류 error / 응답없음 cautionary / 스트림없음 neutral).' }}
+      >
+        {/* 라이트 목업(정본은 다크 — 여기선 애너토미 배치만) */}
+        <div style={{ position: 'absolute', left: '270px', top: '92px', width: '220px', height: '176px', background: '#0a0a0c', border: '1px solid #2a2a30', borderRadius: '6px', overflow: 'hidden', zIndex: 3 }}>
+          <div style={{ position: 'relative', height: '124px', background: 'linear-gradient(160deg,#1c2230,#0c0f16)' }}>
+            <span style={{ position: 'absolute', top: '8px', left: '8px', display: 'inline-flex', alignItems: 'center', gap: '3px', height: '20px', padding: `0 ${SP[8]}`, borderRadius: '7px', background: `linear-gradient(135deg, ${T.primaryStrong}, ${T.primaryHeavy})`, color: '#fff', fontSize: TYPE.caption2.fontSize, fontWeight: W.bold }}>선택</span>
+            <span style={{ position: 'absolute', top: '8px', right: '8px', height: '20px', padding: `0 ${SP[8]}`, display: 'inline-flex', alignItems: 'center', borderRadius: '6px', background: 'rgba(0,102,255,0.14)', border: '1px solid rgba(0,102,255,0.4)', color: '#8fb8ff', fontSize: TYPE.caption2.fontSize, fontWeight: W.bold }}>이벤트 2</span>
+            <div style={{ position: 'absolute', left: '34%', top: '30%', width: '30%', height: '44%', border: `1.5px solid ${T.positive}`, borderRadius: '2px' }} />
+            <span style={{ position: 'absolute', bottom: '4px', left: '50%', transform: 'translateX(-50%)', fontSize: TYPE.caption2.fontSize, color: '#fff', textShadow: '0 1px 3px #000' }}>14:22:07</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: SP[8], background: '#16161a', borderTop: '1px solid #232329' }}>
+            <span style={{ fontSize: TYPE.caption1.fontSize, color: '#d4d4d8', fontWeight: W.semibold }}>정문 카메라</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: TYPE.caption2.fontSize, color: '#66e08f', fontWeight: W.bold }}><span style={{ width: '6px', height: '6px', borderRadius: '50%', background: T.positive }} />정상</span>
+          </div>
+        </div>
+      </AnatomyFrame>
+    );
+  }
+  return <VideoInteractive />;
+}
+
+// Interactive — 정본 ds/Video 4개 연결상태 + 선택/이벤트/검지 박스.
+function VideoInteractive() {
+  return (
+    <div style={{ width: '100%', textAlign: 'left' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', minHeight: '220px', background: '#111', padding: '24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 200px)', gap: '16px' }}>
+          <Video state="ok" name="정문 카메라" no="CH-101" bbox="사람" event={2} />
+          <Video state="error" name="후문 카메라" no="CH-103" selected />
+          <Video state="wait" name="창고 카메라" no="CH-104" />
+          <Video state="nostream" name="신규 카메라 A" no="CH-201" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Number field — 숫자 + ▲▼ 스텝 입력(정본 ds/NumberField 사용). 데이터 보관기간·정지시간 등 단위 정수 설정용.
 function NumberFieldPlayground({ activeSubTab }) {
   if (activeSubTab === 'anatomy') {
@@ -12493,7 +12589,7 @@ function SelectiveOverviewPlayground() {
         {/* Left: Preview */}
         <div style={{ flex: 1.5, background: '#121214', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', position: 'relative' }}>
           <h4 style={{ color: '#fff', fontSize: '15px', fontWeight: 700, margin: '0 0 16px 0' }}>{rules[activeRule].title}</h4>
-          <div style={{ backgroundColor: '#09090b', borderRadius: '8px', padding: '24px 48px', textAlign: 'center', color: '#ff6363', fontSize: '16px', fontWeight: 'bold', border: '2px dashed #EF4444', boxShadow: '0 0 12px rgba(239, 68, 68, 0.2)' }}>
+          <div style={{ backgroundColor: '#09090b', borderRadius: '8px', padding: '24px 48px', textAlign: 'center', color: '#FF6363', fontSize: '16px', fontWeight: 'bold', border: '2px dashed #FF6363', boxShadow: '0 0 12px rgba(255, 99, 99, 0.2)' }}>
             {rules[activeRule].visual}
           </div>
           <p style={{ color: '#888', fontSize: '12px', marginTop: '16px', maxWidth: '300px', textAlign: 'center', lineHeight: 1.4 }}>{rules[activeRule].cond}</p>
@@ -12553,9 +12649,9 @@ function DetectedTargetsPlayground() {
         {/* Left: Feed Panel */}
         <div style={{ flex: 1.8, background: '#111', padding: '24px', display: 'flex', flexDirection: 'column', gap: '12px', justifyContent: 'center', boxSizing: 'border-box' }}>
           <h3 style={{ color: '#fff', fontSize: '15px', margin: '0 0 8px 0', fontWeight: 700 }}>관심 객체 실시간 디텍션 피드</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '240px', overflowY: 'auto', paddingRight: '4px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '240px', overflowY: 'auto', paddingRight: '4px' }}>
             {feed.map(item => (
-              <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#1e1e1e', padding: '10px 14px', borderRadius: '8px', border: '1px solid #2e2e2e', borderLeft: `4px solid ${item.severity === 'danger' ? '#FF6363' : item.severity === 'warning' ? '#FFA938' : '#3385FF'}` }}>
+              <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#1e1e1e', padding: '8px 12px', borderRadius: '8px', border: '1px solid #2e2e2e', borderLeft: `4px solid ${item.severity === 'danger' ? '#FF6363' : item.severity === 'warning' ? '#FFA938' : '#3385FF'}` }}>
                 <span style={{ fontSize: '20px' }}>{item.icon}</span>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -12575,7 +12671,7 @@ function DetectedTargetsPlayground() {
         >
           <div>
             <div style={{ fontSize: '13px', fontWeight: 600, color: '#888', marginBottom: '12px' }}>Feed Actions</div>
-            <button onClick={addDetection} style={{ width: '100%', padding: '10px 14px', border: 'none', background: '#0066FF', color: '#fff', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
+            <button onClick={addDetection} style={{ width: '100%', padding: '8px 12px', border: 'none', background: '#0066FF', color: '#fff', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
               ⚡ 가상 이벤트 발생
             </button>
           </div>
@@ -12608,7 +12704,7 @@ function CameraRadiusPlayground() {
             height: `${radius * 1.5}px`,
             borderRadius: '50%',
             backgroundColor: 'rgba(30, 212, 90, 0.08)',
-            border: '1.5px solid #1ED45A',
+            border: '2px solid #1ED45A',
             transition: 'width 0.05s ease, height 0.05s ease',
             zIndex: 1,
             pointerEvents: 'none'
@@ -12666,7 +12762,7 @@ function EventGridPlayground() {
       <h3 style={{ color: '#fff', fontSize: '16px', marginBottom: '16px', fontWeight: 700 }}>이상 행동 탐지 관제 그리드</h3>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
         {/* Left: Table */}
-        <div style={{ flex: 1.8, background: '#111', padding: '20px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', overflowX: 'auto' }}>
+        <div style={{ flex: 1.8, background: '#111', padding: '16px', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '360px' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid #2e2e2e', color: '#888', fontSize: '11px' }}>
@@ -12680,22 +12776,22 @@ function EventGridPlayground() {
             <tbody>
               {filteredEvents.map(ev => (
                 <tr key={ev.id} style={{ borderBottom: '1px solid #2e2e2e', fontSize: '12px', color: ev.resolved ? '#555' : '#fff', textDecoration: ev.resolved ? 'line-through' : 'none' }}>
-                  <td style={{ padding: '10px 8px' }}>{ev.time}</td>
-                  <td style={{ padding: '10px 8px', fontWeight: 'bold' }}>{ev.type}</td>
-                  <td style={{ padding: '10px 8px' }}>{ev.camera}</td>
-                  <td style={{ padding: '10px 8px' }}>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: ev.resolved ? '#1ED45A' : '#FF6363' }}>
-                      <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: ev.resolved ? '#1ED45A' : '#FF6363' }} />
+                  <td style={{ padding: '8px' }}>{ev.time}</td>
+                  <td style={{ padding: '8px', fontWeight: 'bold' }}>{ev.type}</td>
+                  <td style={{ padding: '8px' }}>{ev.camera}</td>
+                  <td style={{ padding: '8px' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: ev.resolved ? '#1ED45A' : '#FF6363' }}>
+                      <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: ev.resolved ? '#1ED45A' : '#FF6363' }} />
                       {ev.resolved ? '완료' : '미확인'}
                     </span>
                   </td>
-                  <td style={{ padding: '10px 8px', textAlign: 'center' }}>
+                  <td style={{ padding: '8px', textAlign: 'center' }}>
                     {!ev.resolved ? (
-                      <button onClick={() => resolveEvent(ev.id)} style={{ padding: '2px 6px', border: '1px solid #0066FF', background: 'transparent', color: '#3385FF', borderRadius: '4px', fontSize: '10px', cursor: 'pointer', fontWeight: 'bold' }}>
+                      <button onClick={() => resolveEvent(ev.id)} style={{ padding: '2px 8px', border: '1px solid #0066FF', background: 'transparent', color: '#3385FF', borderRadius: '4px', fontSize: '11px', cursor: 'pointer', fontWeight: 'bold' }}>
                         확인
                       </button>
                     ) : (
-                      <span style={{ fontSize: '10px', color: '#444' }}>종료됨</span>
+                      <span style={{ fontSize: '11px', color: '#444' }}>종료됨</span>
                     )}
                   </td>
                 </tr>
@@ -12714,6 +12810,104 @@ function EventGridPlayground() {
               <PlaygroundRadioOption label="Show All (전체)" checked={filterMode === 'all'} onChange={() => setFilterMode('all')} />
               <PlaygroundRadioOption label="Active Warnings (미확인)" checked={filterMode === 'active'} onChange={() => setFilterMode('active')} />
               <PlaygroundRadioOption label="Resolved (조치 완료)" checked={filterMode === 'resolved'} onChange={() => setFilterMode('resolved')} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 선별관제 이벤트 배지 — 표기법: 위치=항상 좌상단 · 색상=위험 단계. 사이즈 S/M 2종.
+// 위험 단계 3티어(위험/경고/주의)는 도메인 형제 컴포넌트(Detected Target List)와 동일 매핑.
+// 스타일: 위험 단계별 연한 틴트 배경 + 선명 컬러 글씨 + 컬러 글로우(형광 느낌). 위험 단계 = 배경·글씨 색.
+const EVENT_BADGE_SEV = {
+  danger:  { key: 'danger',  label: '위험', token: T.error,         tx: '#FF8F8F', tint: 'rgba(255,99,99,0.22)',  glow: 'rgba(255,60,60,0.85)',  icon: 'error',   desc: '침입·사고 등 즉시 조치' },
+  warning: { key: 'warning', label: '경고', token: T.cautionary,    tx: '#FFC272', tint: 'rgba(255,169,56,0.22)', glow: 'rgba(255,150,30,0.8)',  icon: 'warning', desc: '배회·이상 징후 확인 필요' },
+  caution: { key: 'caution', label: '주의', token: T.primaryStrong, tx: '#8FB8FF', tint: 'rgba(51,133,255,0.24)', glow: 'rgba(60,140,255,0.8)',  icon: 'warning', desc: '참고·낮은 우선순위' },
+};
+// 사이즈 2종 — M(기본, 1×1·2×2 뷰) / S(밀집 3×3+ 그리드). 토큰 스케일만 사용.
+const EVENT_BADGE_SIZE = {
+  M: { key: 'M', h: 28, type: TYPE.caption1, radius: 10, icon: 14, spec: '높이 28 · 12px · r10' },
+  S: { key: 'S', h: 24, type: TYPE.caption2, radius: 10, icon: 14, spec: '높이 24 · 11px · r10' },
+};
+
+// 정본 이벤트 배지 — 항상 좌상단에 배치(부모가 position:absolute 컨텍스트). 색=위험 단계.
+// 기본은 텍스트 전용(라벨이 색 의존을 해소). showIcon으로 필요할 때만 아이콘 표시.
+function EventBadge({ severity = 'danger', size = 'M', label, showIcon = false }) {
+  const s = EVENT_BADGE_SEV[severity] || EVENT_BADGE_SEV.danger;
+  const z = EVENT_BADGE_SIZE[size] || EVENT_BADGE_SIZE.M;
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: SP[4], flexShrink: 0,
+      height: z.h, padding: `${SP[2]} ${SP[8]}`, borderRadius: z.radius,
+      background: s.tint, color: s.tx, textShadow: `0 0 4px ${s.glow}, 0 0 9px ${s.glow}`,
+      ...z.type, lineHeight: 1, fontWeight: W.medium, whiteSpace: 'nowrap',
+    }}>
+      {showIcon && <Icon name={s.icon} size={z.icon} color={s.tx} />}{label || s.label}
+    </span>
+  );
+}
+
+function EventBadgePlayground() {
+  const [severity, setSeverity] = useState('danger');
+  const [size, setSize] = useState('M');
+  const s = EVENT_BADGE_SEV[severity];
+
+  return (
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
+      <h3 style={{ color: '#fff', ...TYPE.body1, fontWeight: W.bold, margin: `0 0 ${SP[16]} 0` }}>이벤트 배지 (Event Badge)</h3>
+      <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', minHeight: '360px' }}>
+        {/* Left: 영상 셀 미리보기 — 배지는 항상 좌상단 */}
+        <div style={{ flex: 1.8, background: '#111', padding: SP[24], display: 'flex', flexDirection: 'column', gap: SP[16], justifyContent: 'center', boxSizing: 'border-box' }}>
+          <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 9', borderRadius: '8px', overflow: 'hidden', background: 'linear-gradient(160deg,#1c2230 0%,#12161f 45%,#0c0f16 100%)', border: `1px solid ${s.token}55` }}>
+            {/* 좌상단 — 이벤트 배지(정본 위치) */}
+            <div style={{ position: 'absolute', top: SP[8], left: SP[8], zIndex: 3 }}>
+              <EventBadge severity={severity} size={size} />
+            </div>
+            {/* 우상단 — 카메라 식별(코너 규칙 참고) */}
+            <span style={{ position: 'absolute', top: SP[8], right: SP[8], ...TYPE.caption2, fontWeight: W.semibold, color: '#9aa3b2', textShadow: '0 1px 2px rgba(0,0,0,0.85)' }}>CAM 07</span>
+            {/* 중앙 — 검지 박스(위험 단계 색) */}
+            <div style={{ position: 'absolute', left: '34%', top: '30%', width: '30%', height: '44%', border: `1.5px solid ${s.token}`, borderRadius: '2px', background: `${s.token}22` }} />
+            {/* 하단 중앙 — 타임스탬프 */}
+            <span style={{ position: 'absolute', bottom: SP[4], left: '50%', transform: 'translateX(-50%)', ...TYPE.caption2, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)' }}>2026.07.01 14:22:07</span>
+          </div>
+          {/* 규격 참고 — S/M 나란히 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: SP[24], padding: `${SP[12]} ${SP[16]}`, background: '#161618', borderRadius: '8px', border: '1px solid #2a2a2e' }}>
+            {['M', 'S'].map(k => (
+              <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: SP[8], alignItems: 'flex-start' }}>
+                <EventBadge severity={severity} size={k} />
+                <span style={{ ...TYPE.caption2, color: '#8a8a92' }}>{k} · {EVENT_BADGE_SIZE[k].spec}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Right: Controls */}
+        <div
+          className="ds-playground-controls"
+          style={{ flex: 1, background: '#161618', borderLeft: '1px solid #2a2a2e', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: '20px', overflowY: 'auto', boxSizing: 'border-box' }}
+        >
+          <div>
+            <div style={{ ...TYPE.label2, fontWeight: W.semibold, color: '#888', marginBottom: SP[12] }}>위험 단계 (Severity)</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: SP[12] }}>
+              {Object.values(EVENT_BADGE_SEV).map(v => (
+                <PlaygroundRadioOption key={v.key} label={`${v.label} — ${v.desc}`} checked={severity === v.key} onChange={() => setSeverity(v.key)} />
+              ))}
+            </div>
+          </div>
+          <div>
+            <div style={{ ...TYPE.label2, fontWeight: W.semibold, color: '#888', marginBottom: SP[12] }}>사이즈 (Size)</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: SP[12] }}>
+              <PlaygroundRadioOption label="M — 기본 (1×1·2×2 뷰)" checked={size === 'M'} onChange={() => setSize('M')} />
+              <PlaygroundRadioOption label="S — 밀집 (3×3+ 그리드)" checked={size === 'S'} onChange={() => setSize('S')} />
+            </div>
+          </div>
+          <div style={{ marginTop: 'auto', padding: SP[12], background: '#0e0e10', borderRadius: '8px', border: '1px solid #26262c' }}>
+            <div style={{ ...TYPE.caption2, color: '#8a8a92', lineHeight: 1.6 }}>
+              <b style={{ color: '#cfcfd6' }}>표기법</b><br />
+              · 위치: <b style={{ color: '#cfcfd6' }}>항상 좌상단</b><br />
+              · 색상: <b style={{ color: '#cfcfd6' }}>위험 단계</b>(위험/경고/주의)<br />
+              · 카메라 식별은 우상단(코너 분리)
             </div>
           </div>
         </div>

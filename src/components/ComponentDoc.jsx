@@ -6,6 +6,7 @@ import { Icon } from './icons';
 import { SectionHeader } from '../ds/SectionHeader';
 import { NumberField } from '../ds/NumberField';
 import { Video } from '../ds/Video';
+import { EventBadge, EVENT_BADGE_SEV, EVENT_BADGE_SIZE } from '../ds/EventBadge';
 import promptingGuideRaw from '../../docs/prompting-guide.md?raw';
 
 // customLayout: 'markdown' 페이지가 렌더하는 원본 md(단일 출처는 docs/*.md, 여기선 ?raw로 읽어옴)
@@ -603,7 +604,7 @@ function renderComponentThumbnail(id) {
       return (
         <BrowserFrame>
           <div style={{ width: '120px', aspectRatio: '16 / 9', borderRadius: '4px', position: 'relative', background: 'linear-gradient(160deg,#1c2230,#0c0f16)', overflow: 'hidden' }}>
-            <span style={{ position: 'absolute', top: '5px', left: '5px', display: 'inline-flex', alignItems: 'center', height: '13px', padding: '0 5px', borderRadius: '7px', background: 'rgba(255,99,99,0.22)', color: '#FF8F8F', textShadow: '0 0 5px rgba(255,60,60,0.85)', fontSize: '8px', fontWeight: 500 }}>위험</span>
+            <span style={{ position: 'absolute', top: '5px', left: '5px', display: 'inline-flex', alignItems: 'center', height: '13px', padding: '0 5px', borderRadius: '7px', background: '#F0436A', color: '#fff', fontSize: '8px', fontWeight: 500 }}>위험</span>
             <span style={{ position: 'absolute', top: '5px', right: '5px', fontSize: '7px', color: '#9aa3b2', fontWeight: 600 }}>CAM 07</span>
           </div>
         </BrowserFrame>
@@ -12815,37 +12816,6 @@ function EventGridPlayground() {
         </div>
       </div>
     </div>
-  );
-}
-
-// 선별관제 이벤트 배지 — 표기법: 위치=항상 좌상단 · 색상=위험 단계. 사이즈 S/M 2종.
-// 위험 단계 3티어(위험/경고/주의)는 도메인 형제 컴포넌트(Detected Target List)와 동일 매핑.
-// 스타일: 위험 단계별 연한 틴트 배경 + 선명 컬러 글씨 + 컬러 글로우(형광 느낌). 위험 단계 = 배경·글씨 색.
-const EVENT_BADGE_SEV = {
-  danger:  { key: 'danger',  label: '위험', token: T.error,         tx: '#FF8F8F', tint: 'rgba(255,99,99,0.22)',  glow: 'rgba(255,60,60,0.85)',  icon: 'error',   desc: '침입·사고 등 즉시 조치' },
-  warning: { key: 'warning', label: '경고', token: T.cautionary,    tx: '#FFC272', tint: 'rgba(255,169,56,0.22)', glow: 'rgba(255,150,30,0.8)',  icon: 'warning', desc: '배회·이상 징후 확인 필요' },
-  caution: { key: 'caution', label: '주의', token: T.primaryStrong, tx: '#8FB8FF', tint: 'rgba(51,133,255,0.24)', glow: 'rgba(60,140,255,0.8)',  icon: 'warning', desc: '참고·낮은 우선순위' },
-};
-// 사이즈 2종 — M(기본, 1×1·2×2 뷰) / S(밀집 3×3+ 그리드). 토큰 스케일만 사용.
-const EVENT_BADGE_SIZE = {
-  M: { key: 'M', h: 28, type: TYPE.caption1, radius: 10, icon: 14, spec: '높이 28 · 12px · r10' },
-  S: { key: 'S', h: 24, type: TYPE.caption2, radius: 10, icon: 14, spec: '높이 24 · 11px · r10' },
-};
-
-// 정본 이벤트 배지 — 항상 좌상단에 배치(부모가 position:absolute 컨텍스트). 색=위험 단계.
-// 기본은 텍스트 전용(라벨이 색 의존을 해소). showIcon으로 필요할 때만 아이콘 표시.
-function EventBadge({ severity = 'danger', size = 'M', label, showIcon = false }) {
-  const s = EVENT_BADGE_SEV[severity] || EVENT_BADGE_SEV.danger;
-  const z = EVENT_BADGE_SIZE[size] || EVENT_BADGE_SIZE.M;
-  return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: SP[4], flexShrink: 0,
-      height: z.h, padding: `${SP[2]} ${SP[8]}`, borderRadius: z.radius,
-      background: s.tint, color: s.tx, textShadow: `0 0 4px ${s.glow}, 0 0 9px ${s.glow}`,
-      ...z.type, lineHeight: 1, fontWeight: W.medium, whiteSpace: 'nowrap',
-    }}>
-      {showIcon && <Icon name={s.icon} size={z.icon} color={s.tx} />}{label || s.label}
-    </span>
   );
 }
 

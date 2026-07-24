@@ -4384,16 +4384,16 @@ export function Toast({ type = 'neutral', message, showIcon = true, duration = 3
   'event-badge-default': {
     name: '이벤트 배지 (Event Badge)',
     description: '영상 셀 위에 이벤트 발생과 위험 단계를 알리는 오버레이 배지입니다. 위치는 항상 좌상단, 색상으로 위험 단계(위험/경고/주의)를 구분하며 S·M 두 가지 크기를 제공합니다.',
-    overview: '선별관제 영상 그리드에서 이벤트가 검지된 셀을 즉시 식별하기 위한 표기 규칙입니다. 표기법은 두 가지로 고정됩니다 — (1) 위치: 항상 좌상단(카메라 식별 정보는 우상단으로 분리), (2) 색상: 위험 단계를 색으로 표현합니다. 위험 단계는 위험(빨강 · T.error)·경고(주황 · T.cautionary)·주의(파랑 · T.primaryStrong) 3티어로, 도메인 내 Detected Target List와 동일한 매핑을 사용합니다. 색만으로 구분하지 않도록 한글 라벨(위험/경고/주의)을 항상 함께 표기합니다(색맹 접근성). 기본은 텍스트 전용이며, 필요 시 showIcon으로 아이콘을 켤 수 있습니다.',
+    overview: '선별관제 영상 그리드에서 이벤트가 검지된 셀을 즉시 식별하기 위한 표기 규칙입니다. 표기법은 두 가지로 고정됩니다 — (1) 위치: 항상 좌상단(카메라 식별 정보는 우상단으로 분리), (2) 색상: 위험 단계를 색으로 표현합니다. 위험 단계는 위험(#F0436A)·경고(#C9847A)·주의(#F5EFE0) 3색으로, 선별관제 모니터링 위험도 3밴드와 동일한 팔레트를 사용합니다. 배경은 컬러 채움이며 글씨는 대비 색(밝은 배경엔 어두운 글씨)입니다. 색만으로 구분하지 않도록 한글 라벨(위험/경고/주의)을 항상 함께 표기합니다(색맹 접근성). 기본은 텍스트 전용이며, 필요 시 showIcon으로 아이콘을 켤 수 있습니다.',
     behavior: '크기는 셀 밀도에 맞춰 두 가지를 사용합니다 — M(높이 28 · 12px · radius 10)은 1×1·2×2 등 큰 뷰의 기본값, S(높이 24 · 11px · radius 10)는 3×3 이상 밀집 그리드용입니다. 배지는 부모 영상 셀의 좌상단(top/left = SP[8])에 고정 배치되며, 패딩은 상하 2 · 좌우 8(SP[2] SP[8])로 SP 스케일만 사용합니다.',
     usage: '선별관제 실시간 영상 그리드(F-2·F-6·F-9)에서 이벤트가 발생한 카메라 셀 좌상단에 배치합니다. 카메라명·CH 등 식별 정보는 우상단, 타임스탬프는 하단 중앙에 두어 코너 역할을 분리합니다.',
     properties: [
       {
         name: 'severity', title: '위험 단계', type: "'danger' | 'warning' | 'caution'",
         conditions: [
-          { condition: 'danger — 위험(빨강). 침입·사고 등 즉시 조치 대상' },
-          { condition: 'warning — 경고(주황). 배회·이상 징후 등 확인 필요' },
-          { condition: 'caution — 주의(파랑). 참고·낮은 우선순위' },
+          { condition: 'danger — 위험(#F0436A · 흰 글씨). 침입·사고 등 즉시 조치 대상' },
+          { condition: 'warning — 경고(#C9847A · 흰 글씨). 배회·이상 징후 등 확인 필요' },
+          { condition: 'caution — 주의(#F5EFE0 · 어두운 글씨). 참고·낮은 우선순위' },
         ]
       },
       {
@@ -4406,7 +4406,7 @@ export function Toast({ type = 'neutral', message, showIcon = true, duration = 3
       { name: 'label', title: '라벨', type: 'string', conditions: [{ condition: '미지정 시 위험 단계 기본 라벨(위험/경고/주의). 예: "침입 · 위험"' }] },
       { name: 'showIcon', title: '아이콘 표시', type: 'boolean', conditions: [{ condition: '기본 false — 텍스트 전용. true일 때만 상태 아이콘(위험=error / 경고·주의=warning) 표시' }] },
     ],
-    webCode: `// React Event Badge — 위치: 항상 좌상단 · 색상(배경·글씨): 위험 단계\nimport React from 'react';\n\n// 위험 단계별 연한 틴트 배경 + 선명 컬러 글씨 + 컬러 글로우(형광 느낌)\nconst SEV = {\n  danger:  { label: '위험', tint: 'rgba(255,99,99,0.22)',  tx: '#FF8F8F', glow: 'rgba(255,60,60,0.85)' },\n  warning: { label: '경고', tint: 'rgba(255,169,56,0.22)', tx: '#FFC272', glow: 'rgba(255,150,30,0.8)' },\n  caution: { label: '주의', tint: 'rgba(51,133,255,0.24)', tx: '#8FB8FF', glow: 'rgba(60,140,255,0.8)' },\n};\nconst SIZE = {\n  M: { height: 28, fontSize: 12, borderRadius: 10 },\n  S: { height: 24, fontSize: 11, borderRadius: 10 },\n};\n\nexport function EventBadge({ severity = 'danger', size = 'M', label }) {\n  const s = SEV[severity], z = SIZE[size];\n  return (\n    <span style={{\n      position: 'absolute', top: 8, left: 8,           // 항상 좌상단\n      display: 'inline-flex', alignItems: 'center', gap: 4,\n      height: z.height, padding: '2px 8px', borderRadius: z.borderRadius,\n      background: s.tint, color: s.tx,                 // 색 = 위험 단계\n      textShadow: \`0 0 4px \${s.glow}, 0 0 9px \${s.glow}\`,  // 형광(네온) 글로우\n      fontSize: z.fontSize, fontWeight: 500, lineHeight: 1, whiteSpace: 'nowrap',\n    }}>\n      {label || s.label}\n    </span>\n  );\n}`
+    webCode: `// React Event Badge — 위치: 항상 좌상단 · 색상(배경): 위험 단계(선별관제 3밴드 팔레트)\nimport React from 'react';\n\n// 위험 단계별 컬러 채움 배경 + 대비 글씨 (그림자 없음)\nconst SEV = {\n  danger:  { label: '위험', bg: '#F0436A', tx: '#fff' },\n  warning: { label: '경고', bg: '#C9847A', tx: '#fff' },\n  caution: { label: '주의', bg: '#F5EFE0', tx: '#1a1a1f' },\n};\nconst SIZE = {\n  M: { height: 28, fontSize: 12, borderRadius: 10 },\n  S: { height: 24, fontSize: 11, borderRadius: 10 },\n};\n\nexport function EventBadge({ severity = 'danger', size = 'M', label }) {\n  const s = SEV[severity], z = SIZE[size];\n  return (\n    <span style={{\n      position: 'absolute', top: 8, left: 8,           // 항상 좌상단\n      display: 'inline-flex', alignItems: 'center', gap: 4,\n      height: z.height, padding: '2px 8px', borderRadius: z.borderRadius,\n      background: s.bg, color: s.tx,                   // 색 = 위험 단계\n      fontSize: z.fontSize, fontWeight: 500, lineHeight: 1, whiteSpace: 'nowrap',\n    }}>\n      {label || s.label}\n    </span>\n  );\n}`
   },
   'event-grid-default': {
     name: '이상행동 이벤트 그리드 (Event Grid)',

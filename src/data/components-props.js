@@ -133,5 +133,30 @@ export const COMPONENT_PROPS = {
         "default": "4"
       }
     ]
+  },
+  "event-badge-default": {
+    "component": "EventBadge",
+    "file": "src/ds/EventBadge.jsx",
+    "props": [
+      {
+        "name": "severity",
+        "type": "string",
+        "default": "\"danger\""
+      },
+      {
+        "name": "size",
+        "type": "string",
+        "default": "\"M\""
+      },
+      {
+        "name": "label",
+        "type": "ReactNode"
+      },
+      {
+        "name": "showIcon",
+        "type": "boolean",
+        "default": "false"
+      }
+    ]
   }
 };

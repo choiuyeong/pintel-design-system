@@ -4,6 +4,7 @@ import PrevaxPermissionScreen, { generateXaml, PERM_ROWS, PrevaxPermissionScreen
 import { LIBRARY_TEMPLATES } from '../data/templates';
 import { T, W, TYPE, SP, SEM, PALETTE_DARK, PALETTE_LIGHT } from '../data/tokens';
 import { NumberField } from '../ds/NumberField';
+import { EventBadge, EVENT_BADGE_SEV } from '../ds/EventBadge.jsx';
 
 function XamlDownloadButton() {
   const download = () => {
@@ -918,19 +919,20 @@ function CBadge({ color, children }) {
   );
 }
 
-// 카메라 셀 좌상단 이벤트 배지 — CBadge(위험/경고/주의) 색 위계를 영상 오버레이용으로.
-// 카메라명 pill과 동일한 박스 모델(패딩·라인하이트·pill 라운드)을 공유해 높이·좌우 여백을 맞춤.
-// 이벤트 배지 — 등급색 컬러 채움 배지(동일 계열 그라데이션 셰인 + 흰 글씨). radius 6(정본 배지 계열).
+// 카메라 셀 좌상단 이벤트 배지 — 정본 Event Badge 형식(위험 단계별 컬러 채움 배경 + 대비 글씨,
+// 테두리·그림자 없음, 굵기 medium)을 밀집 영상 OSD의 마이크로 스케일(sz tier)로 적용.
+// ev.color(T.error/T.cautionary/T.primaryStrong)를 위험 3단계로 매핑해 EVENT_BADGE_SEV의 token/tx(선별관제 3밴드 팔레트)를 그대로 사용.
+const CAM_EV_SEV = { [T.error]: 'danger', [T.cautionary]: 'warning', [T.primaryStrong]: 'caution' };
 function CamEventBadge({ ev, sz }) {
   if (!ev) return null;
+  const s = EVENT_BADGE_SEV[CAM_EV_SEV[ev.color] || 'caution'];
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: SP[4],
-      ...TYPE.label2, fontSize: sz.name, fontWeight: W.bold,
+      ...TYPE.label2, fontSize: sz.name, fontWeight: W.medium, lineHeight: 1,
       padding: `${sz.padY || SP[2]} ${sz.evPad || SP[8]}`,
-      background: `linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(0,0,0,0.18) 100%), ${ev.color}`,
-      borderRadius: '6px', color: '#fff',
-      whiteSpace: 'nowrap', boxShadow: '0 2px 6px rgba(0,0,0,0.45)',
+      background: s.token, color: s.tx,
+      borderRadius: '10px', whiteSpace: 'nowrap',
     }}>
       {ev.label}
     </span>
@@ -5918,8 +5920,8 @@ function EventPopupWindow({ state }) {
     <div style={{ width: W_, background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 20px 55px rgba(0,0,0,0.55)', fontFamily: T.font }}>
       {/* 헤더 — 등급 dot + 이벤트명 + 등급 배지 + 시각 + 닫기 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #2e2e2e' }}>
-        {/* 이벤트명 자체를 배지로(등급은 배지 색으로 전달 — 위험=error) */}
-        <DsBadge tone="error" solid size="md" dot>불법 주정차</DsBadge>
+        {/* 이벤트명 자체를 정본 Event Badge로(등급은 틴트 배경+등급색 글씨로 전달 — 위험=danger) */}
+        <EventBadge severity="danger" label="불법 주정차" />
         <span style={{ marginLeft: 'auto', display: 'inline-flex', cursor: 'pointer' }}><Icon name="cancel" size={16} color="#8a8a92" /></span>
       </div>
 
@@ -6463,7 +6465,7 @@ function PrevaxAutoSwitchScreen() {
               <>
                 <div style={{ position: 'absolute', left: '22%', top: '26%', width: '44%', height: '46%', border: `1.5px solid ${T.error}`, background: 'rgba(255,99,99,0.13)', borderRadius: '3px' }} />
                 {/* 이벤트 배지 = 좌상단(정본: 이벤트/상태=좌상단) */}
-                <span style={{ position: 'absolute', top: SP[4], left: SP[8], ...TYPE.caption2, fontWeight: W.bold, background: 'rgba(255,99,99,0.9)', color: '#2a0606', padding: `${SP[2]} ${SP[8]}`, borderRadius: '4px' }}>침입 · 위험</span>
+                <span style={{ position: 'absolute', top: SP[4], left: SP[8], ...TYPE.caption2, fontWeight: W.medium, lineHeight: 1, background: EVENT_BADGE_SEV.danger.token, color: EVENT_BADGE_SEV.danger.tx, padding: `${SP[2]} ${SP[8]}`, borderRadius: '10px' }}>침입 · 위험</span>
                 <span style={{ position: 'absolute', bottom: SP[4], left: '50%', transform: 'translateX(-50%)', ...TYPE.caption2, fontWeight: W.bold, whiteSpace: 'nowrap', padding: `${SP[2]} ${SP[8]}`, borderRadius: '10px', border: `1px solid ${on ? 'rgba(0,102,255,0.6)' : '#3a3a42'}`, background: on ? 'rgba(0,102,255,0.22)' : 'rgba(10,10,12,0.6)', color: on ? '#cfe0ff' : '#8a8a92' }}>
                   {on ? '클릭 → 자동 추출' : '자동 전환 꺼짐'}
                 </span>
@@ -6573,7 +6575,7 @@ function PrevaxAutoWindowUnifiedScreen() {
               ? <span style={{ position: 'absolute', top: SP[8], right: SP[8], display: 'inline-flex', alignItems: 'center', height: '22px', gap: SP[4], padding: `0 ${SP[8]}`, ...TYPE.caption1, lineHeight: 1, fontWeight: W.bold, color: '#fff', background: 'rgba(220,40,40,0.9)', borderRadius: '40px' }}><span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#fff' }} />LIVE</span>
               : <span style={{ position: 'absolute', top: SP[8], right: SP[8], display: 'inline-flex', alignItems: 'center', height: '22px', padding: `0 ${SP[8]}`, ...TYPE.caption1, lineHeight: 1, fontWeight: W.bold, color: '#fff', background: `linear-gradient(135deg, ${T.primaryStrong} 0%, ${T.primaryHeavy} 100%)`, borderRadius: '40px' }}>발생영상 14:21:08</span>}
             {/* 이벤트 등급 라벨(맥락 유지) */}
-            <span style={{ position: 'absolute', bottom: SP[8], left: SP[8], ...TYPE.caption1, fontWeight: W.bold, background: 'rgba(255,99,99,0.92)', color: '#2a0606', padding: `${SP[2]} ${SP[8]}`, borderRadius: '4px' }}>침입 · 위험</span>
+            <span style={{ position: 'absolute', bottom: SP[8], left: SP[8], ...TYPE.caption1, fontWeight: W.medium, lineHeight: 1, background: EVENT_BADGE_SEV.danger.token, color: EVENT_BADGE_SEV.danger.tx, padding: `${SP[2]} ${SP[8]}`, borderRadius: '10px' }}>침입 · 위험</span>
             {/* 검지 박스(맥락 유지) */}
             <div style={{ position: 'absolute', left: '38%', top: '32%', width: '26%', height: '42%', border: `1.5px solid ${isLive ? T.positive : T.error}`, borderRadius: '2px' }} />
             <span style={{ position: 'absolute', bottom: SP[8], right: SP[8], ...TYPE.caption1, color: '#dfe6ef', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 2px #000' }}>2026-07-08 14:21:{isLive ? '33' : '08'}</span>

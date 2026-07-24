@@ -8,6 +8,7 @@ export { FilterButton } from './FilterButton.jsx';
 export { DateField } from './DateField.jsx';
 export { NumberField } from './NumberField.jsx';
 export { Video } from './Video.jsx';
+export { EventBadge, EVENT_BADGE_SEV, EVENT_BADGE_SIZE } from './EventBadge.jsx';
 export { DataTable } from './DataTable.jsx';
 export { ContextMenu } from './ContextMenu.jsx';
 export { SectionHeader } from './SectionHeader.jsx';

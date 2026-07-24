@@ -11,4 +11,5 @@ export const DS_MODULES = {
   'present-menu': 'ContextMenu.jsx',
   'section-header-default': 'SectionHeader.jsx',
   'loading-default': 'Loading.jsx',
+  'event-badge-default': 'EventBadge.jsx',
 };

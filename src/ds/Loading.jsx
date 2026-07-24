@@ -41,8 +41,3 @@ function CctvPanel({ isLoading, children }) {
     </div>
   );
 }
-
-// 인라인(버튼) — 중복 클릭 방지
-<button disabled={pending} style={{ display: 'inline-flex', alignItems: 'center', gap: SP[8] }}>
-  {pending && <Spinner size={16} thickness={2} />} 검지 데이터 조회
-</button>

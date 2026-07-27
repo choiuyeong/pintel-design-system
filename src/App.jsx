@@ -97,7 +97,7 @@ function App() {
       if (tabId === 'foundation') {
         setSelectedComponentId('foundation-overview-default');
       } else if (tabId === 'service-domain') {
-        setSelectedComponentId('intersection-overview-default');
+        setSelectedComponentId('selective-overview-default');
       } else if (tabId === 'library') {
         setSelectedComponentId('library-login');
       } else if (tabId === 'ai-agent') {
@@ -115,15 +115,15 @@ function App() {
       <CustomCursor />
       <Header activeTab={activeTab} onTabChange={handleTabChange} />
       <div className="app-body">
-        {!isGetStarted && (
+        {(!isGetStarted || selectedComponentId) && (
           <Sidebar
             activeTier={activeTab}
             selectedId={selectedComponentId}
             onSelect={selectComponent}
           />
         )}
-        {isGetStarted ? (
-          <GetStarted />
+        {isGetStarted && !selectedComponentId ? (
+          <GetStarted onNavigate={selectComponent} />
         ) : activeTab === 'library' || activeTab === 'ai-agent' ? (
           <Library componentId={selectedComponentId} />
         ) : (

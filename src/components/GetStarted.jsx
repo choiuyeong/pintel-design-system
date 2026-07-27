@@ -1,6 +1,10 @@
 import { Suspense } from 'react';
 import InteractiveClump3D from './InteractiveClump3D';
 import { T } from '../data/tokens';
+import { TIERS, COMPONENT_DOCS } from '../data/components';
+
+// Get Started 탭 가이드 목록 — 사이드바(TIERS['get-started'])와 동일 출처로 카드 렌더.
+const GUIDE_ITEMS = (TIERS['get-started']?.categories || []).flatMap((cat) => cat.children || []);
 
 const skeletonStyle = `
   @keyframes shimmer {
@@ -77,7 +81,7 @@ function HeroSkeleton() {
   );
 }
 
-export default function GetStarted() {
+export default function GetStarted({ onNavigate }) {
   return (
     <div className="ds-main">
       <div className="fade-in">
@@ -289,6 +293,35 @@ export default function GetStarted() {
             </div>
           </div>
         </section>
+
+        {GUIDE_ITEMS.length > 0 && (
+          <section style={{ marginBottom: '80px' }}>
+            <h2 className="doc-section-title" style={{ color: '#ffffff' }}>가이드 (Guides)</h2>
+            <p className="doc-description" style={{ color: '#aaaaaa', marginBottom: '24px' }}>
+              디자인 시스템을 실무에 적용할 때 참고하는 가이드 문서입니다. 카드를 눌러 이동하세요.
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+              {GUIDE_ITEMS.map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => onNavigate && onNavigate(item.id)}
+                  style={{
+                    borderRadius: '16px', border: '1px solid #2e2e2e', background: '#1e1e1e',
+                    padding: '24px', cursor: 'pointer', transition: 'all 0.3s ease',
+                    display: 'flex', flexDirection: 'column', gap: '10px',
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.borderColor = T.primary; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 102, 255, 0.12)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.borderColor = '#2e2e2e'; e.currentTarget.style.boxShadow = 'none'; }}
+                >
+                  <span style={{ fontSize: '18px', fontWeight: 700, color: '#ffffff' }}>{item.name}</span>
+                  <span style={{ fontSize: '14px', color: '#aaaaaa', lineHeight: 1.6 }}>
+                    {COMPONENT_DOCS[item.id]?.description || ''}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section style={{ marginBottom: '100px' }}>
           <h2 className="doc-section-title" style={{ color: '#ffffff' }}>기술 스택 (Tech Stack)</h2>

@@ -7,6 +7,7 @@ import { SectionHeader } from '../ds/SectionHeader';
 import { NumberField } from '../ds/NumberField';
 import { Video } from '../ds/Video';
 import { EventBadge, EVENT_BADGE_SEV, EVENT_BADGE_SIZE } from '../ds/EventBadge';
+import { DsBadge, CBadge } from './Library';
 import promptingGuideRaw from '../../docs/prompting-guide.md?raw';
 
 // customLayout: 'markdown' 페이지가 렌더하는 원본 md(단일 출처는 docs/*.md, 여기선 ?raw로 읽어옴)
@@ -620,6 +621,290 @@ function renderComponentThumbnail(id) {
   }
 }
 
+// ────────────────────────────────────────────────────────────────────────
+// Badge 사용 가이드 — 실제 배지를 렌더해 상황별·종류별 사용 규칙을 보여주는 전용 페이지.
+//  정본 컴포넌트만 사용: EventBadge(ds) · DsBadge/CBadge(Library). 색·간격·굵기·타이포는 토큰.
+// ────────────────────────────────────────────────────────────────────────
+function BadgeGuidePage({ doc, scrollRef }) {
+  const sectionTitle = { ...TYPE.heading2, fontWeight: W.bold, color: '#fff', margin: `${SP[48]} 0 ${SP[16]}` };
+  const sectionDesc = { ...TYPE.body2Reading, color: '#aaa', margin: `0 0 ${SP[24]}`, maxWidth: '820px' };
+  const card = { background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '12px', padding: SP[24] };
+  const exPanel = { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: SP[12], padding: SP[16], background: '#151517', border: '1px solid #232329', borderRadius: '8px' };
+  const exLabel = { ...TYPE.caption1, fontWeight: W.semibold, color: '#71717a', margin: `0 0 ${SP[8]}` };
+
+  // 아이콘 위 Push 배지(오버레이) — 정본 없어 인라인 재현. 컨테이너 + 우상단 원형 배지/점.
+  const PushIcon = ({ name, badge, dot }) => (
+    <div style={{ position: 'relative', width: '40px', height: '40px', borderRadius: '8px', background: '#202024', border: '1px solid #2e2e35', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Icon name={name} size={20} color="#c4c4c8" />
+      {badge != null && (
+        <span style={{ position: 'absolute', top: '-6px', right: '-6px', minWidth: '18px', height: '18px', padding: `0 ${SP[4]}`, borderRadius: '9999px', background: T.error, color: '#fff', ...TYPE.caption2, fontWeight: W.bold, display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', border: '2px solid #1a1a1a' }}>{badge}</span>
+      )}
+      {dot && (
+        <span style={{ position: 'absolute', top: '-2px', right: '-2px', width: '10px', height: '10px', borderRadius: '50%', background: T.primary, border: '2px solid #1a1a1a' }} />
+      )}
+    </div>
+  );
+
+  // 한눈에 보기 표 — 각 행에 실제 배지 예시 렌더
+  const th = { ...TYPE.label2, fontWeight: W.bold, color: '#a1a1aa', textAlign: 'left', padding: `${SP[8]} ${SP[12]}`, background: '#1b1b1d', borderBottom: '1px solid #2a2a30', whiteSpace: 'nowrap', verticalAlign: 'middle' };
+  const td = { ...TYPE.label2, color: '#c4c4c8', padding: `${SP[12]}`, borderBottom: '1px solid #232329', verticalAlign: 'middle' };
+  const tdName = { ...td, ...TYPE.label1, fontWeight: W.semibold, color: '#fff', whiteSpace: 'nowrap' };
+
+  const catalogRows = [
+    {
+      name: 'Event Badge',
+      ex: <div style={{ display: 'inline-flex', gap: SP[8], background: '#0c0c0e', padding: SP[8], borderRadius: '6px' }}><EventBadge severity="danger" size="S" /><EventBadge severity="warning" size="S" /><EventBadge severity="caution" size="S" /></div>,
+      when: '영상 셀 위 이벤트·위험 단계',
+      form: '채움 · radius 10 · 좌상단 · 여백 12px',
+      color: '선별관제 팔레트(위험 #F0436A · 경고 #C9847A · 주의 #F5EFE0)',
+    },
+    {
+      name: 'Content Badge (DsBadge)',
+      ex: <div style={{ display: 'inline-flex', gap: SP[8], flexWrap: 'wrap' }}><DsBadge tone="neutral">미설정</DsBadge><DsBadge tone="accent" dot>연동</DsBadge><DsBadge tone="positive" dot>정상</DsBadge></div>,
+      when: '패널 · 카드 · 표 · 리스트 상태/라벨',
+      form: '틴트+테두리 · radius 6 · xs/sm/md',
+      color: 'tone neutral / accent / positive / cautionary / error',
+    },
+    {
+      name: 'Selection · 활성 배지 (solid)',
+      ex: <div style={{ display: 'inline-flex', gap: SP[8], flexWrap: 'wrap' }}><DsBadge tone="accent" solid icon="check">선택</DsBadge><DsBadge tone="error" solid>1단계</DsBadge></div>,
+      when: '선택됨 · 활성 · 현재 대상 표시',
+      form: '채움(solid) · 아이콘 + 글자',
+      color: 'Primary 채움(선택) 또는 등급색 채움(고강조)',
+    },
+    {
+      name: '상태 칩 (pill)',
+      ex: <div style={{ display: 'inline-flex', gap: SP[8], flexWrap: 'wrap' }}><DsBadge tone="positive" radius="9999px" icon="check_circle">정상</DsBadge><DsBadge tone="error" radius="9999px" icon="error">오류</DsBadge></div>,
+      when: '연결 상태 등 비대화형 정보',
+      form: 'pill · 아이콘 + 글자',
+      color: '상태색(정상 positive · 오류 error · 응답없음 cautionary)',
+    },
+    {
+      name: 'Count 배지',
+      ex: <div style={{ display: 'inline-flex', gap: SP[8], flexWrap: 'wrap' }}><DsBadge tone="accent" size="xs" radius="9999px">이벤트 3</DsBadge><DsBadge tone="cautionary" size="xs" radius="9999px" dot>12</DsBadge></div>,
+      when: '개수 · 집계',
+      form: 'pill 또는 틴트+dot',
+      color: '등급색 / accent(Primary 계열)',
+    },
+    {
+      name: 'Push 배지',
+      ex: <div style={{ display: 'inline-flex', gap: SP[16], paddingRight: SP[8] }}><PushIcon name="sensors" badge="5" /><PushIcon name="nest_cam_outdoor" dot /></div>,
+      when: '아이콘 · 탭 위 미확인 표식',
+      form: '작은 원형 오버레이(숫자/점)',
+      color: 'Primary(정보) / error(경보)',
+    },
+  ];
+
+  const rules = [
+    { k: '형태로 역할 구분', v: 'pill(둥근)=비대화형 정보·상태 / 사각(radius 6)+채움=버튼·액션. 배지는 버튼처럼 보이지 않게 합니다.' },
+    { k: '색', v: '위험 단계=선별관제 팔레트 / 일반 상태=상태 토큰(T.positive · T.cautionary · T.error) / 강조=accent(Primary 계열).' },
+    { k: '접근성', v: '색만으로 구분하지 않습니다 — 아이콘·글자를 함께 표기합니다.' },
+    { k: '크기', v: '정보 배지(xs~sm)는 액션 버튼(높이 24+)보다 작게 두어 위계를 만듭니다.' },
+    { k: '영상 오버레이', v: '이벤트·위험 단계는 Event Badge(좌상단·채움), 카메라명·PTZ 등 식별 OSD는 어두운 알약으로 별도 구분합니다.' },
+    { k: 'radius', v: '정보=pill 또는 6, 액션 버튼=6. 형태로 역할이 갈리므로 혼동을 피합니다.' },
+  ];
+
+  return (
+    <div className="ds-main ds-dark-theme" key="badge-guide" ref={scrollRef}>
+      <div className="fade-in" style={{ textAlign: 'left' }}>
+        <h1 className="doc-title">{doc.name}</h1>
+        <p className="doc-description" style={{ maxWidth: '860px' }}>{doc.description}</p>
+
+        {/* 1. 한눈에 보기 */}
+        <h2 style={{ ...sectionTitle, marginTop: SP[32] }}>배지 종류 한눈에 보기</h2>
+        <p style={sectionDesc}>상황(언제)에 따라 배지의 형태와 색이 정해집니다. 아래 표의 예시는 실제 정본 컴포넌트를 렌더한 것입니다.</p>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '760px' }}>
+            <thead>
+              <tr>
+                <th style={th}>배지</th>
+                <th style={th}>예시</th>
+                <th style={th}>언제</th>
+                <th style={th}>형태</th>
+                <th style={th}>색</th>
+              </tr>
+            </thead>
+            <tbody>
+              {catalogRows.map((r) => (
+                <tr key={r.name}>
+                  <td style={tdName}>{r.name}</td>
+                  <td style={{ ...td, whiteSpace: 'nowrap' }}>{r.ex}</td>
+                  <td style={td}>{r.when}</td>
+                  <td style={td}>{r.form}</td>
+                  <td style={{ ...td, color: '#9a9aa2' }}>{r.color}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* 2. Content Badge 변형 */}
+        <h2 style={sectionTitle}>Content Badge (DsBadge) — tone · size · 형태</h2>
+        <p style={sectionDesc}>패널·카드·표·리스트의 상태와 라벨에 쓰는 기본 배지입니다. tone으로 의미(색), size로 위계, radius로 형태(사각/pill)를 정합니다.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: SP[16] }}>
+          <div style={card}>
+            <div style={exLabel}>tone — 색으로 의미 전달 (틴트+테두리)</div>
+            <div style={exPanel}>
+              <DsBadge tone="neutral" dot>미설정</DsBadge>
+              <DsBadge tone="accent" dot>강조</DsBadge>
+              <DsBadge tone="positive" dot>정상</DsBadge>
+              <DsBadge tone="cautionary" dot>주의</DsBadge>
+              <DsBadge tone="error" dot>오류</DsBadge>
+            </div>
+          </div>
+          <div style={card}>
+            <div style={exLabel}>size — xs / sm / md 위계</div>
+            <div style={exPanel}>
+              <DsBadge tone="accent" size="xs">xs 20</DsBadge>
+              <DsBadge tone="accent" size="sm">sm 24</DsBadge>
+              <DsBadge tone="accent" size="md">md 28</DsBadge>
+            </div>
+          </div>
+          <div style={card}>
+            <div style={exLabel}>solid — 고강조(등급) 변형</div>
+            <div style={exPanel}>
+              <DsBadge tone="error" solid>1단계</DsBadge>
+              <DsBadge tone="cautionary" solid>2단계</DsBadge>
+              <DsBadge tone="accent" solid>지정</DsBadge>
+            </div>
+          </div>
+          <div style={card}>
+            <div style={exLabel}>radius — 사각(6) vs pill(9999)</div>
+            <div style={exPanel}>
+              <DsBadge tone="positive" icon="check_circle">사각 · 라벨</DsBadge>
+              <DsBadge tone="positive" radius="9999px" icon="check_circle">pill · 상태</DsBadge>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. 형태로 역할 구분 */}
+        <h2 style={sectionTitle}>형태로 역할 구분 — 배지 vs 버튼</h2>
+        <p style={sectionDesc}>pill(둥근)은 비대화형 정보·상태, 사각(radius 6)+채움은 클릭 가능한 액션(버튼)으로 읽힙니다. 배지가 버튼처럼 보이면 사용자가 누를 수 있다고 오해합니다.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: SP[16] }}>
+          <div style={card}>
+            <div style={{ ...exLabel, color: T.positive }}>OK — 정보는 pill로</div>
+            <div style={exPanel}>
+              <DsBadge tone="positive" radius="9999px" icon="check_circle">연결됨</DsBadge>
+              <DsBadge tone="cautionary" radius="9999px" icon="warning">응답없음</DsBadge>
+            </div>
+          </div>
+          <div style={card}>
+            <div style={{ ...exLabel, color: '#ff8f8f' }}>피하기 — 배지를 버튼처럼</div>
+            <div style={exPanel}>
+              {/* 실제 액션 버튼(비교용) — 정보 배지는 이 형태를 흉내내지 않습니다 */}
+              <span style={{ display: 'inline-flex', alignItems: 'center', height: '32px', padding: `0 ${SP[16]}`, borderRadius: '6px', background: `linear-gradient(135deg, ${T.primaryStrong} 0%, ${T.primaryHeavy} 100%)`, color: '#fff', ...TYPE.label2, fontWeight: W.semibold }}>액션 버튼</span>
+              <span style={{ ...TYPE.caption1, color: '#71717a' }}>← 이건 버튼(액션)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 3.5 채움 vs 틴트 vs pill 결정 규칙 */}
+        <h2 style={sectionTitle}>채움(solid) vs 틴트 vs pill — 무엇을 쓸까</h2>
+        <p style={sectionDesc}>가장 헷갈리는 지점입니다. 같은 "채움"이라도 선택(활성)과 위험 단계는 용도가 다릅니다. 강조의 세기로 세 가지를 나눠 씁니다.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: SP[16], marginBottom: SP[16] }}>
+          <div style={card}>
+            <div style={{ ...exLabel, color: '#8fb8ff' }}>채움(solid) — 최고 강조 · 소수만</div>
+            <div style={{ ...TYPE.body2Reading, color: '#aaa', marginBottom: SP[12] }}>
+              (a) 선택/활성 상태(Primary 채움+체크) · (b) 위험 단계 이벤트(Event Badge) · (c) 등급 고강조(DsBadge solid). 남발하면 위계가 무너지므로 한 화면에서 절제해 소수만 씁니다.
+            </div>
+            <div style={exPanel}>
+              <DsBadge tone="accent" solid icon="check">선택</DsBadge>
+              <EventBadge severity="danger" size="S" label="침입 · 위험" />
+              <DsBadge tone="error" solid>1단계</DsBadge>
+            </div>
+          </div>
+          <div style={card}>
+            <div style={{ ...exLabel, color: '#66e08f' }}>틴트+테두리 — 일반</div>
+            <div style={{ ...TYPE.body2Reading, color: '#aaa', marginBottom: SP[12] }}>
+              일반 상태·라벨·카운트. 대부분의 배지는 여기에 해당합니다(DsBadge 기본 tone).
+            </div>
+            <div style={exPanel}>
+              <DsBadge tone="positive" dot>정상</DsBadge>
+              <DsBadge tone="cautionary" dot>주의</DsBadge>
+              <DsBadge tone="neutral">미설정</DsBadge>
+            </div>
+          </div>
+          <div style={card}>
+            <div style={{ ...exLabel, color: '#ffc272' }}>pill(radius full) — 비대화형 정보/상태</div>
+            <div style={{ ...TYPE.body2Reading, color: '#aaa', marginBottom: SP[12] }}>
+              연결 상태·이벤트 개수처럼 누를 수 없는 정보/상태. 둥근 형태로 사각 버튼과 구분합니다.
+            </div>
+            <div style={exPanel}>
+              <DsBadge tone="positive" radius="9999px" icon="check_circle">연결됨</DsBadge>
+              <DsBadge tone="accent" size="xs" radius="9999px">이벤트 3</DsBadge>
+            </div>
+          </div>
+        </div>
+        {/* 한 줄 요약 */}
+        <div style={{ display: 'flex', gap: SP[12], alignItems: 'center', padding: `${SP[16]} ${SP[24]}`, background: 'rgba(0,102,255,0.08)', border: `1px solid rgba(0,102,255,0.35)`, borderRadius: '8px', marginBottom: SP[16] }}>
+          <Icon name="check_circle" size={18} color={T.primary} />
+          <span style={{ ...TYPE.body2, fontWeight: W.semibold, color: '#cbd5e1' }}>한 줄 요약 — 선택 · 활성 · 위험만 채움, 나머지는 틴트, 정보 · 상태는 pill.</span>
+        </div>
+        {/* 둘 다 채움이지만 용도가 다름 */}
+        <div style={card}>
+          <div style={exLabel}>둘 다 채움(solid)이지만 용도가 다릅니다</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: SP[32] }}>
+            <div>
+              <div style={{ ...exPanel, marginBottom: SP[8] }}><DsBadge tone="accent" solid icon="check">선택</DsBadge></div>
+              <span style={{ ...TYPE.caption1, color: '#71717a' }}>선택/활성 — Primary 채움 + 체크 (예: F-2 카메라 선택)</span>
+            </div>
+            <div>
+              <div style={{ ...exPanel, marginBottom: SP[8] }}><EventBadge severity="danger" size="M" label="침입 · 위험" /></div>
+              <span style={{ ...TYPE.caption1, color: '#71717a' }}>위험 단계 — 선별관제 팔레트 채움 (영상 셀 이벤트)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. 영상 오버레이 vs 패널 배지 */}
+        <h2 style={sectionTitle}>영상 오버레이 vs 패널 배지</h2>
+        <p style={sectionDesc}>영상 위에서는 이벤트·위험 단계를 Event Badge(좌상단·채움)로, 카메라명·PTZ 등 식별 OSD는 어두운 반투명 알약으로 구분합니다. 패널·카드 안에서는 Content Badge를 씁니다.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: SP[16] }}>
+          <div style={card}>
+            <div style={exLabel}>영상 셀 오버레이 — Event Badge + 식별 OSD</div>
+            <div style={{ position: 'relative', height: '150px', borderRadius: '8px', overflow: 'hidden', background: 'linear-gradient(135deg, #1b1f26 0%, #0c0e12 100%)', border: '1px solid #232329' }}>
+              <div style={{ position: 'absolute', top: SP[12], left: SP[12] }}><EventBadge severity="danger" size="M" label="침입 · 위험" /></div>
+              <div style={{ position: 'absolute', top: SP[12], right: SP[12], display: 'inline-flex', alignItems: 'center', gap: SP[4], height: '24px', padding: `0 ${SP[8]}`, borderRadius: '40px', background: 'rgba(10,10,12,0.72)', color: '#e4e4e7', ...TYPE.caption1, fontWeight: W.medium }}>CAM-07 · 정문</div>
+              <div style={{ position: 'absolute', bottom: SP[12], left: SP[12], display: 'inline-flex', alignItems: 'center', gap: SP[4], height: '22px', padding: `0 ${SP[8]}`, borderRadius: '40px', background: 'rgba(10,10,12,0.72)', color: '#e4e4e7', ...TYPE.caption2, fontWeight: W.medium }}>PTZ</div>
+            </div>
+          </div>
+          <div style={card}>
+            <div style={exLabel}>패널 안 — Content Badge / Count / 상태 칩</div>
+            <div style={{ ...exPanel, flexDirection: 'column', alignItems: 'stretch', gap: SP[12], height: '150px', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: SP[12] }}>
+                <span style={{ ...TYPE.label1, color: '#e4e4e7' }}>선별관제 이벤트</span>
+                <DsBadge tone="accent" size="xs" radius="9999px">3건</DsBadge>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: SP[12] }}>
+                <span style={{ ...TYPE.label1, color: '#e4e4e7' }}>분석 서버</span>
+                <DsBadge tone="positive" radius="9999px" icon="check_circle">정상</DsBadge>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: SP[12] }}>
+                <span style={{ ...TYPE.label1, color: '#e4e4e7' }}>불법 주정차</span>
+                <DsBadge tone="error" solid>1단계</DsBadge>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 5. 핵심 규칙 */}
+        <h2 style={sectionTitle}>핵심 규칙</h2>
+        <div style={{ ...card, display: 'flex', flexDirection: 'column', gap: SP[16] }}>
+          {rules.map((r) => (
+            <div key={r.k} style={{ display: 'flex', gap: SP[12], alignItems: 'flex-start' }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: T.primary, flexShrink: 0, marginTop: '8px' }} />
+              <div>
+                <span style={{ ...TYPE.label1, fontWeight: W.bold, color: '#fff' }}>{r.k}</span>
+                <span style={{ ...TYPE.body2Reading, color: '#aaa' }}> — {r.v}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ height: SP[48] }} />
+      </div>
+    </div>
+  );
+}
+
 export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
   const doc = componentId ? COMPONENT_DOCS[componentId] : null;
   const initialTab = 'design';
@@ -743,6 +1028,11 @@ export default function ComponentDoc({ componentId, activeTier, onNavigate }) {
         </div>
       </div>
     );
+  }
+
+  // Badge 사용 가이드 — 실제 배지를 렌더하는 전용 JSX 페이지(마크다운 경로 아님).
+  if (doc.customLayout === 'badge-guide') {
+    return <BadgeGuidePage doc={doc} onNavigate={onNavigate} scrollRef={scrollContainerRef} />;
   }
 
   // 마크다운 가이드 페이지(예: 프롬프트 가이드)는 Design 탭 하나만 노출.
@@ -12832,15 +13122,15 @@ function EventBadgePlayground() {
         <div style={{ flex: 1.8, background: '#111', padding: SP[24], display: 'flex', flexDirection: 'column', gap: SP[16], justifyContent: 'center', boxSizing: 'border-box' }}>
           <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 9', borderRadius: '8px', overflow: 'hidden', background: 'linear-gradient(160deg,#1c2230 0%,#12161f 45%,#0c0f16 100%)', border: `1px solid ${s.token}55` }}>
             {/* 좌상단 — 이벤트 배지(정본 위치) */}
-            <div style={{ position: 'absolute', top: SP[8], left: SP[8], zIndex: 3 }}>
+            <div style={{ position: 'absolute', top: SP[12], left: SP[12], zIndex: 3 }}>
               <EventBadge severity={severity} size={size} />
             </div>
             {/* 우상단 — 카메라 식별(코너 규칙 참고) */}
-            <span style={{ position: 'absolute', top: SP[8], right: SP[8], ...TYPE.caption2, fontWeight: W.semibold, color: '#9aa3b2', textShadow: '0 1px 2px rgba(0,0,0,0.85)' }}>CAM 07</span>
+            <span style={{ position: 'absolute', top: SP[12], right: SP[12], ...TYPE.caption2, fontWeight: W.semibold, color: '#9aa3b2', textShadow: '0 1px 2px rgba(0,0,0,0.85)' }}>CAM 07</span>
             {/* 중앙 — 검지 박스(위험 단계 색) */}
             <div style={{ position: 'absolute', left: '34%', top: '30%', width: '30%', height: '44%', border: `1.5px solid ${s.token}`, borderRadius: '2px', background: `${s.token}22` }} />
             {/* 하단 중앙 — 타임스탬프 */}
-            <span style={{ position: 'absolute', bottom: SP[4], left: '50%', transform: 'translateX(-50%)', ...TYPE.caption2, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)' }}>2026.07.01 14:22:07</span>
+            <span style={{ position: 'absolute', bottom: SP[12], left: '50%', transform: 'translateX(-50%)', ...TYPE.caption2, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)' }}>2026.07.01 14:22:07</span>
           </div>
           {/* 규격 참고 — S/M 나란히 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: SP[24], padding: `${SP[12]} ${SP[16]}`, background: '#161618', borderRadius: '8px', border: '1px solid #2a2a2e' }}>
@@ -12876,6 +13166,7 @@ function EventBadgePlayground() {
             <div style={{ ...TYPE.caption2, color: '#8a8a92', lineHeight: 1.6 }}>
               <b style={{ color: '#cfcfd6' }}>표기법</b><br />
               · 위치: <b style={{ color: '#cfcfd6' }}>항상 좌상단</b><br />
+              · 여백: 셀 가장자리에서 <b style={{ color: '#cfcfd6' }}>12px(SP[12])</b><br />
               · 색상: <b style={{ color: '#cfcfd6' }}>위험 단계</b>(위험/경고/주의)<br />
               · 카메라 식별은 우상단(코너 분리)
             </div>

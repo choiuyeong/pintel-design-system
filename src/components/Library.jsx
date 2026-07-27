@@ -355,8 +355,9 @@ function GisMonitorScreen() {
   const [selected, setSelected] = useState('CAM_08');
   const [radius, setRadius] = useState(80);
 
-  const statusColor = (s) => (s === 'alert' ? T.error : s === 'warning' ? T.cautionary : T.positive);
-  const sevColor = (s) => (s === 'danger' ? T.error : s === 'warning' ? T.cautionary : T.primaryStrong);
+  // 이벤트 severity 색 = 선별관제 정본 팔레트(EVENT_BADGE_SEV). normal/정상은 OK 상태라 초록(T.positive) 유지.
+  const statusColor = (s) => (s === 'alert' ? EVENT_BADGE_SEV.danger.token : s === 'warning' ? EVENT_BADGE_SEV.warning.token : T.positive);
+  const sevColor = (s) => (s === 'danger' ? EVENT_BADGE_SEV.danger.token : s === 'warning' ? EVENT_BADGE_SEV.warning.token : EVENT_BADGE_SEV.caution.token);
 
   const feed = [
     { icon: '🚧', target: '가상 펜스 선로 침입', cam: 'CAM_08', time: '14:12:05', sev: 'danger' },
@@ -394,8 +395,8 @@ function GisMonitorScreen() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], fontSize: '12px' }}>
           <Stat dot={T.positive} label="정상" value="22" />
-          <Stat dot={T.cautionary} label="경보" value="2" />
-          <Stat dot={T.error} label="긴급" value="1" />
+          <Stat dot={EVENT_BADGE_SEV.warning.token} label="경보" value="2" />
+          <Stat dot={EVENT_BADGE_SEV.danger.token} label="긴급" value="1" />
           <span style={{ marginLeft: SP[8], color: '#9a9aa2', fontVariantNumeric: 'tabular-nums' }}>2026.06.05 14:12:38</span>
         </div>
       </div>
@@ -464,15 +465,15 @@ function GisMonitorScreen() {
 
           {/* 감지 핑 (침입) */}
           <div style={{ position: 'absolute', left: '34%', top: '43%', transform: 'translate(-50%,-50%)', zIndex: 5 }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: T.error, boxShadow: `0 0 0 4px rgba(255,99,99,0.25), 0 0 12px ${T.error}` }} />
-            <div style={{ position: 'absolute', left: '14px', top: '-5px', whiteSpace: 'nowrap', fontSize: '10px', color: T.error, fontWeight: W.bold, background: '#1a0d0d', border: `1px solid ${T.error}`, padding: `${SP[2]} ${SP[4]}`, borderRadius: '4px' }}>침입 감지</div>
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: EVENT_BADGE_SEV.danger.token, boxShadow: `0 0 0 4px rgba(240,67,106,0.25), 0 0 12px ${EVENT_BADGE_SEV.danger.token}` }} />
+            <div style={{ position: 'absolute', left: '14px', top: '-5px', whiteSpace: 'nowrap', fontSize: '10px', color: EVENT_BADGE_SEV.danger.token, fontWeight: W.bold, background: '#1a0d0d', border: `1px solid ${EVENT_BADGE_SEV.danger.token}`, padding: `${SP[2]} ${SP[4]}`, borderRadius: '4px' }}>침입 감지</div>
           </div>
 
           {/* 범례 */}
           <div style={{ position: 'absolute', left: '12px', bottom: '12px', display: 'flex', gap: SP[12], fontSize: '11px', color: '#aaa', background: 'rgba(14,14,17,0.8)', padding: `${SP[4]} ${SP[8]}`, borderRadius: '6px', border: '1px solid #22222a' }}>
             <Legend dot={T.positive} label="정상" />
-            <Legend dot={T.cautionary} label="경보" />
-            <Legend dot={T.error} label="긴급" />
+            <Legend dot={EVENT_BADGE_SEV.warning.token} label="경보" />
+            <Legend dot={EVENT_BADGE_SEV.danger.token} label="긴급" />
           </div>
           <div style={{ position: 'absolute', right: '12px', top: '12px', fontSize: '11px', color: '#7a7a82', background: 'rgba(14,14,17,0.8)', padding: `${SP[4]} ${SP[8]}`, borderRadius: '4px', border: '1px solid #22222a' }}>GIS · 수원시 권선구</div>
         </div>
@@ -777,7 +778,7 @@ function AwayOverlay({ operator, onRestore }) {
   );
 }
 
-export function PrevaxTitleBar({ datetime, warning, away, onApplyAway, onRestore }) {
+export function PrevaxTitleBar({ datetime, warning = '3개 카메라 비활성화', away, onApplyAway, onRestore }) {
   const [userMenu, setUserMenu] = useState(false);
   const [awayModal, setAwayModal] = useState(false);
   const MIc = ({ d, color }) => (
@@ -795,10 +796,10 @@ export function PrevaxTitleBar({ datetime, warning, away, onApplyAway, onRestore
         <span style={{ fontSize: '12px', color: '#6f6f77', whiteSpace: 'nowrap' }}>| 마스터 ( 최고 관리자 )</span>
       </div>
       {warning ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], background: 'rgba(255,169,56,0.14)', border: `1px solid ${T.cautionary}`, borderRadius: '6px', padding: `3px 5px 3px ${SP[8]}`, flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], background: 'rgba(255,255,255,0.05)', border: '1px solid #2e2e35', borderRadius: '6px', padding: `3px 5px 3px ${SP[8]}`, flexShrink: 0 }}>
           <Icon name="error" size={14} color={T.cautionary} />
-          <span style={{ fontSize: '12px', fontWeight: W.semibold, color: T.cautionary }}>{warning}</span>
-          <span style={{ fontSize: '11px', color: '#e8e8ec', background: '#33333a', borderRadius: '4px', padding: `${SP[2]} ${SP[8]}`, cursor: 'pointer' }}>관리</span>
+          <span style={{ fontSize: '12px', fontWeight: W.medium, color: '#c4c4cc' }}>{warning}</span>
+          <span style={{ fontSize: '11px', fontWeight: W.semibold, color: '#cfe0ff', background: 'rgba(0,102,255,0.22)', border: '1px solid rgba(51,133,255,0.45)', borderRadius: '4px', padding: `${SP[2]} ${SP[8]}`, cursor: 'pointer' }}>관리</span>
         </div>
       ) : <span style={{ flexShrink: 0 }} />}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: SP[12], fontSize: '12px', color: '#bdbdc4', flex: 1 }}>
@@ -905,7 +906,7 @@ function TreeRow({ depth, label }) {
  * Content badge (Foundation) — 상태/카테고리 라벨링용. leadingIcon(상태 도트) + 라벨,
  * border-radius 6px, padding 4/8(아이콘 시), accent는 status 컬러 tint 배경 + 테두리.
  */
-function CBadge({ color, children }) {
+export function CBadge({ color, children }) {
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: SP[4],
@@ -919,24 +920,12 @@ function CBadge({ color, children }) {
   );
 }
 
-// 카메라 셀 좌상단 이벤트 배지 — 정본 Event Badge 형식(위험 단계별 컬러 채움 배경 + 대비 글씨,
-// 테두리·그림자 없음, 굵기 medium)을 밀집 영상 OSD의 마이크로 스케일(sz tier)로 적용.
-// ev.color(T.error/T.cautionary/T.primaryStrong)를 위험 3단계로 매핑해 EVENT_BADGE_SEV의 token/tx(선별관제 3밴드 팔레트)를 그대로 사용.
+// 카메라 셀 좌상단 이벤트 배지 — 정본 EventBadge(ds)를 그대로 사용해 radius·굵기·패딩·색을 100% 일치시킴.
+// ev.color(T.error/T.cautionary/T.primaryStrong)를 위험 3단계로 매핑. 밀집 그리드라 size='S'.
 const CAM_EV_SEV = { [T.error]: 'danger', [T.cautionary]: 'warning', [T.primaryStrong]: 'caution' };
-function CamEventBadge({ ev, sz }) {
+function CamEventBadge({ ev }) {
   if (!ev) return null;
-  const s = EVENT_BADGE_SEV[CAM_EV_SEV[ev.color] || 'caution'];
-  return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: SP[4],
-      ...TYPE.label2, fontSize: sz.name, fontWeight: W.medium, lineHeight: 1,
-      padding: `${sz.padY || SP[2]} ${sz.evPad || SP[8]}`,
-      background: s.token, color: s.tx,
-      borderRadius: '10px', whiteSpace: 'nowrap',
-    }}>
-      {ev.label}
-    </span>
-  );
+  return <EventBadge severity={CAM_EV_SEV[ev.color] || 'caution'} label={ev.label} size="S" />;
 }
 
 // ── 정본 Content badge (패널/카드용) ─────────────────────────────────────
@@ -956,7 +945,7 @@ const DS_BADGE_SIZE = {
   sm: { h: '24px', font: TYPE.caption1, ic: 13 },
   md: { h: '28px', font: TYPE.label2,   ic: 14 },
 };
-function DsBadge({ tone = 'neutral', solid = false, size = 'sm', icon, dot = false, iconColor, children }) {
+export function DsBadge({ tone = 'neutral', solid = false, size = 'sm', icon, dot = false, iconColor, radius = '6px', children }) {
   const c = DS_BADGE_TONE[tone] || DS_BADGE_TONE.neutral;
   const z = DS_BADGE_SIZE[size] || DS_BADGE_SIZE.sm;
   const hasLead = !!icon || dot;
@@ -966,7 +955,7 @@ function DsBadge({ tone = 'neutral', solid = false, size = 'sm', icon, dot = fal
     ? `linear-gradient(135deg, ${c.base} 0%, ${c.deep} 100%)`
     : `linear-gradient(180deg, ${c.tintTop} 0%, ${c.tint} 100%)`;
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[4], height: z.h, padding: `0 ${hasLead ? SP[8] : SP[12]}`, borderRadius: '6px', border: `1px solid ${solid ? c.deep : c.bd}`, background: bg, ...z.font, fontWeight: W.bold, color: fg, whiteSpace: 'nowrap', boxSizing: 'border-box' }}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[4], height: z.h, padding: `0 ${hasLead ? SP[8] : SP[12]}`, borderRadius: radius, border: `1px solid ${solid ? c.deep : c.bd}`, background: bg, ...z.font, fontWeight: W.bold, color: fg, whiteSpace: 'nowrap', boxSizing: 'border-box' }}>
       {dot && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: solid ? '#fff' : c.base, flexShrink: 0 }} />}
       {icon && <Icon name={icon} size={z.ic} color={iconColor || fg} />}
       {children}
@@ -1060,6 +1049,60 @@ function EventTypePopover({ x, onClose }) {
   );
 }
 
+// 객체 종류(object_type) — 4그룹 16종. 보기 필터(검지 불간섭). [이름, 기본 표시 여부]
+const OBJECT_GROUPS = [
+  { g: '사람',       items: [['얼굴', false], ['사람', true]] },
+  { g: '차량',       items: [['승용차', true], ['버스(대)', true], ['버스(소)', true], ['트럭(대)', true], ['트럭(소)', true]] },
+  { g: '이륜차',     items: [['오토바이', true], ['자전거', true], ['킥보드', false], ['손수레', false]] },
+  { g: '유기물·기타', items: [['쓰레기', false], ['적치물', false], ['현수막', false], ['낙하물', false], ['연기', false]] },
+];
+
+// "객체 종류 선택" 팝오버 — ▾(객체 필터) 클릭 시. 4그룹 체크리스트(보기 필터, 검지 불간섭).
+function ObjectTypePopover({ x, onClose }) {
+  const allLabels = OBJECT_GROUPS.flatMap((g) => g.items.map((it) => it[0]));
+  const [checked, setChecked] = useState(() => new Set(OBJECT_GROUPS.flatMap((g) => g.items.filter((it) => it[1]).map((it) => it[0]))));
+  const toggle = (lb) => setChecked((s) => { const n = new Set(s); n.has(lb) ? n.delete(lb) : n.add(lb); return n; });
+  const toggleGroup = (g) => setChecked((s) => {
+    const n = new Set(s); const labs = g.items.map((it) => it[0]);
+    const allOn = labs.every((lb) => n.has(lb)); labs.forEach((lb) => (allOn ? n.delete(lb) : n.add(lb))); return n;
+  });
+  const total = allLabels.length, on = allLabels.filter((lb) => checked.has(lb)).length;
+  const btnBase = { height: '26px', padding: `0 ${SP[12]}`, borderRadius: '4px', ...TYPE.caption1, fontWeight: W.semibold, cursor: 'pointer', fontFamily: T.font, display: 'inline-flex', alignItems: 'center' };
+  return (
+    <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: '40px', left: `${x}px`, zIndex: 40, width: '340px', background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: '10px', boxShadow: '0 24px 60px rgba(0,0,0,0.7)', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #2a2a30' }}>
+        <span style={{ ...TYPE.label2, fontWeight: W.bold, color: '#fff' }}>객체 종류 선택</span>
+        <span style={{ ...TYPE.caption2, color: '#8a8a92', fontVariantNumeric: 'tabular-nums' }}>{on === total ? '전체 표시(거름 없음)' : `${on} / ${total} 선택`}</span>
+      </div>
+      <div className="prevax-scroll" style={{ maxHeight: '288px', overflowY: 'auto', padding: `${SP[8]} ${SP[12]}` }}>
+        {OBJECT_GROUPS.map((g) => {
+          const labs = g.items.map((it) => it[0]); const cOn = labs.filter((lb) => checked.has(lb)).length;
+          const gstate = cOn === 0 ? 'off' : cOn === labs.length ? 'on' : 'partial';
+          return (
+            <div key={g.g} style={{ marginBottom: SP[8] }}>
+              <div onClick={() => toggleGroup(g)} style={{ display: 'flex', alignItems: 'center', gap: SP[8], cursor: 'pointer', padding: `${SP[4]} 0` }}>
+                <PopCk state={gstate} />
+                <span style={{ ...TYPE.caption1, fontWeight: W.bold, color: '#e4e4e8' }}>{g.g}</span>
+              </div>
+              {labs.map((nm) => (
+                <div key={nm} onClick={() => toggle(nm)} style={{ display: 'flex', alignItems: 'center', gap: SP[8], cursor: 'pointer', padding: `${SP[4]} 0 ${SP[4]} ${SP[24]}` }}>
+                  <PopCk state={checked.has(nm) ? 'on' : 'off'} />
+                  <span style={{ ...TYPE.caption1, color: '#c4c4cc', flex: 1 }}>{nm}</span>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, borderTop: '1px solid #2a2a30', background: '#19191e' }}>
+        <span style={{ ...TYPE.caption2, color: '#8a8a92', marginRight: 'auto' }}>표시 거르기 · 검지는 계속됨</span>
+        <span onClick={onClose} style={{ ...btnBase, background: '#2a2a30', border: '1px solid #3a3a42', color: '#d4d4d8' }}>취소</span>
+        <span onClick={onClose} style={{ ...btnBase, background: T.primary, border: `1px solid ${T.primary}`, color: '#fff' }}>적용</span>
+      </div>
+    </div>
+  );
+}
+
 function VideoOptionsToolbar({ isOn, onToggle }) {
   const [menu, setMenu] = useState(null); // { label, x } — ▾ 팝오버
   const wrapRef = useRef(null);
@@ -1096,7 +1139,7 @@ function VideoOptionsToolbar({ isOn, onToggle }) {
               }
               const on = isOn(o.label);
               const toggle = clickable ? () => onToggle(o.label) : undefined;
-              const hasPop = o.label === '이벤트 필터';
+              const hasPop = o.label === '이벤트 필터' || o.label === '객체 필터';
               const openState = menu && menu.label === o.label;
               return (
                 <div key={o.label} style={{ display: 'flex', alignItems: 'center', gap: SP[4], flexShrink: 0 }}>
@@ -1121,8 +1164,9 @@ function VideoOptionsToolbar({ isOn, onToggle }) {
           <span style={boxBtn}>이벤트 활성화</span>
         </div>
       </div>
-      {menu && menu.label === '이벤트 필터' && <div onClick={() => setMenu(null)} style={{ position: 'fixed', inset: 0, zIndex: 39 }} />}
+      {menu && <div onClick={() => setMenu(null)} style={{ position: 'fixed', inset: 0, zIndex: 39 }} />}
       {menu && menu.label === '이벤트 필터' && <EventTypePopover x={menu.x} onClose={() => setMenu(null)} />}
+      {menu && menu.label === '객체 필터' && <ObjectTypePopover x={menu.x} onClose={() => setMenu(null)} />}
     </div>
   );
 }
@@ -1139,14 +1183,17 @@ function PrevaxGisScreen() {
   const [evFilter, setEvFilter] = useState(null);
   const evScrollRef = useRef(null);
   const chipScrollRef = useRef(null);
+  // 이벤트 severity 색 = 선별관제 정본 팔레트(EVENT_BADGE_SEV). 경고(배회 등) / 위험(침입·화재·쓰러짐)
+  const SEV_W = EVENT_BADGE_SEV.warning.token;
+  const SEV_D = EVENT_BADGE_SEV.danger.token;
   // 선택 카메라의 발생 이벤트 — 유형 혼합
   const camEvents = [
-    { type: '배회', color: T.cautionary, ts: '12:42:02' },
-    { type: '침입', color: T.error, ts: '12:38:51' },
-    { type: '침입', color: T.error, ts: '12:30:14' },
-    { type: '쓰러짐', color: '#F0436A', ts: '12:25:47' },
-    { type: '쓰러짐', color: '#F0436A', ts: '12:18:33' },
-    { type: '쓰러짐', color: '#F0436A', ts: '12:09:05' },
+    { type: '배회', color: SEV_W, ts: '12:42:02' },
+    { type: '침입', color: SEV_D, ts: '12:38:51' },
+    { type: '침입', color: SEV_D, ts: '12:30:14' },
+    { type: '쓰러짐', color: SEV_D, ts: '12:25:47' },
+    { type: '쓰러짐', color: SEV_D, ts: '12:18:33' },
+    { type: '쓰러짐', color: SEV_D, ts: '12:09:05' },
   ];
   const evCounts = camEvents.reduce((acc, e) => {
     const f = acc.find((x) => x.type === e.type);
@@ -1159,20 +1206,20 @@ function PrevaxGisScreen() {
   const scrollCards = (dir) => { if (evScrollRef.current) evScrollRef.current.scrollBy({ left: dir * 200, behavior: 'smooth' }); };
   const scrollChips = (dir) => { if (chipScrollRef.current) chipScrollRef.current.scrollBy({ left: dir * 120, behavior: 'smooth' }); };
   const realtimeEvents = [
-    { type: '배회', color: T.cautionary, time: '방금', cam: '본관 정문 앞 CAM_002', ts: '11:08:44' },
-    { type: '화재', color: T.error, time: '1분전', cam: '창고 A동 CAM_011', ts: '11:07:51' },
-    { type: '침입', color: T.error, time: '2분전', cam: '외곽 펜스 CAM_005', ts: '11:07:21' },
-    { type: '쓰러짐', color: T.error, time: '4분전', cam: '통로 1 CAM_007', ts: '11:04:55' },
-    { type: '배회', color: T.cautionary, time: '5분전', cam: '본관 정문 앞 CAM_002', ts: '11:03:12' },
-    { type: '배회', color: T.cautionary, time: '7분전', cam: '주차장 입구 CAM_003', ts: '11:01:33' },
-    { type: '배회', color: T.cautionary, time: '8분전', cam: '남쪽 출입구 CAM_009', ts: '11:00:03' },
+    { type: '배회', color: SEV_W, time: '방금', cam: '본관 정문 앞 CAM_002', ts: '11:08:44' },
+    { type: '화재', color: SEV_D, time: '1분전', cam: '창고 A동 CAM_011', ts: '11:07:51' },
+    { type: '침입', color: SEV_D, time: '2분전', cam: '외곽 펜스 CAM_005', ts: '11:07:21' },
+    { type: '쓰러짐', color: SEV_D, time: '4분전', cam: '통로 1 CAM_007', ts: '11:04:55' },
+    { type: '배회', color: SEV_W, time: '5분전', cam: '본관 정문 앞 CAM_002', ts: '11:03:12' },
+    { type: '배회', color: SEV_W, time: '7분전', cam: '주차장 입구 CAM_003', ts: '11:01:33' },
+    { type: '배회', color: SEV_W, time: '8분전', cam: '남쪽 출입구 CAM_009', ts: '11:00:03' },
   ];
 
   // 총 이벤트 현황 — 이벤트 유형별 발생 횟수 (Content badge, status 컬러로 심각도 구분)
   const eventStats = [
-    { label: '배회', count: 36, color: T.cautionary },
-    { label: '침입', count: 12, color: T.error },
-    { label: '화재', count: 3, color: T.error },
+    { label: '배회', count: 36, color: SEV_W },
+    { label: '침입', count: 12, color: SEV_D },
+    { label: '화재', count: 3, color: SEV_D },
   ];
 
   // 맵 오버레이 컨트롤 — Figma "Icon button"(아이콘 + 라벨). 아이콘 20px 흰색, 라벨 15px SemiBold 60% white.
@@ -1213,12 +1260,7 @@ function PrevaxGisScreen() {
               <input placeholder="" style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: '#fff', fontFamily: T.font, ...TYPE.caption1 }} />
               <Icon name="search" size={14} color="#6f6f77" />
             </div>
-            {/* 카메라 이벤트 비활성화 알림 — 위계 낮춤(은은한 톤, 경고는 작은 아이콘 액센트로만) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: SP[4], marginTop: SP[8], padding: `5px ${SP[8]}`, background: 'rgba(255,169,56,0.06)', border: '1px solid #2e2e35', borderRadius: '4px' }}>
-              <Icon name="error" size={12} color={T.cautionary} style={{ opacity: 0.85 }} />
-              <span style={{ ...TYPE.caption1, fontWeight: W.regular, color: '#9a9aa2', whiteSpace: 'nowrap' }}>3개 카메라 비활성화</span>
-              <span style={{ marginLeft: 'auto', ...TYPE.caption2, fontWeight: W.medium, color: '#8a8a92', background: 'transparent', border: '1px solid #3a3a42', borderRadius: '4px', padding: `${SP[2]} ${SP[8]}`, cursor: 'pointer' }}>관리</span>
-            </div>
+            {/* 카메라 비활성화 알림은 상단 타이틀바 가운데(warning 슬롯)로 이동 */}
           </div>
           <div style={{ flex: 1, overflowY: 'auto', padding: `${SP[2]} ${SP[4]} ${SP[8]}` }}>
             <TreeRow depth={0} label="인천공항" />
@@ -5594,14 +5636,14 @@ function PrevaxAlarmSettingsScreen() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: SP[8], flexShrink: 0, padding: `6px ${SP[8]}`, background: cauT(0.14), borderBottom: '1px solid #232329' }}>
               <Icon name="error" size={14} color={T.cautionary} />
               <span style={{ ...TYPE.caption1, fontWeight: W.bold, color: T.cautionary }}>4개 카메라 이벤트 비활성화</span>
-              <Tbtn>모니터링</Tbtn>
+              <span style={{ fontSize: '11px', fontWeight: W.semibold, color: '#2a1c02', background: T.cautionary, borderRadius: '4px', padding: `${SP[2]} ${SP[8]}`, cursor: 'pointer', whiteSpace: 'nowrap' }}>모니터링</span>
             </div>
             {/* 필터 칩 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], flexShrink: 0, padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #232329' }}>
               {[
-                { label: '위험', count: 0, color: T.error },
-                { label: '경고', count: 16, color: T.cautionary },
-                { label: '주의', count: 46, color: '#9C9C5C' },
+                { label: '위험', count: 0, color: EVENT_BADGE_SEV.danger.token },
+                { label: '경고', count: 16, color: EVENT_BADGE_SEV.warning.token },
+                { label: '주의', count: 46, color: EVENT_BADGE_SEV.caution.token },
               ].map((s) => (
                 <CBadge key={s.label} color={s.color}>
                   <span style={{ fontWeight: W.medium }}>{s.label}</span>
@@ -5620,7 +5662,7 @@ function PrevaxAlarmSettingsScreen() {
             <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }} className="prevax-scroll">
               {feed.map((r, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: SP[8], padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #1f1f24', background: i % 2 ? 'rgba(255,255,255,0.015)' : 'transparent' }}>
-                  <span style={{ ...TYPE.caption1, fontWeight: W.semibold, color: r.danger ? T.error : '#c4c4cc', width: '62px', flexShrink: 0, whiteSpace: 'nowrap' }}>{r.type}</span>
+                  <span style={{ ...TYPE.caption1, fontWeight: W.semibold, color: r.danger ? EVENT_BADGE_SEV.danger.token : '#c4c4cc', width: '62px', flexShrink: 0, whiteSpace: 'nowrap' }}>{r.type}</span>
                   <span style={{ ...TYPE.caption1, color: '#e4e4e8', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.cam}</span>
                   <span style={{ ...TYPE.caption2, color: '#8a8a92', flexShrink: 0 }}>미열람</span>
                   <span style={{ ...TYPE.caption2, color: '#6f6f77', flexShrink: 0 }}>·</span>
@@ -5652,8 +5694,8 @@ function PrevaxLiveFocusScreen() {
     lobby: 'linear-gradient(180deg,#20222a,#15171d)', alley: 'linear-gradient(180deg,#1b1d24,#101218)',
   };
   const CAMS = [
-    { no: 'CAM 02', loc: '강남역 2번출구', scene: 'gate', pin: true, bbox: '사람', ev: { label: '침입', color: T.cautionary } },
-    { no: 'CAM 01', loc: '강남대로 사거리', scene: 'road', bbox: '차량', ev: { label: '배회', color: '#999999' } },
+    { no: 'CAM 02', loc: '강남역 2번출구', scene: 'gate', pin: true, bbox: '사람', ev: { label: '침입', color: T.error } },
+    { no: 'CAM 01', loc: '강남대로 사거리', scene: 'road', bbox: '차량', ev: { label: '배회', color: T.cautionary } },
     { no: 'CAM 03', loc: '테헤란로 공원', scene: 'park' },
     { no: 'CAM 04', loc: '강남 지하상가', scene: 'plaza', bbox: '사람', ev: { label: '화재', color: T.error } },
     { no: 'CAM 09', loc: '역삼 광장', scene: 'plaza', pin: true },
@@ -5691,7 +5733,7 @@ function PrevaxLiveFocusScreen() {
   const ctxItem = (extra) => ({ display: 'flex', alignItems: 'center', gap: SP[8], padding: `7px ${SP[12]}`, ...TYPE.caption1, color: '#d4d4d8', cursor: 'pointer', whiteSpace: 'nowrap', ...extra });
   const allPinned = realIdx.every((i) => focus.has(i));
   // 셀 오버레이 타이포/여백 — 고정 화면은 3×3 고정이므로 기본(Live)의 3×3 티어와 동일
-  const ov = { name: '11.5px', ptz: '10.5px', stamp: '13px', padY: SP[4], ptzPad: SP[12], namePad: SP[16], edge: '6px', gap: SP[4], evFont: '10px', evH: '18px', dot: '5px' };
+  const ov = { name: '11.5px', ptz: '10.5px', stamp: '13px', padY: SP[4], ptzPad: SP[12], namePad: SP[16], edge: SP[12], gap: SP[4], evFont: '10px', evH: '18px', dot: '5px' };
 
   // 고정 아이콘 = Foundation 아이콘 세트의 keep(피그마 "keep" 777:1847). currentColor 상속.
   const PinGlyph = ({ size = 11 }) => <Icon name="keep" size={size} color="currentColor" />;
@@ -5955,8 +5997,8 @@ function EventPopupWindow({ state }) {
         )}
         {/* BBox(DrawObjects) — 위험 등급색 */}
         {!cleared && (
-          <div style={{ position: 'absolute', left: isVideo ? '44%' : '40%', top: '46%', width: '86px', height: '52px', border: `1.6px solid ${T.error}`, borderRadius: '2px', boxShadow: '0 0 0 1px rgba(0,0,0,.35)', transition: 'all .4s' }}>
-            <span style={{ position: 'absolute', top: '-16px', left: '-1.6px', ...TYPE.caption2, fontWeight: W.bold, background: T.error, color: '#fff', padding: `0 ${SP[4]}`, borderRadius: '2px', whiteSpace: 'nowrap' }}>정차 감지</span>
+          <div style={{ position: 'absolute', left: isVideo ? '44%' : '40%', top: '46%', width: '86px', height: '52px', border: `1.6px solid ${EVENT_BADGE_SEV.danger.token}`, borderRadius: '2px', boxShadow: '0 0 0 1px rgba(0,0,0,.35)', transition: 'all .4s' }}>
+            <span style={{ position: 'absolute', top: '-16px', left: '-1.6px', ...TYPE.caption2, fontWeight: W.bold, background: EVENT_BADGE_SEV.danger.token, color: '#fff', padding: `0 ${SP[4]}`, borderRadius: '2px', whiteSpace: 'nowrap' }}>정차 감지</span>
           </div>
         )}
         {/* 정리 베일 */}
@@ -6093,7 +6135,7 @@ const UC_TONE = { ok: 'neutral', err: 'error', wait: 'cautionary', nostream: 'ne
 function UcStat({ st }) {
   const s = UC_STATUS[st];
   // 정상은 조용히(중립 배지 + 초록 체크 아이콘만) — 문제 상태(오류·응답없음)가 부각되도록
-  return <DsBadge tone={UC_TONE[st]} size="xs" icon={s.icon} iconColor={st === 'ok' ? '#66e08f' : undefined}>{s.label}</DsBadge>;
+  return <DsBadge tone={UC_TONE[st]} size="xs" radius="9999px" icon={s.icon} iconColor={st === 'ok' ? '#66e08f' : undefined}>{s.label}</DsBadge>;
 }
 
 // 미배치 전용 뷰 창 — titlebar + view-head + summary + 4열 그리드 + 하단 페이지 바 (empty=빈 상태)
@@ -6184,7 +6226,7 @@ function UnassignedChannelsWindow({ empty }) {
                   </div>
                   {/* 셀 액션 — 이벤트 배지(있으면) + 배치하기 */}
                   <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: SP[8], padding: `0 ${SP[8]} ${SP[8]}`, background: '#16161a' }}>
-                    {c.evt && <DsBadge tone="accent" size="sm" icon="warning">이벤트 {c.evt}</DsBadge>}
+                    {c.evt && <DsBadge tone="accent" size="xs" radius="9999px" icon="warning">이벤트 {c.evt}</DsBadge>}
                     <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: 1, height: '24px', borderRadius: '6px', ...TYPE.caption1, fontWeight: W.semibold, border: `1px solid ${T.primaryHeavy}`, background: `linear-gradient(135deg, ${T.primaryStrong} 0%, ${T.primaryHeavy} 100%)`, color: '#fff', whiteSpace: 'nowrap', cursor: 'default' }}>배치하기</span>
                   </div>
                 </div>
@@ -6349,7 +6391,8 @@ function PrevaxAutoSwitchScreen() {
   const [sev, setSev] = useState('위험');        // 자동 전환 기준 등급(주의·경고·위험)
   const [dwell, setDwell] = useState(10);        // 추출 정지 시간(초, 최소 1)
   const [extracted, setExtracted] = useState(null); // 자동 추출된 카메라(별도 창) or null
-  const SEV = { '주의': T.positive, '경고': T.cautionary, '위험': T.error };
+  // 자동 전환 기준 등급 색 = 선별관제 정본 팔레트(EVENT_BADGE_SEV)
+  const SEV = { '주의': EVENT_BADGE_SEV.caution.token, '경고': EVENT_BADGE_SEV.warning.token, '위험': EVENT_BADGE_SEV.danger.token };
   const SEV_ORDER = ['주의', '경고', '위험'];
   const SCENE = ['linear-gradient(135deg,#16181d,#101216)', 'linear-gradient(135deg,#1a1620,#100d16)', 'linear-gradient(135deg,#16201d,#0e1613)'];
 
@@ -6458,12 +6501,12 @@ function PrevaxAutoSwitchScreen() {
           const loc = '중앙로 사거리';
           return (
           <div key={i} onClick={c.evt ? () => { if (on) { setExtracted({ no: c.no, loc }); setOpenPop(false); } } : undefined}
-            style={{ position: 'relative', overflow: 'hidden', borderRadius: '3px', background: SCENE[i % 3], outline: c.evt ? `2px solid ${T.error}` : 'none', outlineOffset: '-2px', cursor: c.evt && on ? 'pointer' : 'default' }}>
+            style={{ position: 'relative', overflow: 'hidden', borderRadius: '3px', background: SCENE[i % 3], outline: c.evt ? `2px solid ${EVENT_BADGE_SEV.danger.token}` : 'none', outlineOffset: '-2px', cursor: c.evt && on ? 'pointer' : 'default' }}>
             {/* 카메라명 = 우상단(정본: 식별정보=우상단) */}
             <span style={{ position: 'absolute', top: SP[4], right: SP[8], ...TYPE.caption2, fontWeight: W.semibold, color: '#9aa3b2', textShadow: '0 1px 2px rgba(0,0,0,0.85)' }}>{c.no}</span>
             {c.evt && (
               <>
-                <div style={{ position: 'absolute', left: '22%', top: '26%', width: '44%', height: '46%', border: `1.5px solid ${T.error}`, background: 'rgba(255,99,99,0.13)', borderRadius: '3px' }} />
+                <div style={{ position: 'absolute', left: '22%', top: '26%', width: '44%', height: '46%', border: `1.5px solid ${EVENT_BADGE_SEV.danger.token}`, background: 'rgba(240,67,106,0.13)', borderRadius: '3px' }} />
                 {/* 이벤트 배지 = 좌상단(정본: 이벤트/상태=좌상단) */}
                 <span style={{ position: 'absolute', top: SP[4], left: SP[8], ...TYPE.caption2, fontWeight: W.medium, lineHeight: 1, background: EVENT_BADGE_SEV.danger.token, color: EVENT_BADGE_SEV.danger.tx, padding: `${SP[2]} ${SP[8]}`, borderRadius: '10px' }}>침입 · 위험</span>
                 <span style={{ position: 'absolute', bottom: SP[4], left: '50%', transform: 'translateX(-50%)', ...TYPE.caption2, fontWeight: W.bold, whiteSpace: 'nowrap', padding: `${SP[2]} ${SP[8]}`, borderRadius: '10px', border: `1px solid ${on ? 'rgba(0,102,255,0.6)' : '#3a3a42'}`, background: on ? 'rgba(0,102,255,0.22)' : 'rgba(10,10,12,0.6)', color: on ? '#cfe0ff' : '#8a8a92' }}>

@@ -13,7 +13,10 @@ export const TIERS = {
     categories: [
       {
         id: 'guide', name: '가이드',
-        children: [{ id: 'prompting-guide', name: '프롬프트 가이드' }],
+        children: [
+          { id: 'prompting-guide', name: '프롬프트 가이드' },
+          { id: 'badge-guide', name: 'Badge 사용 가이드' },
+        ],
       },
     ],
   },
@@ -236,28 +239,6 @@ export const TIERS = {
     description: '서비스 도메인별 특화 가이드 및 컴포넌트 명세',
     groups: [
       {
-        id: 'smart-intersection',
-        label: '스마트 교차로 (Smart Intersection)',
-        categories: [
-          {
-            id: 'intersection-overview', name: 'Overview',
-            children: [{ id: 'intersection-overview-default', name: 'Overview' }]
-          },
-          {
-            id: 'intersection-overlay', name: 'Detection Overlay',
-            children: [{ id: 'intersection-overlay-default', name: 'CCTV Detection Overlay' }]
-          },
-          {
-            id: 'signal-queue', name: 'Signal Queue Indicator',
-            children: [{ id: 'signal-queue-default', name: 'Signal Queue Indicator' }]
-          },
-          {
-            id: 'traffic-flow', name: 'Traffic Flow Chart',
-            children: [{ id: 'traffic-flow-default', name: 'Traffic Flow Chart' }]
-          }
-        ]
-      },
-      {
         id: 'selective-control',
         label: '선별관제 (Selective Control)',
         categories: [
@@ -280,6 +261,28 @@ export const TIERS = {
           {
             id: 'event-grid', name: 'Event Grid',
             children: [{ id: 'event-grid-default', name: 'Event Grid' }]
+          }
+        ]
+      },
+      {
+        id: 'smart-intersection',
+        label: '스마트 교차로 (Smart Intersection)',
+        categories: [
+          {
+            id: 'intersection-overview', name: 'Overview',
+            children: [{ id: 'intersection-overview-default', name: 'Overview' }]
+          },
+          {
+            id: 'intersection-overlay', name: 'Detection Overlay',
+            children: [{ id: 'intersection-overlay-default', name: 'CCTV Detection Overlay' }]
+          },
+          {
+            id: 'signal-queue', name: 'Signal Queue Indicator',
+            children: [{ id: 'signal-queue-default', name: 'Signal Queue Indicator' }]
+          },
+          {
+            id: 'traffic-flow', name: 'Traffic Flow Chart',
+            children: [{ id: 'traffic-flow-default', name: 'Traffic Flow Chart' }]
           }
         ]
       },
@@ -434,6 +437,12 @@ export const COMPONENT_DOCS = {
     description: 'MCP(정본 코드·토큰·판단 규칙)를 최대한 활용해 관제 화면·컴포넌트를 설계하도록 프롬프트를 작성하는 방법입니다.',
     // 본문 정본은 docs/prompting-guide.md — ComponentDoc.jsx가 ?raw 로 읽어 렌더(단일 출처).
     customLayout: 'markdown',
+  },
+  'badge-guide': {
+    name: 'Badge 사용 가이드',
+    description: '배지 종류(Event Badge·Content Badge·상태 칩·Count·Push)가 많아 혼동되기 쉽습니다. 상황별로 어떤 배지를 어떤 형태·색으로 써야 하는지 실제 배지 예시와 함께 정리한 가이드입니다.',
+    // 전용 JSX 렌더 — ComponentDoc.jsx가 componentId==='badge-guide'일 때 <BadgeGuidePage/> 반환(마크다운 경로 아님).
+    customLayout: 'badge-guide',
   },
   "feedback-fallback": {
     "name": "Fallback view",
@@ -4385,7 +4394,7 @@ export function Toast({ type = 'neutral', message, showIcon = true, duration = 3
     name: '이벤트 배지 (Event Badge)',
     description: '영상 셀 위에 이벤트 발생과 위험 단계를 알리는 오버레이 배지입니다. 위치는 항상 좌상단, 색상으로 위험 단계(위험/경고/주의)를 구분하며 S·M 두 가지 크기를 제공합니다.',
     overview: '선별관제 영상 그리드에서 이벤트가 검지된 셀을 즉시 식별하기 위한 표기 규칙입니다. 표기법은 두 가지로 고정됩니다 — (1) 위치: 항상 좌상단(카메라 식별 정보는 우상단으로 분리), (2) 색상: 위험 단계를 색으로 표현합니다. 위험 단계는 위험(#F0436A)·경고(#C9847A)·주의(#F5EFE0) 3색으로, 선별관제 모니터링 위험도 3밴드와 동일한 팔레트를 사용합니다. 배경은 컬러 채움이며 글씨는 대비 색(밝은 배경엔 어두운 글씨)입니다. 색만으로 구분하지 않도록 한글 라벨(위험/경고/주의)을 항상 함께 표기합니다(색맹 접근성). 기본은 텍스트 전용이며, 필요 시 showIcon으로 아이콘을 켤 수 있습니다.',
-    behavior: '크기는 셀 밀도에 맞춰 두 가지를 사용합니다 — M(높이 28 · 12px · radius 10)은 1×1·2×2 등 큰 뷰의 기본값, S(높이 24 · 11px · radius 10)는 3×3 이상 밀집 그리드용입니다. 배지는 부모 영상 셀의 좌상단(top/left = SP[8])에 고정 배치되며, 패딩은 상하 2 · 좌우 8(SP[2] SP[8])로 SP 스케일만 사용합니다.',
+    behavior: '크기는 셀 밀도에 맞춰 두 가지를 사용합니다 — M(높이 28 · 12px · radius 10)은 1×1·2×2 등 큰 뷰의 기본값, S(높이 24 · 11px · radius 10)는 3×3 이상 밀집 그리드용입니다. 배지는 부모 영상 셀의 좌상단에 고정 배치되며, 셀 가장자리에서 여백은 12px(SP[12]) 기준입니다(카메라 식별·타임스탬프 등 OSD 오버레이도 동일 12px). 배지 내부 패딩은 상하 2 · 좌우 8(SP[2] SP[8])로 SP 스케일만 사용합니다.',
     usage: '선별관제 실시간 영상 그리드(F-2·F-6·F-9)에서 이벤트가 발생한 카메라 셀 좌상단에 배치합니다. 카메라명·CH 등 식별 정보는 우상단, 타임스탬프는 하단 중앙에 두어 코너 역할을 분리합니다.',
     properties: [
       {
@@ -4406,7 +4415,7 @@ export function Toast({ type = 'neutral', message, showIcon = true, duration = 3
       { name: 'label', title: '라벨', type: 'string', conditions: [{ condition: '미지정 시 위험 단계 기본 라벨(위험/경고/주의). 예: "침입 · 위험"' }] },
       { name: 'showIcon', title: '아이콘 표시', type: 'boolean', conditions: [{ condition: '기본 false — 텍스트 전용. true일 때만 상태 아이콘(위험=error / 경고·주의=warning) 표시' }] },
     ],
-    webCode: `// React Event Badge — 위치: 항상 좌상단 · 색상(배경): 위험 단계(선별관제 3밴드 팔레트)\nimport React from 'react';\n\n// 위험 단계별 컬러 채움 배경 + 대비 글씨 (그림자 없음)\nconst SEV = {\n  danger:  { label: '위험', bg: '#F0436A', tx: '#fff' },\n  warning: { label: '경고', bg: '#C9847A', tx: '#fff' },\n  caution: { label: '주의', bg: '#F5EFE0', tx: '#1a1a1f' },\n};\nconst SIZE = {\n  M: { height: 28, fontSize: 12, borderRadius: 10 },\n  S: { height: 24, fontSize: 11, borderRadius: 10 },\n};\n\nexport function EventBadge({ severity = 'danger', size = 'M', label }) {\n  const s = SEV[severity], z = SIZE[size];\n  return (\n    <span style={{\n      position: 'absolute', top: 8, left: 8,           // 항상 좌상단\n      display: 'inline-flex', alignItems: 'center', gap: 4,\n      height: z.height, padding: '2px 8px', borderRadius: z.borderRadius,\n      background: s.bg, color: s.tx,                   // 색 = 위험 단계\n      fontSize: z.fontSize, fontWeight: 500, lineHeight: 1, whiteSpace: 'nowrap',\n    }}>\n      {label || s.label}\n    </span>\n  );\n}`
+    webCode: `// React Event Badge — 위치: 항상 좌상단 · 색상(배경): 위험 단계(선별관제 3밴드 팔레트)\nimport React from 'react';\n\n// 위험 단계별 컬러 채움 배경 + 대비 글씨 (그림자 없음)\nconst SEV = {\n  danger:  { label: '위험', bg: '#F0436A', tx: '#fff' },\n  warning: { label: '경고', bg: '#C9847A', tx: '#fff' },\n  caution: { label: '주의', bg: '#F5EFE0', tx: '#1a1a1f' },\n};\nconst SIZE = {\n  M: { height: 28, fontSize: 12, borderRadius: 10 },\n  S: { height: 24, fontSize: 11, borderRadius: 10 },\n};\n\nexport function EventBadge({ severity = 'danger', size = 'M', label }) {\n  const s = SEV[severity], z = SIZE[size];\n  return (\n    <span style={{\n      position: 'absolute', top: 12, left: 12,         // 항상 좌상단(여백 12px)\n      display: 'inline-flex', alignItems: 'center', gap: 4,\n      height: z.height, padding: '2px 8px', borderRadius: z.borderRadius,\n      background: s.bg, color: s.tx,                   // 색 = 위험 단계\n      fontSize: z.fontSize, fontWeight: 500, lineHeight: 1, whiteSpace: 'nowrap',\n    }}>\n      {label || s.label}\n    </span>\n  );\n}`
   },
   'event-grid-default': {
     name: '이상행동 이벤트 그리드 (Event Grid)',

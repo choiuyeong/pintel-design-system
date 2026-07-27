@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Icon } from './icons';
 import PrevaxPermissionScreen, { generateXaml, PERM_ROWS, PrevaxPermissionScreen2 } from './PermissionSettings';
 import { LIBRARY_TEMPLATES } from '../data/templates';
-import { T, W, TYPE, SP, SEM, PALETTE_DARK, PALETTE_LIGHT } from '../data/tokens';
+import { T, W, TYPE, SP, Z, SEM, PALETTE_DARK, PALETTE_LIGHT } from '../data/tokens';
 import { NumberField } from '../ds/NumberField';
 import { EventBadge, EVENT_BADGE_SEV } from '../ds/EventBadge.jsx';
 
@@ -137,7 +137,7 @@ function Field({ label, type = 'text', value, onChange, onBlur, placeholder, aut
         {trailing}
         {tooltip && (
           <div role="alert" style={{
-            position: 'absolute', top: 'calc(100% + 9px)', left: 0, zIndex: 30,
+            position: 'absolute', top: 'calc(100% + 9px)', left: 0, zIndex: Z.tooltip,
             display: 'flex', alignItems: 'flex-start', gap: SP[8],
             width: 'max-content', maxWidth: '300px', padding: `${SP[8]} ${SP[12]}`,
             background: C.tooltipBg, border: `1px solid ${C.tooltipBorder}`,
@@ -464,7 +464,7 @@ function GisMonitorScreen() {
           })}
 
           {/* 감지 핑 (침입) */}
-          <div style={{ position: 'absolute', left: '34%', top: '43%', transform: 'translate(-50%,-50%)', zIndex: 5 }}>
+          <div style={{ position: 'absolute', left: '34%', top: '43%', transform: 'translate(-50%,-50%)', zIndex: Z.raised }}>
             <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: EVENT_BADGE_SEV.danger.token, boxShadow: `0 0 0 4px rgba(240,67,106,0.25), 0 0 12px ${EVENT_BADGE_SEV.danger.token}` }} />
             <div style={{ position: 'absolute', left: '14px', top: '-5px', whiteSpace: 'nowrap', fontSize: '10px', color: EVENT_BADGE_SEV.danger.token, fontWeight: W.bold, background: '#1a0d0d', border: `1px solid ${EVENT_BADGE_SEV.danger.token}`, padding: `${SP[2]} ${SP[4]}`, borderRadius: '4px' }}>침입 감지</div>
           </div>
@@ -707,7 +707,7 @@ function AwayModal({ onClose, onApply }) {
   );
   const btnBase = { height: '30px', padding: `0 ${SP[16]}`, borderRadius: '4px', ...TYPE.caption1, fontWeight: W.semibold, cursor: 'pointer', fontFamily: T.font, display: 'inline-flex', alignItems: 'center' };
   return (
-    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: SP[16] }}>
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: Z.modal, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: SP[16] }}>
       <div onClick={(e) => e.stopPropagation()} style={{ width: '440px', maxWidth: '100%', background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: '12px', boxShadow: '0 32px 80px rgba(0,0,0,0.7)', overflow: 'hidden', fontFamily: T.font }}>
         {/* 헤더 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], padding: `${SP[16]} ${SP[16]} ${SP[12]}` }}>
@@ -759,7 +759,7 @@ function AwayModal({ onClose, onApply }) {
 // 자리 비움 상태 오버레이 — 카메라 그리드를 어둡게 덮고 대리 관제사 안내 + 복귀 버튼.
 function AwayOverlay({ operator, onRestore }) {
   return (
-    <div style={{ position: 'absolute', inset: 0, zIndex: 20, background: 'rgba(6,6,9,0.9)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: SP[12], padding: SP[24], textAlign: 'center' }}>
+    <div style={{ position: 'absolute', inset: 0, zIndex: Z.modal, background: 'rgba(6,6,9,0.9)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: SP[12], padding: SP[24], textAlign: 'center' }}>
       <span style={{ display: 'inline-flex', color: T.cautionary }}>
         <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="10" cy="8" r="4" /><path d="M3 20c0-3.9 3.1-6 7-6 .8 0 1.6.1 2.3.3" /><path d="M16 15.5l5 5M21 15.5l-5 5" /></svg>
       </span>
@@ -817,9 +817,9 @@ export function PrevaxTitleBar({ datetime, warning = '3개 카메라 비활성�
           <span style={prevaxWinBtn}>—</span><span style={prevaxWinBtn}>▢</span><span style={prevaxWinBtn}>✕</span>
         </span>
       </div>
-      {userMenu && <div onClick={() => setUserMenu(false)} style={{ position: 'fixed', inset: 0, zIndex: 49 }} />}
+      {userMenu && <div onClick={() => setUserMenu(false)} style={{ position: 'fixed', inset: 0, zIndex: Z.overlayBackdrop }} />}
       {userMenu && (
-        <div style={{ position: 'absolute', top: '42px', right: '48px', zIndex: 50, width: '230px', background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: '8px', boxShadow: '0 18px 48px rgba(0,0,0,0.6)', padding: `${SP[4]} 0`, overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '42px', right: '48px', zIndex: Z.popover, width: '230px', background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: '8px', boxShadow: '0 18px 48px rgba(0,0,0,0.6)', padding: `${SP[4]} 0`, overflow: 'hidden' }}>
           {away ? (
             <div style={item} onMouseEnter={(e) => hov(e, true)} onMouseLeave={(e) => hov(e, false)} onClick={() => { setUserMenu(false); if (onRestore) onRestore(); }}>
               <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: T.positive, flexShrink: 0, boxShadow: `0 0 5px ${T.positive}` }} />
@@ -1014,7 +1014,7 @@ function EventTypePopover({ x, onClose }) {
   const total = allIds.length, on = allIds.filter((id) => checked.has(id)).length;
   const btnBase = { height: '26px', padding: `0 ${SP[12]}`, borderRadius: '4px', ...TYPE.caption1, fontWeight: W.semibold, cursor: 'pointer', fontFamily: T.font, display: 'inline-flex', alignItems: 'center' };
   return (
-    <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: '40px', left: `${x}px`, zIndex: 40, width: '520px', background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: '10px', boxShadow: '0 24px 60px rgba(0,0,0,0.7)', overflow: 'hidden' }}>
+    <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: '40px', left: `${x}px`, zIndex: Z.popover, width: '520px', background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: '10px', boxShadow: '0 24px 60px rgba(0,0,0,0.7)', overflow: 'hidden' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #2a2a30' }}>
         <span style={{ ...TYPE.label2, fontWeight: W.bold, color: '#fff' }}>이벤트 종류 선택</span>
         <span style={{ ...TYPE.caption2, color: '#8a8a92', fontVariantNumeric: 'tabular-nums' }}>{on === total ? '전체 표시(거름 없음)' : `${on} / ${total} 선택`}</span>
@@ -1069,7 +1069,7 @@ function ObjectTypePopover({ x, onClose }) {
   const total = allLabels.length, on = allLabels.filter((lb) => checked.has(lb)).length;
   const btnBase = { height: '26px', padding: `0 ${SP[12]}`, borderRadius: '4px', ...TYPE.caption1, fontWeight: W.semibold, cursor: 'pointer', fontFamily: T.font, display: 'inline-flex', alignItems: 'center' };
   return (
-    <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: '40px', left: `${x}px`, zIndex: 40, width: '340px', background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: '10px', boxShadow: '0 24px 60px rgba(0,0,0,0.7)', overflow: 'hidden' }}>
+    <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: '40px', left: `${x}px`, zIndex: Z.popover, width: '340px', background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: '10px', boxShadow: '0 24px 60px rgba(0,0,0,0.7)', overflow: 'hidden' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `${SP[8]} ${SP[12]}`, borderBottom: '1px solid #2a2a30' }}>
         <span style={{ ...TYPE.label2, fontWeight: W.bold, color: '#fff' }}>객체 종류 선택</span>
         <span style={{ ...TYPE.caption2, color: '#8a8a92', fontVariantNumeric: 'tabular-nums' }}>{on === total ? '전체 표시(거름 없음)' : `${on} / ${total} 선택`}</span>
@@ -1164,7 +1164,7 @@ function VideoOptionsToolbar({ isOn, onToggle }) {
           <span style={boxBtn}>이벤트 활성화</span>
         </div>
       </div>
-      {menu && <div onClick={() => setMenu(null)} style={{ position: 'fixed', inset: 0, zIndex: 39 }} />}
+      {menu && <div onClick={() => setMenu(null)} style={{ position: 'fixed', inset: 0, zIndex: Z.overlayBackdrop }} />}
       {menu && menu.label === '이벤트 필터' && <EventTypePopover x={menu.x} onClose={() => setMenu(null)} />}
       {menu && menu.label === '객체 필터' && <ObjectTypePopover x={menu.x} onClose={() => setMenu(null)} />}
     </div>
@@ -2787,7 +2787,7 @@ function PrevaxSelectiveActiveScreen({ onEventClick, withDetail, dragnetEntry } 
                     <Icon name="location_searching" size={14} color={selEv.group ? '#fff' : '#6f6f77'} />주변 카메라 보기
                   </button>
                   {tip && !selEv.group && (
-                    <span style={{ position: 'absolute', bottom: 'calc(100% + 6px)', left: 0, zIndex: 10, ...TYPE.caption2, color: '#e8e8ec', background: '#101015', border: '1px solid #2c3540', borderRadius: '6px', padding: `${SP[4]} ${SP[8]}`, whiteSpace: 'nowrap', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}>이 카메라는 그룹에 속해 있지 않습니다.</span>
+                    <span style={{ position: 'absolute', bottom: 'calc(100% + 6px)', left: 0, zIndex: Z.tooltip, ...TYPE.caption2, color: '#e8e8ec', background: '#101015', border: '1px solid #2c3540', borderRadius: '6px', padding: `${SP[4]} ${SP[8]}`, whiteSpace: 'nowrap', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}>이 카메라는 그룹에 속해 있지 않습니다.</span>
                   )}
                 </span>
                 )}
@@ -2816,7 +2816,7 @@ function PrevaxSelectiveActiveScreen({ onEventClick, withDetail, dragnetEntry } 
 
       {/* F-9 주변 카메라 보기 부유 창 팝업 — 최근 이벤트 행 클릭 시 등장 */}
       {showDragnet && (
-        <div onClick={() => setShowDragnet(false)} style={{ position: 'absolute', inset: 0, zIndex: 50, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: SP[24] }}>
+        <div onClick={() => setShowDragnet(false)} style={{ position: 'absolute', inset: 0, zIndex: Z.modal, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: SP[24] }}>
           <div onClick={(e) => e.stopPropagation()} style={{ width: '84%', maxWidth: '1180px' }}>
             <DragnetInvestigationWindow onClose={() => setShowDragnet(false)} />
           </div>
@@ -2989,7 +2989,7 @@ function PrevaxLiveScreen() {
                 {c.scene && <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(0,0,0,0.28) 100%)' }} />}
                 {/* 이벤트 배지 (좌상단) — 검지된 이벤트, 분할 수에 맞춰 축소 */}
                 {c.ev && (
-                  <div style={{ position: 'absolute', top: ov.edge, left: ov.edge, zIndex: 6 }}>
+                  <div style={{ position: 'absolute', top: ov.edge, left: ov.edge, zIndex: Z.raised }}>
                     <CamEventBadge ev={c.ev} sz={ov} />
                   </div>
                 )}
@@ -4396,7 +4396,7 @@ function PrevaxEventDefAddScreen() {
                 <Select value="1회 발생" focus />
                 {/* 열린 옵션 목록 (Elevation 강조) */}
                 <div style={{
-                  position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0, zIndex: 2,
+                  position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0, zIndex: Z.dropdown,
                   background: '#212227', border: '1px solid #3b3c44', borderRadius: '6px',
                   boxShadow: '0 14px 30px rgba(0,0,0,0.62), 0 4px 10px rgba(0,0,0,0.45)', overflow: 'hidden',
                 }}>
@@ -5098,7 +5098,7 @@ function PrevaxCameraGroupScreen() {
                                 >
                                   외 {others.length - 1}
                                   {tipCam === c.no && (
-                                    <span style={{ position: 'absolute', left: 0, top: 'calc(100% + 8px)', zIndex: 50, minWidth: '148px', background: '#1f1f24', border: '1px solid #3a3a42', borderRadius: '8px', boxShadow: '0 12px 32px rgba(0,0,0,0.7)', padding: `${SP[8]} ${SP[12]}` }}>
+                                    <span style={{ position: 'absolute', left: 0, top: 'calc(100% + 8px)', zIndex: Z.tooltip, minWidth: '148px', background: '#1f1f24', border: '1px solid #3a3a42', borderRadius: '8px', boxShadow: '0 12px 32px rgba(0,0,0,0.7)', padding: `${SP[8]} ${SP[12]}` }}>
                                       {/* Tooltip 화살표(정본 양식): 본문과 동일 배경 8px, 위쪽 대상("외 n")을 향함. 아래로 열어 스크롤 상단 잘림 방지 */}
                                       <span style={{ position: 'absolute', left: '14px', top: '-5px', width: '8px', height: '8px', background: '#1f1f24', borderLeft: '1px solid #3a3a42', borderTop: '1px solid #3a3a42', transform: 'rotate(45deg)' }} />
                                       <div style={{ ...TYPE.caption2, fontWeight: W.bold, color: '#8a8a92', marginBottom: '5px' }}>소속 그룹 전체 (가나다순)</div>
@@ -5388,12 +5388,12 @@ function PrevaxEventActivationScreen() {
           <div style={{ flex: 1, minHeight: 0, overflow: 'auto' }} className="prevax-scroll">
             <div style={{ display: 'inline-block', minWidth: '100%' }}>
               {/* 헤더 행 — sticky top */}
-              <div style={{ display: 'flex', position: 'sticky', top: 0, zIndex: 5, background: HEAD_BG, borderBottom: '1px solid #2a2a30' }}>
-                <div style={{ ...gc, width: '42px', justifyContent: 'center', position: 'sticky', left: 0, zIndex: 6, background: HEAD_BG }}>
+              <div style={{ display: 'flex', position: 'sticky', top: 0, zIndex: Z.sticky, background: HEAD_BG, borderBottom: '1px solid #2a2a30' }}>
+                <div style={{ ...gc, width: '42px', justifyContent: 'center', position: 'sticky', left: 0, zIndex: Z.raised, background: HEAD_BG }}>
                   <CkBox on={allSel(allKeys)} onClick={() => toggleKeys(allKeys)} />
                 </div>
-                <div style={{ ...gc, width: '96px', position: 'sticky', left: '42px', zIndex: 6, background: HEAD_BG, ...TYPE.caption2, fontWeight: W.bold, color: '#9a9aa2' }}>카메라 번호</div>
-                <div style={{ ...gc, width: '150px', position: 'sticky', left: '138px', zIndex: 6, background: HEAD_BG, ...TYPE.caption2, fontWeight: W.bold, color: '#9a9aa2', boxShadow: '6px 0 8px -6px rgba(0,0,0,0.9)' }}>카메라명</div>
+                <div style={{ ...gc, width: '96px', position: 'sticky', left: '42px', zIndex: Z.raised, background: HEAD_BG, ...TYPE.caption2, fontWeight: W.bold, color: '#9a9aa2' }}>카메라 번호</div>
+                <div style={{ ...gc, width: '150px', position: 'sticky', left: '138px', zIndex: Z.raised, background: HEAD_BG, ...TYPE.caption2, fontWeight: W.bold, color: '#9a9aa2', boxShadow: '6px 0 8px -6px rgba(0,0,0,0.9)' }}>카메라명</div>
                 {EVENTS.map((ev) => (
                   <div key={ev} style={{ ...gc, width: ev.length > 4 ? '150px' : '138px', gap: SP[8], ...TYPE.caption2, fontWeight: W.bold, color: '#c4c4cc' }}>
                     <CkBox on={allSel(colKeys(ev))} onClick={() => toggleKeys(colKeys(ev))} />
@@ -5405,11 +5405,11 @@ function PrevaxEventActivationScreen() {
               {/* 본문 행 */}
               {shownCams.map((c) => (
                 <div key={c.no} style={{ display: 'flex', borderBottom: '1px solid #232329' }}>
-                  <div style={{ ...gc, width: '42px', justifyContent: 'center', position: 'sticky', left: 0, zIndex: 4, background: FROZEN_BG }}>
+                  <div style={{ ...gc, width: '42px', justifyContent: 'center', position: 'sticky', left: 0, zIndex: Z.raised, background: FROZEN_BG }}>
                     <CkBox on={allSel(rowKeys(c.no))} onClick={() => toggleKeys(rowKeys(c.no))} bg="#141417" />
                   </div>
-                  <div style={{ ...gc, width: '96px', position: 'sticky', left: '42px', zIndex: 4, background: FROZEN_BG, color: '#8a8a92', fontVariantNumeric: 'tabular-nums' }}>{c.no}</div>
-                  <div style={{ ...gc, width: '150px', position: 'sticky', left: '138px', zIndex: 4, background: FROZEN_BG, color: '#e8e8ec', boxShadow: '6px 0 8px -6px rgba(0,0,0,0.7)' }}>
+                  <div style={{ ...gc, width: '96px', position: 'sticky', left: '42px', zIndex: Z.raised, background: FROZEN_BG, color: '#8a8a92', fontVariantNumeric: 'tabular-nums' }}>{c.no}</div>
+                  <div style={{ ...gc, width: '150px', position: 'sticky', left: '138px', zIndex: Z.raised, background: FROZEN_BG, color: '#e8e8ec', boxShadow: '6px 0 8px -6px rgba(0,0,0,0.7)' }}>
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.name}</span>
                   </div>
                   {EVENTS.map((ev) => {
@@ -5439,7 +5439,7 @@ function PrevaxEventActivationScreen() {
                         </span>
                         {/* 폭 부족 시 말줄임 대비 툴팁(셀 값과 동일 문자열) */}
                         {tip === tipKey && (
-                          <span style={{ position: 'absolute', left: SP[8], top: 'calc(100% - 4px)', zIndex: 30, background: '#1f1f24', border: '1px solid #3a3a42', borderRadius: '7px', boxShadow: '0 12px 30px rgba(0,0,0,0.7)', padding: `6px ${SP[8]}`, whiteSpace: 'nowrap', pointerEvents: 'none' }}>
+                          <span style={{ position: 'absolute', left: SP[8], top: 'calc(100% - 4px)', zIndex: Z.tooltip, background: '#1f1f24', border: '1px solid #3a3a42', borderRadius: '7px', boxShadow: '0 12px 30px rgba(0,0,0,0.7)', padding: `6px ${SP[8]}`, whiteSpace: 'nowrap', pointerEvents: 'none' }}>
                             <span style={{ ...TYPE.caption2, color: '#d4d4d8' }}>{txt}</span>
                           </span>
                         )}
@@ -5483,7 +5483,7 @@ function HelpTip({ text }) {
     >
       ?
       {open && (
-        <span style={{ position: 'absolute', left: 0, top: 'calc(100% + 6px)', zIndex: 40, width: '300px', background: '#1f1f24', border: '1px solid #3a3a42', borderRadius: '7px', padding: `9px ${SP[12]}`, boxShadow: '0 12px 30px rgba(0,0,0,0.6)', ...TYPE.caption2, fontWeight: W.regular, color: '#c4c4cc', lineHeight: 1.6, textAlign: 'left', whiteSpace: 'normal' }}>
+        <span style={{ position: 'absolute', left: 0, top: 'calc(100% + 6px)', zIndex: Z.tooltip, width: '300px', background: '#1f1f24', border: '1px solid #3a3a42', borderRadius: '7px', padding: `9px ${SP[12]}`, boxShadow: '0 12px 30px rgba(0,0,0,0.6)', ...TYPE.caption2, fontWeight: W.regular, color: '#c4c4cc', lineHeight: 1.6, textAlign: 'left', whiteSpace: 'normal' }}>
           {text}
         </span>
       )}
@@ -5621,7 +5621,7 @@ function PrevaxAlarmSettingsScreen() {
 
         {/* ── 실시간 이벤트 알림 팝업(체크 시 노출, 우하단) ── */}
         {rtOn && (
-          <div style={{ position: 'absolute', right: SP[16], bottom: SP[16], width: '432px', maxHeight: '66%', display: 'flex', flexDirection: 'column', background: '#1a1a1f', border: '1px solid #2e2e35', borderRadius: '8px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', overflow: 'hidden', zIndex: 10 }}>
+          <div style={{ position: 'absolute', right: SP[16], bottom: SP[16], width: '432px', maxHeight: '66%', display: 'flex', flexDirection: 'column', background: '#1a1a1f', border: '1px solid #2e2e35', borderRadius: '8px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', overflow: 'hidden', zIndex: Z.toast }}>
             {/* 창 타이틀바 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: SP[8], height: '34px', flexShrink: 0, padding: `0 ${SP[12]}`, background: '#141417', borderBottom: '1px solid #232329' }}>
               <span style={{ width: '14px', height: '14px', borderRadius: '50%', background: `linear-gradient(135deg, ${T.primary}, ${T.primaryStrong})`, flexShrink: 0 }} />
@@ -5825,7 +5825,7 @@ function PrevaxLiveFocusScreen() {
           <div ref={wrapRef} onClick={() => menu && setMenu(null)} style={{ flex: 1, minHeight: 0, position: 'relative', background: '#000', padding: SP[2] }}>
             {away && <AwayOverlay operator={away} onRestore={() => setAway(null)} />}
             {allPinned && (
-              <div style={{ position: 'absolute', left: SP[2], right: SP[2], top: SP[2], zIndex: 8, display: 'flex', alignItems: 'center', gap: SP[8], height: '26px', padding: `0 ${SP[12]}`, background: cauT(0.16), border: `1px solid ${cauT(0.55)}`, borderRadius: '3px', pointerEvents: 'none' }}>
+              <div style={{ position: 'absolute', left: SP[2], right: SP[2], top: SP[2], zIndex: Z.raised, display: 'flex', alignItems: 'center', gap: SP[8], height: '26px', padding: `0 ${SP[12]}`, background: cauT(0.16), border: `1px solid ${cauT(0.55)}`, borderRadius: '3px', pointerEvents: 'none' }}>
                 <span style={{ display: 'inline-flex', color: T.cautionary, flexShrink: 0 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
                 </span>
@@ -5849,7 +5849,7 @@ function PrevaxLiveFocusScreen() {
                     {/* 라이브 비네팅 — 실시간영상(기본)과 동일 */}
                     {!c.connecting && <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(0,0,0,0.28) 100%)' }} />}
                     {/* 카메라 명 + PTZ (우상단) — 실시간영상(기본) 3×3 티어와 동일 크기 */}
-                    <div style={{ position: 'absolute', top: ov.edge, right: `calc(${ov.edge} + 2px)`, zIndex: 3, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: ov.gap }}>
+                    <div style={{ position: 'absolute', top: ov.edge, right: `calc(${ov.edge} + 2px)`, zIndex: Z.raised, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: ov.gap }}>
                       <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.55)', color: '#1FC8E6', fontSize: ov.ptz, fontWeight: W.medium, fontFamily: T.font, letterSpacing: '-0.24px', lineHeight: 1.5, padding: `${ov.padY} ${ov.ptzPad}`, borderRadius: '40px', whiteSpace: 'nowrap' }}>PTZ</span>
                       <span style={{ ...TYPE.label2, fontSize: ov.name, fontWeight: W.semibold, color: '#fff', background: 'rgba(10,10,12,0.72)', padding: `${ov.padY} ${ov.namePad}`, borderRadius: '40px', textShadow: '0 1px 2px rgba(0,0,0,0.6)' }}>{c.no}</span>
                     </div>
@@ -5862,19 +5862,19 @@ function PrevaxLiveFocusScreen() {
                     )}
                     {/* 분석영역(ROI) — 이벤트 표시 ON일 때만. 원근 사다리꼴 + 상단 경계선(positive) */}
                     {c.ev && evOn.has(i) && !c.connecting && (
-                      <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1, pointerEvents: 'none' }}>
+                      <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: Z.raised, pointerEvents: 'none' }}>
                         <polygon points="3,100 97,100 85,57 21,59" fill="rgba(30,212,90,0.12)" />
                         <line x1="21" y1="59" x2="85" y2="57" stroke={T.positive} strokeWidth="1.4" strokeDasharray="4 3" vectorEffect="non-scaling-stroke" />
                       </svg>
                     )}
                     {/* 검지 박스(positive) — 이벤트 표시 ON일 때만 */}
                     {c.bbox && c.ev && evOn.has(i) && (
-                      <div style={{ position: 'absolute', left: '32%', top: '34%', width: '24%', height: '40%', border: `1.5px solid ${T.positive}`, borderRadius: '2px', zIndex: 2 }}>
+                      <div style={{ position: 'absolute', left: '32%', top: '34%', width: '24%', height: '40%', border: `1.5px solid ${T.positive}`, borderRadius: '2px', zIndex: Z.raised }}>
                         <span style={{ position: 'absolute', top: '-13px', left: '-1px', fontSize: '8px', background: 'rgba(30,212,90,0.92)', color: '#04210f', padding: '0 3px', borderRadius: '2px', fontWeight: W.bold, whiteSpace: 'nowrap' }}>{c.bbox}</span>
                       </div>
                     )}
                     {/* 좌상단 스택 — (이벤트 배지 + 고정 마커) 가로 배치 + 비고정 셀 호버 안내 */}
-                    <div style={{ position: 'absolute', top: ov.edge, left: ov.edge, zIndex: 6, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: SP[4] }}>
+                    <div style={{ position: 'absolute', top: ov.edge, left: ov.edge, zIndex: Z.raised, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: SP[4] }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: SP[4] }}>
                         <CamEventBadge ev={c.ev} sz={ov} />
                         {pinned && (
@@ -5892,7 +5892,7 @@ function PrevaxLiveFocusScreen() {
                     </div>
                     {/* 타임스탬프 (라이브, 하단 중앙) — 3×3 티어 크기 */}
                     {!c.connecting && (
-                      <span style={{ position: 'absolute', bottom: ov.edge, left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', fontFamily: T.font, fontSize: ov.stamp, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)', zIndex: 3 }}>2026.07.02 14:21:08</span>
+                      <span style={{ position: 'absolute', bottom: ov.edge, left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap', fontFamily: T.font, fontSize: ov.stamp, fontWeight: W.medium, color: '#fff', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 3px rgba(0,0,0,0.85)', zIndex: Z.raised }}>2026.07.02 14:21:08</span>
                     )}
                   </div>
                 );
@@ -5900,7 +5900,7 @@ function PrevaxLiveFocusScreen() {
             </div>
             {/* 우클릭 컨텍스트 메뉴(videoContext) — 맨 위 "고정" + 실제 항목 */}
             {menu && (
-              <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', left: `${menu.x}px`, top: `${menu.y}px`, zIndex: 40, width: '216px', background: '#1E2229', border: '1px solid #2c3540', borderRadius: '8px', boxShadow: '0 18px 48px rgba(0,0,0,0.72)', padding: `${SP[4]} 0`, overflow: 'hidden' }}>
+              <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', left: `${menu.x}px`, top: `${menu.y}px`, zIndex: Z.popover, width: '216px', background: '#1E2229', border: '1px solid #2c3540', borderRadius: '8px', boxShadow: '0 18px 48px rgba(0,0,0,0.72)', padding: `${SP[4]} 0`, overflow: 'hidden' }}>
                 <div onClick={() => { toggle(menu.i); setMenu(null); }} style={ctxItem({ color: '#ffd699', fontWeight: W.bold })}>
                   <span style={{ width: '14px', height: '14px', flexShrink: 0, display: 'inline-flex' }}><Icon name="keep" size={14} color={T.cautionary} /></span>
                   {focus.has(menu.i) ? '고정 해제' : '고정'}
@@ -6196,7 +6196,7 @@ function UnassignedChannelsWindow({ empty }) {
                 <div key={i} style={{ position: 'relative', display: 'flex', flexDirection: 'column', minHeight: 0, background: '#0a0a0c', borderRadius: '4px', overflow: 'hidden', border: `1px solid ${cellBorder}`, boxShadow: cellShadow }}>
                   {/* 선택(배치 대상) — "선택" 칩(상단 바 제거: 선택 시 테두리가 파랑이라 색 섞임 없음) */}
                   {c.sel && (
-                    <span style={{ position: 'absolute', top: SP[8], left: SP[8], zIndex: 4, display: 'inline-flex', alignItems: 'center', gap: SP[4], height: '22px', padding: `0 ${SP[8]}`, borderRadius: '7px', background: `linear-gradient(135deg, ${T.primaryStrong} 0%, ${T.primaryHeavy} 100%)`, color: '#fff', ...TYPE.caption1, fontSize: '12px', lineHeight: 1, fontWeight: W.bold, boxShadow: '0 2px 6px rgba(0,0,0,0.5)' }}>
+                    <span style={{ position: 'absolute', top: SP[8], left: SP[8], zIndex: Z.raised, display: 'inline-flex', alignItems: 'center', gap: SP[4], height: '22px', padding: `0 ${SP[8]}`, borderRadius: '7px', background: `linear-gradient(135deg, ${T.primaryStrong} 0%, ${T.primaryHeavy} 100%)`, color: '#fff', ...TYPE.caption1, fontSize: '12px', lineHeight: 1, fontWeight: W.bold, boxShadow: '0 2px 6px rgba(0,0,0,0.5)' }}>
                       <Icon name="check" size={13} color="#fff" />선택
                     </span>
                   )}
@@ -6265,7 +6265,7 @@ function PrevaxEventPopupLiveScreen() {
       <div style={{ position: 'absolute', inset: 0 }}><PrevaxLiveScreen /></div>
       {/* 이벤트 자동 팝업 — 검지 순간 자동 등장(비모달·딤 없음).
           카메라 그리드 영역 기준 중앙(좌 패널 278 · 상단 크롬 109=타이틀40+탭32+툴바37 · 하단 바 38 제외) */}
-      <div style={{ position: 'absolute', left: '278px', top: '109px', right: 0, bottom: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20, pointerEvents: 'none' }}>
+      <div style={{ position: 'absolute', left: '278px', top: '109px', right: 0, bottom: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: Z.modal, pointerEvents: 'none' }}>
         <EventPopupWindow state="video" />
       </div>
     </div>
@@ -6328,23 +6328,23 @@ function DragnetInvestigationWindow({ onClose } = {}) {
               border: c.ref ? `2px solid ${T.primaryStrong}` : '1px solid #23262e',
               boxShadow: c.ref ? `0 0 0 2px rgba(51,133,255,0.22), inset 0 0 22px rgba(51,133,255,0.08)` : 'none' }}>
               {/* 카메라명·번호 — 우상단(정본: 식별정보=우상단) */}
-              <span style={{ position: 'absolute', top: SP[8], right: SP[8], zIndex: 4, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '1px', textAlign: 'right' }}>
+              <span style={{ position: 'absolute', top: SP[8], right: SP[8], zIndex: Z.raised, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '1px', textAlign: 'right' }}>
                 <span style={{ ...TYPE.label2, fontWeight: W.bold, color: '#cfd6e2', textShadow: '0 1px 2px rgba(0,0,0,0.85)' }}>{c.no} {c.name}</span>
                 <span style={{ ...TYPE.caption1, fontWeight: W.semibold, color: '#9aa3b2', textShadow: '0 1px 2px rgba(0,0,0,0.85)' }}>{c.ch}</span>
               </span>
               {/* 기준 카메라 배지(청색) — 좌상단(정본: 상태/마커=좌상단, F-2 "선택"과 통일) */}
               {c.ref && (
-                <span style={{ position: 'absolute', top: SP[8], left: SP[8], zIndex: 6, display: 'inline-flex', alignItems: 'center', gap: SP[4], height: '22px', padding: `0 ${SP[8]}`, background: T.primary, color: '#fff', borderRadius: '7px', fontSize: '12px', lineHeight: 1, fontWeight: W.bold, letterSpacing: '0.02em', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
+                <span style={{ position: 'absolute', top: SP[8], left: SP[8], zIndex: Z.raised, display: 'inline-flex', alignItems: 'center', gap: SP[4], height: '22px', padding: `0 ${SP[8]}`, background: T.primary, color: '#fff', borderRadius: '7px', fontSize: '12px', lineHeight: 1, fontWeight: W.bold, letterSpacing: '0.02em', boxShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
                   <Icon name="location_searching" size={13} color="#fff" />기준
                 </span>
               )}
               {/* 검지 박스(맥락) */}
               {c.bbox && (
-                <div style={{ position: 'absolute', left: c.bbox.l, top: c.bbox.t, width: c.bbox.w, height: c.bbox.h, border: `1.5px solid ${T.positive}`, borderRadius: '2px', zIndex: 3 }}>
+                <div style={{ position: 'absolute', left: c.bbox.l, top: c.bbox.t, width: c.bbox.w, height: c.bbox.h, border: `1.5px solid ${T.positive}`, borderRadius: '2px', zIndex: Z.raised }}>
                   <span style={{ position: 'absolute', top: '-15px', left: '-1px', ...TYPE.caption2, fontWeight: W.bold, background: 'rgba(30,212,90,0.92)', color: '#04210f', padding: `0 ${SP[4]}`, borderRadius: '2px', whiteSpace: 'nowrap' }}>{c.bbox.label}</span>
                 </div>
               )}
-              <span style={{ position: 'absolute', bottom: SP[8], right: SP[8], zIndex: 4, ...TYPE.caption1, color: '#aeb6c2', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 2px rgba(0,0,0,0.85)' }}>14:23:41</span>
+              <span style={{ position: 'absolute', bottom: SP[8], right: SP[8], zIndex: Z.raised, ...TYPE.caption1, color: '#aeb6c2', fontVariantNumeric: 'tabular-nums', textShadow: '0 1px 2px rgba(0,0,0,0.85)' }}>14:23:41</span>
             </div>
           ))}
         </div>
@@ -6419,7 +6419,7 @@ function PrevaxAutoSwitchScreen() {
       <PrevaxTabBar active="실시간영상" />
 
       {/* 영상 옵션 툴바 — 기존 토글 + F-6 "자동 전환" 토글(+▾) */}
-      <div style={{ position: 'relative', zIndex: 20, display: 'flex', alignItems: 'center', gap: SP[8], height: '38px', padding: `0 ${SP[12]}`, background: '#16161a', borderBottom: '1px solid #2a2a30' }}>
+      <div style={{ position: 'relative', zIndex: Z.sticky, display: 'flex', alignItems: 'center', gap: SP[8], height: '38px', padding: `0 ${SP[12]}`, background: '#16161a', borderBottom: '1px solid #2a2a30' }}>
         <span style={{ ...TYPE.label2, fontWeight: W.bold, color: T.primaryStrong, whiteSpace: 'nowrap' }}>영상 옵션</span>
         {optTg('객체 필터', true)}
         {optTg('이벤트 필터', true)}
@@ -6435,7 +6435,7 @@ function PrevaxAutoSwitchScreen() {
 
           {/* ▾ 설정 팝오버 */}
           {openPop && (
-            <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 'calc(100% + 6px)', left: 0, zIndex: 40, width: '336px', background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: '10px', boxShadow: '0 0 0 1px rgba(0,102,255,0.16), 0 24px 60px rgba(0,0,0,0.7)' }}>
+            <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', top: 'calc(100% + 6px)', left: 0, zIndex: Z.dropdown, width: '336px', background: '#1d1d22', border: '1px solid #2e2e35', borderRadius: '10px', boxShadow: '0 0 0 1px rgba(0,102,255,0.16), 0 24px 60px rgba(0,0,0,0.7)' }}>
               {/* 헤더 */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `${SP[12]} ${SP[16]} ${SP[8]}`, borderBottom: '1px solid #232329' }}>
                 <span style={{ ...TYPE.label2, fontWeight: W.bold, color: '#fff' }}>자동 전환 설정</span>
@@ -6454,7 +6454,7 @@ function PrevaxAutoSwitchScreen() {
                       <Icon name="arrow_drop_down" size={16} color={openSel ? T.primaryStrong : '#8a8a92'} />
                     </div>
                     {openSel && (
-                      <div style={{ position: 'absolute', top: '37px', left: 0, right: 0, zIndex: 50, background: '#202027', border: '1px solid #2e2e35', borderRadius: '8px', boxShadow: '0 18px 44px rgba(0,0,0,0.65)', padding: SP[4] }}>
+                      <div style={{ position: 'absolute', top: '37px', left: 0, right: 0, zIndex: Z.dropdown, background: '#202027', border: '1px solid #2e2e35', borderRadius: '8px', boxShadow: '0 18px 44px rgba(0,0,0,0.65)', padding: SP[4] }}>
                         {SEV_ORDER.map((s) => {
                           const cur = s === sev;
                           return (
@@ -6522,8 +6522,8 @@ function PrevaxAutoSwitchScreen() {
       {/* 자동 추출된 별도 창(LiveVideoStream) — 검지 셀 클릭 시 그리드 위로 뜸. 메인 그리드는 무전이(그대로) */}
       {extracted && (
         <>
-          <span style={{ position: 'absolute', left: SP[12], top: '96px', zIndex: 24, display: 'inline-flex', alignItems: 'center', gap: SP[4], ...TYPE.caption2, fontWeight: W.bold, color: '#66e08f', background: 'rgba(8,20,12,0.82)', border: '1px solid rgba(30,212,90,0.4)', borderRadius: '6px', padding: `2px ${SP[8]}` }}>메인 그리드 그대로 · 위험 유지</span>
-          <div style={{ position: 'absolute', left: '50%', top: '56%', transform: 'translate(-50%,-50%)', zIndex: 25, width: '46%', maxWidth: '560px', background: '#111116', border: '1px solid #34343c', borderRadius: '7px', boxShadow: '0 24px 60px rgba(0,0,0,0.72)', overflow: 'hidden' }}>
+          <span style={{ position: 'absolute', left: SP[12], top: '96px', zIndex: Z.modal, display: 'inline-flex', alignItems: 'center', gap: SP[4], ...TYPE.caption2, fontWeight: W.bold, color: '#66e08f', background: 'rgba(8,20,12,0.82)', border: '1px solid rgba(30,212,90,0.4)', borderRadius: '6px', padding: `2px ${SP[8]}` }}>메인 그리드 그대로 · 위험 유지</span>
+          <div style={{ position: 'absolute', left: '50%', top: '56%', transform: 'translate(-50%,-50%)', zIndex: Z.modal, width: '46%', maxWidth: '560px', background: '#111116', border: '1px solid #34343c', borderRadius: '7px', boxShadow: '0 24px 60px rgba(0,0,0,0.72)', overflow: 'hidden' }}>
             {/* 타이틀바 = 카메라명(정본 LiveVideoStream) */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '28px', padding: `0 ${SP[4]} 0 ${SP[12]}`, background: '#1c1c22', borderBottom: '1px solid #2a2a30' }}>
               <span style={{ ...TYPE.caption2, fontWeight: W.semibold, color: '#d4d4d8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{extracted.no} · {extracted.loc}</span>
@@ -6535,7 +6535,7 @@ function PrevaxAutoSwitchScreen() {
             </div>
             {/* 영상 16:9 */}
             <div style={{ position: 'relative', aspectRatio: '16 / 9', background: 'radial-gradient(circle at 42% 46%, #26303c 0%, #161b22 55%, #0d1016 100%)' }}>
-              <span style={{ position: 'absolute', top: SP[8], left: '50%', transform: 'translateX(-50%)', zIndex: 2, display: 'inline-flex', alignItems: 'center', height: '22px', padding: `0 ${SP[8]}`, ...TYPE.caption1, lineHeight: 1, fontWeight: W.bold, color: '#fff', background: `linear-gradient(135deg, ${T.primaryStrong} 0%, ${T.primaryHeavy} 100%)`, borderRadius: '10px', whiteSpace: 'nowrap' }}>자동 추출 · 별도 창</span>
+              <span style={{ position: 'absolute', top: SP[8], left: '50%', transform: 'translateX(-50%)', zIndex: Z.raised, display: 'inline-flex', alignItems: 'center', height: '22px', padding: `0 ${SP[8]}`, ...TYPE.caption1, lineHeight: 1, fontWeight: W.bold, color: '#fff', background: `linear-gradient(135deg, ${T.primaryStrong} 0%, ${T.primaryHeavy} 100%)`, borderRadius: '10px', whiteSpace: 'nowrap' }}>자동 추출 · 별도 창</span>
               <span style={{ position: 'absolute', top: SP[8], left: SP[8], display: 'inline-flex', alignItems: 'center', height: '22px', ...TYPE.label2, lineHeight: 1, fontWeight: W.semibold, color: '#cfe3ff', textShadow: '0 1px 2px #000' }}>{extracted.no} {extracted.loc}</span>
               <span style={{ position: 'absolute', top: SP[8], right: SP[8], display: 'inline-flex', alignItems: 'center', height: '22px', gap: SP[4], padding: `0 ${SP[8]}`, ...TYPE.caption1, lineHeight: 1, fontWeight: W.bold, color: '#fff', background: 'rgba(220,40,40,0.9)', borderRadius: '10px' }}><span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#fff' }} />LIVE</span>
               {/* 검지 박스(positive 맥락) */}
@@ -6594,7 +6594,7 @@ function PrevaxAutoWindowUnifiedScreen() {
         </div>
 
         {/* 통합 자동 창 */}
-        <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)', zIndex: 10, width: '58%', maxWidth: '700px', background: '#111116', border: '1px solid #34343c', borderRadius: '8px', boxShadow: '0 24px 60px rgba(0,0,0,0.72)', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)', zIndex: Z.modal, width: '58%', maxWidth: '700px', background: '#111116', border: '1px solid #34343c', borderRadius: '8px', boxShadow: '0 24px 60px rgba(0,0,0,0.72)', overflow: 'hidden' }}>
           {/* 타이틀바 */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '30px', padding: `0 ${SP[4]} 0 ${SP[12]}`, background: '#1c1c22', borderBottom: '1px solid #2a2a30' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: SP[8], ...TYPE.caption1, fontWeight: W.semibold, color: '#d4d4d8' }}>
@@ -6789,7 +6789,7 @@ export default function Library({ componentId }) {
           onClick={() => setExpanded(true)}
           title="실제 1920×1080 크기로 보기"
           style={{
-            position: 'absolute', top: '12px', right: '12px', zIndex: 5,
+            position: 'absolute', top: '12px', right: '12px', zIndex: Z.raised,
             display: 'flex', alignItems: 'center', gap: SP[4],
             ...TYPE.label2, fontWeight: W.semibold, color: '#e8e8ec', fontFamily: T.font,
             background: 'rgba(20,20,23,0.85)', border: '1px solid #33333a', borderRadius: '6px',
@@ -6811,7 +6811,7 @@ export default function Library({ componentId }) {
       {expanded && (
         <div
           onClick={() => setExpanded(false)}
-          style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.92)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ position: 'fixed', inset: 0, zIndex: Z.modal, background: 'rgba(0,0,0,0.92)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           <div style={{ position: 'absolute', top: '18px', left: '22px', ...TYPE.label2, color: '#9a9a9f' }}>
             {example.title} · 1920 × 1080 ({Math.round(scale * 100)}%)
@@ -6819,7 +6819,7 @@ export default function Library({ componentId }) {
           <button
             onClick={(e) => { e.stopPropagation(); setExpanded(false); }}
             style={{
-              position: 'absolute', top: '14px', right: '18px', zIndex: 2,
+              position: 'absolute', top: '14px', right: '18px', zIndex: Z.raised,
               display: 'flex', alignItems: 'center', gap: SP[4], ...TYPE.label2, fontWeight: W.semibold, fontFamily: T.font,
               color: '#fff', background: '#2a2a30', border: '1px solid #3a3a42', borderRadius: '6px', padding: `${SP[8]} ${SP[12]}`, cursor: 'pointer',
             }}

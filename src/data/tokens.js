@@ -246,6 +246,25 @@ export const TYPE = TYPOGRAPHY.reduce((acc, t) => {
 // SP: Spacing 스케일 — CSS 문자열('2px' 등). 여백·간격·패딩은 항상 이 토큰으로.
 export const SP = SPACING.reduce((acc, s) => { acc[s.key] = `${s.px}px`; return acc; }, {});
 
+// ─────────────────────────────────────────────────────────────────────────
+// Z-INDEX (레이어 위계) — 오버레이가 많은 관제 UI의 겹침 순서를 토큰으로 고정.
+//  웹: style.zIndex(정수) · WPF: Panel.ZIndex(정수) — 값이 그대로 매핑되어 양 플랫폼 동일.
+//  ⚠ z-index는 이 스케일(Z.*)만 사용 — 임의 정수 금지. 새 레이어가 필요하면 여기에 추가.
+// ─────────────────────────────────────────────────────────────────────────
+export const Z_LAYERS = [
+  { key: 'base',            value: 0,    xamlKey: 'Pintel.Layer.Base',            usage: '기본 흐름' },
+  { key: 'raised',          value: 1,    xamlKey: 'Pintel.Layer.Raised',          usage: '셀·카드 내부 오버레이(검지 박스·OSD 라벨)' },
+  { key: 'sticky',          value: 100,  xamlKey: 'Pintel.Layer.Sticky',          usage: '고정 헤더·툴바' },
+  { key: 'dropdown',        value: 1000, xamlKey: 'Pintel.Layer.Dropdown',        usage: '드롭다운·셀렉트·영상옵션 팝오버' },
+  { key: 'overlayBackdrop', value: 1100, xamlKey: 'Pintel.Layer.OverlayBackdrop', usage: '모달·팝오버 뒤 백드롭(클릭 차단막)' },
+  { key: 'modal',           value: 1200, xamlKey: 'Pintel.Layer.Modal',           usage: '모달·확대(전체화면) 오버레이' },
+  { key: 'popover',         value: 1300, xamlKey: 'Pintel.Layer.Popover',         usage: '컨텍스트 메뉴·팝오버(모달 위 포함)' },
+  { key: 'toast',           value: 1400, xamlKey: 'Pintel.Layer.Toast',           usage: '토스트·실시간 알림' },
+  { key: 'tooltip',         value: 1500, xamlKey: 'Pintel.Layer.Tooltip',         usage: '툴팁(항상 최상단)' },
+];
+// Z: 레이어 스케일 — style.zIndex(웹)·Panel.ZIndex(WPF)에 정수 그대로 사용. 예: zIndex: Z.popover
+export const Z = Z_LAYERS.reduce((acc, l) => { acc[l.key] = l.value; return acc; }, {});
+
 // WRAP: 줄바꿈 정본 — 웹에서 가장 보편적·안전한 기본값.
 //  · word-break: keep-all  → 한글은 어절(단어) 단위로만 줄바꿈(중간에서 끊기지 않음), 영문 단어도 통째 유지
 //  · overflow-wrap: break-word → 컨테이너보다 긴 단일 토큰(URL·식별자 등)은 끊어서 오버플로 방지

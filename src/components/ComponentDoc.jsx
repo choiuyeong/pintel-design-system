@@ -2062,7 +2062,7 @@ function MockUI({ componentId, componentName, activeSubTab, onNavigate }) {
         padding: '24px 32px',
         backgroundColor: '#1e1e1e',
         color: '#eeeeee',
-        fontFamily: "'Pretendard', 'Inter', sans-serif",
+        fontFamily: T.font,
         textAlign: 'left',
         borderRadius: '16px',
         border: '1px solid #2e2e2e',
@@ -2704,7 +2704,7 @@ function PlayButtonPlayground({ activeSubTab }) {
 
   if (activeSubTab === 'anatomy') {
     return (
-      <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+      <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
         {/* Anatomy — 표준 템플릿(AnatomyFrame) 사용 */}
         <AnatomyFrame
           card={{ w: 720, h: 360 }}
@@ -2862,7 +2862,7 @@ function ContentBadgePlayground({ activeSubTab }) {
   const iconBorderColor = bs.color;
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
 
       {/* ── Hierarchy 섹션 ── */}
       <div style={{ marginBottom: SP[48] }}>
@@ -3424,7 +3424,7 @@ function FramedStylePlayground({ activeSubTab }) {
   const rowLabel = { fontSize: TYPE.label1.fontSize, fontWeight: W.medium, color: '#9a9aa2' };
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: '20px' }}>States</div>
 
       {/* 라이트 카드 — States 매트릭스 */}
@@ -3696,7 +3696,7 @@ function TextFieldInteractive() {
   const error = focused === false && empty; // blur 시 비어 있으면 오류
   const borderColor = error ? T.error : focused ? T.primary : '#2e2e2e';
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', minHeight: '220px', background: '#1e1e1e', padding: '24px' }}>
         <div style={{ width: '360px', display: 'flex', flexDirection: 'column', gap: SP[8] }}>
           {/* Heading + Required badge */}
@@ -3809,7 +3809,7 @@ function SearchFieldInteractive() {
   const [q, setQ] = useState('상수도 누수');
   const [focused, setFocused] = useState(false);
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', height: '220px', background: '#1e1e1e' }}>
         <div style={{
           display: 'flex', alignItems: 'center', gap: '10px', width: '360px', height: '40px', padding: '0 12px',
@@ -3944,7 +3944,7 @@ function TextAreaInteractive() {
   const ring = error ? '0 0 0 3px rgba(255,99,99,0.22)' : (focused ? '0 0 0 3px rgba(0,102,255,0.25)' : 'none');
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
         {/* Left: Preview */}
         <div style={{ flex: 1.8, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
@@ -4076,7 +4076,7 @@ function SegmentedControlInteractive() {
   const OPTS = ['일별', '주별', '월별'];
   const [sel, setSel] = useState('일별');
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #2a2a2a', borderRadius: '12px', height: '220px', background: '#161618' }}>
         <div style={{ display: 'inline-flex', padding: SP[4], background: '#1e1e1e', borderRadius: '8px' }}>
           {OPTS.map((o) => {
@@ -4210,7 +4210,7 @@ function IconButtonInteractive() {
   const rowLabel = { fontSize: TYPE.label1.fontSize, fontWeight: W.medium, color: '#9a9aa2' };
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       {/* 라이트 카드 — States 매트릭스 */}
       <div style={{ background: '#ffffff', borderRadius: '16px', padding: SP[40], display: 'flex', justifyContent: 'center', marginBottom: SP[16] }}>
         <div style={{ display: 'grid', gridTemplateColumns: `170px repeat(4, 90px)`, columnGap: SP[24], rowGap: '26px', alignItems: 'center' }}>
@@ -4318,7 +4318,7 @@ function RadioPlayground({ activeSubTab }) {
   );
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       {/* ── Size 섹션 (2가지 사이즈) ── */}
       <div style={{ marginBottom: SP[48] }}>
         <div style={{ fontSize: TYPE.heading2.fontSize, fontWeight: W.bold, color: '#fff', marginBottom: '20px' }}>Size</div>
@@ -4472,7 +4472,7 @@ function SelectPlayground({ activeSubTab }) {
   // Interactive — 실동작 셀렉트(Heading/Field/Description + 펼침 메뉴)
   const OPTS = ['강남구', '서초구', '송파구'];
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', background: '#202024', borderRadius: '20px', minHeight: '300px', padding: '48px 0' }}>
         <div style={{ width: '320px', position: 'relative' }}>
           {/* Heading + Required */}
@@ -4612,7 +4612,7 @@ function VideoRangeSlider() {
   }, []);
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ background: '#202024', borderRadius: '20px', padding: '40px 48px 48px' }}>
         <div style={{ maxWidth: '440px', margin: '0 auto' }}>
         {/* Heading — 하이라이트 시간대(시작 고정 ~ 손잡이) + 길이 */}
@@ -4740,7 +4740,7 @@ function SwitchPlayground({ activeSubTab }) {
 
   // Interactive — 토글 + 상태(Off/On/Disabled) 참고
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ background: '#202024', borderRadius: '20px', padding: '40px 48px' }}>
         {/* 인터랙티브 토글 */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '320px', margin: '0 auto' }}>
@@ -4863,7 +4863,7 @@ function ChipPlayground({ activeSubTab }) {
   const chipColor = '#ffffff';
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
         {/* Left: Preview Panel */}
         <div style={{ flex: 1.8, background: '#121214', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -5167,7 +5167,7 @@ function SectionHeaderPlayground({ activeSubTab }) {
   );
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
         {/* Left: Preview Panel */}
         <div style={{ flex: 1.8, background: '#121214', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px' }}>
@@ -5310,7 +5310,7 @@ function PushBadgePlayground({ activeSubTab }) {
   };
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
         {/* Left: Preview Panel */}
         <div style={{ flex: 1.8, background: panelBg, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -5599,7 +5599,7 @@ function LoadingPlayground({ activeSubTab }) {
   }
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
         {/* Left: Preview */}
         <div style={{ flex: 1.8, background: '#121214', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative', overflow: 'hidden' }}>
@@ -5756,7 +5756,7 @@ function AlertPlayground({ activeSubTab }) {
   };
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '380px' }}>
         {/* Left: Preview Panel */}
         <div style={{ flex: 1.8, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative' }}>
@@ -6112,7 +6112,7 @@ function AccordionPlayground({ componentId, activeSubTab }) {
       background: '#1a1a1a',
       borderRadius: '12px',
       padding: '24px 20px 16px',
-      fontFamily: "'Inter', 'Pretendard', sans-serif",
+      fontFamily: T.font,
       position: 'relative',
       border: '1px solid #2a2a2a',
       overflow: showAnatomy ? 'visible' : undefined,
@@ -6267,7 +6267,7 @@ function AccordionPlayground({ componentId, activeSubTab }) {
   );
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '520px' }}>
         {/* Left: Preview Panel */}
         <div style={{ flex: 1.8, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative', overflow: 'auto' }}>
@@ -7126,7 +7126,7 @@ function TooltipPlayground({ activeSubTab }) {
   };
   const sz = SIZES[size];
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       {/* 사이즈 토글 (S / M) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
         <span style={{ fontSize: '12px', color: '#9a9aa2' }}>Size</span>
@@ -9593,7 +9593,7 @@ function ListCellPlayground({ activeSubTab }) {
   };
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ fontSize: '20px', fontWeight: '700', color: '#fff', marginBottom: '24px' }}>Interactive Demo</div>
       
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
@@ -9787,7 +9787,7 @@ function FilterButtonPlayground({ activeSubTab }) {
   const PRIMARY = '#0066FF';
   const PANEL = '#16161a';
   const BORDER = '#2a2a30';
-  const FONT = "'Inter','Pretendard','맑은 고딕',sans-serif";
+  const FONT = T.font;
 
   // ── Anatomy: 라이트 카드 + 번호 콜아웃(1 Label · 2 Count badge · 3 Dropdown caret · 4 Container) ──
   const [showSpacing, setShowSpacing] = useState(true); // anatomy 간격 치수선 토글(기본 표시)
@@ -10193,7 +10193,7 @@ function CheckboxPlayground({ activeSubTab }) {
   const sectionLabel = { fontSize: '12px', color: '#6a6a72', marginBottom: '14px', letterSpacing: '0.04em' };
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter','Pretendard',sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>Checkbox</div>
       <div style={{ fontSize: '13px', color: '#999', marginBottom: '20px' }}>Library 화면에서 쓰는 표준 체크박스입니다. 디자인 시스템 아이콘 <code style={{ color: '#bdbdc4' }}>check_on / check_off</code>(18px)와 라벨로 구성합니다.</div>
 
@@ -10445,7 +10445,7 @@ function DatePickerPlayground({ activeSubTab }) {
   );
 
   const picker = (
-    <div style={{ width: '300px', background: CARD, borderRadius: '12px', border: `1px solid ${BORDER}`, boxShadow: '0 16px 40px rgba(0,0,0,0.5)', overflow: 'hidden', fontFamily: "'Inter','Pretendard','맑은 고딕',sans-serif" }}>
+    <div style={{ width: '300px', background: CARD, borderRadius: '12px', border: `1px solid ${BORDER}`, boxShadow: '0 16px 40px rgba(0,0,0,0.5)', overflow: 'hidden', fontFamily: T.font }}>
       {/* 헤더 */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px 8px' }}>
         <button type="button" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '15px', fontWeight: 700, color: '#fff' }}>
@@ -10508,7 +10508,7 @@ function DatePickerPlayground({ activeSubTab }) {
     : `${fmt(range.start)}  ~  ${fmt(range.end)}`;
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter','Pretendard',sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>Date + Time Picker</div>
       <div style={{ fontSize: '13px', color: '#999', marginBottom: '20px' }}>트리거 필드(닫힘)에서 형식을 보여주고, 클릭하면 달력+시간 팝오버(펼침)가 열립니다. 시간 표기는 24시간제 <code style={{ color: '#bdbdc4' }}>YYYY.MM.DD HH:mm</code>(초 필요 시 :ss).</div>
       <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start', justifyContent: 'center', flexWrap: 'wrap', background: '#0f0f12', border: '1px solid #2a2a30', borderRadius: '12px', padding: '32px' }}>
@@ -10788,7 +10788,7 @@ function TablePlayground({ activeSubTab }) {
   }
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ fontSize: '20px', fontWeight: '700', color: '#fff', marginBottom: '24px' }}>Interactive Demo</div>
 
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', minHeight: '360px' }}>
@@ -11066,7 +11066,7 @@ function ListCardPlayground({ activeSubTab }) {
   }
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ fontSize: '20px', fontWeight: '700', color: '#fff', marginBottom: '24px' }}>Interactive Demo</div>
 
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '400px' }}>
@@ -11500,7 +11500,7 @@ function CardPlayground({ activeSubTab }) {
   const bannerDetails = getBannerDetails();
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '540px' }}>
         {/* Left Panel */}
         <div style={{ flex: 1.8, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', boxSizing: 'border-box' }}>
@@ -12059,7 +12059,7 @@ function ActionAreaPlayground({ activeSubTab }) {
   }
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '380px' }}>
         {/* Left Side: Preview */}
         <div style={{ flex: 1.8, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px', position: 'relative' }}>
@@ -12406,7 +12406,7 @@ function ToastPlayground({ activeSubTab }) {
   const colors = getToastColors(toastType);
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
         {/* Left: Preview Panel */}
         <div style={{
@@ -13840,7 +13840,7 @@ function CheckmarkPlayground({ activeSubTab }) {
 
   // Interactive Tab Content
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', gap: '14px', background: '#202024', borderRadius: '20px', overflow: 'hidden', height: '360px', padding: '14px', boxSizing: 'border-box' }}>
         {/* Left: Preview Panel */}
         <div style={{ flex: 1.8, background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -13991,7 +13991,7 @@ function TextButtonPlayground({ activeSubTab }) {
   const buttonColor = color === 'primary' ? '#3385FF' : '#8e8e93';
 
   return (
-    <div style={{ width: '100%', textAlign: 'left', fontFamily: "'Inter', 'Pretendard', sans-serif" }}>
+    <div style={{ width: '100%', textAlign: 'left', fontFamily: T.font }}>
       <div style={{ display: 'flex', border: '1px solid #2a2a2a', borderRadius: '12px', overflow: 'hidden', height: '360px' }}>
         {/* Left: Preview Panel */}
         <div style={{ flex: 1.8, background: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
